@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import styles from "./Login.module.css";
+import styles from "./ForgotPassowrd.module.css";
 import axios from "../../api/axios";
-import Input from '../common/Input'
+import Input from "../common/Input";
 
-const Login = () => {
+const ForgetPassword = () => {
      const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
@@ -75,7 +75,7 @@ const Login = () => {
             {/* LEFT SIDE - LOGIN FORM */}
             <form className={styles.formContainer} onSubmit={handleSubmit} noValidate>
                 <div className={styles.topStrip}></div>
-                <h1 className={styles.title}>Log in to your account</h1>
+                <h1 className={styles.title}>Reset Password</h1>
    <Input
                     type="text"
                     name="username"
@@ -100,12 +100,12 @@ const Login = () => {
 
                 <div className={styles.linkRow}>
                     <a href="#" className={styles.link}>Forgot Username?</a>
-                    <span>|</span>
-                    <a href="/forget-password" className={styles.link}>Forgot Password?</a>
+                  
+                    
                 </div>
 
                 <div>
-                    <button type="submit" className={styles.loginBtn}>Log In</button>
+                    <button type="submit" className={styles.loginBtn}>Reset</button>
                 </div>
 
                 <div className={styles.footerLinks}>
@@ -130,4 +130,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default ForgetPassword;

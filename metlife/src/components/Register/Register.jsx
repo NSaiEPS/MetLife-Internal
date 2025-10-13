@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import styles from "./Login.module.css";
+import styles from "./Register.module.css";
 import axios from "../../api/axios";
 import Input from '../common/Input'
 
-const Login = () => {
+const Register = () => {
      const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
@@ -75,8 +75,9 @@ const Login = () => {
             {/* LEFT SIDE - LOGIN FORM */}
             <form className={styles.formContainer} onSubmit={handleSubmit} noValidate>
                 <div className={styles.topStrip}></div>
-                <h1 className={styles.title}>Log in to your account</h1>
-   <Input
+                <h1 className={styles.title}>Register for new account</h1>
+
+                <Input
                     type="text"
                     name="username"
                     placeholder="Username"
@@ -97,7 +98,6 @@ const Login = () => {
                  errorClass   ={styles.error}
                     
                 />
-
                 <div className={styles.linkRow}>
                     <a href="#" className={styles.link}>Forgot Username?</a>
                     <span>|</span>
@@ -105,14 +105,14 @@ const Login = () => {
                 </div>
 
                 <div>
-                    <button type="submit" className={styles.loginBtn}>Log In</button>
+                    <button type="submit" className={styles.loginBtn}>Register</button>
                 </div>
 
                 <div className={styles.footerLinks}>
                     <span>
-                        First-time user? <a href="/register" className={styles.link}>Register Now</a>
+                        Already have an account? <a href="/login" className={styles.link}>Login</a>
                     </span>
-                    <a href="#" className={styles.link}>I can’t log in</a>
+                  
                 </div>
             </form>
 
@@ -130,4 +130,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;

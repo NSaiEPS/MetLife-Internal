@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import LoginPage from "../Pages/LoginPage/LoginPage";
+import RegisterPage from "../Pages/Register/RegisterPage";
 // import LoginPage from "../Pages/LoginPage";
 // import MainLayout from "../Component/Layout";
 // import Dashboard from "../Pages/Dashboard";
@@ -11,7 +12,7 @@ import LoginPage from "../Pages/LoginPage/LoginPage";
 // import LocationDetails from "../Pages/LocationDetails";
 // import CampaignDashBoard from "../Pages/Campaign/CampaignDashBoard";
 // import CampaignDetails from "../Pages/Campaign/campaignDetails";
-// import ForgetPasswordPage from "../Pages/FOrgetPassword";
+import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 // import ResetPasswordPage from "../Pages/ForgetPassword/ResetPassword";
 // import ChangePasswordPage from "../Pages/ForgetPassword/ChangePassword";
 // import InsightsDashboard from "../Pages/Insights/InsightsDashbBoard"
@@ -39,6 +40,14 @@ export const router = createBrowserRouter([
     {
         path:"/login",
         element: <LoginPage/>
+    },
+    {
+        path : '/register',
+          element: <RegisterPage/>
+    },
+    {
+        path : "/forget-password",
+        element : <ForgotPassword/>
     }
 //   {
 //     path: "/login",

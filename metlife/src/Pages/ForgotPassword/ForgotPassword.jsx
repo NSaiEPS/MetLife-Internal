@@ -1,16 +1,16 @@
 import React from 'react'
-import Login from '../../components/Login/Login'
+import ForgetPassword from "../../components/ForgotPassword/ForgotPassword"
 import Header from '../../components/common/header'
 import Footer from '../../components/common/Footer'
 
-const LoginPage = () => {
+const ForgotPassword = () => {
     return (
         <div>
             <Header/>
-            <Login/>
+            <ForgetPassword/>
             <Footer/>
         </div>
     )
 }
 
-export default LoginPage
+export default ForgotPassword
