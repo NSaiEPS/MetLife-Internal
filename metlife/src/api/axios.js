@@ -1,8 +1,8 @@
 import { message } from "antd";
 import axios from "axios";
 
-// export const SERVER_URL = "https://unfegr.eplanetsoft.com/";
-export const SERVER_URL = "https://unfegr-dev.eplanetsoft.com/";
+
+export const SERVER_URL = "";
 
 export const BASE_URL = `${SERVER_URL}api/v1/`;
 

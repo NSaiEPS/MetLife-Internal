@@ -7,11 +7,10 @@ import LoginPage from "../Pages/LoginPage/LoginPage";
 import RegisterPage from "../Pages/Register/RegisterPage";
 import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 import VideoCreationOptions from "../Pages/OneFrame/OneFrame";
+import UploadScript from '../Pages/UploadScriptPage/UploadScript'
+import GenerateScript from "../Pages/GenerateScipt/GenerateScript"
 
-// Layout (wraps protected routes)
 import LoginLayout from "../components/Login/Login"; // Assuming this is your layout
-
-// Utils
 import { getToken, getLoggedInUserType, USERS } from "../utils";
 
 // ✅ Protected Route Component
@@ -39,6 +38,10 @@ const Authorization = ({ element }) => {
 
 // ✅ Final Router Configuration
 export const router = createBrowserRouter([
+   {
+    path: "/",
+    element: <Authorization element={<LoginPage />} />,
+  },
   {
     path: "/login",
     element: <Authorization element={<LoginPage />} />,
@@ -56,15 +59,15 @@ export const router = createBrowserRouter([
     element: <Authorization element={<ForgotPassword />} />,
   },
   {
-    path: "/vedio-frame",
-    element: <VideoCreationOptions />, // This is your app shell or layout
-    // children: [
-    //   {
-    //     path: "vedio-frame", // ⚠️ fix the spelling to "video-frame" if needed
-    //       element:<VideoCreationOptions />
-       
-    //   },
-    //   // Add more protected routes here...
-    // ],
+    path: "/video-frame",
+    element: <VideoCreationOptions />
   },
+  {
+    path : "/upload-script",
+    element : <UploadScript/>
+  },
+  {
+    path : "/generate-script",
+    element : <GenerateScript/>
+  }
 ]);
