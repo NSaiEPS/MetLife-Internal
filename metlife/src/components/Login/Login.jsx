@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import styles from "./Login.module.css";
 import axios from "../../api/axios";
 import Input from '../common/Input'
+import { useNavigate } from "react-router";
 
 const Login = () => {
+      const navigate = useNavigate();
      const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
@@ -56,13 +58,14 @@ const Login = () => {
         password: formData.password,
       };
       setLoading(true);
-      const res = await axios.post("users/login", data);
-      if (res?.data?.success) {
-        localStorage.setItem("authDetails", JSON.stringify(res?.data?.data));
-        navigate("/");
-      } else {
-        message.error(res?.data?.message);
-      }
+    //   const res = await axios.post("users/login", data);
+    //   if (res?.data?.success) {
+    //     localStorage.setItem("authDetails", JSON.stringify(res?.data?.data));
+        navigate("/vedio-frame");
+    //   } else {
+    //     message.error(res?.data?.message);
+    //   }
+    
     } catch (e) {
     } finally {
       setLoading(false);
