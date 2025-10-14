@@ -61,7 +61,7 @@ const Login = () => {
     //   const res = await axios.post("users/login", data);
     //   if (res?.data?.success) {
     //     localStorage.setItem("authDetails", JSON.stringify(res?.data?.data));
-        navigate("/vedio-frame");
+        navigate("/video-frame");
     //   } else {
     //     message.error(res?.data?.message);
     //   }
