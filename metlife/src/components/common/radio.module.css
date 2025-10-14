@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.radioBox {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.radioBox:hover {
+  border-color: #aaa;
+}
+
+.active {
+  border-color: #333;
+}

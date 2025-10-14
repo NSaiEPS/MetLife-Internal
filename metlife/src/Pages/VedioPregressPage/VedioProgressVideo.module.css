@@ -1,0 +1,45 @@
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.subTitle {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.progressText {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.readySection {
+  margin-top: 30px;
+}
+
+.video {
+  margin-top: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+.resolutionWrap {
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+}

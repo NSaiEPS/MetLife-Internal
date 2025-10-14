@@ -1,0 +1,120 @@
+.page {
+  min-height: 100vh;
+  background: #f7fbfc;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* header */
+.topbar {
+  background: #333;
+  color: #fff;
+  padding: 18px 24px;
+  text-align: center;
+}
+.brand {
+  font-size: 36px;
+  font-weight: 300;
+}
+
+/* layout */
+.container {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  padding: 36px;
+}
+
+/* left side */
+.left {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.leftHeader {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.sceneList {
+  margin-top: 8px;
+  max-height: 58vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.addSceneWrap {
+  margin-top: 18px;
+  display:flex;
+  justify-content: center;
+}
+
+/* right */
+.right {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.rightHeader {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.traversal {
+  display:flex;
+  gap: 8px;
+}
+.iconBtn {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.iconBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* sections */
+.section {
+  margin-top: 16px;
+}
+.label {
+  display:block;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+}
+.prompt .MuiInputBase-root {
+  background: #fff;
+  border-radius: 8px;
+}
+
+/* image preview */
+.imagePreview {
+  height: 140px;
+  border-radius: 8px;
+  background: #ececec;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: #9e9e9e;
+}
+
+/* footer actions */
+.footerActions {
+  margin-top: 20px;
+  display:flex;
+  justify-content: flex-end;
+}
+.btnDark {
+  background-color: #333 !important;
+  color: #fff !important;
+  padding: 12px 28px !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+  font-weight: 500;
+}

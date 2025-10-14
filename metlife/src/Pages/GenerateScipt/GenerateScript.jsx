@@ -51,7 +51,7 @@ const GenerateScript = () => {
       useCompanyData,
     });
     // e.g., navigate('/preview') or call generation
-    navigate("/preview"); // optional
+    navigate("/generate-visual-page"); // optional
   };
 
   return (
