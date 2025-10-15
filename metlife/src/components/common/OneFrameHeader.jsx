@@ -1,19 +1,23 @@
-import React from 'react'
-import {
-    AppBar,
-    Toolbar,
-    Typography,   
-} from "@mui/material";
- const OneFrameHeader = () => {
-  return (
-           <AppBar position="static" sx={{ backgroundColor: "#333", boxShadow: "none" }}>
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center", fontFamily: "serif", fontSize: "1.5rem" }}>
-                        OneFrame
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-  )
-}
+import React from "react";
+import { AppBar, Toolbar, Typography } from "@mui/material";
+import logo from "../../assets/mainImage.svg";
+import styles from "./OneFrameHeader.module.css";
 
-export default OneFrameHeader
+const OneFrameHeader = () => {
+  return (
+    <AppBar position="static" className={styles.appBar}>
+      <Toolbar className={styles.toolbar}>
+        {/* Left spacer to keep title centered */}
+        <div className={styles.leftSpacer} />
+
+        <Typography variant="h6" className={styles.title}>
+          OneFrame
+        </Typography>
+
+        <img src={logo} alt="MetLife logo" className={styles.logo} />
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default OneFrameHeader;

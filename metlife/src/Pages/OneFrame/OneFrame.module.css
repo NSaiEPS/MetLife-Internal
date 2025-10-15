@@ -1,7 +1,68 @@
 .beigeCard {
-  background-color: rgb(235, 235, 209);
-width: 500px;
-padding: 10px 10px 10px 10px;
-border-radius: 7px;
-height: 170px;
+  background-color: rgba(35, 157, 224, 0.1); /* #239DE01A */
+  border: 1px solid rgba(35, 157, 224, 0.4); /* #239DE066 */
+  width: 416px;
+  height: 327px;
+  padding: 24px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.upperHeading {
+  text-align: center;
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 62px;
+  font-family: 'Nexa', sans-serif;
+  margin-top: 160px;
+  color: #231F20;
+  margin-bottom: 40px;
+}
+
+
+.boxHeading {
+  font-size: 20px;
+  font-weight: 700;
+  color: #231F20;
+  padding-top : 70px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  text-align: start;
+}
+
+.boxText {
+  font-size: 16px;
+   padding-left: 20px;
+  text-align: start;
+  font-weight: 300;
+  line-height: 23px;
+  color: #231F20;
+  margin: 8px 0 16px 0;
+  max-width: 335px;
+  padding-bottom: 30px;
+}
+
+
+.parentContainer {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 20px;;
+}
+
+.Button {
+top: 467px;
+left: 739px;
+width: 220px;
+height: 50px;
+/* UI Properties */
+background: #239DE0 0% 0% no-repeat padding-box;
+border-radius: 6px;
+opacity: 1;
+}
+
+.Button:hover {
+  opacity: 0.9;
 }

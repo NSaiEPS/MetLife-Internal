@@ -5,7 +5,7 @@ const ButtonComp = ({ label, variant = "contained", icon, className, sx, action,
   return (
     <Button
       variant={variant}
-      startIcon={icon}
+    startIcon={icon ? <img src={icon} alt="icon" /> : null}
       className={className}
       sx={sx}
       onClick={action}
