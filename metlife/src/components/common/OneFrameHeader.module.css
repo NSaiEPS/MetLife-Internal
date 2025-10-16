@@ -1,0 +1,38 @@
+.appBar {
+  background-color: #fff !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+  display: flex;
+
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.leftSpacer {
+  width: 150px; /* Same width as the logo area to balance center alignment */
+}
+
+.title {
+  flex-grow: 1;
+  text-align: center;
+  font-family: "Playfair Display", serif !important;
+  font-size: 40px !important;
+  color: #000;
+}
+
+
+.logo {
+ top: 22px;
+left: 1114px;
+width: 172px;
+height: 37px;
+/* UI Properties */
+background: transparent 0% 0% no-repeat padding-box;
+opacity: 1;
+margin-right: 70px;
+margin-top: 20px;
+margin-bottom: 20px;
+}

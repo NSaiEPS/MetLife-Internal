@@ -3,7 +3,7 @@ import React ,{useState} from "react";
 import styles from "./UploadScript.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Button";
-import UploadIcon from "@mui/icons-material/Upload";
+import UploadIcon from '../../assets/UploadCloudIcon.svg'
 import { useNavigate } from "react-router-dom";
 import PopupModal from "../../components/common/popup"
 
@@ -24,7 +24,7 @@ const UploadScript = () => {
           <h2 className={styles.uploadTitle}>Upload Script</h2>
 
           <div className={styles.uploadBox}>
-            <UploadIcon className={styles.uploadIcon} />
+            <img src= {UploadIcon}className={styles.uploadIcon} />
             <p className={styles.uploadText}>Browse Files</p>
           </div>
 
@@ -32,14 +32,19 @@ const UploadScript = () => {
             <ButtonComp
               label="Translate Script"
               variant="contained"
-                 sx={{ backgroundColor: "#938d8d12 ", "&:hover": { backgroundColor: "#938d8d12" } }}
+              sx={{
+  backgroundColor: "#99D538",
+  "&:hover": { backgroundColor: "#938d8d12" },
+  fontFamily: "normal normal bold 16px/20px "
+}}
+
                action={() => setOpen(true)}
             />
 
             <ButtonComp
               label="Continue & Generate Video"
               variant="contained"
-                  sx={{ backgroundColor: "#333", "&:hover": { backgroundColor: "#000" } }}
+                  sx={{ backgroundColor: "#239DE0", "&:hover": { backgroundColor: "#000" } }}
               action={() => navigate("/generate-script")}
             />
           </div>

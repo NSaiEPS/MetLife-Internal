@@ -4,8 +4,8 @@ import {
     Box,
     Grid,
 } from "@mui/material";
-import UploadIcon from "@mui/icons-material/CloudUpload";
-import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
+import UploadIcon from '../../assets/UploadCloudIcon.svg'
+import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import ButtonComp from "../../components/common/Button"
 import styles from './OneFrame.module.css'
 import OneFrameHeader from "../../components/common/OneFrameHeader"
@@ -18,45 +18,53 @@ const VideoCreationOptions = () => {
         <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
             <OneFrameHeader />
             <Box sx={{ py: 6, px: 2, textAlign: "center" }}>
-                <Typography variant="h4" fontWeight="bold" mb={5}>
+                <p className={styles.upperHeading}>
                     Create Your Video with OneFrame
-                </Typography>
+                </p>
 
                 <Grid container spacing={4} justifyContent="center">
                     {/* Upload Script Card */}
                     <Grid item xs={12} sm={6} md={4} >
                         <div className={styles.beigeCard}>
-                            <Typography variant="h6" gutterBottom >
+                            <div className={styles.completeBoxData}>
+                            <Typography variant="h6"  className={styles.boxHeading } >
                                 Upload a Script
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" mb={3} >
+                            <Typography className={styles.boxText}>
                                 Already have a script? Upload a .txt, .doc, or .pdf file to get started.
                             </Typography>
+                            <div className={styles.parentContainer}>
                             <ButtonComp
                                 label="Upload a Script"
-                                sx={{ backgroundColor: "#333", "&:hover": { backgroundColor: "#000" } }}
-                                icon={<UploadIcon />}
+                                sx={styles.Button}
+                                icon={UploadIcon}
                                 variant="contained"
                                 action={() => navigate("/upload-script")}   // ✅ wrap in function
                             />
-
+                            </div>
+</div>
                         </div>
                     </Grid>
                     {/* Generate Script Card */}
                     <Grid item xs={12} sm={6} md={4}>
-                        <div className={styles.beigeCard}>
-                            <Typography variant="h6" gutterBottom>
-                                Generate a Script
+                              <div className={styles.beigeCard}>
+                            <div className={styles.completeBoxData}>
+                            <Typography variant="h6"  className={styles.boxHeading } >
+                              Generate a Script
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" mb={3}>
+                            <Typography className={styles.boxText}>
                                 Describe your video idea, and our AI will write the perfect script for you.
                             </Typography>
+                            <div className={styles.parentContainer}>
                             <ButtonComp
-                                label={"Generate a Script"}
-                                sx={{ backgroundColor: "#333", "&:hover": { backgroundColor: "#000" } }}
-                                icon={<AutoFixHighIcon />}
+                                label="Generate a Script"
+                                sx={styles.Button}
+                                icon={AutoFixHighIcon}
                                 variant="contained"
+                                action={() => navigate("/upload-script")}   // ✅ wrap in function
                             />
+                            </div>
+</div>
                         </div>
                     </Grid>
                 </Grid>
