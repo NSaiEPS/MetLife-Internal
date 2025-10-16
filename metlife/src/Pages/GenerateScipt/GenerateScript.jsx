@@ -5,7 +5,7 @@ import SelectComp from "../../components/common/select";
 import CheckboxComp from "../../components/common/checkbox";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useNavigate } from "react-router-dom";
-import { Box, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import { Box, Accordion, AccordionSummary, AccordionDetails, Typography, Grid } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 
@@ -29,9 +29,7 @@ const audienceOptions = [
 
 const GenerateScript = () => {
   const navigate = useNavigate();
-  const [scriptText, setScriptText] = useState(
-    "Create a 90-second explainer video script about photosynthesis for a 5th-grade audience..."
-  );
+  const [scriptText, setScriptText] = useState( );
 
   // selects
   const [videoType, setVideoType] = useState("");
@@ -57,7 +55,7 @@ const GenerateScript = () => {
   };
 
   return (
-    <Box className={styles.pageWrap}>
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <OneFrameHeader />
 
       <main className={styles.cardWrap}>
@@ -69,7 +67,7 @@ const GenerateScript = () => {
           <div className={styles.textareaWrap}>
             <textarea
               className={styles.scriptTextarea}
-              value={scriptText}
+            placeholder=""
               onChange={(e) => setScriptText(e.target.value)}
               rows={8}
             />
@@ -78,13 +76,18 @@ const GenerateScript = () => {
 
           {/* Accordions */}
           <div className={styles.accordionGroup}>
-            <Accordion >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} className={styles.accordion}>
+            <Accordion sx={{
+              border: "none",
+              borderRadius: "10px",
+              boxShadow: "none"
+            }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}  >
                 <Typography className={styles.accordionTitle}>Video Filters</Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-                <div className={styles.filtersGrid}>
-                  <div className={styles.fieldItem}>
+
+                <Grid container spacing={2} >
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }} >
                     <SelectComp
                       label="Video Type"
                       options={videoTypeOptions}
@@ -92,9 +95,9 @@ const GenerateScript = () => {
                       onChange={setVideoType}
                       placeholder="Select Video Type"
                     />
-                  </div>
+                  </Grid>
 
-                  <div className={styles.fieldItem}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }} >
                     <SelectComp
                       label="Tone"
                       options={toneOptions}
@@ -102,9 +105,9 @@ const GenerateScript = () => {
                       onChange={setTone}
                       placeholder="Select Tone"
                     />
-                  </div>
+                  </Grid>
 
-                  <div className={styles.fieldItem}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }} >
                     <SelectComp
                       label="Target Audience"
                       options={audienceOptions}
@@ -112,12 +115,16 @@ const GenerateScript = () => {
                       onChange={setAudience}
                       placeholder="Select Target Audience"
                     />
-                  </div>
-                </div>
+                  </Grid>
+                </Grid>
               </AccordionDetails>
             </Accordion>
 
-            <Accordion className={styles.accordion}>
+            <Accordion sx={{
+              border: "none",
+              borderRadius: "10px",
+              boxShadow: "none"
+            }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>Data Filters</Typography>
               </AccordionSummary>
@@ -137,7 +144,11 @@ const GenerateScript = () => {
               </AccordionDetails>
             </Accordion>
 
-            <Accordion className={styles.accordion}>
+            <Accordion sx={{
+              border: "none",
+              borderRadius: "10px",
+              boxShadow: "none"
+            }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>Modal Filters</Typography>
               </AccordionSummary>
@@ -154,13 +165,14 @@ const GenerateScript = () => {
 
           {/* Action Area */}
           <div className={styles.actions}>
-            <ButtonComp
-              label="Generate a Script"
-              variant="contained"
-              className={styles.btnDark}
-              action={handleGenerate}
-              icon={<AutoFixHighIcon />}
-            />
+            <div className={styles.actions}>
+  <ButtonComp
+    label="Generate Script"
+    className={styles.generateBtn}
+    action={handleGenerate}
+  />
+</div>
+
           </div>
         </div>
       </main>

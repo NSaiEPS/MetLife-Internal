@@ -8,6 +8,7 @@ import { Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import OneFrameHeader from "../../components/common/OneFrameHeader"
 
 const initialScenes = [
   { id: 1, title: "Scene 01", text: "It’s a bright morning in the city. A boy is running to catch the bus." },
@@ -82,11 +83,9 @@ const GenerateVisualsPage = () => {
   };
 
   return (
-    <div className={styles.page}>
-      {/* header */}
-      <header className={styles.topbar}>
-        <div className={styles.brand}>OneFrame</div>
-      </header>
+ 
+      <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+      <OneFrameHeader />
 
       {/* content */}
       <main className={styles.container}>
@@ -167,7 +166,7 @@ const GenerateVisualsPage = () => {
           </div>
         </section>
       </main>
-    </div>
+    </Box>
   );
 };
 
