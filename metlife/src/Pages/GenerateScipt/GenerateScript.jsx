@@ -5,6 +5,9 @@ import SelectComp from "../../components/common/select";
 import CheckboxComp from "../../components/common/checkbox";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useNavigate } from "react-router-dom";
+import { Box, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import OneFrameHeader from "../../components/common/OneFrameHeader";
 
 const videoTypeOptions = [
   { value: "explainer", label: "Explainer" },
@@ -41,7 +44,7 @@ const GenerateScript = () => {
 
   // handlers
   const handleGenerate = () => {
-    // currently just logs; replace with API call
+    // keep original behavior (UI-only change)
     console.log({
       scriptText,
       videoType,
@@ -50,88 +53,118 @@ const GenerateScript = () => {
       includeWiki,
       useCompanyData,
     });
-    // e.g., navigate('/preview') or call generation
-    navigate("/generate-visual-page"); // optional
+    navigate("/generate-visual-page");
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}> {/* header area - you likely replace with OneFrameHeader */}
-        <div className={styles.brand}>OneFrame</div>
-      </header>
+    <Box className={styles.pageWrap}>
+      <OneFrameHeader />
 
       <main className={styles.cardWrap}>
         <div className={styles.card}>
-          <h1 className={styles.title}>Generate Script</h1>
-
-          <textarea
-            className={styles.scriptTextarea}
-            value={scriptText}
-            onChange={(e) => setScriptText(e.target.value)}
-          />
-
-          <div className={styles.row}>
-            <div className={styles.col}>
-              <SelectComp
-                label="Video Type"
-                options={videoTypeOptions}
-                value={videoType}
-                onChange={setVideoType}
-                placeholder="Select Video Type"
-              />
-            </div>
-
-            <div className={styles.col}>
-              <SelectComp
-                label="Tone"
-                options={toneOptions}
-                value={tone}
-                onChange={setTone}
-                placeholder="Select Tone"
-              />
-            </div>
-
-            <div className={styles.col}>
-              <SelectComp
-                label="Target Audience"
-                options={audienceOptions}
-                value={audience}
-                onChange={setAudience}
-                placeholder="Select Target Audience"
-              />
-            </div>
+          <div className={styles.headerRow}>
+            <h1 className={styles.title}>Generate Script</h1>
           </div>
 
-          <div className={styles.filters}>
-            <div className={styles.filtersLeft}>
-              <div className={styles.filtersLabel}>Source Data Filters</div>
-              <div className={styles.filterItems}>
-                <CheckboxComp
-                  label="Include facts from Wikipedia"
-                  checked={includeWiki}
-                  onChange={setIncludeWiki}
-                />
-                <CheckboxComp
-                  label="Use Company Data"
-                  checked={useCompanyData}
-                  onChange={setUseCompanyData}
-                />
-              </div>
-            </div>
+          <div className={styles.textareaWrap}>
+            <textarea
+              className={styles.scriptTextarea}
+              value={scriptText}
+              onChange={(e) => setScriptText(e.target.value)}
+              rows={8}
+            />
+            <div className={styles.bookmarkIcon} aria-hidden />
+          </div>
 
-            <div className={styles.actions}>
-              <ButtonComp
-                label="Generate a Script"
-                variant="contained"
-                className={styles.btnDark}
-                action={handleGenerate}
-                icon={<AutoFixHighIcon />}
-              />
-            </div>
+          {/* Accordions */}
+          <div className={styles.accordionGroup}>
+            <Accordion >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} className={styles.accordion}>
+                <Typography className={styles.accordionTitle}>Video Filters</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={styles.accordionDetails}>
+                <div className={styles.filtersGrid}>
+                  <div className={styles.fieldItem}>
+                    <SelectComp
+                      label="Video Type"
+                      options={videoTypeOptions}
+                      value={videoType}
+                      onChange={setVideoType}
+                      placeholder="Select Video Type"
+                    />
+                  </div>
+
+                  <div className={styles.fieldItem}>
+                    <SelectComp
+                      label="Tone"
+                      options={toneOptions}
+                      value={tone}
+                      onChange={setTone}
+                      placeholder="Select Tone"
+                    />
+                  </div>
+
+                  <div className={styles.fieldItem}>
+                    <SelectComp
+                      label="Target Audience"
+                      options={audienceOptions}
+                      value={audience}
+                      onChange={setAudience}
+                      placeholder="Select Target Audience"
+                    />
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion className={styles.accordion}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={styles.accordionTitle}>Data Filters</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={styles.accordionDetails}>
+                <div className={styles.filtersList}>
+                  <CheckboxComp
+                    label="Include facts from Wikipedia"
+                    checked={includeWiki}
+                    onChange={setIncludeWiki}
+                  />
+                  <CheckboxComp
+                    label="Use Company Data"
+                    checked={useCompanyData}
+                    onChange={setUseCompanyData}
+                  />
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion className={styles.accordion}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={styles.accordionTitle}>Modal Filters</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={styles.accordionDetails}>
+                {/* Placeholder content — keep minimal as per screenshot */}
+                <div className={styles.modalPlaceholder}>
+                  <p className={styles.placeholderText}>
+                    Additional options (modal / advanced settings) can go here.
+                  </p>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+
+          {/* Action Area */}
+          <div className={styles.actions}>
+            <ButtonComp
+              label="Generate a Script"
+              variant="contained"
+              className={styles.btnDark}
+              action={handleGenerate}
+              icon={<AutoFixHighIcon />}
+            />
           </div>
         </div>
       </main>
-    </div>
+    </Box>
   );
 };
 
