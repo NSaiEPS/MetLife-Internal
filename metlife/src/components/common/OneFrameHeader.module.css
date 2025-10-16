@@ -1,8 +1,10 @@
 .appBar {
   background-color: #fff !important;
-  box-shadow: none !important;
+  /* box-shadow: none !important; */
   box-sizing: border-box;
   display: flex;
+  box-shadow: 0 2px 4px rgba(196, 195, 195, 0.627) !important;
+
 
 }
 

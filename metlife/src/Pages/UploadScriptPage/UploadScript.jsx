@@ -6,6 +6,7 @@ import ButtonComp from "../../components/common/Button";
 import UploadIcon from '../../assets/UploadCloudIcon.svg'
 import { useNavigate } from "react-router-dom";
 import PopupModal from "../../components/popUps/popup"
+import { Padding } from "@mui/icons-material";
 
 const UploadScript = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const UploadScript = () => {
               variant="contained"
               sx={{
   backgroundColor: "#99D538",
-  "&:hover": { backgroundColor: "#938d8d12" },
+  "&:hover": { backgroundColor: "#c8ef88ff" },
   fontFamily: "normal normal bold 16px/20px "
 }}
 
@@ -44,7 +45,7 @@ const UploadScript = () => {
             <ButtonComp
               label="Continue & Generate Video"
               variant="contained"
-                  sx={{ backgroundColor: "#239DE0", "&:hover": { backgroundColor: "#000" } }}
+                  sx={{ backgroundColor: "#239DE0", "&:hover": { backgroundColor: "#7fbcddff" } }}
                action={() => navigate("/generate-script")}
             />
           </div>
@@ -68,7 +69,7 @@ const UploadScript = () => {
           <ButtonComp
             label="Translate & Download Script"
             variant="contained"
-           sx={{ backgroundColor: "#239DE0", "&:hover": { backgroundColor: "#000" } }}
+           className={styles.downloadBtn}
             action={() => {
               console.log("Selected Language:", selectedLang);
               setOpen(false);

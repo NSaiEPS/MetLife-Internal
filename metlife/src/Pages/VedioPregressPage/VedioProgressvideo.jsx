@@ -5,6 +5,8 @@ import ProgressBar from "../../components/common/progressBar";
 import ButtonComp from "../../components/common/Button";
 import SelectComp from "../../components/common/select"; // ✅ using your SelectComp
 import video from "../../assets/dummy.mp4"
+import { Box } from "@mui/material";
+import OneFrameHeader from "../../components/common/OneFrameHeader"
 
 const VideoProgressPage = () => {
   const [progress, setProgress] = useState(0);
@@ -39,51 +41,49 @@ const VideoProgressPage = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Finalization & Download</h2>
-
-      <p className={styles.subTitle}>Generation Progress</p>
-
-      {/* ✅ Progress Bar */}
-      <ProgressBar progress={progress} />
-      <p className={styles.progressText}>{progress}%</p>
-
-      {/* ✅ When video is ready */}
-      {videoReady && (
-        <div className={styles.readySection}>
-          <h3>Your video is ready!</h3>
-
-          {/* ✅ Video Preview */}
-          <video
-  width="100%"
-  controls
-  className={styles.video}
->
-  <source src={video} type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
-
-          {/* ✅ Resolution Select using YOUR SelectComp */}
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+      <OneFrameHeader />
+  <div className={styles.page}>
+  <div className={styles.wrapper}>
+    
+    <h2 className={styles.title}>Finalization & Download</h2>
+    
+    <p className={styles.subTitle}>Generation Progress</p>
+    
+    <ProgressBar progress={progress} />
+    <p className={styles.progressText}>{progress}%</p>
+    
+    {videoReady && (
+      <div className={styles.readySection}>
+        <h3>Your video is ready</h3>
+        
+        <video controls className={styles.video}>
+          <source src={video} type="video/mp4" />
+        </video>
+        
+        <div className={styles.actionsRow}>
           <div className={styles.resolutionWrap}>
             <SelectComp
               label="Resolution"
               options={resolutionOptions}
               value={resolution}
-              onChange={(value) => setResolution(value)}
-              placeholder="Select Resolution"
+              onChange={setResolution}
             />
           </div>
 
-          {/* ✅ Download Button */}
           <ButtonComp
             label="Download Video"
             variant="contained"
-            sx={{ backgroundColor: "#333", "&:hover": { backgroundColor: "#000" } }}
+            className={styles.downloadBtn}
             action={handleDownload}
           />
         </div>
-      )}
-    </div>
+      </div>
+    )}
+  </div>
+</div>
+
+    </Box>
   );
 };
 

@@ -15,7 +15,7 @@ const VideoCreationOptions = () => {
     const navigate = useNavigate();
     return (
 
-        <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+        <Box sx={{ minHeight: "100vh", backgroundColor: "#fff" }}>
             <OneFrameHeader />
             <Box sx={{ py: 6, px: 2, textAlign: "center" }}>
                 <p className={styles.upperHeading}>

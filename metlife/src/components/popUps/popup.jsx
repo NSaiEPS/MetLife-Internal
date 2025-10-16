@@ -7,24 +7,23 @@ const PopupModal = ({
   onClose,
   title,
   children,
-  width = "450px",
-  padding = "20px",
-  borderRadius = "16px",
 }) => {
   return (
     <Dialog
       open={open}
       onClose={onClose}
+      className={styles.selectLangParent}
       PaperProps={{
-        style: {
-          width,
-          padding,
-          borderRadius,
-        },
-      }}
+    sx: {
+      width: "523px",   // ✅ modal width
+      maxWidth: "none", // ❗ important (warna MUI default 500px limit karega)
+      borderRadius: "16px",
+    },
+  }}
+
     >
-      {title && <DialogTitle className={styles.title}>{title}</DialogTitle>}
-      <DialogContent>{children}</DialogContent>
+      {title && <div className={styles.title}>{title}</div>}
+      <DialogContent className={styles.languageItem}>{children}</DialogContent>
     </Dialog>
   );
 };

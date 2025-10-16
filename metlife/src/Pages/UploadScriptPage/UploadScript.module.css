@@ -9,6 +9,7 @@
   padding-top: 100px;
 }
 
+
 .uploadCard {
   width: 1500px;
   background-color: #239DE01A;
@@ -76,24 +77,23 @@
 
 
 .languageList {
-  max-height: 300px;
   overflow-y: auto;
   margin-bottom: 24px;
 }
 
 .languageItem {
-  padding: 14px 10px;
+  padding: 14px 20px;
   font-size: 16px;
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
   color: #444;
 }
 .languageItem:hover {
-  background-color: #f5f5f5;
+  background-color: #239DE01A;
 }
 
 .activeLang {
-  background-color: #e5e5e5;
+  background-color: #239DE01A;
   font-weight: 500;
 }
 
@@ -101,5 +101,24 @@
   display: flex;
   justify-content: center;
   margin-top: 16px;
+  padding-left: 20px;
+}
+
+.downloadBtn {
+  padding: 15px 100px !important;
+  background-color: #239DE0 !important;
+  color: white !important;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  text-transform: none;
+  transition: 0.2s ease;
+  line-height: normal ;
+}
+
+
+
+.downloadBtn:hover {
+  background-color: #5cb2e1ff !important;
 }
 
