@@ -12,6 +12,7 @@ import {
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import styles from "./Table.module.css";
+import AddNewScriptPopup from '../popUps/addScripts'
 
 /**
  * props:
@@ -19,7 +20,7 @@ import styles from "./Table.module.css";
  *  - data: array of row objects where keys match column names
  *  - actions: array of { icon: ReactNode, onClick: (row) => void }
  */
-const DynamicTable = ({ columns = [], data = [], actions = [] }) => {
+function DynamicTable({ columns = [], data = [], actions = [] }) {
   const [rows, setRows] = useState(data);
 
   const handleDragEnd = (result) => {
@@ -99,7 +100,7 @@ const DynamicTable = ({ columns = [], data = [], actions = [] }) => {
                                   key={aIdx}
                                   className={styles.iconBtn}
                                   size="small"
-                                  onClick={() => act.onClick(row)}
+                                  onClick={() => {act.onClick(row)}}
                                 >
                                   {act.icon}
                                 </IconButton>
@@ -119,6 +120,6 @@ const DynamicTable = ({ columns = [], data = [], actions = [] }) => {
       </DragDropContext>
     </TableContainer>
   );
-};
+}
 
 export default DynamicTable;
