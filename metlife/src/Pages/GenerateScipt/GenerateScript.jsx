@@ -17,6 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import path from "../../assets/path.svg";
+import { red } from "@mui/material/colors";
 
 const videoTypeOptions = [
   { value: "narrator", label: "Narrator" },
@@ -78,23 +79,18 @@ const GenerateScript = () => {
   const [topn, setTopn] = useState("");
   const [model, setModel] = useState("");
   const [datasource, setDatasource] = useState("");
-
-  // source filters (checkboxes)
-  const [includeWiki, setIncludeWiki] = useState(false);
-  const [useCompanyData, setUseCompanyData] = useState(true);
+  const [error, setError] = useState("");
 
   // handlers
   const handleGenerate = () => {
     // keep original behavior (UI-only change)
-    console.log({
-      scriptText,
-      videoType,
-      tone,
-      audience,
-      includeWiki,
-      useCompanyData,
-    });
-    navigate("/scenes");
+    if (!language || !videoType || !duration || !audience) {
+      setError("Please fill all Video Filters");
+    } else if (!topn || !model || !datasource) {
+      setError("Please fill all Model Filters");
+    } else {
+      navigate("/scenes");
+    }
   };
 
   return (
@@ -123,8 +119,13 @@ const GenerateScript = () => {
           <div className={styles.accordionGroup}>
             <Accordion
               sx={{
-                borderRadius: "10px",
-              }}
+    border: "none",
+    borderRadius: "10px",
+    boxShadow: "none",
+    "&::before": {
+      display: "none", // removes divider line
+    },
+  }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>
@@ -132,9 +133,8 @@ const GenerateScript = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-
-                <Grid container spacing={2} >
-                   <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Language"
                       options={languageOptions}
@@ -143,7 +143,7 @@ const GenerateScript = () => {
                       placeholder="Select Language"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Video Type"
                       options={videoTypeOptions}
@@ -153,7 +153,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 6}} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Duration"
                       options={durationOptions}
@@ -163,7 +163,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Target Audience"
                       options={audienceOptions}
@@ -178,10 +178,13 @@ const GenerateScript = () => {
 
             <Accordion
               sx={{
-                border: "none",
-                borderRadius: "10px",
-                boxShadow: "none",
-              }}
+    border: "none",
+    borderRadius: "10px",
+    boxShadow: "none",
+    "&::before": {
+      display: "none", // removes divider line
+    },
+  }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>
@@ -189,9 +192,8 @@ const GenerateScript = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-
-                <Grid container spacing={2} >
-                   <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="channel"
                       options={languageOptions}
@@ -200,7 +202,7 @@ const GenerateScript = () => {
                       placeholder="Select channel"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Field 1"
                       options={toneOptions}
@@ -210,7 +212,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Field 2"
                       options={toneOptions}
@@ -220,7 +222,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Field 3"
                       options={toneOptions}
@@ -234,10 +236,13 @@ const GenerateScript = () => {
             </Accordion>
             <Accordion
               sx={{
-                border: "none",
-                borderRadius: "10px",
-                boxShadow: "none",
-              }}
+    border: "none",
+    borderRadius: "10px",
+    boxShadow: "none",
+    "&::before": {
+      display: "none", // removes divider line
+    },
+  }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>
@@ -245,9 +250,8 @@ const GenerateScript = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-
-                <Grid container spacing={2} >
-                   <Grid size={{ xs: 12, md: 6, lg: 6 }} >
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Top N"
                       options={topNOptions}
@@ -256,7 +260,7 @@ const GenerateScript = () => {
                       placeholder="Select Top N"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 6}} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Model"
                       options={modelOptions}
@@ -266,7 +270,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 6}} >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
                       label="Data Source"
                       options={dataSourceOptions}
@@ -279,7 +283,7 @@ const GenerateScript = () => {
               </AccordionDetails>
             </Accordion>
           </div>
-
+{error &&<span style={{color: "red"}}>{error}</span>}
           {/* Action Area */}
           <div className={styles.actions}>
             <div className={styles.actions}>
