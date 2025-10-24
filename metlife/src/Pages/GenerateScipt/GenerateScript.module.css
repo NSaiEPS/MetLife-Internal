@@ -1,3 +1,63 @@
+.textareaContainer {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.scriptTextarea {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 20px 60px 20px 20px; /* extra right padding for icon space */
+  background: #fff;
+  font-size: 14px;
+  color: #444;
+  resize: vertical;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.bookmarkIcon {
+  position: absolute;
+  right: 125px;
+  bottom: 35px;
+  width: 21px;
+  height: 22px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+  padding-bottom: 5px;
+}
+
+.bookmarkIcon:hover {
+  opacity: 1;
+}
+
+
+/* Saved Prompts button */
+.savedBtn {
+  position: absolute;
+  right: 20px;
+  bottom: 38px;
+  background-color: #e6f5ff;
+  color: #2a7fd0;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+}
+
+.savedBtn:hover {
+  background-color: #d4ecff;
+  color: #1c6bb7;
+}
+
+
 .page {
   min-height: 100vh;
   background: #f7fbfc;
