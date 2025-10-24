@@ -10,6 +10,8 @@ import Footer from '../../components/common/mainFooter'
 import copy from '../../assets/copy.svg'
 import reuse from "../../assets/reuse.svg"
 import AddNewScriptPopup from '../../components/popUps/addScripts'
+import {downloadScriptPdf} from '../../utils/index'
+import {Scriptdata} from '../../../script'
 
 const ScriptPage = () => {
   // dynamic columns & rows
@@ -35,6 +37,15 @@ const ScriptPage = () => {
   setPopUpdata(data || {}); // if no data passed → use empty object
   setOpenPopup(true);       // open the popup
 };
+
+const handleDownloadScript = () => {
+  try {
+    downloadScriptPdf(Scriptdata);
+  } catch (err) {
+    console.error("Error generating PDF:", err);
+  }
+};
+
 ;
 
   return (
@@ -55,7 +66,7 @@ const ScriptPage = () => {
       <div className={styles.footerButtons}>
         <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" className={styles.stack}>
           <Button variant="outlined" className={styles.largeOutline}>Regenerate Script</Button>
-          <Button variant="contained" className={styles.successBtn}>Download Script</Button>
+          <Button variant="contained" className={styles.successBtn} onClick={handleDownloadScript}>Download Script</Button>
           <Button variant="contained" className={styles.primaryBtn}>Create Visual Content</Button>
         </Stack>
       <AddNewScriptPopup open={openPopUp} onClose={() => setOpenPopup(false)} fieldData ={popUpData}/>

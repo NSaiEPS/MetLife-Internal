@@ -1,21 +1,39 @@
-.selectWrap {
+.selectWrapper {
   display: flex;
   flex-direction: column;
 }
-.label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
+
+.fullWidth {
+  width: 100%;
 }
-.select {
-  height: 44px;
-  padding: 0 16px;
-  border-radius: 8px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  font-size: 14px;
-  outline: none;
+
+.selectLabel {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.875rem;
+  font-family: "Roboto", sans-serif;
 }
-.select:focus {
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.03);
+
+.selectBox {
+  background-color: #fff;
+ 
+  border: 1px solid #DFDFDF;
+border-radius: 10px;
+}
+
+.selectPlaceholder {
+  color: #aaa;
+  font-family: "Roboto", sans-serif;
+}
+
+.textareaWrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.scriptTextarea {
+  width: 100%;
+  padding: 12px 40px 12
 }
