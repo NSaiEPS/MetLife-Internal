@@ -9,37 +9,33 @@ import { useNavigate } from "react-router";
 import Footer from '../../components/common/mainFooter'
 import copy from '../../assets/copy.svg'
 import reuse from "../../assets/reuse.svg"
+import AddNewScriptPopup from '../../components/popUps/addScripts'
 
 const ScriptPage = () => {
   // dynamic columns & rows
   const [columns] = useState(["Scene No.", "Script", "OST", "Type"]);
+  const [openPopUp , setOpenPopup]  = useState(false)
+  const [popUpData , setPopUpdata] = useState()
   const [data, setData] = useState([
     { "Scene No.": "01", Script: "Create a 90-second explainer", OST: "Ambience", Type: "Narration" },
     { "Scene No.": "02", Script: "Explain photosynthesis", OST: "Soft piano", Type: "Monologue" },
     { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-       { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-          { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-             { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                   { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                      { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                         { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                            { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                               { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" },
-                                  { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" }
+    { "Scene No.": "03", Script: "Show product features", OST: "Uplifting", Type: "Demo" }
   ]);
 
   // dynamic actions (icons + handlers)
   const actions = [
-    { icon: <img src={copy}/>, onClick: (row) => alert(`Edit ${row["Scene No."]}`) },
+    { icon: <img src={copy}/>, onClick: (row) =>(addScene(row) ) , },
     { icon: <img src = {reuse}/>, onClick: (row) => alert(`Delete ${row["Scene No."]}`) }
   ];
 
   // example add scene (demonstrates dynamic rows)
-  const addScene = () => {
-    const next = (data.length + 1).toString().padStart(2, "0");
-    setData(prev => [...prev, { "Scene No.": next, Script: "New scene", OST: "-", Type: "Type" }]);
-  };
+ const addScene = (data) => {
+  console.log(data)
+  setPopUpdata(data || {}); // if no data passed → use empty object
+  setOpenPopup(true);       // open the popup
+};
+;
 
   return (
     <div className={styles.container}>
@@ -62,6 +58,8 @@ const ScriptPage = () => {
           <Button variant="contained" className={styles.successBtn}>Download Script</Button>
           <Button variant="contained" className={styles.primaryBtn}>Create Visual Content</Button>
         </Stack>
+      <AddNewScriptPopup open={openPopUp} onClose={() => setOpenPopup(false)} fieldData ={popUpData}/>
+
       </div>
       <Footer/>
     </div>
