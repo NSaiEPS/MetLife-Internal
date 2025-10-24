@@ -7,12 +7,12 @@ import LoginPage from "../Pages/LoginPage/LoginPage";
 import RegisterPage from "../Pages/Register/RegisterPage";
 import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 import VideoCreationOptions from "../Pages/OneFrame/OneFrame";
-import UploadScript from '../Pages/UploadScriptPage/UploadScript'
-import GenerateScript from "../Pages/GenerateScipt/GenerateScript"
-import GenerateVisualsPage from "../Pages/GenerateVisualPage/GenerateVisualPage"
-import VideoProgressPage from '../Pages/VedioPregressPage/VedioProgressvideo'
-import UploadClipsPage from '../Pages/UploadVedioPage/UploadVideoPage'
-import ScriptPage from '../Pages/AddNewScriptPage/AddNewScriptPage'
+import UploadScript from "../Pages/UploadScriptPage/UploadScript";
+import GenerateScript from "../Pages/GenerateScipt/GenerateScript";
+import GenerateVisualsPage from "../Pages/GenerateVisualPage/GenerateVisualPage";
+import VideoProgressPage from "../Pages/VedioPregressPage/VedioProgressvideo";
+import UploadClipsPage from "../Pages/UploadVedioPage/UploadVideoPage";
+import ScriptPage from "../Pages/AddNewScriptPage/AddNewScriptPage";
 import LoginLayout from "../components/Login/Login"; // Assuming this is your layout
 import { getToken, getLoggedInUserType, USERS } from "../utils";
 
@@ -21,10 +21,6 @@ const ProtectedRoute = ({ element, allowedRoles = [] }) => {
   const token = getToken();
   const userType = getLoggedInUserType();
 
-
-
-
-
   return element;
 };
 
@@ -32,18 +28,18 @@ const ProtectedRoute = ({ element, allowedRoles = [] }) => {
 const Authorization = ({ element }) => {
   const token = getToken();
 
-  if (token) {
-    return <Navigate to="/" replace />;
-  }
+  // if (token) {
+  //   return <Navigate to="/" replace />;
+  // }
 
   return element;
 };
 
 // ✅ Final Router Configuration
 export const router = createBrowserRouter([
-   {
+  {
     path: "/",
-    element: <Authorization element={<LoginPage />} />,
+    element: <Navigate to="/generate-script" replace />,
   },
   {
     path: "/login",
@@ -63,30 +59,30 @@ export const router = createBrowserRouter([
   },
   {
     path: "/video-frame",
-    element: <VideoCreationOptions />
+    element: <VideoCreationOptions />,
   },
   {
-    path : "/upload-script",
-    element : <UploadScript/>
+    path: "/upload-script",
+    element: <UploadScript />,
   },
   {
-    path : "/generate-script",
-    element : <GenerateScript/>
+    path: "/generate-script",
+    element: <GenerateScript />,
   },
   {
-    path : "/generate-visual-page",
-    element :<GenerateVisualsPage/>
+    path: "/generate-visual-page",
+    element: <GenerateVisualsPage />,
   },
   {
-    path : "video-upload",
-    element : <VideoProgressPage/>
+    path: "video-upload",
+    element: <VideoProgressPage />,
   },
-   {
-    path : "upload-generated-clips",
-    element : <UploadClipsPage/>
+  {
+    path: "upload-generated-clips",
+    element: <UploadClipsPage />,
   },
-   {
-    path : "new-script",
-    element : <ScriptPage/>
-  }
+  {
+    path: "scenes",
+    element: <ScriptPage />,
+  },
 ]);
