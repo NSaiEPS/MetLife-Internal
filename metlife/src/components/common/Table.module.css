@@ -1,0 +1,61 @@
+.tablePaper {
+  border-radius: 10px;
+  box-shadow: none;
+  border: 1px solid #e6e9ef;
+  overflow: hidden;
+}
+
+.tableRoot {
+  width: 100%;
+}
+
+.headRow {
+  background: #f8fafc;
+}
+
+.headCell {
+  font-weight: 600;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e6e9ef;
+  font-family: "Poppins", sans-serif;
+  color: #111827;
+}
+
+.bodyRow {
+  background: #ffffff;
+}
+
+.bodyCell {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f1f3f6;
+  font-size: 14px;
+  color: #374151;
+}
+
+/* alternate row stripe (zebra) */
+.bodyRow:nth-child(odd) {
+  background: #fff;
+}
+.bodyRow:nth-child(even) {
+  background: #fbfdff;
+}
+
+/* Actions container */
+.actionsWrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* small override for IconButton to reduce padding */
+.iconBtn {
+  padding: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 720px) {
+  .headCell, .bodyCell {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}

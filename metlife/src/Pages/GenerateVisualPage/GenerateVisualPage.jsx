@@ -2,13 +2,14 @@ import React, { useState, useMemo } from "react";
 import styles from "./GenerateVisualPage.module.css";
 import SceneCard from "../../components/common/sceneCard";
 import RadioComp from "../../components/common/radio";
-import ButtonComp from "../../components/common/Button";
+import ButtonComp from "../../components/common/Buton/Button";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import OneFrameHeader from "../../components/common/OneFrameHeader"
+import Footer from '../../components/common/mainFooter'
 
 const initialScenes = [
   { id: 1, title: "Scene 01", text: "It’s a bright morning in the city. A boy is running to catch the bus." },
@@ -166,6 +167,7 @@ const GenerateVisualsPage = () => {
           </div>
         </section>
       </main>
+      <Footer/>
     </Box>
   );
 };

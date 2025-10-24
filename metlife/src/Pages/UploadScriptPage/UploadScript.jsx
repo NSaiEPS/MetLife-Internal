@@ -2,11 +2,12 @@
 import React ,{useState} from "react";
 import styles from "./UploadScript.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import ButtonComp from "../../components/common/Button";
+import ButtonComp from "../../components/common/Buton/Button";
 import UploadIcon from '../../assets/UploadCloudIcon.svg'
 import { useNavigate } from "react-router-dom";
-import PopupModal from "../../components/popUps/popup"
+import PopupModal from "../../components/popUps/LanguagePopup"
 import { Padding } from "@mui/icons-material";
+import Footer from '../../components/common/mainFooter'
 
 const UploadScript = () => {
   const navigate = useNavigate();
@@ -79,6 +80,7 @@ const UploadScript = () => {
       </PopupModal>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

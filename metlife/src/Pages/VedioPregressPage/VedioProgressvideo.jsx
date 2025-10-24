@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./VedioProgressVideo.module.css";
 import ProgressBar from "../../components/common/progressBar";
-import ButtonComp from "../../components/common/Button";
+import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select"; // ✅ using your SelectComp
 import video from "../../assets/dummy.mp4"
 import { Box } from "@mui/material";

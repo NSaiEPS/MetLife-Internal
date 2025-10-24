@@ -6,16 +6,17 @@ import {
 } from "@mui/material";
 import UploadIcon from '../../assets/UploadCloudIcon.svg'
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
-import ButtonComp from "../../components/common/Button"
+import ButtonComp from "../../components/common/Buton/Button"
 import styles from './OneFrame.module.css'
 import OneFrameHeader from "../../components/common/OneFrameHeader"
 import { useNavigate } from "react-router";
+import Footer from '../../components/common/mainFooter'
 
 const VideoCreationOptions = () => {
     const navigate = useNavigate();
     return (
-
-        <Box sx={{ minHeight: "100vh", backgroundColor: "#fff" }}>
+<>
+        <Box sx={{ height: "100%", backgroundColor: "#fff" }}>
             <OneFrameHeader />
             <Box sx={{ py: 6, px: 2, textAlign: "center" }}>
                 <p className={styles.upperHeading}>
@@ -70,6 +71,8 @@ const VideoCreationOptions = () => {
                 </Grid>
             </Box>
         </Box>
+         <Footer/>
+         </>
     );
 };
 
