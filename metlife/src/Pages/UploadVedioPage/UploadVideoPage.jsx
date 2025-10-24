@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import VideoPlayer from "../../components/common/vedioPlayer";
 import styles from "./UploadVideoPage.module.css";
-import ButtonComp from "../../components/common/Button";   // ✅ Use ButtonComp
+import ButtonComp from "../../components/common/Buton/Button";   // ✅ Use ButtonComp
 import video from "../../assets/dummy.mp4";
 
 const UploadClipsPage = () => {

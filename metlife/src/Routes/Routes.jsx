@@ -12,7 +12,7 @@ import GenerateScript from "../Pages/GenerateScipt/GenerateScript"
 import GenerateVisualsPage from "../Pages/GenerateVisualPage/GenerateVisualPage"
 import VideoProgressPage from '../Pages/VedioPregressPage/VedioProgressvideo'
 import UploadClipsPage from '../Pages/UploadVedioPage/UploadVideoPage'
-
+import ScriptPage from '../Pages/AddNewScriptPage/AddNewScriptPage'
 import LoginLayout from "../components/Login/Login"; // Assuming this is your layout
 import { getToken, getLoggedInUserType, USERS } from "../utils";
 
@@ -84,5 +84,9 @@ export const router = createBrowserRouter([
    {
     path : "upload-generated-clips",
     element : <UploadClipsPage/>
+  },
+   {
+    path : "new-script",
+    element : <ScriptPage/>
   }
 ]);

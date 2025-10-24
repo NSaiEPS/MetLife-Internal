@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import styles from "./GenerateScript.module.css";
-import ButtonComp from "../../components/common/Button";
+import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select";
-import CheckboxComp from "../../components/common/checkbox";
+import CheckboxComp from "../../components/common//Checkbox/checkbox";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useNavigate } from "react-router-dom";
 import { Box, Accordion, AccordionSummary, AccordionDetails, Typography, Grid } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
+import Footer from '../../components/common/mainFooter'
 
 const videoTypeOptions = [
   { value: "explainer", label: "Explainer" },
@@ -176,6 +177,7 @@ const GenerateScript = () => {
           </div>
         </div>
       </main>
+      <Footer/>
     </Box>
   );
 };

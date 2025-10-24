@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
-import styles from "./popup.module.css";
+import styles from "./LanguagePopup.module.css";
 
 const PopupModal = ({
   open,
