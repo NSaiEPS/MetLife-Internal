@@ -5,17 +5,15 @@
 }
 
 .scriptTextarea {
-  width: 100%;
-  min-height: 120px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  padding: 20px 60px 20px 20px; /* extra right padding for icon space */
-  background: #fff;
-  font-size: 14px;
-  color: #444;
-  resize: vertical;
-  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  box-sizing: border-box;
+top: 237px;
+left: 140px;
+width: 1086px;
+height: 121px;
+/* UI Properties */
+background: #FFFFFF 0% 0% no-repeat padding-box;
+border: 1px solid #DFDFDF;
+border-radius: 10px;
+opacity: 1
 }
 
 .bookmarkIcon {
@@ -212,17 +210,15 @@
 
 /* Button styling */
 .generateBtn {
-  background-color: #56A7E4 !important;
-  color: #fff !important;
-  padding: 14px 0 !important;
-  border-radius: 10px !important;
-  text-transform: none !important;
-  font-size: 18px !important;
-  font-weight: 500 !important;
-  width: 100% !important;
-  box-shadow: none !important;
-  display: inline-flex !important;
-  justify-content: center !important;
+ /* top: 1575px; */
+left: 941px;
+width: 228px;
+height: 50px;
+/* UI Properties */
+background: #239DE0 0% 0% no-repeat padding-box;
+border: 1px solid #FFFFFF;
+border-radius: 6px;
+opacity: 1;
 }
 
 /* Hover style */

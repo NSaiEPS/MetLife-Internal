@@ -17,9 +17,9 @@
 
 .selectBox {
   background-color: #fff;
- 
-  border: 1px solid #DFDFDF;
-border-radius: 10px;
+ height: 50px;
+  border: 1px  #DFDFDF;
+border-radius: 10px !important;
 }
 
 .selectPlaceholder {

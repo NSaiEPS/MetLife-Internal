@@ -132,8 +132,9 @@ const GenerateScript = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-                <Grid container spacing={2}>
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+
+                <Grid container spacing={2} >
+                   <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Language"
                       options={languageOptions}
@@ -142,7 +143,7 @@ const GenerateScript = () => {
                       placeholder="Select Language"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Video Type"
                       options={videoTypeOptions}
@@ -152,7 +153,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6}} >
                     <SelectComp
                       label="Duration"
                       options={durationOptions}
@@ -162,7 +163,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Target Audience"
                       options={audienceOptions}
@@ -188,8 +189,9 @@ const GenerateScript = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-                <Grid container spacing={2}>
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+
+                <Grid container spacing={2} >
+                   <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="channel"
                       options={languageOptions}
@@ -198,7 +200,7 @@ const GenerateScript = () => {
                       placeholder="Select channel"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Field 1"
                       options={toneOptions}
@@ -208,7 +210,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Field 2"
                       options={toneOptions}
@@ -218,7 +220,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Field 3"
                       options={toneOptions}
@@ -243,8 +245,9 @@ const GenerateScript = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={styles.accordionDetails}>
-                <Grid container spacing={2}>
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+
+                <Grid container spacing={2} >
+                   <Grid size={{ xs: 12, md: 6, lg: 6 }} >
                     <SelectComp
                       label="Top N"
                       options={topNOptions}
@@ -253,7 +256,7 @@ const GenerateScript = () => {
                       placeholder="Select Top N"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6}} >
                     <SelectComp
                       label="Model"
                       options={modelOptions}
@@ -263,7 +266,7 @@ const GenerateScript = () => {
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                  <Grid size={{ xs: 12, md: 6, lg: 6}} >
                     <SelectComp
                       label="Data Source"
                       options={dataSourceOptions}
