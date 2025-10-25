@@ -15,6 +15,24 @@
   text-align: center;
 }
 
+.input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    font: inherit;
+    outline: none;
+   
+    font-size: 13px;
+    color: #000;
+    width: 100%;
+    height: 41px;
+    line-height: 37px;
+      background-color: #fff;
+ height: 50px;
+  border: 1px solid #DFDFDF;
+border-radius: 10px !important;
+}
+
 .brand {
   font-size: 36px;
   font-weight: 300;
@@ -40,7 +58,7 @@
   padding: 20px 160px 20px 20px; /* padding-right for icon and button */
   font-size: 14px;
   color: #666;
-  resize: vertical;
+  resize: none;
   margin-bottom: 28px;
   font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   box-sizing: border-box;
@@ -49,7 +67,7 @@
 .bookmarkIcon {
   position: absolute;
   right: 140px;
-  bottom: 35px;
+  bottom: 38px;
   width: 21px;
   height: 22px;
   cursor: pointer;
@@ -65,14 +83,15 @@
 .savedBtn {
   position: absolute;
   right: 20px;
-  bottom: 37px;
-  background-color: #e6f5ff;
-  color: #2a7fd0;
-  border: none;
+  bottom: 40px;
+  background-color: #239DE01A;
+  color:#239DE0;
+  border : 1px solid #239DE033;
   border-radius: 8px;
+  text-align: left;
+font: normal;
   font-size: 13px;
   font-weight: 500;
- 
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -140,7 +159,9 @@
 .cardWrap {
   display: flex;
   justify-content: center;
-  padding: 40px;
+  /* padding: 40px; */
+  padding-top: 40px;
+  padding-bottom: 100px;
 }
 
 .card {
@@ -201,7 +222,8 @@
 =========================== */
 .actions {
   display: flex;
-  justify-content: flex-end; /* aligns children to right */
+  justify-content: flex-end;
+  padding-top: 20px; /* aligns children to right */
 }
 
 .generateBtn {

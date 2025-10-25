@@ -1,23 +1,15 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import styles from "./GenerateScript.module.css";
 import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select";
-import CheckboxComp from "../../components/common//Checkbox/checkbox";
-import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Grid,
-} from "@mui/material";
+import {  Box,  Accordion,  AccordionSummary,  AccordionDetails,Typography, Grid,} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import path from "../../assets/path.svg";
-import { red } from "@mui/material/colors";
+import Input from '../../components/common/Input'
+// import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
   { value: "narrator", label: "Narrator" },
@@ -79,20 +71,37 @@ const GenerateScript = () => {
   const [topn, setTopn] = useState("");
   const [model, setModel] = useState("");
   const [datasource, setDatasource] = useState("");
-  const [error, setError] = useState("");
 
-  // handlers
+  const handleInputChange =(e) =>{
+  const { name, value } = e.target;
+  if(name =="duration"){
+    setDuration(value)
+  }
+  else if(name =="audience"){
+    setAudience(value)
+  }
+  }
+
   const handleGenerate = () => {
-    // keep original behavior (UI-only change)
-    if (!language || !videoType || !duration || !audience) {
-      setError("Please fill all Video Filters");
-    } else if (!topn || !model || !datasource) {
-      setError("Please fill all Model Filters");
+    if (!language) {
+      window.toast?.error("Please Select Language in Video Filters");
+    } else if (!videoType) {
+      window.toast?.error("Please Select Video Type in Video Filters");
+    } else if (!audience) {
+      window.toast?.error("Please Enter Target Audience in Video Filters");
+    } else if (!duration) {
+      window.toast?.error("Please Select Duration in Video Filters");
+    } else if (!topn) {
+      window.toast?.error("Please Select Top N in Model Filters");
+    } else if (!model) {
+      window.toast?.error("Please Select Model in Model Filters");
+    } else if (!datasource) {
+      window.toast?.error("Please Select Data Source in Model Filters");
     } else {
+      window.toast?.success("All filters set! Generating scenes...");
       navigate("/scenes");
     }
   };
-
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <OneFrameHeader />
@@ -119,13 +128,13 @@ const GenerateScript = () => {
           <div className={styles.accordionGroup}>
             <Accordion
               sx={{
-    border: "none",
-    borderRadius: "10px",
-    boxShadow: "none",
-    "&::before": {
-      display: "none", // removes divider line
-    },
-  }}
+                border: "none",
+                borderRadius: "10px",
+                boxShadow: "none",
+                "&::before": {
+                  display: "none", // removes divider line
+                },
+              }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>
@@ -164,13 +173,15 @@ const GenerateScript = () => {
                   </Grid>
 
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    <SelectComp
-                      label="Target Audience"
-                      options={audienceOptions}
-                      value={audience}
-                      onChange={setAudience}
-                      placeholder="Select Target Audience"
-                    />
+                    <Input
+                     label ="Target Audience"
+                    type="text"
+                    name="audience"
+                    placeholder="Enter Target Audience"
+                    className={styles.input}
+                    value={audience}
+                    handleChange={handleInputChange}
+                />
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -178,13 +189,13 @@ const GenerateScript = () => {
 
             <Accordion
               sx={{
-    border: "none",
-    borderRadius: "10px",
-    boxShadow: "none",
-    "&::before": {
-      display: "none", // removes divider line
-    },
-  }}
+                border: "none",
+                borderRadius: "10px",
+                boxShadow: "none",
+                "&::before": {
+                  display: "none", // removes divider line
+                },
+              }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>
@@ -195,7 +206,7 @@ const GenerateScript = () => {
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
-                      label="channel"
+                      label="Channel"
                       options={languageOptions}
                       value={language}
                       onChange={setLanguage}
@@ -236,13 +247,13 @@ const GenerateScript = () => {
             </Accordion>
             <Accordion
               sx={{
-    border: "none",
-    borderRadius: "10px",
-    boxShadow: "none",
-    "&::before": {
-      display: "none", // removes divider line
-    },
-  }}
+                border: "none",
+                borderRadius: "10px",
+                boxShadow: "none",
+                "&::before": {
+                  display: "none", // removes divider line
+                },
+              }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={styles.accordionTitle}>
@@ -283,7 +294,6 @@ const GenerateScript = () => {
               </AccordionDetails>
             </Accordion>
           </div>
-{error &&<span style={{color: "red"}}>{error}</span>}
           {/* Action Area */}
           <div className={styles.actions}>
             <div className={styles.actions}>
