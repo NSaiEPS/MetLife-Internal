@@ -4,7 +4,7 @@ const Input = (props) => {
     return (
         <>
             <div style={{ display: "flex", flexDirection: "column", gap: "5px", width:"100%", marginBottom:"15px"}}>
-
+                {props.label && <label>{props.label}</label>}
                 <input
                     type={props.type}
                     name={props.name}
