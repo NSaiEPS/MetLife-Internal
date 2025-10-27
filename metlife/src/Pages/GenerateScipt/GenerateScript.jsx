@@ -106,6 +106,28 @@ const GenerateScript = () => {
       window.toast?.error("Please Select Data Source in Model Filters");
     } else {
       apiCall();
+      fetch('https://oneframeapi.com/generate-script', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': ''
+  },
+  body: JSON.stringify({
+    "brief": "Create an educational video for teaching the benefits of using AI in businesses, with sections like introduction, automation benefits, data insights, and future of AI. Key points: AI improves efficiency, reduces costs, provides actionable insights, etc. Tone: Corporate, Informative, Natural, and Conversational",
+    "suggested_duration": "3-5 minutes",
+    "language": "English",
+    "target_audience": "business decision makers and IT professionals.",
+    "scene_length_style": "short_form",
+    "video_style": "mixed",
+    "model": "gpt-4o",
+    "top_n": 5,
+    "data_source": "metlife"
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+
       // window.toast?.success("All filters set! Generating scenes...");
       // navigate("/scenes");
     }
