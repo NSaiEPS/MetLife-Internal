@@ -111,7 +111,7 @@ const GenerateScript = () => {
     } else if (!datasource) {
       showToast.error("Please select Data Source in Model Filters");
     } else {
-      showToast.info("Generating video...");
+      // showToast.info("Generating video...");
       apiCall();
     }
   };

@@ -111,43 +111,20 @@ const ScriptPage = () => {
         {sceneData?.scenes?.length && !loading ? (
           <DynamicTable
             columns={columns}
-            data={sceneData?.scenes}
+            // data={sceneData?.scenes}
             actions={actions}
+            extraDetails={sceneData}
           />
         ) : (
           <NoDataMessage filter={false} loading={loading} />
         )}
       </div>
-
-      <div className={styles.footerButtons}>
-        <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-          className={styles.stack}
-        >
-          <Button variant="outlined" className={styles.largeOutline}>
-            Regenerate Script
-          </Button>
-          <Button
-            variant="contained"
-            className={styles.successBtn}
-            onClick={handleDownloadScript}
-          >
-            Download Script
-          </Button>
-          <Button variant="contained" className={styles.primaryBtn}>
-            Create Visual Content
-          </Button>
-        </Stack>
-        <AddNewScriptPopup
-          open={openPopUp}
-          onClose={() => setOpenPopup(false)}
-          fieldData={popUpData}
-          title={popupTitle}
-        />
-      </div>
+      <AddNewScriptPopup
+        open={openPopUp}
+        onClose={() => setOpenPopup(false)}
+        fieldData={popUpData}
+        title={popupTitle}
+      />
       <Footer />
     </div>
   );

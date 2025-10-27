@@ -10,11 +10,12 @@ export const downloadScriptPdf = (data) => {
   doc.text(`Logline: ${data.logline}`, 14, 25);
   doc.text(`Duration: ${data.suggested_duration_minutes}`, 14, 32);
   const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-  const tableRows = data.scenes.map((scene) => [
-    scene.scene_number.toString(),
-    scene.description || scene.header || "",
-    scene.on_screen_text || scene.OST || "",
-    scene.scene_type || "",
+  const tableRows = data.scenes.map((scene, index) => [
+    // scene?.scene_number.toString(),
+    index + 1,
+    scene?.Script || scene?.header || "",
+    scene?.on_screen_text || scene?.OST || "",
+    scene?.Type || "",
   ]);
   doc.autoTable({
     startY: 40,

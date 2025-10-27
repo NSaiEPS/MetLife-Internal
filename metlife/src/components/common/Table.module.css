@@ -54,8 +54,40 @@
 
 /* Responsive adjustments */
 @media (max-width: 720px) {
-  .headCell, .bodyCell {
+  .headCell,
+  .bodyCell {
     padding: 10px 12px;
     font-size: 13px;
   }
+}
+
+.footerButtons {
+  /* margin-top: auto;  */
+  padding-top: 12px;
+  padding-bottom: 70px;
+}
+
+.stack {
+  width: 100%;
+  max-width: 1220px;
+  display: flex;
+  justify-content: end !important;
+  margin: auto;
+}
+
+.largeOutline {
+  text-transform: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+}
+
+.successBtn {
+  text-transform: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  background-color: #99d538 !important;
+  color: #fff;
+}
+.noDataText {
+  text-align: center;
 }
