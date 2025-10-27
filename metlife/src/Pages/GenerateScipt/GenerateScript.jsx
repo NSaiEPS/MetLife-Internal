@@ -143,9 +143,13 @@ const GenerateScript = () => {
         if (result?.data?.scenes) {
           navigate(`/scenes/${result?.data?.script_id}`);
         }
+      } else {
+        window.toast?.error("Some Issue In Generating");
       }
       console.log("Video created successfully:", result);
     } catch (err) {
+      window.toast?.error("Some Issue In Generating");
+
       console.error("Video creation failed:", err);
     } finally {
       setLoader(false);
@@ -163,7 +167,7 @@ const GenerateScript = () => {
             <Button className={styles.icon}>
               <IoArrowBackCircleOutline
                 size={30}
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/video-frame")}
               />{" "}
               Back
             </Button>

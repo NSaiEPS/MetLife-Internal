@@ -13,9 +13,11 @@ import AddNewScriptPopup from "../../components/popUps/addScripts";
 import { downloadScriptPdf } from "../../utils/index";
 import { Scriptdata } from "../../../script";
 import api from "../../api/axios";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 const ScriptPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   console.log("Scene ID:", id);
   // dynamic columns & rows
@@ -53,11 +55,19 @@ const ScriptPage = () => {
   };
   const [sceneData, setSceneData] = useState({});
   console.log(sceneData?.scenes, "sceneData");
+  const [loading, setLoading] = useState(false);
   const getSceneDetails = async () => {
-    const result = await api.get(`scripts/${id}`);
-    console.log("Video created successfully:", result);
-    if (result?.status == "200") {
-      setSceneData(result?.data);
+    setLoading(true);
+    try {
+      const result = await api.get(`scripts/${id}`);
+      console.log("Video created successfully:", result);
+      if (result?.status == "200") {
+        setSceneData(result?.data);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -81,15 +91,26 @@ const ScriptPage = () => {
           <Button variant="contained" className={styles.primaryBtn}>
             Show Source
           </Button>
+          <Button className={styles.icon}>
+            <IoArrowBackCircleOutline
+              size={30}
+              onClick={() => navigate("/generate-script")}
+            />{" "}
+            Back
+          </Button>
         </div>
       </div>
 
       <div className={styles.tableContainer}>
-        <DynamicTable
-          columns={columns}
-          data={sceneData?.scenes}
-          actions={actions}
-        />
+        {sceneData?.scenes?.length && !loading ? (
+          <DynamicTable
+            columns={columns}
+            data={sceneData?.scenes}
+            actions={actions}
+          />
+        ) : (
+          "NO Data Avaibale"
+        )}
       </div>
 
       <div className={styles.footerButtons}>

@@ -1,29 +1,47 @@
-import { Box } from "@mui/material";
+import { Box, Typography, Backdrop } from "@mui/material";
 
-const GradientLoader = () => (
-  <Box
-    sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      minHeight: "60vh",
-    }}
-  >
-    <Box
+const FullScreenGradientLoader = ({ open = true, text = "Generating..." }) => {
+  return (
+    <Backdrop
       sx={{
-        width: 64,
-        height: 64,
-        borderRadius: "50%",
-        border: "6px solid",
-        borderColor: "transparent transparent #1976d2 #42a5f5",
-        animation: "spin 1s linear infinite",
-        "@keyframes spin": {
-          "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(360deg)" },
-        },
+        color: "#fff",
+        zIndex: (theme) => theme.zIndex.drawer + 9999,
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
       }}
-    />
-  </Box>
-);
+      open={open}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Box
+          sx={{
+            width: 70,
+            height: 70,
+            borderRadius: "50%",
+            border: "6px solid",
+            borderColor: "transparent transparent #1976d2 #42a5f5",
+            animation: "spin 1s linear infinite",
+            "@keyframes spin": {
+              "0%": { transform: "rotate(0deg)" },
+              "100%": { transform: "rotate(360deg)" },
+            },
+          }}
+        />
+        <Typography
+          variant="h6"
+          sx={{ color: "#fff", fontWeight: 500, letterSpacing: 0.5 }}
+        >
+          {text}
+        </Typography>
+      </Box>
+    </Backdrop>
+  );
+};
 
-export default GradientLoader;
+export default FullScreenGradientLoader;
