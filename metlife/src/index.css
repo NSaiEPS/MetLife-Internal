@@ -1,0 +1,35 @@
+/* Make toast a flexbox and vertically center its content + close icon */
+.Toastify__toast {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-right: 12px !important; /* space for the X */
+}
+
+/* Align the body (text + icon) */
+.Toastify__toast-body {
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 8px !important; /* small spacing before the close */
+}
+
+/* Center and normalize the close (X) icon */
+.Toastify__close-button {
+  position: relative !important;
+  top: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Optional: scale down the X a bit and animate */
+.Toastify__close-button > svg {
+  width: 18px !important;
+  height: 18px !important;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.Toastify__close-button:hover > svg {
+  transform: scale(1.1);
+  opacity: 0.9;
+}

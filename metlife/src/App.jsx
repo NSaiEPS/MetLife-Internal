@@ -19,6 +19,10 @@ function App() {
         pauseOnHover
         draggable
         theme="colored"
+        toastStyle={{
+          display: "flex",
+          alignItems: "center",
+        }}
       />
       <RouterProvider router={router} />
     </>

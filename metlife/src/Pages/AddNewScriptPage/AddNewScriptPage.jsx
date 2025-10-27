@@ -15,6 +15,7 @@ import { Scriptdata } from "../../../script";
 import api from "../../api/axios";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
+import { showToast } from "../../utils/toast";
 
 const ScriptPage = () => {
   const { id } = useParams();
@@ -67,6 +68,7 @@ const ScriptPage = () => {
       }
     } catch (e) {
       console.log(e);
+      showToast.error(e?.detail);
     } finally {
       setLoading(false);
     }

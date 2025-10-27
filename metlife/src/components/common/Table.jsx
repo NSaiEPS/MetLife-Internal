@@ -16,6 +16,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import styles from "./Table.module.css";
 import AddNewScriptPopup from "../popUps/addScripts";
 import { downloadScriptPdf } from "../../utils";
+import { showToast } from "../../utils/toast";
 
 /**
  * props:
@@ -58,6 +59,7 @@ function DynamicTable({
     }));
 
     setRows(reIndexed);
+    showToast.success("Updated Successfully!");
   };
 
   const handleDownloadScript = () => {
