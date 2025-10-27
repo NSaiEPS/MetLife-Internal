@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,12 +7,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import styles from "./Table.module.css";
-import AddNewScriptPopup from '../popUps/addScripts'
+import AddNewScriptPopup from "../popUps/addScripts";
 
 /**
  * props:
@@ -22,7 +22,19 @@ import AddNewScriptPopup from '../popUps/addScripts'
  */
 function DynamicTable({ columns = [], data = [], actions = [] }) {
   const [rows, setRows] = useState(data);
-
+  console.log(rows, data);
+  useEffect(() => {
+    let newdata = data?.map((item) => {
+      let data = {
+        "Scene No.": item?.scene_number,
+        Script: item?.description,
+        OST: item?.on_screen_text ?? "-",
+        Type: item?.scene_type,
+      };
+      return data;
+    });
+    setRows(newdata);
+  }, [data]);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -100,7 +112,9 @@ function DynamicTable({ columns = [], data = [], actions = [] }) {
                                   key={aIdx}
                                   className={styles.iconBtn}
                                   size="small"
-                                  onClick={() => {act.onClick(row)}}
+                                  onClick={() => {
+                                    act.onClick(row);
+                                  }}
                                 >
                                   {act.icon}
                                 </IconButton>

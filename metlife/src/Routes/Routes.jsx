@@ -82,7 +82,7 @@ export const router = createBrowserRouter([
     element: <UploadClipsPage />,
   },
   {
-    path: "scenes",
+    path: "scenes/:id",
     element: <ScriptPage />,
   },
 ]);

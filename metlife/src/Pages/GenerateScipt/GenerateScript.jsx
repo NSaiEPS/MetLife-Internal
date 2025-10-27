@@ -17,18 +17,19 @@ import Footer from "../../components/common/mainFooter";
 import path from "../../assets/path.svg";
 import Input from "../../components/common/Input";
 import api from "../../api/axios";
+import GradientLoader from "../../components/common/GradientLoader";
 // import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
-  { value: "narrator", label: "Narrator" },
+  { value: "narrative", label: "Narrator" },
   { value: "monologue", label: "Monologue" },
   { value: "conversational", label: "Conversational" },
-  { value: "combined", label: "Combined" },
+  { value: "mixed", label: "Combined" },
 ];
 
 const languageOptions = [
-  { value: "english", label: "English" },
-  { value: "spanish", label: "Spanish" },
+  { value: "English", label: "English" },
+  { value: "Spanish", label: "Spanish" },
 ];
 
 const toneOptions = [
@@ -45,14 +46,14 @@ const topNOptions = [
 ];
 
 const modelOptions = [
-  { value: "GPT-4o", label: "GPT-4o" },
-  { value: "GPT-4o-mini", label: "GPT-4o-mini" },
-  { value: "GPT-4.1", label: "GPT-4.1" },
+  { value: "gpt-4o", label: "GPT-4o" },
+  { value: "gpt-4o-mini", label: "GPT-4o-mini" },
+  { value: "gpt-4.1", label: "GPT-4.1" },
 ];
 const dataSourceOptions = [
-  { value: "MetLife", label: "MetLife" },
-  { value: "OpenAI", label: "OpenAI" },
-  { value: "both", label: "Both" },
+  { value: "metlife", label: "MetLife" },
+  { value: "openai", label: "OpenAI" },
+  { value: "metlife+openai", label: "Both" },
 ];
 const audienceOptions = [
   { value: "general", label: "General Audience" },
@@ -61,9 +62,9 @@ const audienceOptions = [
 ];
 
 const durationOptions = [
-  { value: "2", label: "2 mins" },
-  { value: "3", label: "3 mins" },
-  { value: "4", label: "4 mins" },
+  { value: "2 minutes", label: "2 mins" },
+  { value: "3 minutes", label: "3 mins" },
+  { value: "4 minutes", label: "4 mins" },
 ];
 
 const GenerateScript = () => {
@@ -79,7 +80,7 @@ const GenerateScript = () => {
   const [topn, setTopn] = useState("");
   const [model, setModel] = useState("GPT-4o-mini");
   const [datasource, setDatasource] = useState("");
-
+  const [loader, setLoader] = useState(false);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name == "duration") {
@@ -112,24 +113,41 @@ const GenerateScript = () => {
   };
 
   const apiCall = async () => {
+    setLoader(true);
     const payload = {
-      brief:
-        "Create an educational video for teaching the benefits of using AI in businesses, with sections like introduction, automation benefits, data insights, and future of AI. Key points: AI improves efficiency, reduces costs, provides actionable insights, etc. Tone: Corporate, Informative, Natural, and Conversational",
-      suggested_duration: "3-5 minutes",
+      brief: "create a video on basis of cricket",
+      suggested_duration: "2 minutes",
       language: "English",
-      target_audience: "business decision makers and IT professionals.",
-      scene_length_style: "short_form",
+      target_audience: "General Audience",
       video_style: "mixed",
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       top_n: 5,
       data_source: "metlife",
     };
+    const new_payload = {
+      brief: scriptText,
+      suggested_duration: duration,
+      language: language,
+      target_audience: audience,
+      // scene_length_style: "short_form",
+      video_style: videoType,
+      model: model,
+      top_n: Number(topn),
+      data_source: datasource,
+    };
 
     try {
-      const result = await api.post("video/create", payload);
+      const result = await api.post("generate-script", payload);
+      if (result?.status == 200) {
+        if (result?.data?.scenes) {
+          navigate(`/scenes/${result?.data?.script_id}`);
+        }
+      }
       console.log("Video created successfully:", result);
     } catch (err) {
       console.error("Video creation failed:", err);
+    } finally {
+      setLoader(false);
     }
   };
   return (
@@ -328,7 +346,8 @@ const GenerateScript = () => {
           <div className={styles.actions}>
             <div className={styles.actions}>
               <ButtonComp
-                label="Generate Script"
+                disabled={loader}
+                label={loader ? "Generating..." : "Generate Script"}
                 className={styles.generateBtn}
                 action={handleGenerate}
               />

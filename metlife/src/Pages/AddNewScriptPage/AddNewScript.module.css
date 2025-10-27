@@ -1,8 +1,7 @@
-.container{
+.container {
   width: 100% !important;
   /* padding: 60px 80px; */
 }
-
 
 .pageWrapper {
   padding: 40px 48px;
@@ -21,12 +20,12 @@
 }
 
 .title {
-     margin: 0;
-    font-size: 30px;
-    font-weight: 600;
-    color: #111827;
-    font-family: "Poppins", sans-serif;
-    padding-left: 150px;
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #111827;
+  font-family: "Poppins", sans-serif;
+  padding-left: 150px;
 }
 
 .headerButtons {
@@ -54,25 +53,23 @@
 
 /* Table container */
 .tableContainer {
- 
   width: 100%;
-    margin: 8px auto 20px;
-    max-width: 1220px;
+  margin: 8px auto 20px;
+  max-width: 1220px;
 }
 
 /* Footer Buttons */
 .footerButtons {
-  margin-top: auto; 
+  /* margin-top: auto;  */
   padding-top: 12px;
-  padding-bottom: 24px;
-
+  padding-bottom: 70px;
 }
 
 .stack {
   width: 100%;
   max-width: 1220px;
   display: flex;
-  justify-content:end !important;
+  justify-content: end !important;
   margin: auto;
 }
 
@@ -86,6 +83,6 @@
   text-transform: none;
   padding: 10px 28px;
   border-radius: 8px;
-  background-color: #99D538 !important;
+  background-color: #99d538 !important;
   color: #fff;
 }
