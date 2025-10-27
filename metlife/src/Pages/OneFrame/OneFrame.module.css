@@ -16,18 +16,17 @@
   font-weight: bold;
   font-size: 48px;
   line-height: 62px;
-  font-family: 'Nexa', sans-serif;
-  margin-top: 160px;
-  color: #231F20;
+  font-family: "Nexa", sans-serif;
+  /* margin-top: "40%"; */
+  color: #231f20;
   margin-bottom: 40px;
 }
-
 
 .boxHeading {
   font-size: 20px;
   font-weight: 700;
-  color: #231F20;
-  padding-top : 70px;
+  color: #231f20;
+  padding-top: 70px;
   padding-bottom: 10px;
   padding-left: 20px;
   text-align: start;
@@ -35,32 +34,31 @@
 
 .boxText {
   font-size: 16px;
-   padding-left: 20px;
+  padding-left: 20px;
   text-align: start;
   font-weight: 300;
   line-height: 23px;
-  color: #231F20;
+  color: #231f20;
   margin: 8px 0 16px 0;
   max-width: 335px;
   padding-bottom: 30px;
 }
 
-
 .parentContainer {
   display: flex;
   justify-content: flex-start;
-  padding-left: 20px;;
+  padding-left: 20px;
 }
 
 .Button {
-top: 467px;
-left: 739px;
-width: 220px;
-height: 50px;
-/* UI Properties */
-background: #239DE0 0% 0% no-repeat padding-box;
-border-radius: 6px;
-opacity: 1;
+  top: 467px;
+  left: 739px;
+  width: 220px;
+  height: 50px;
+  /* UI Properties */
+  background: #239de0 0% 0% no-repeat padding-box;
+  border-radius: 6px;
+  opacity: 1;
 }
 
 .Button:hover {

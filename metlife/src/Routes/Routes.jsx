@@ -39,7 +39,7 @@ const Authorization = ({ element }) => {
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/generate-script" replace />,
+    element: <Navigate to="/video-frame" replace />,
   },
   {
     path: "/login",
