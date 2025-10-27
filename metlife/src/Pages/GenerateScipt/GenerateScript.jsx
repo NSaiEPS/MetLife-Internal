@@ -10,6 +10,7 @@ import {
   AccordionDetails,
   Typography,
   Grid,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
@@ -17,6 +18,8 @@ import Footer from "../../components/common/mainFooter";
 import path from "../../assets/path.svg";
 import Input from "../../components/common/Input";
 import api from "../../api/axios";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+
 // import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
@@ -132,6 +135,7 @@ const GenerateScript = () => {
       console.error("Video creation failed:", err);
     }
   };
+
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <OneFrameHeader />
@@ -140,6 +144,9 @@ const GenerateScript = () => {
         <div className={styles.card}>
           <div className={styles.headerRow}>
             <h1 className={styles.title}>Generate Script</h1>
+            <Button className={styles.icon} > 
+              <IoArrowBackCircleOutline size={30} onClick={() => navigate(-1)} /> Back
+            </Button>
           </div>
 
           <div className={styles.textareaContainer}>
