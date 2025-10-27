@@ -100,7 +100,7 @@ function DynamicTable({ columns = [], data = [], actions = [] }) {
                         {/* Data cells */}
                         {columns.map((col, cIdx) => (
                           <TableCell key={cIdx} className={styles.bodyCell}>
-                            {row[col]}
+                            {cIdx == 0 ? rIdx + 1 : row[col]}
                           </TableCell>
                         ))}
 
