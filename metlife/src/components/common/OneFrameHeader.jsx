@@ -8,7 +8,6 @@ const OneFrameHeader = () => {
     <AppBar position="static" className={styles.appBar}>
       <Toolbar className={styles.toolbar}>
         {/* Left spacer to keep title centered */}
-        <div className={styles.leftSpacer} />
 
         <Typography variant="h6" className={styles.title}>
           OneFrame

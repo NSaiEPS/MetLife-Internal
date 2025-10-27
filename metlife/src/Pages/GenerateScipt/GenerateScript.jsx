@@ -10,6 +10,7 @@ import {
   AccordionDetails,
   Typography,
   Grid,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
@@ -18,6 +19,8 @@ import path from "../../assets/path.svg";
 import Input from "../../components/common/Input";
 import api from "../../api/axios";
 import GradientLoader from "../../components/common/GradientLoader";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+
 // import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
@@ -78,7 +81,7 @@ const GenerateScript = () => {
   const [language, setLanguage] = useState("");
   const [duration, setDuration] = useState("");
   const [topn, setTopn] = useState("");
-  const [model, setModel] = useState("GPT-4o-mini");
+  const [model, setModel] = useState("gpt-4o-mini");
   const [datasource, setDatasource] = useState("");
   const [loader, setLoader] = useState(false);
   const handleInputChange = (e) => {
@@ -107,8 +110,6 @@ const GenerateScript = () => {
       window.toast?.error("Please Select Data Source in Model Filters");
     } else {
       apiCall();
-      // window.toast?.success("All filters set! Generating scenes...");
-      // navigate("/scenes");
     }
   };
 
@@ -137,7 +138,7 @@ const GenerateScript = () => {
     };
 
     try {
-      const result = await api.post("generate-script", payload);
+      const result = await api.post("generate-script", new_payload);
       if (result?.status == 200) {
         if (result?.data?.scenes) {
           navigate(`/scenes/${result?.data?.script_id}`);
@@ -150,6 +151,7 @@ const GenerateScript = () => {
       setLoader(false);
     }
   };
+
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <OneFrameHeader />
@@ -158,6 +160,13 @@ const GenerateScript = () => {
         <div className={styles.card}>
           <div className={styles.headerRow}>
             <h1 className={styles.title}>Generate Script</h1>
+            <Button className={styles.icon}>
+              <IoArrowBackCircleOutline
+                size={30}
+                onClick={() => navigate(-1)}
+              />{" "}
+              Back
+            </Button>
           </div>
 
           <div className={styles.textareaContainer}>
