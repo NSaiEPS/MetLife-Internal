@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import styles from "./addScripts.module.css";
 
-const AddNewScriptPopup = ({ open, onClose, fieldData }) => {
+const AddNewScriptPopup = ({ open, onClose, fieldData ,title}) => {
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
   const [type, setType] = useState("");
@@ -52,7 +52,7 @@ const AddNewScriptPopup = ({ open, onClose, fieldData }) => {
         },
       }}
     >
-      <DialogTitle className={styles.title}>Add New Script</DialogTitle>
+      <DialogTitle className={styles.title}>{title}</DialogTitle>
 
       <DialogContent>
         <TextField
@@ -78,6 +78,11 @@ const AddNewScriptPopup = ({ open, onClose, fieldData }) => {
           <Select
             value={type}
             label="Type"
+              sx={{
+    "& .MuiSelect-select": {
+      textAlign:"justify"
+    },
+  }}
             onChange={(e) => setType(e.target.value)}
           >
             <MenuItem value="Monologue">Monologue</MenuItem>

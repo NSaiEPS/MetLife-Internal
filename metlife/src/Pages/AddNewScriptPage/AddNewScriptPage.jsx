@@ -18,6 +18,7 @@ const ScriptPage = () => {
   const [columns] = useState(["Scene No.", "Script", "OST", "Type"]);
   const [openPopUp , setOpenPopup]  = useState(false)
   const [popUpData , setPopUpdata] = useState()
+  const [popupTitle , setPopupTitle] = useState("Add New Script")
   const [data, setData] = useState([
     { "Scene No.": "01", Script: "Create a 90-second explainer", OST: "Ambience", Type: "Narration" },
     { "Scene No.": "02", Script: "Explain photosynthesis", OST: "Soft piano", Type: "Monologue" },
@@ -33,9 +34,14 @@ const ScriptPage = () => {
 
   // example add scene (demonstrates dynamic rows)
  const addScene = (data) => {
-  console.log(data)
-  setPopUpdata(data || {}); // if no data passed → use empty object
-  setOpenPopup(true);       // open the popup
+  setPopUpdata(data || {}); 
+  if(data && data.OST){
+    setPopupTitle("Edit Script")
+  }
+  else{
+    setPopupTitle("Add New Script")
+  }
+  setOpenPopup(true);    
 };
 
 const handleDownloadScript = () => {
@@ -69,7 +75,7 @@ const handleDownloadScript = () => {
           <Button variant="contained" className={styles.successBtn} onClick={handleDownloadScript}>Download Script</Button>
           <Button variant="contained" className={styles.primaryBtn}>Create Visual Content</Button>
         </Stack>
-      <AddNewScriptPopup open={openPopUp} onClose={() => setOpenPopup(false)} fieldData ={popUpData}/>
+      <AddNewScriptPopup open={openPopUp} onClose={() => setOpenPopup(false)} fieldData ={popUpData}  title ={popupTitle}/>
 
       </div>
       <Footer/>
