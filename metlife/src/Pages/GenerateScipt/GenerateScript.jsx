@@ -77,7 +77,7 @@ const GenerateScript = () => {
   const [language, setLanguage] = useState("");
   const [duration, setDuration] = useState("");
   const [topn, setTopn] = useState("");
-  const [model, setModel] = useState("");
+  const [model, setModel] = useState("GPT-4o-mini");
   const [datasource, setDatasource] = useState("");
 
   const handleInputChange = (e) => {
