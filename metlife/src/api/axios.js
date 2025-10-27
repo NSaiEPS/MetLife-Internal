@@ -1,10 +1,9 @@
 import { message } from "antd";
 import axios from "axios";
 
+export const SERVER_URL = "https://oneframeapi.com/";
 
-export const SERVER_URL = "";
-
-export const BASE_URL = `${SERVER_URL}api/v1/`;
+export const BASE_URL = `${SERVER_URL}`;
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -29,7 +28,9 @@ api.interceptors.response.use(
     } else if (error.request) {
       // The request was made but no response was received
       console.error("No response received");
-      message.error("Unable to connect. Please check your network and try again.");
+      message.error(
+        "Unable to connect. Please check your network and try again."
+      );
       return Promise.reject(
         "Unable to connect. Please check your network and try again."
       );

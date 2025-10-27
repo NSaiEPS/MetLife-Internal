@@ -1,14 +1,22 @@
-import  { useState } from "react";
+import { useState } from "react";
 import styles from "./GenerateScript.module.css";
 import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select";
 import { useNavigate } from "react-router-dom";
-import {  Box,  Accordion,  AccordionSummary,  AccordionDetails,Typography, Grid,} from "@mui/material";
+import {
+  Box,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Grid,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import path from "../../assets/path.svg";
-import Input from '../../components/common/Input'
+import Input from "../../components/common/Input";
+import api from "../../api/axios";
 // import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
@@ -72,15 +80,14 @@ const GenerateScript = () => {
   const [model, setModel] = useState("");
   const [datasource, setDatasource] = useState("");
 
-  const handleInputChange =(e) =>{
-  const { name, value } = e.target;
-  if(name =="duration"){
-    setDuration(value)
-  }
-  else if(name =="audience"){
-    setAudience(value)
-  }
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name == "duration") {
+      setDuration(value);
+    } else if (name == "audience") {
+      setAudience(value);
+    }
+  };
 
   const handleGenerate = () => {
     if (!language) {
@@ -98,8 +105,31 @@ const GenerateScript = () => {
     } else if (!datasource) {
       window.toast?.error("Please Select Data Source in Model Filters");
     } else {
-      window.toast?.success("All filters set! Generating scenes...");
-      navigate("/scenes");
+      apiCall();
+      // window.toast?.success("All filters set! Generating scenes...");
+      // navigate("/scenes");
+    }
+  };
+
+  const apiCall = async () => {
+    const payload = {
+      brief:
+        "Create an educational video for teaching the benefits of using AI in businesses, with sections like introduction, automation benefits, data insights, and future of AI. Key points: AI improves efficiency, reduces costs, provides actionable insights, etc. Tone: Corporate, Informative, Natural, and Conversational",
+      suggested_duration: "3-5 minutes",
+      language: "English",
+      target_audience: "business decision makers and IT professionals.",
+      scene_length_style: "short_form",
+      video_style: "mixed",
+      model: "gpt-4o",
+      top_n: 5,
+      data_source: "metlife",
+    };
+
+    try {
+      const result = await api.post("video/create", payload);
+      console.log("Video created successfully:", result);
+    } catch (err) {
+      console.error("Video creation failed:", err);
     }
   };
   return (
@@ -174,14 +204,14 @@ const GenerateScript = () => {
 
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <Input
-                     label ="Target Audience"
-                    type="text"
-                    name="audience"
-                    placeholder="Enter Target Audience"
-                    className={styles.input}
-                    value={audience}
-                    handleChange={handleInputChange}
-                />
+                      label="Target Audience"
+                      type="text"
+                      name="audience"
+                      placeholder="Enter Target Audience"
+                      className={styles.input}
+                      value={audience}
+                      handleChange={handleInputChange}
+                    />
                   </Grid>
                 </Grid>
               </AccordionDetails>
