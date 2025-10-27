@@ -14,11 +14,16 @@ import {
 } from "@mui/material";
 import styles from "./addScripts.module.css";
 
-const AddNewScriptPopup = ({ open, onClose, fieldData, title }) => {
+const AddNewScriptPopup = ({
+  open,
+  onClose,
+  fieldData,
+  title,
+  handleUpdate,
+}) => {
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
   const [type, setType] = useState("");
-  console.log(fieldData);
 
   // ✅ Update popup fields when `fieldData` changes
   useEffect(() => {
@@ -40,6 +45,7 @@ const AddNewScriptPopup = ({ open, onClose, fieldData, title }) => {
 
   const handleSave = () => {
     console.log({ script, ost, type });
+    handleUpdate({ script, ost, type, fieldData });
     onClose();
   };
 

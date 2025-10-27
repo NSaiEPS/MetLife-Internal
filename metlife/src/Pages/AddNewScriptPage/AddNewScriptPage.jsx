@@ -39,7 +39,7 @@ const ScriptPage = () => {
 
   // example add scene (demonstrates dynamic rows)
   const addScene = (data) => {
-    setPopUpdata(data || {});
+    setPopUpdata(data);
     if (data && data.OST) {
       setPopupTitle("Edit Script");
     } else {
@@ -78,6 +78,10 @@ const ScriptPage = () => {
       getSceneDetails();
     }
   }, [id]);
+  const handleUpdate = (data) => {
+    // setSceneData({...sceneData,sceneData:})
+    console.log(data);
+  };
   return (
     <div className={styles.container}>
       <OneFrameHeader />
@@ -87,7 +91,7 @@ const ScriptPage = () => {
           <Button
             variant="outlined"
             className={styles.outlineBtn}
-            onClick={addScene}
+            onClick={() => addScene()}
           >
             + Add Scene
           </Button>
@@ -126,6 +130,7 @@ const ScriptPage = () => {
         onClose={() => setOpenPopup(false)}
         fieldData={popUpData}
         title={popupTitle}
+        handleUpdate={handleUpdate}
       />
       <Footer />
     </div>
