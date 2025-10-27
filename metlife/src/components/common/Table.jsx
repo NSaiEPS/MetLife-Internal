@@ -24,9 +24,10 @@ function DynamicTable({ columns = [], data = [], actions = [] }) {
   const [rows, setRows] = useState(data);
   console.log(rows, data);
   useEffect(() => {
-    let newdata = data?.map((item) => {
+    let newdata = data?.map((item, index) => {
       let data = {
-        "Scene No.": item?.scene_number,
+        // "Scene No.": item?.scene_number,
+        "Scene No.": index + 1,
         Script: item?.description,
         OST: item?.on_screen_text ?? "-",
         Type: item?.scene_type,

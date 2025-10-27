@@ -14,6 +14,7 @@ import { downloadScriptPdf } from "../../utils/index";
 import { Scriptdata } from "../../../script";
 import api from "../../api/axios";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { NoDataMessage } from "../../components/common/NoDataMessage";
 
 const ScriptPage = () => {
   const { id } = useParams();
@@ -91,10 +92,15 @@ const ScriptPage = () => {
           <Button variant="contained" className={styles.primaryBtn}>
             Show Source
           </Button>
-          <Button className={styles.icon}>
+          <Button
+            className={styles.icon}
+            onClick={() => {
+              navigate("/generate-script");
+            }}
+          >
             <IoArrowBackCircleOutline
               size={30}
-              onClick={() => navigate("/generate-script")}
+              // onClick={() => navigate("/generate-script")}
             />{" "}
             Back
           </Button>
@@ -109,7 +115,7 @@ const ScriptPage = () => {
             actions={actions}
           />
         ) : (
-          "NO Data Avaibale"
+          <NoDataMessage filter={false} loading={loading} />
         )}
       </div>
 

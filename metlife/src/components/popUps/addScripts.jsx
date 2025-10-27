@@ -14,18 +14,23 @@ import {
 } from "@mui/material";
 import styles from "./addScripts.module.css";
 
-const AddNewScriptPopup = ({ open, onClose, fieldData ,title}) => {
+const AddNewScriptPopup = ({ open, onClose, fieldData, title }) => {
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
   const [type, setType] = useState("");
-  console.log(fieldData)
+  console.log(fieldData);
 
   // ✅ Update popup fields when `fieldData` changes
   useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
       setOst(fieldData.OST || "");
-      setType(fieldData.Type || "");
+
+      if (fieldData.Type == "narrator") {
+        setType("narrative");
+      } else {
+        setType(fieldData.Type || "");
+      }
     } else {
       setScript("");
       setOst("");
@@ -78,16 +83,18 @@ const AddNewScriptPopup = ({ open, onClose, fieldData ,title}) => {
           <Select
             value={type}
             label="Type"
-              sx={{
-    "& .MuiSelect-select": {
-      textAlign:"justify"
-    },
-  }}
+            sx={{
+              "& .MuiSelect-select": {
+                textAlign: "justify",
+              },
+            }}
             onChange={(e) => setType(e.target.value)}
           >
-            <MenuItem value="Monologue">Monologue</MenuItem>
-            <MenuItem value="Dialogue">Dialogue</MenuItem>
-            <MenuItem value="Narration">Narration</MenuItem>
+            <MenuItem value="narrative">Narrator</MenuItem>
+
+            <MenuItem value="monologue">Monologue</MenuItem>
+            <MenuItem value="conversational">Conversational</MenuItem>
+            <MenuItem value="mixed">Combined</MenuItem>
           </Select>
         </FormControl>
       </DialogContent>
