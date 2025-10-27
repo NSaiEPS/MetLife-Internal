@@ -3,20 +3,16 @@
   /* box-shadow: none !important; */
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(196, 195, 195, 0.627) !important;
-
 }
 
 .toolbar {
-   margin: auto;
-   max-width: 1220px;
-   width: 100%;
+  margin: auto;
+  max-width: 1220px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
 }
-
-
 
 .title {
   width: 100%;
@@ -34,19 +30,17 @@
   } */
 }
 
-
 .logo {
+  width: 172px;
+  height: 37px;
+  /* UI Properties */
+  background: transparent 0% 0% no-repeat padding-box;
 
-width: 172px;
-height: 37px;
-/* UI Properties */
-background: transparent 0% 0% no-repeat padding-box;
-
-/* margin-right: 70px;
+  /* margin-right: 70px;
 margin-top: 20px;
 margin-bottom: 20px; */
 
-/* @media(max-width:698px) {
+  /* @media(max-width:698px) {
   margin-right:5px;
 } */
 }

@@ -6,7 +6,7 @@ const FullScreenGradientLoader = ({ open = true, text = "Generating..." }) => {
       sx={{
         color: "#fff",
         zIndex: (theme) => theme.zIndex.drawer + 9999,
-        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        backgroundColor: "rgba(0, 0, 0, 0.15)",
       }}
       open={open}
     >
@@ -35,7 +35,7 @@ const FullScreenGradientLoader = ({ open = true, text = "Generating..." }) => {
         />
         <Typography
           variant="h6"
-          sx={{ color: "#fff", fontWeight: 500, letterSpacing: 0.5 }}
+          sx={{ color: "white", fontWeight: 500, letterSpacing: 0.5 }}
         >
           {text}
         </Typography>

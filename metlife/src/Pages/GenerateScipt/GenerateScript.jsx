@@ -20,6 +20,7 @@ import Input from "../../components/common/Input";
 import api from "../../api/axios";
 import GradientLoader from "../../components/common/GradientLoader";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import FullScreenGradientLoader from "../../components/common/GradientLoader";
 
 // import Toastfrom  from "../../components/common/ToastBox"
 
@@ -115,16 +116,7 @@ const GenerateScript = () => {
 
   const apiCall = async () => {
     setLoader(true);
-    const payload = {
-      brief: "create a video on basis of cricket",
-      suggested_duration: "2 minutes",
-      language: "English",
-      target_audience: "General Audience",
-      video_style: "mixed",
-      model: "gpt-4o-mini",
-      top_n: 5,
-      data_source: "metlife",
-    };
+
     const new_payload = {
       brief: scriptText,
       suggested_duration: duration,
@@ -159,7 +151,7 @@ const GenerateScript = () => {
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <OneFrameHeader />
-
+      {loader && <FullScreenGradientLoader />}
       <main className={styles.cardWrap}>
         <div className={styles.card}>
           <div className={styles.headerRow}>

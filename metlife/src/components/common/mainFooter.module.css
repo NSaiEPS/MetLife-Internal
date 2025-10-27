@@ -1,15 +1,15 @@
 .footer {
   width: 100%;
-  background-color: #2ca0df;   /* same blue as image */
-  padding: 14px 0;             /* vertical padding only */
+  background-color: #4d99d1; /* same blue as image */
+  padding: 14px 0; /* vertical padding only */
   display: flex;
-  justify-content: center;     /* center text horizontally */
+  justify-content: center; /* center text horizontally */
   align-items: center;
   position: fixed;
   bottom: 0;
 }
 
-.image{
+.image {
   height: 30px;
 }
 
