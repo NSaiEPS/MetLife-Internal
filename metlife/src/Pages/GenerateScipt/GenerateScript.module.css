@@ -22,7 +22,7 @@
     font: inherit;
     outline: none;
    
-    font-size: 13px;
+    font-size: 16px;
     color: #000;
     width: 100%;
     height: 41px;
@@ -31,6 +31,11 @@
  height: 50px;
   border: 1px solid #DFDFDF;
 border-radius: 10px !important;
+}
+.input::placeholder{
+   color: #aaa;
+   font-size: 16px;
+  font-family: "Roboto", sans-serif !important;
 }
 
 .brand {
