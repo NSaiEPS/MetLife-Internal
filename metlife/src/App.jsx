@@ -23,7 +23,7 @@ function App() {
           display: "flex",
           alignItems: "center",
         }}
-      />
+      /> 
       <RouterProvider router={router} />
     </>
   );

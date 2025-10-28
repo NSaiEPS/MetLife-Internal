@@ -17,6 +17,11 @@ import styles from "./Table.module.css";
 import AddNewScriptPopup from "../popUps/addScripts";
 import { downloadScriptPdf } from "../../utils";
 import { showToast } from "../../utils/toast";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { useNavigate } from "react-router";
+import copy from "../../assets/copy.svg";
+import reuse from "../../assets/reuse.svg";
+import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css"
 
 /**
  * props:
@@ -27,10 +32,21 @@ import { showToast } from "../../utils/toast";
 function DynamicTable({
   columns = [],
   data = [],
-  actions = [],
+  // actions = [],
   extraDetails = {},
 }) {
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
+  const [openPopUp, setOpenPopup] = useState(false);
+  const [popUpData, setPopUpdata] = useState();
+  const [popupTitle, setPopupTitle] = useState("Add New Script");
+  const actions = [
+    { icon: <img src={copy} />, onClick: (row) => addScene(row) },
+    {
+      icon: <img src={reuse} />,
+      onClick: (row) => alert(`Delete ${row["Scene No."]}`),
+    },
+  ];
   console.log(rows, data);
   useEffect(() => {
     let newdata = extraDetails?.scenes?.map((item, index) => {
@@ -40,11 +56,23 @@ function DynamicTable({
         Script: item?.description,
         OST: item?.on_screen_text ?? "-",
         Type: item?.scene_type,
+        id: item?.scene_id,
       };
       return data;
     });
     setRows(newdata);
   }, [extraDetails?.data]);
+
+  const addScene = (data) => {
+    setPopUpdata(data);
+    if (data && data.OST) {
+      setPopupTitle("Edit Script");
+    } else {
+      setPopupTitle("Add New Script");
+    }
+    setOpenPopup(true);
+  };
+
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -69,8 +97,77 @@ function DynamicTable({
       console.error("Error generating PDF:", err);
     }
   };
+
+  const handleUpdate = (data) => {
+    // setSceneData({...sceneData,sceneData:})
+    console.log(data, "check-data");
+    // // // edit
+    if (data?.fieldData) {
+      let newData = rows.map((item) => {
+        console.log(item);
+        let child = { ...item };
+        if (item?.id === data?.fieldData.id) {
+          child = {
+            "Scene No.": data.fieldData?.["Scene No."],
+            Script: data?.script,
+            OST: data?.ost,
+            Type: data?.type,
+            id: data.fieldData?.id,
+          };
+        }
+        return child;
+      });
+      setRows(newData);
+      console.log(newData);
+      // setRows((prev) => [
+      //   prev.map((scene) => (scene.id === data?.fieldData.id ? data : scene)),
+      // ]);
+    } else {
+      // adding new row
+      const newScene = {
+        id: Date.now(),
+        "Scene No.": (rows?.length || 0) + 1,
+        ...data,
+        Script: data?.script,
+        OST: data?.ost,
+        Type: data?.type,
+      };
+
+      setRows((prev) => [...prev, newScene]);
+    }
+
+    showToast.success("Scene saved successfully");
+    setOpenPopup(false);
+  };
   return (
     <>
+      <div className={styles1.header}>
+        <h2 className={styles1.title}>Your Script</h2>
+        <div className={styles1.headerButtons}>
+          <Button
+            variant="outlined"
+            className={styles1.outlineBtn}
+            onClick={() => addScene()}
+          >
+            + Add Scene
+          </Button>
+          <Button variant="contained" className={styles1.primaryBtn}>
+            Show Source
+          </Button>
+          <Button
+            className={styles1.icon}
+            onClick={() => {
+              navigate("/generate-script");
+            }}
+          >
+            <IoArrowBackCircleOutline
+              size={30}
+              // onClick={() => navigate("/generate-script")}
+            />{" "}
+            Back
+          </Button>
+        </div>
+      </div>
       <TableContainer component={Paper} className={styles.tablePaper}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="table">
@@ -159,6 +256,14 @@ function DynamicTable({
           </Droppable>
         </DragDropContext>
       </TableContainer>
+
+      <AddNewScriptPopup
+        open={openPopUp}
+        onClose={() => setOpenPopup(false)}
+        fieldData={popUpData}
+        title={popupTitle}
+        handleUpdate={handleUpdate}
+      />
 
       <div className={styles.footerButtons}>
         <Stack

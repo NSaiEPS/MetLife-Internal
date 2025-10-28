@@ -16,6 +16,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 30px;
   margin-bottom: 20px;
 }
 
@@ -25,15 +26,21 @@
   font-weight: 600;
   color: #111827;
   font-family: "Poppins", sans-serif;
-  padding-left: 150px;
+  /* padding-left: 150px; */
 }
 
 .headerButtons {
   display: flex;
   gap: 12px;
   align-items: center;
-  padding-top: 30px;
-  padding-right: 150px;
+  /* padding-top: 30px; */
+  /* padding-right: 150px; */
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Buttons: rely on MUI variants for base, but add spacing/size via classes */
