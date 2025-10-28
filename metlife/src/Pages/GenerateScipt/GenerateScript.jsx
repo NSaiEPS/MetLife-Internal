@@ -81,7 +81,7 @@ const GenerateScript = () => {
   const [videoType, setVideoType] = useState("");
   const [tone, setTone] = useState("");
   const [audience, setAudience] = useState("");
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState("English");
   const [duration, setDuration] = useState("");
   const [topn, setTopn] = useState("");
   const [model, setModel] = useState("gpt-4o-mini");
