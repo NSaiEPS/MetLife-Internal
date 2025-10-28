@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DynamicTable from "../../components/common/Table";
 import styles from "./AddNewScript.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Footer from "../../components/common/mainFooter";
 // import copy from "../../assets/copy.svg";
 // import reuse from "../../assets/reuse.svg";
@@ -71,6 +71,16 @@ const ScriptPage = () => {
       showToast.error(e?.detail);
     } finally {
       setLoading(false);
+      // setSceneData({
+      //   scenes: [
+      //     {
+      //       description: "description",
+      //       on_screen_text: "on_screen_text",
+      //       scene_type: "narrative",
+      //       scene_id: "56yuhjbvew67uikmhuik",
+      //     },
+      //   ],
+      // });
     }
   };
   useEffect(() => {
@@ -81,7 +91,7 @@ const ScriptPage = () => {
   // const handleUpdate = (data) => {
   //   // setSceneData({...sceneData,sceneData:})
   //   console.log(data, "check-data");
-  //   // // // edit 
+  //   // // // edit
   //   if (data?.id) {
   //     setSceneData((prev) => ({
   //       ...prev,
@@ -92,7 +102,7 @@ const ScriptPage = () => {
   //   } else {
   //     // adding new row
   //     const newScene = {
-  //       id: Date.now(), 
+  //       id: Date.now(),
   //       "Scene No.": (sceneData.scenes?.length || 0) + 1,
   //       ...data,
   //     };
@@ -102,7 +112,7 @@ const ScriptPage = () => {
   //       scenes: [...(prev.scenes || []), newScene],
   //     }));
   //   }
-  
+
   //   showToast.success("Scene saved successfully");
   //   setOpenPopup(false);
   // };
@@ -138,7 +148,6 @@ const ScriptPage = () => {
       </div> */}
 
       <div className={styles.tableContainer}>
-      
         {sceneData?.scenes?.length && !loading ? (
           <DynamicTable
             columns={columns}

@@ -1,6 +1,21 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+// import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 
+// import {
+//   Document,
+//   Packer,
+//   Paragraph,
+//   Table,
+//   TableRow,
+//   TableCell,
+//   TextRun,
+//   AlignmentType,
+//   WidthType,
+//   VerticalAlign,
+//   BorderStyle,
+// } from "docx";
+// import { saveAs } from "file-saver";
 export const downloadScriptPdf = (data) => {
   const doc = new jsPDF();
   doc.setFontSize(18);
@@ -40,6 +55,159 @@ export const downloadScriptPdf = (data) => {
   });
   doc.save(`${data.title}.pdf`);
 };
+
+// export const downloadScriptWord = (data) => {
+//   const { title, logline, suggested_duration_minutes, scenes } = data;
+
+//   // ✅ Header Row (green background)
+//   const tableHeader = new TableRow({
+//     children: ["Scene No.", "Script", "OST", "Type"].map(
+//       (header) =>
+//         new TableCell({
+//           width: { size: 25, type: WidthType.PERCENTAGE },
+//           verticalAlign: VerticalAlign.CENTER,
+//           shading: { fill: "16A085" }, // Teal background
+//           children: [
+//             new Paragraph({
+//               alignment: AlignmentType.CENTER,
+//               children: [
+//                 new TextRun({
+//                   text: header,
+//                   bold: true,
+//                   color: "FFFFFF",
+//                   size: 22,
+//                 }),
+//               ],
+//             }),
+//           ],
+//         })
+//     ),
+//   });
+
+//   // ✅ Table body rows
+//   const tableRows = scenes.map((scene, index) => {
+//     const sceneNumber =
+//       scene.scene_number ||
+//       scene["Scene No."] ||
+//       (index + 1).toString();
+
+//     const scriptText = scene.Script || scene.header || "";
+//     const ostText = scene.on_screen_text || scene.OST || "";
+//     const typeText = scene.Type || scene.scene_type || "";
+
+//     return new TableRow({
+//       children: [
+//         new TableCell({
+//           width: { size: 10, type: WidthType.PERCENTAGE },
+//           verticalAlign: VerticalAlign.CENTER,
+//           children: [
+//             new Paragraph({
+//               alignment: AlignmentType.CENTER,
+//               children: [new TextRun(sceneNumber)],
+//             }),
+//           ],
+//         }),
+//         new TableCell({
+//           width: { size: 45, type: WidthType.PERCENTAGE },
+//           verticalAlign: VerticalAlign.CENTER,
+//           children: [
+//             new Paragraph({
+//               alignment: AlignmentType.LEFT,
+//               children: [new TextRun({ text: scriptText, size: 20 })],
+//             }),
+//           ],
+//         }),
+//         new TableCell({
+//           width: { size: 25, type: WidthType.PERCENTAGE },
+//           verticalAlign: VerticalAlign.CENTER,
+//           children: [
+//             new Paragraph({
+//               alignment: AlignmentType.LEFT,
+//               children: [new TextRun({ text: ostText, size: 20 })],
+//             }),
+//           ],
+//         }),
+//         new TableCell({
+//           width: { size: 20, type: WidthType.PERCENTAGE },
+//           verticalAlign: VerticalAlign.CENTER,
+//           children: [
+//             new Paragraph({
+//               alignment: AlignmentType.CENTER,
+//               children: [new TextRun({ text: typeText, size: 20 })],
+//             }),
+//           ],
+//         }),
+//       ],
+//     });
+//   });
+
+//   // ✅ Word Document Layout
+//   const doc = new Document({
+//     sections: [
+//       {
+//         children: [
+//           // Title
+//           new Paragraph({
+//             children: [
+//               new TextRun({
+//                 text: title,
+//                 bold: true,
+//                 size: 32,
+//               }),
+//             ],
+//             alignment: AlignmentType.CENTER,
+//             spacing: { after: 200 },
+//           }),
+
+//           // Logline
+//           new Paragraph({
+//             children: [
+//               new TextRun({
+//                 text: `Logline: ${logline}`,
+//                 italics: true,
+//               }),
+//             ],
+//             spacing: { after: 100 },
+//           }),
+
+//           // Duration
+//           new Paragraph({
+//             text: `Duration: ${suggested_duration_minutes || "-"}`,
+//             spacing: { after: 200 },
+//           }),
+
+//           // Table
+//           new Table({
+//             width: { size: 100, type: WidthType.PERCENTAGE },
+//             borders: {
+//               top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+//               bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+//               left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+//               right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+//               insideHorizontal: {
+//                 style: BorderStyle.SINGLE,
+//                 size: 1,
+//                 color: "000000",
+//               },
+//               insideVertical: {
+//                 style: BorderStyle.SINGLE,
+//                 size: 1,
+//                 color: "000000",
+//               },
+//             },
+//             rows: [tableHeader, ...tableRows],
+//           }),
+//         ],
+//       },
+//     ],
+//   });
+
+//   // ✅ Download Word File
+//   Packer.toBlob(doc).then((blob) => {
+//     saveAs(blob, `${title || "Script"}.docx`);
+//   });
+// };
+
 
 export const getToken = () => {
   const data = JSON.parse(localStorage.getItem("authDetails"));
