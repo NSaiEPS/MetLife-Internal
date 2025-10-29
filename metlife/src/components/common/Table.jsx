@@ -15,7 +15,7 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import styles from "./Table.module.css";
 import AddNewScriptPopup from "../popUps/addScripts";
-import { downloadScriptPdf, downloadScriptWord } from "../../utils";
+import { downloadScriptPdf} from "../../utils";
 import { showToast } from "../../utils/toast";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router";
@@ -100,9 +100,10 @@ const handleDownloadType = (type) => {
   try {
     if (type === "pdf") {
       downloadScriptPdf({ ...extraDetails, scenes: rows });
-    } else if (type === "word") {
-      downloadScriptWord({ ...extraDetails, scenes: rows });
     }
+    //  else if (type === "word") {
+    //   downloadScriptWord({ ...extraDetails, scenes: rows });
+    // }
     setOpenDownloadPopup(false);
   } catch (err) {
     console.error("Error generating file:", err);
@@ -151,6 +152,7 @@ const handleDownloadType = (type) => {
     showToast.success("Scene saved successfully");
     setOpenPopup(false);
   };
+  
   return (
     <>
       <div className={styles1.header}>
