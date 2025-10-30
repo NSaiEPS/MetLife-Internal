@@ -15,10 +15,12 @@ import {
   ShadingType,
 } from "docx";
 import { saveAs } from "file-saver";
+
 export const downloadScriptPdf = (data, uploadDownload = false) => {
   const doc = new jsPDF();
+  const fileName = localStorage.getItem("file_name");
   doc.setFontSize(18);
-  doc.text(data.title ?? data?.provider, 14, 15);
+  doc.text(fileName ?? data.title ?? data?.provider, 14, 15);
   doc.setFontSize(12);
 
   doc.text(`Logline: ${data.logline ?? data?.language}`, 14, 25);
@@ -63,193 +65,24 @@ export const downloadScriptPdf = (data, uploadDownload = false) => {
       // Optional: customize cell drawing here
     },
   });
-  doc.save(`${data.title}.pdf`);
+  // doc.save(`${data.title}.pdf`);
+  doc.save(`${fileName || "Script"}.pdf`)
 };
 
-// Word download function
-// export const downloadScriptWord = (data, uploadDownload = false) => {
-//   if (!data) return;
-
-//   const { title, logline, suggested_duration_minutes, scenes = [] } = data;
-
-//     const columnWidths = {
-//     sceneNo: 1000, // ~0.7"
-//     script: 4000,  // ~2.8"
-//     ost: 2500,     // ~1.7"
-//     type: 1500,    // ~1.0"
-//   };
-
-//   // ✅ Header Row
-//   const tableHeader = new TableRow({
-//     // children: ["Scene No.", "Script", "OST", "Type"]
-//        children: [
-//       { text: "Scene No.", width: columnWidths.sceneNo },
-//       { text: "Script", width: columnWidths.script },
-//       { text: "OST", width: columnWidths.ost },
-//       { text: "Type", width: columnWidths.type },
-//     ]
-//     .map(
-//       (header) =>
-//         new TableCell({
-//           width: { size: 25, type: WidthType.PERCENTAGE },
-//           verticalAlign: VerticalAlign.CENTER,
-//           shading: { fill: "16A085" }, // Teal background
-//           children: [
-//             new Paragraph({
-//               alignment: AlignmentType.CENTER,
-//               children: [
-//                 new TextRun({
-//                   text: header,
-//                   bold: true,
-//                   color: "FFFFFF",
-//                   size: 22,
-//                 }),
-//               ],
-//             }),
-//           ],
-//         })
-//     ),
-//   });
-
-//   // ✅ Table Body Rows (same logic as PDF)
-//   const tableRows = scenes.map((scene, index) => {
-//     const sceneNumber =
-//       scene.scene_number ||
-//       scene["Scene No."] ||
-//       (index + 1).toString();
-
-//     const scriptText = uploadDownload
-//       ? scene?.description || scene?.header || ""
-//       : scene?.Script || scene?.header || "";
-
-//     const ostText = scene?.on_screen_text || scene?.OST || "";
-//     const typeText = uploadDownload
-//       ? scene?.scene_type || scene?.Type || ""
-//       : scene?.Type || scene?.scene_type || "";
-
-//     return new TableRow({
-//       children: [
-//         new TableCell({
-//           width: { size: 10, type: WidthType.PERCENTAGE },
-//           verticalAlign: VerticalAlign.CENTER,
-//           children: [
-//             new Paragraph({
-//               alignment: AlignmentType.CENTER,
-//               children: [new TextRun(sceneNumber)],
-//             }),
-//           ],
-//         }),
-//         new TableCell({
-//           width: { size: 45, type: WidthType.PERCENTAGE },
-//           verticalAlign: VerticalAlign.CENTER,
-//           children: [
-//             new Paragraph({
-//               alignment: AlignmentType.LEFT,
-//               children: [
-//                 new TextRun({ text: scriptText, size: 20 }),
-//               ],
-//             }),
-//           ],
-//         }),
-//         new TableCell({
-//           width: { size: 25, type: WidthType.PERCENTAGE },
-//           verticalAlign: VerticalAlign.CENTER,
-//           children: [
-//             new Paragraph({
-//               alignment: AlignmentType.LEFT,
-//               children: [
-//                 new TextRun({ text: ostText, size: 20 }),
-//               ],
-//             }),
-//           ],
-//         }),
-//         new TableCell({
-//           width: { size: 20, type: WidthType.PERCENTAGE },
-//           verticalAlign: VerticalAlign.CENTER,
-//           children: [
-//             new Paragraph({
-//               alignment: AlignmentType.CENTER,
-//               children: [
-//                 new TextRun({ text: typeText, size: 20 }),
-//               ],
-//             }),
-//           ],
-//         }),
-//       ],
-//     });
-//   });
-
-//   // ✅ Document Layout
-//   const doc = new Document({
-//     sections: [
-//       {
-//         children: [
-//           // Title
-//           new Paragraph({
-//             children: [
-//               new TextRun({
-//                 text: title ?? data?.provider ?? "Script",
-//                 bold: true,
-//                 size: 32,
-//               }),
-//             ],
-//             alignment: AlignmentType.CENTER,
-//             spacing: { after: 200 },
-//           }),
-
-//           // Logline or Language
-//           new Paragraph({
-//             children: [
-//               new TextRun({
-//                 text: `Logline: ${logline ?? data?.language ?? "-"}`,
-//                 italics: true,
-//               }),
-//             ],
-//             spacing: { after: 100 },
-//           }),
-
-//           // Duration
-//           new Paragraph({
-//             text: `Duration: ${suggested_duration_minutes ?? "2 mins"}`,
-//             spacing: { after: 200 },
-//           }),
-
-//           // Table
-//           new Table({
-//             width: { size: 100, type: WidthType.PERCENTAGE },
-//             borders: {
-//               top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-//               bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-//               left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-//               right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-//               insideHorizontal: {
-//                 style: BorderStyle.SINGLE,
-//                 size: 1,
-//                 color: "000000",
-//               },
-//               insideVertical: {
-//                 style: BorderStyle.SINGLE,
-//                 size: 1,
-//                 color: "000000",
-//               },
-//             },
-//             rows: [tableHeader, ...tableRows],
-//           }),
-//         ],
-//       },
-//     ],
-//   });
-
-//   // ✅ Download as Word File
-//   Packer.toBlob(doc).then((blob) => {
-//     saveAs(blob, `${title || "Script"}.docx`);
-//   });
-// };
-
+// download script word
 export const downloadScriptWord = (data, uploadDownload = false) => {
+  console.log(data, "word_data");
+  const fileName = localStorage.getItem("file_name");
+  // console.log(fileName, 'fileNameCheck')
   if (!data) return;
 
-  const { title, logline, suggested_duration_minutes, scenes = [] } = data;
+  const {
+    title,
+    filename,
+    logline,
+    suggested_duration_minutes,
+    scenes = [],
+  } = data;
 
   // ✅ Define fixed column widths in DXA (1 inch = 1440 DXA)
   const columnWidths = {
@@ -340,7 +173,9 @@ export const downloadScriptWord = (data, uploadDownload = false) => {
           new Paragraph({
             children: [
               new TextRun({
-                text: title ?? data?.provider ?? "Script",
+                // text: title ?? data?.provider ?? filename ?? "Script",
+                text:
+                  fileName ?? title ?? data?.provider ?? filename ?? "Script",
                 bold: true,
                 size: 32,
               }),
@@ -388,7 +223,7 @@ export const downloadScriptWord = (data, uploadDownload = false) => {
 
   // ✅ Download Word file
   Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, `${title || "Script"}.docx`);
+    saveAs(blob, `${fileName || "Script"}.docx`);
   });
 };
 

@@ -1,0 +1,10 @@
+.container {
+  width: 100% !important;
+  /* padding: 60px 80px; */
+
+  .tableContainer {
+    width: 100%;
+    margin: 8px auto 20px;
+    max-width: 1220px;
+  }
+}

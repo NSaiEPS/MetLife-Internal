@@ -8,6 +8,7 @@ import RegisterPage from "../Pages/Register/RegisterPage";
 import ForgotPassword from "../Pages/ForgotPassword/ForgotPassword";
 import VideoCreationOptions from "../Pages/OneFrame/OneFrame";
 import UploadScript from "../Pages/UploadScriptPage/UploadScript";
+import TranslatedScript from "../Pages/TrannslatedScript/TranslatedScript";
 import GenerateScript from "../Pages/GenerateScipt/GenerateScript";
 import GenerateVisualsPage from "../Pages/GenerateVisualPage/GenerateVisualPage";
 import VideoProgressPage from "../Pages/VedioPregressPage/VedioProgressvideo";
@@ -68,6 +69,10 @@ export const router = createBrowserRouter([
       {
         path: "/upload-script",
         element: <UploadScript />,
+      },
+        {
+        path: "/translated-script",
+        element: <TranslatedScript />,
       },
       {
         path: "/generate-script",

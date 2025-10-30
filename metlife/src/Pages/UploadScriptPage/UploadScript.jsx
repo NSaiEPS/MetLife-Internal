@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { saveAs } from "file-saver";
 import { downloadScriptPdf, downloadScriptWord } from "../../utils";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const UploadScript = () => {
   const navigate = useNavigate();
@@ -25,9 +27,9 @@ const UploadScript = () => {
   const [loader, setLoader] = useState(false);
   const [loaderText, setLoaderText] = useState("");
   const languages = [
+    "Spanish",
     "Hindi",
     "Arabic",
-    "Spanish",
     "Nepali",
     "Portuguese",
     "Romanian",
@@ -66,6 +68,7 @@ const UploadScript = () => {
         toast.error("Error in script uploading");
       }
       setScriptData(data?.data);
+      localStorage.setItem('file_name',data?.data?.filename)
       console.log("upload successful", data);
       toast.success("Script uploaded successfully");
       setUploadSuccess(true);
@@ -114,7 +117,8 @@ const UploadScript = () => {
       }
       console.log(translatedData);
       // downloadScriptPdf(translatedData?.data,true);
-      downloadScriptWord(translatedData?.data, true);
+      // downloadScriptWord(translatedData?.data, true);
+      navigate('/translated-script', {state: translatedData});
       setLoader(false);
       toast.success(translatedData?.message || "Translate successful");
     } catch (error) {
@@ -125,6 +129,38 @@ const UploadScript = () => {
       setLoader(false);
       setLoaderText("");
     }
+  };
+
+  // sample pdf function for downloading
+ const handleDownload = () => {
+  console.log('clicked')
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Sample Script", 14, 20);
+
+    // Table data
+    const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+    const tableRows = [
+      ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
+      ["02", "Create a 90-second explainer video script about photosynthesis", "Dummy text", "Monologue"],
+      ["03", "Create a 90-second video", "Dummy text", "Conversation"],
+      ["04", "Create a 90-second explainer video script about photosynthesis", "Dummy text", "Monologue"],
+      ["05", "Create a 90-second video", "Dummy text", "Narration"],
+    ];
+
+    // Add table
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+      theme: "grid",
+      headStyles: { fillColor: [100, 149, 237] },
+    });
+
+    // Save PDF
+    doc.save("Sample_Script.pdf");
   };
 
   return (
@@ -146,16 +182,22 @@ const UploadScript = () => {
               ref={fileInputRef}
               onChange={handleFileChange}
               style={{ display: "none" }}
-              accept="txt.,.pdf,.docx"
+              accept=".pdf"
               // multiple
             />
           </div>
-          {/* {uploading && <p className={styles.uploadStatus}>Uploading...</p>}
-          {uploadStatus && (
-            <p className={styles.uploadStatus}>{uploadStatus}</p>
-          )} */}
 
           <div className={styles.buttonRow}>
+              <ButtonComp
+              label="Download"
+              variant="contained"
+              action={handleDownload}
+              sx={{
+                backgroundColor: "#239DE0",
+                "&:hover": { backgroundColor: "#7fbcddff" },
+              }}
+              // disabled={!uploadSuccess || loader}
+            />
             <ButtonComp
               label={loader ? "Translating" : "Translate Script"}
               variant="contained"
@@ -204,7 +246,7 @@ const UploadScript = () => {
 
             <div className={styles.popupButtonRow}>
               <ButtonComp
-                label="Translate & Download Script"
+                label="Translate Script"
                 variant="contained"
                 className={styles.downloadBtn}
                 action={() => {

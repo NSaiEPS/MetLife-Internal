@@ -124,7 +124,7 @@ const ScriptPage = () => {
         <div className={styles.headerButtons}>
           <Button
             variant="outlined"
-            className={styles.outlineBtn}
+            className={styles.outlineBtn} 
             onClick={() => addScene()}
           >
             + Add Scene

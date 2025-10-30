@@ -35,6 +35,7 @@ function DynamicTable({
   data = [],
   // actions = [],
   extraDetails = {},
+  showDragAndActions = true
 }) {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -63,7 +64,7 @@ function DynamicTable({
       return data;
     });
     setRows(newdata);
-  }, [extraDetails?.data]);
+  }, [extraDetails?.data, extraDetails?.scenes]);
 
   const addScene = (data) => {
     setPopUpdata(data);
@@ -153,11 +154,14 @@ const handleDownloadType = (type) => {
     setOpenPopup(false);
   };
   
+    
   return (
     <>
       <div className={styles1.header}>
         <h2 className={styles1.title}>Your Script</h2>
-        <div className={styles1.headerButtons}>
+        {
+          showDragAndActions && (
+  <div className={styles1.headerButtons}>
           <Button
             variant="outlined"
             className={styles1.outlineBtn}
@@ -181,6 +185,9 @@ const handleDownloadType = (type) => {
             Back
           </Button>
         </div>
+          )
+        }
+      
       </div>
       <TableContainer component={Paper} className={styles.tablePaper}>
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -194,7 +201,8 @@ const handleDownloadType = (type) => {
                 <TableHead>
                   <TableRow className={styles.headRow}>
                     {/* Drag handle header cell */}
-                    <TableCell className={styles.headCell}></TableCell>
+                    {/* <TableCell className={styles.headCell}></TableCell> */}
+                      {showDragAndActions && <TableCell className={styles.headCell}></TableCell>}
 
                     {columns.map((col, idx) => (
                       <TableCell key={idx} className={styles.headCell}>
@@ -202,7 +210,7 @@ const handleDownloadType = (type) => {
                       </TableCell>
                     ))}
 
-                    {actions?.length > 0 && (
+                    {showDragAndActions && actions?.length > 0 && (
                       <TableCell className={styles.headCell}>Action</TableCell>
                     )}
                   </TableRow>
@@ -222,7 +230,8 @@ const handleDownloadType = (type) => {
                           className={styles.bodyRow}
                         >
                           {/* Drag handle cell */}
-                          <TableCell className={styles.bodyCell}>
+                          {showDragAndActions && (
+                              <TableCell className={styles.bodyCell}>
                             <IconButton
                               {...provided.dragHandleProps}
                               size="small"
@@ -231,6 +240,16 @@ const handleDownloadType = (type) => {
                               <DragIndicatorIcon />
                             </IconButton>
                           </TableCell>
+                          )}
+                          {/* <TableCell className={styles.bodyCell}>
+                            <IconButton
+                              {...provided.dragHandleProps}
+                              size="small"
+                              className={styles.dragHandle}
+                            >
+                              <DragIndicatorIcon />
+                            </IconButton>
+                          </TableCell> */}
 
                           {/* Data cells */}
                           {columns.map((col, cIdx) => (
@@ -241,7 +260,7 @@ const handleDownloadType = (type) => {
                           ))}
 
                           {/* Action icons */}
-                          {actions?.length > 0 && (
+                          {showDragAndActions && actions?.length > 0 && (
                             <TableCell className={styles.bodyCell}>
                               <div className={styles.actionsWrap}>
                                 {actions.map((act, aIdx) => (
