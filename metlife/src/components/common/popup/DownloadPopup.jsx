@@ -1,44 +1,3 @@
-// import React from "react";
-// import {
-//   Button,
-//   Dialog,
-//   DialogActions,
-//   DialogContent,
-//   DialogTitle,
-// } from "@mui/material";
-// const DownloadPopup = ({ open, onClose, onSelect }) => {
-//   return (
-//     <Dialog open={open} onClose={onClose}>
-//       {" "}
-//       <DialogTitle>Select File Type</DialogTitle>{" "}
-//       <DialogContent>
-//         {" "}
-//         Choose your preferred format for download.{" "}
-//       </DialogContent>{" "}
-//       <DialogActions>
-//         {" "}
-//         <Button
-//           onClick={() => onSelect("pdf")}
-//           variant="contained"
-//           color="primary"
-//         >
-//           {" "}
-//           PDF{" "}
-//         </Button>{" "}
-//         <Button
-//           onClick={() => onSelect("word")}
-//           variant="outlined"
-//           color="secondary"
-//         >
-//           {" "}
-//           Word{" "}
-//         </Button>{" "}
-//       </DialogActions>{" "}
-//     </Dialog>
-//   );
-// };
-// export default DownloadPopup;
-
 import React from "react";
 import {
   Button,
@@ -51,11 +10,10 @@ import {
   Box,
 } from "@mui/material";
 
+const pdfIcon = "https://cdn-icons-png.flaticon.com/512/337/337946.png";
+// const wordIcon = "https://cdn-icons-png.flaticon.com/512/888/888870.png";
+const wordIcon = "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/microsoft-word-icon.png";
 
-const pdfIcon =
-  "https://cdn-icons-png.flaticon.com/512/337/337946.png"; 
-const wordIcon =
-  "https://cdn-icons-png.flaticon.com/512/732/732220.png"; 
 
 const DownloadPopup = ({ open, onClose, onSelect }) => {
   return (
@@ -150,4 +108,3 @@ const DownloadPopup = ({ open, onClose, onSelect }) => {
 };
 
 export default DownloadPopup;
-

@@ -11,6 +11,7 @@ import {
   Typography,
   Grid,
   Button,
+  InputBase,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
@@ -81,6 +82,7 @@ const GenerateScript = () => {
   const [videoType, setVideoType] = useState("");
   const [tone, setTone] = useState("");
   const [audience, setAudience] = useState("");
+  const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("English");
   const [duration, setDuration] = useState("");
   const [topn, setTopn] = useState("");
@@ -93,6 +95,8 @@ const GenerateScript = () => {
       setDuration(value);
     } else if (name == "audience") {
       setAudience(value);
+    } else if (name == "title") {
+      setTitle(value);
     }
   };
 
@@ -111,6 +115,8 @@ const GenerateScript = () => {
       showToast.error("Please select Model in Model Filters");
     } else if (!datasource) {
       showToast.error("Please select Data Source in Model Filters");
+    } else if (!title) {
+      showToast.error("Please give title!")
     } else {
       // showToast.info("Generating video...");
       apiCall();
@@ -121,6 +127,7 @@ const GenerateScript = () => {
     setLoader(true);
 
     const new_payload = {
+      title: title,
       brief: scriptText,
       suggested_duration: duration,
       language: language,
@@ -165,6 +172,17 @@ const GenerateScript = () => {
             >
               <IoArrowBackCircleOutline size={30} /> Back
             </Button>
+          </div>
+          <div>
+            <Input 
+              label="Title:"
+              type="text"
+              name="title"
+              placeholder="Enter the title to generate script"
+              className={styles.input}
+              value={title}
+              handleChange={handleInputChange}
+             />
           </div>
 
           <div className={styles.textareaContainer}>

@@ -13,6 +13,45 @@
   background: #f8fafc;
 }
 
+.languageList {
+  overflow-y: auto;
+  margin-bottom: 24px;
+}
+
+.languageItem {
+  padding: 14px 20px;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  color: #444;
+}
+.languageItem:hover {
+  background-color: #239de01a;
+}
+.activeLang {
+  background-color: #239de01a;
+  font-weight: 500;
+}
+
+.popupButtonRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding-left: 20px;
+}
+
+.downloadBtn {
+  padding: 15px 100px !important;
+  background-color: #239de0 !important;
+  color: white !important;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  text-transform: none;
+  transition: 0.2s ease;
+  line-height: normal;
+}
+
 .headCell {
   font-weight: 600;
   padding: 16px 20px;

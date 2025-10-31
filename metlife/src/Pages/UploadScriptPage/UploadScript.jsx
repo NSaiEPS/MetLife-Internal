@@ -15,11 +15,13 @@ import { saveAs } from "file-saver";
 import { downloadScriptPdf, downloadScriptWord } from "../../utils";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import Input from "../../components/common/Input";
 
 const UploadScript = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef();
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
   const [selectedLang, setSelectedLang] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -42,8 +44,10 @@ const UploadScript = () => {
     // "Japanese",
   ];
 
+  const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef.current.click();
+    console.log(fileInputRef, 'fileInputref_check')
   };
 
   const handleFileChange = async (e) => {
@@ -53,22 +57,25 @@ const UploadScript = () => {
     setSelectedFile(file);
     setLoader(true);
     setUploadSuccess(false);
-    setLoaderText("Uploading script...")
+    setLoaderText("Uploading script...");
 
     try {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("pdf_url", "");
+      formData.append("title", title)
       const response = await fetch(`${BASE_URL}upload-script`, {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
+   
       if (!response.ok) {
         toast.error("Error in script uploading");
+        return;
       }
+         const data = await response.json();
       setScriptData(data?.data);
-      localStorage.setItem('file_name',data?.data?.filename)
+      localStorage.setItem("file_name", data?.data?.filename);
       console.log("upload successful", data);
       toast.success("Script uploaded successfully");
       setUploadSuccess(true);
@@ -78,11 +85,11 @@ const UploadScript = () => {
       toast.error("Error in script uploading!");
     } finally {
       setLoader(false);
-      setLoaderText("")
+      setLoaderText("");
     }
   };
 
-  console.log(scriptData?.file_id, "scriptData");
+  console.log(scriptData, "scriptData");
 
   const handleTranslateScript = async () => {
     const { file_id } = scriptData;
@@ -98,7 +105,7 @@ const UploadScript = () => {
     formData.append("language", selectedLang);
     // formData.append("provider", "azure");
     setLoader(true);
-    setLoaderText("Translating script...")
+    setLoaderText("Translating script...");
 
     try {
       const response = await fetch(`${BASE_URL}translate-script-json`, {
@@ -118,13 +125,13 @@ const UploadScript = () => {
       console.log(translatedData);
       // downloadScriptPdf(translatedData?.data,true);
       // downloadScriptWord(translatedData?.data, true);
-      navigate('/translated-script', {state: translatedData});
+      // navigate("/translated-script", { state: translatedData });
       setLoader(false);
       toast.success(translatedData?.message || "Translate successful");
     } catch (error) {
       console.log(error);
       toast.error("Error in translating!");
-      return
+      return;
     } finally {
       setLoader(false);
       setLoaderText("");
@@ -132,8 +139,9 @@ const UploadScript = () => {
   };
 
   // sample pdf function for downloading
- const handleDownload = () => {
-  console.log('clicked')
+  
+  const handleDownload = () => {
+    console.log("clicked");
     const doc = new jsPDF();
 
     // Title
@@ -144,9 +152,19 @@ const UploadScript = () => {
     const tableColumn = ["Scene No.", "Script", "OST", "Type"];
     const tableRows = [
       ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-      ["02", "Create a 90-second explainer video script about photosynthesis", "Dummy text", "Monologue"],
+      [
+        "02",
+        "Create a 90-second explainer video script about photosynthesis",
+        "Dummy text",
+        "Monologue",
+      ],
       ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-      ["04", "Create a 90-second explainer video script about photosynthesis", "Dummy text", "Monologue"],
+      [
+        "04",
+        "Create a 90-second explainer video script about photosynthesis",
+        "Dummy text",
+        "Monologue",
+      ],
       ["05", "Create a 90-second video", "Dummy text", "Narration"],
     ];
 
@@ -163,6 +181,13 @@ const UploadScript = () => {
     doc.save("Sample_Script.pdf");
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name == "title") {
+      setTitle(value);
+    }
+  };
+
   return (
     <>
       <OneFrameHeader />
@@ -170,6 +195,17 @@ const UploadScript = () => {
       <div className={styles.uploadPageContainer}>
         <div className={styles.uploadCard}>
           <h2 className={styles.uploadTitle}>Upload Script</h2>
+          <div>
+            <Input
+              label="Title:"
+              type="text"
+              name="title"
+              placeholder="Enter the title to generate script"
+              className={styles.input}
+              value={title}
+              handleChange={handleInputChange}
+            />
+          </div>
 
           <div className={styles.uploadBox} onClick={handleClick}>
             <img src={UploadIcon} className={styles.uploadIcon} />
@@ -188,8 +224,21 @@ const UploadScript = () => {
           </div>
 
           <div className={styles.buttonRow}>
-              <ButtonComp
-              label="Download"
+            <ButtonComp
+              // label={loader ? "Generating" : "Continue & Generate Video"}
+              label="Submit"
+              variant="contained"
+              sx={{
+                backgroundColor: "#99D538",
+                "&:hover": { backgroundColor: "#c8ef88ff" },
+              }}
+              disabled={isDisabled}
+              action={() => navigate("/translated-script", {state: {data: scriptData, pdf:false}} )}
+              // action={() => navigate("/generate-script")}
+
+            />
+            <ButtonComp
+              label="Sample PDF"
               variant="contained"
               action={handleDownload}
               sx={{
@@ -198,7 +247,9 @@ const UploadScript = () => {
               }}
               // disabled={!uploadSuccess || loader}
             />
-            <ButtonComp
+            {/* may use later */}
+            {/*
+             <ButtonComp
               label={loader ? "Translating" : "Translate Script"}
               variant="contained"
               sx={{
@@ -222,7 +273,7 @@ const UploadScript = () => {
               }}
               action={() => navigate("/generate-script")}
               disabled={!uploadSuccess || loader}
-            />
+            /> */}
           </div>
 
           <PopupModal

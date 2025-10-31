@@ -15,14 +15,19 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import styles from "./Table.module.css";
 import AddNewScriptPopup from "../popUps/addScripts";
-import { downloadScriptPdf, downloadScriptWord} from "../../utils";
+import { downloadScriptPdf, downloadScriptWord } from "../../utils";
 import { showToast } from "../../utils/toast";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
 import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
 import DownloadPopup from "./popup/DownloadPopup";
+import ButtonComp from "./Buton/Button";
+import PopupModal from "../popUps/LanguagePopup";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../api/axios";
+import FullScreenGradientLoader from "./GradientLoader";
 
 /**
  * props:
@@ -35,13 +40,37 @@ function DynamicTable({
   data = [],
   // actions = [],
   extraDetails = {},
-  showDragAndActions = true
+  showDragAndActions = true,
+  pdfId,
 }) {
+  // console.log(extraDetails, "extraDetails");
+  const { id } = useParams();
+
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [openPopUp, setOpenPopup] = useState(false);
   const [popUpData, setPopUpdata] = useState();
   const [popupTitle, setPopupTitle] = useState("Add New Script");
+  const [loaderText, setLoaderText] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const languages = [
+    "Spanish",
+    "Hindi",
+    "Arabic",
+    "Nepali",
+    "Portuguese",
+    "Romanian",
+    "Ukrainian",
+    "Bangla",
+    // "English",
+    // "French",
+    // "German",
+    // "Italian",
+    // "Japanese",
+  ];
+  const [loader, setLoader] = useState(false);
+  const [selectedLang, setSelectedLang] = useState(null);
   const actions = [
     { icon: <img src={copy} />, onClick: (row) => addScene(row) },
     {
@@ -52,7 +81,11 @@ function DynamicTable({
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   // console.log(rows, data);
   useEffect(() => {
-    let newdata = extraDetails?.scenes?.map((item, index) => {
+    settingDataInRows(extraDetails?.scenes);
+  }, [extraDetails?.data, extraDetails?.scenes]);
+
+  const settingDataInRows = (reqData) => {
+    let newdata = reqData?.map((item, index) => {
       let data = {
         // "Scene No.": item?.scene_number,
         "Scene No.": index + 1,
@@ -64,7 +97,7 @@ function DynamicTable({
       return data;
     });
     setRows(newdata);
-  }, [extraDetails?.data, extraDetails?.scenes]);
+  };
 
   const addScene = (data) => {
     setPopUpdata(data);
@@ -88,29 +121,26 @@ function DynamicTable({
       ...item,
       "Scene No.": index + 1,
     }));
-
     setRows(reIndexed);
     showToast.success("Updated Successfully!");
   };
 
   const handleDownloadScript = () => {
-  setOpenDownloadPopup(true);
-};
+    setOpenDownloadPopup(true);
+  };
 
-const handleDownloadType = (type) => {
-  try {
-    if (type === "pdf") {
-      downloadScriptPdf({ ...extraDetails, scenes: rows });
+  const handleDownloadType = (type) => {
+    try {
+      if (type === "pdf") {
+        downloadScriptPdf({ ...extraDetails, scenes: rows });
+      } else if (type === "word") {
+        downloadScriptWord({ ...extraDetails, scenes: rows });
+      }
+      setOpenDownloadPopup(false);
+    } catch (err) {
+      console.error("Error generating file:", err);
     }
-     else if (type === "word") {
-      downloadScriptWord({ ...extraDetails, scenes: rows });
-    }
-    setOpenDownloadPopup(false);
-  } catch (err) {
-    console.error("Error generating file:", err);
-  }
-};
-  
+  };
 
   const handleUpdate = (data) => {
     // setSceneData({...sceneData,sceneData:})
@@ -153,45 +183,89 @@ const handleDownloadType = (type) => {
     showToast.success("Scene saved successfully");
     setOpenPopup(false);
   };
-  
-    
+
+  const handleTranslateScript = async () => {
+    const file_id = pdfId || id;
+    // const data = {
+    //   file_id: file_id,
+    //   language: selectedLang,
+    //   provider: 'azure'
+    // };
+    if (!file_id) return;
+    const formData = new FormData();
+    formData.append("file_id", file_id);
+    formData.append("language", selectedLang);
+    formData.append("provider", "azure");
+    setLoader(true);
+    setLoaderText("Translating script...");
+
+    try {
+      const response = await fetch(`${BASE_URL}translate-script-json`, {
+        method: "POST",
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        body: formData,
+      });
+      if (!response.ok) {
+        toast.error(translatedData?.message || "Error in translating");
+        return;
+      }
+      const translatedData = await response.json();
+      console.log(translatedData);
+      settingDataInRows(translatedData?.data?.scenes);
+      // downloadScriptPdf(translatedData?.data,true);
+      // downloadScriptWord(translatedData?.data, true);
+      // navigate("/translated-script", { state: translatedData });
+      setLoader(false);
+      toast.success(translatedData?.message || "Translate successful");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error in translating!");
+      return;
+    } finally {
+      setLoader(false);
+      setLoaderText("");
+    }
+  };
+
   return (
     <>
       <div className={styles1.header}>
         <h2 className={styles1.title}>Your Script</h2>
-        {
-          showDragAndActions && (
-  <div className={styles1.headerButtons}>
-          <Button
-            variant="outlined"
-            className={styles1.outlineBtn}
-            onClick={() => addScene()}
-          >
-            + Add Scene
-          </Button>
-          <Button variant="contained" className={styles1.primaryBtn}>
-            Show Source
-          </Button>
-          <Button
-            className={styles1.icon}
-            onClick={() => {
-              navigate("/generate-script");
-            }}
-          >
-            <IoArrowBackCircleOutline
-              size={30}
-              // onClick={() => navigate("/generate-script")}
-            />{" "}
-            Back
-          </Button>
-        </div>
-          )
-        }
-      
+        {showDragAndActions && (
+          <div className={styles1.headerButtons}>
+            <Button
+              variant="outlined"
+              className={styles1.outlineBtn}
+              onClick={() => addScene()}
+            >
+              + Add Scene
+            </Button>
+            <Button variant="contained" className={styles1.primaryBtn}>
+              Show Source
+            </Button>
+            <Button
+              className={styles1.icon}
+              onClick={() => {
+                navigate("/generate-script");
+              }}
+            >
+              <IoArrowBackCircleOutline
+                size={30}
+                // onClick={() => navigate("/generate-script")}
+              />{" "}
+              Back
+            </Button>
+          </div>
+        )}
       </div>
+      {!showDragAndActions && loader && (
+        <FullScreenGradientLoader text={loaderText} />
+      )}
       <TableContainer component={Paper} className={styles.tablePaper}>
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="table">
+          <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
             {(provided) => (
               <Table
                 className={styles.tableRoot}
@@ -202,7 +276,9 @@ const handleDownloadType = (type) => {
                   <TableRow className={styles.headRow}>
                     {/* Drag handle header cell */}
                     {/* <TableCell className={styles.headCell}></TableCell> */}
-                      {showDragAndActions && <TableCell className={styles.headCell}></TableCell>}
+                    {showDragAndActions && (
+                      <TableCell className={styles.headCell}></TableCell>
+                    )}
 
                     {columns.map((col, idx) => (
                       <TableCell key={idx} className={styles.headCell}>
@@ -222,6 +298,7 @@ const handleDownloadType = (type) => {
                       key={row.id || rIdx}
                       draggableId={String(row.id || rIdx)}
                       index={rIdx}
+                      isDragDisabled={!showDragAndActions}
                     >
                       {(provided) => (
                         <TableRow
@@ -231,15 +308,15 @@ const handleDownloadType = (type) => {
                         >
                           {/* Drag handle cell */}
                           {showDragAndActions && (
-                              <TableCell className={styles.bodyCell}>
-                            <IconButton
-                              {...provided.dragHandleProps}
-                              size="small"
-                              className={styles.dragHandle}
-                            >
-                              <DragIndicatorIcon />
-                            </IconButton>
-                          </TableCell>
+                            <TableCell className={styles.bodyCell}>
+                              <IconButton
+                                {...provided.dragHandleProps}
+                                size="small"
+                                className={styles.dragHandle}
+                              >
+                                <DragIndicatorIcon />
+                              </IconButton>
+                            </TableCell>
                           )}
                           {/* <TableCell className={styles.bodyCell}>
                             <IconButton
@@ -306,9 +383,57 @@ const handleDownloadType = (type) => {
           alignItems="center"
           className={styles.stack}
         >
-          <Button variant="outlined" className={styles.largeOutline}>
-            Regenerate Script
-          </Button>
+          <ButtonComp
+            label={loader ? "Translating" : "Translate Script"}
+            variant="contained"
+            sx={{
+              backgroundColor: "#239DE0",
+              "&:hover": { backgroundColor: "#7fbcddff" },
+              fontFamily: "normal normal bold 16px/20px ",
+            }}
+            action={() => {
+              setOpen(true);
+            }}
+            // disabled={!uploadSuccess || loader}
+          />
+          <PopupModal
+            open={open}
+            onClose={() => setOpen(false)}
+            title="Select Language"
+          >
+            <div className={styles.languageList}>
+              {languages.map((lang, index) => (
+                <div
+                  key={index}
+                  className={`${styles.languageItem} ${
+                    selectedLang === lang ? styles.activeLang : ""
+                  }`}
+                  onClick={() => setSelectedLang(lang)}
+                >
+                  {lang}
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.popupButtonRow}>
+              <ButtonComp
+                label="Translate Script"
+                variant="contained"
+                className={styles.downloadBtn}
+                action={() => {
+                  // console.log("Selected Language:", selectedLang);
+                  handleTranslateScript();
+                  setOpen(false);
+                }}
+              />
+            </div>
+          </PopupModal>
+          {showDragAndActions && (
+            <Button variant="outlined" className={styles.largeOutline}>
+              Regenerate Script
+            </Button>
+          )}
+
           <Button
             variant="contained"
             className={styles.successBtn}
@@ -316,9 +441,11 @@ const handleDownloadType = (type) => {
           >
             Download Script
           </Button>
-          <Button variant="contained" className={styles.primaryBtn}>
-            Create Visual Content
-          </Button>
+          {showDragAndActions && (
+            <Button variant="contained" className={styles.primaryBtn}>
+              Create Visual Content
+            </Button>
+          )}
         </Stack>
 
         <DownloadPopup
