@@ -16,7 +16,8 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
-import path from "../../assets/path.svg";
+import path from "../../assets/copy_icon.svg";
+
 import Input from "../../components/common/Input";
 import api from "../../api/axios";
 import GradientLoader from "../../components/common/GradientLoader";
@@ -116,7 +117,7 @@ const GenerateScript = () => {
     } else if (!datasource) {
       showToast.error("Please select Data Source in Model Filters");
     } else if (!title) {
-      showToast.error("Please give title!")
+      showToast.error("Please give title!");
     } else {
       // showToast.info("Generating video...");
       apiCall();
@@ -174,7 +175,7 @@ const GenerateScript = () => {
             </Button>
           </div>
           <div>
-            <Input 
+            <Input
               label="Title:"
               type="text"
               name="title"
@@ -182,7 +183,7 @@ const GenerateScript = () => {
               className={styles.input}
               value={title}
               handleChange={handleInputChange}
-             />
+            />
           </div>
 
           <div className={styles.textareaContainer}>

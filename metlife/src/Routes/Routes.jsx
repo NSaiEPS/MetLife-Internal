@@ -17,6 +17,7 @@ import ScriptPage from "../Pages/AddNewScriptPage/AddNewScriptPage";
 import LoginLayout from "../components/Login/Login"; // Assuming this is your layout
 import { getToken, getLoggedInUserType, USERS } from "../utils";
 import Layout from "../components/layout/Layout";
+import MyVideosDashboard from "../Pages/Dashboard/Dashboard";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ element, allowedRoles = [] }) => {
@@ -41,7 +42,7 @@ const Authorization = ({ element }) => {
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/video-frame" replace />,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: "/login",
@@ -63,6 +64,10 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
+        path: "/dashboard",
+        element: <MyVideosDashboard />,
+      },
+      {
         path: "/video-frame",
         element: <VideoCreationOptions />,
       },
@@ -70,7 +75,7 @@ export const router = createBrowserRouter([
         path: "/upload-script",
         element: <UploadScript />,
       },
-        {
+      {
         path: "/translated-script",
         element: <TranslatedScript />,
       },

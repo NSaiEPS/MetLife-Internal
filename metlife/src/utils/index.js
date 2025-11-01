@@ -15,7 +15,13 @@ import {
   ShadingType,
 } from "docx";
 import { saveAs } from "file-saver";
+import { toast } from "react-toastify";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 export const downloadScriptPdf = (data, uploadDownload = false) => {
   const doc = new jsPDF();
   const fileName = localStorage.getItem("file_name");
@@ -66,7 +72,7 @@ export const downloadScriptPdf = (data, uploadDownload = false) => {
     },
   });
   // doc.save(`${data.title}.pdf`);
-  doc.save(`${fileName || "Script"}.pdf`)
+  doc.save(`${fileName || "Script"}.pdf`);
 };
 
 // download script word
@@ -263,4 +269,20 @@ export const formatNumberWithCommas = (input) => {
   if (isNaN(num)) return "";
 
   return num.toLocaleString("en-US");
+};
+
+export const apiErrorHandling = (res) => {
+  //  navigateTo("/login", { replace: true }, res?.message);
+  if (res?.message !== "You are not authorised to use this api") {
+    toast.error(res?.message ?? "Something went wrong!");
+  }
+};
+
+export const formatRelativeTime = (
+  date,
+  format = "DD MMM YYYY, hh:mm:ss A"
+) => {
+  if (!date) return "-";
+
+  return dayjs.utc(date).tz("Asia/Kolkata").format(format);
 };

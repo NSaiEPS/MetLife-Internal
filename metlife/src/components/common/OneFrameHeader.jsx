@@ -8,7 +8,7 @@ const OneFrameHeader = () => {
   const navigate = useNavigate();
 
   const handleImageClick = () => {
-    navigate("/video-frame");
+    navigate("/");
   };
   return (
     <AppBar position="static" className={styles.appBar}>
