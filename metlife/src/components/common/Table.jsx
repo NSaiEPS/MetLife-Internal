@@ -74,7 +74,7 @@ function DynamicTable({
   ];
   const [loader, setLoader] = useState(false);
   const [selectedLang, setSelectedLang] = useState(null);
-  const [showSourceData, setShowSourceData] = useState([])
+  const [showSourceData, setShowSourceData] = useState([]);
   const actions = [
     { icon: <img src={copy} />, onClick: (row) => addScene(row) },
     {
@@ -86,11 +86,10 @@ function DynamicTable({
   const [openShowPopup, setOpenShowPopup] = useState(false);
   const [openRegenerateePopup, setOpenRegeneratePopup] = useState(false);
 
-
   // console.log(rows, data);
   useEffect(() => {
     settingDataInRows(extraDetails?.scenes);
-  }, [extraDetails?.data, extraDetails?.scenes]);
+  }, [extraDetails?.scenes]);
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
@@ -136,9 +135,10 @@ function DynamicTable({
   const handleDownloadScript = () => {
     setOpenDownloadPopup(true);
   };
-
+  const [showSourceLoader, setShowSourceLoader] = useState(false);
   const handleShowSource = async () => {
     setOpenShowPopup(true);
+    setShowSourceLoader(true);
     try {
       const response = await fetch(`${BASE_URL}show-source/${id}`, {
         method: "GET",
@@ -153,7 +153,9 @@ function DynamicTable({
       }
     } catch (error) {
       console.log(error);
-      toast.error('Something went wrong!');
+      toast.error("Something went wrong!");
+    } finally {
+      setShowSourceLoader(false);
     }
   };
 
@@ -221,16 +223,16 @@ function DynamicTable({
     // };
     if (!file_id) return;
     const formData = new FormData();
-    if(id) {
-        formData.append("script_id", file_id);
-        formData.append("language", selectedLang);
-        formData.append("provider", "azure");
+    if (id) {
+      formData.append("script_id", file_id);
+      formData.append("language", selectedLang);
+      formData.append("provider", "azure");
     } else {
-        formData.append("file_id", file_id);
-        formData.append("language", selectedLang);
-        formData.append("provider", "azure");
+      formData.append("file_id", file_id);
+      formData.append("language", selectedLang);
+      formData.append("provider", "azure");
     }
-   
+
     setLoader(true);
     setLoaderText("Translating script...");
 
@@ -281,6 +283,7 @@ function DynamicTable({
               variant="contained"
               className={styles1.primaryBtn}
               onClick={handleShowSource}
+              disabled={extraDetails?.data_source == "openai"}
             >
               Show Source
             </Button>
@@ -288,6 +291,7 @@ function DynamicTable({
               open={openShowPopup}
               onClose={() => setOpenShowPopup(false)}
               data={showSourceData}
+              loader={showSourceLoader}
             />
             <Button
               className={styles1.icon}
@@ -304,9 +308,7 @@ function DynamicTable({
           </div>
         )}
       </div>
-      {loader && (
-        <FullScreenGradientLoader text={loaderText} />
-      )}
+      {loader && <FullScreenGradientLoader text={loaderText} />}
       <TableContainer component={Paper} className={styles.tablePaper}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
@@ -474,11 +476,13 @@ function DynamicTable({
           </PopupModal>
           {showDragAndActions && (
             <>
-              <Button variant="outlined" className={styles.largeOutline}
-              onClick = {() => setOpenRegeneratePopup(true)}
+              <Button
+                variant="outlined"
+                className={styles.largeOutline}
+                onClick={() => setOpenRegeneratePopup(true)}
               >
-              Regenerate Script
-            </Button>
+                Regenerate Script
+              </Button>
               <RegenerateScriptPopup
                 open={openRegenerateePopup}
                 onClose={() => setOpenRegeneratePopup(false)}

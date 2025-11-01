@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import FullScreenGradientLoader from "../GradientLoader";
 
-const ShowSourcePopup = ({ open, onClose, data = [] }) => {
+const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
   console.log(data);
   return (
     <Dialog
@@ -46,7 +46,12 @@ const ShowSourcePopup = ({ open, onClose, data = [] }) => {
       </DialogTitle>
 
       <DialogContent dividers sx={{ maxHeight: 400, overflowY: "auto" }}>
-        {data && data.length > 0 ? (
+        {loader ? (
+          <Typography color="text.secondary" textAlign="center">
+            loading...
+            {/* <FullScreenGradientLoader text="loading" /> */}
+          </Typography>
+        ) : data && data.length > 0 ? (
           <Stack spacing={2}>
             {data.map((item, index) => (
               <Box
@@ -86,10 +91,7 @@ const ShowSourcePopup = ({ open, onClose, data = [] }) => {
             ))}
           </Stack>
         ) : (
-          <Typography color="text.secondary" textAlign="center">
-            {/* loading... */}
-              <FullScreenGradientLoader text="loading" />
-          </Typography>
+          " NO Data Available"
         )}
       </DialogContent>
 
