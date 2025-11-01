@@ -1,6 +1,6 @@
 // src/components/common/ProgressBar.jsx
 import React from "react";
-import styles from "./ProgressBar.module.css";
+import styles from "./progressBar.module.css";
 
 const ProgressBar = ({ progress = 0 }) => {
   return (
