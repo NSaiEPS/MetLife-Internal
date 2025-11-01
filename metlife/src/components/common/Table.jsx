@@ -71,7 +71,7 @@ function DynamicTable({
     "Bangla",
   ];
   const [loader, setLoader] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(null);
+  const [selectedLang, setSelectedLang] = useState("English");
   const [showSourceData, setShowSourceData] = useState([]);
   const actions = [
     { icon: <img src={copy} />, onClick: (row) => addScene(row) },
