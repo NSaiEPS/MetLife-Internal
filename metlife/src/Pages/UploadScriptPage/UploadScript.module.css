@@ -4,9 +4,9 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 40px;
+  padding:60px 40px;
   background-color: #f8fafc;
-  padding-top: 100px;
+  /* padding-top: 100px; */
 }
 
 .uploadCard {
@@ -72,7 +72,7 @@
 }
 
 .buttonRow {
-  padding-top: 100px;
+  padding-top: 20px 100px;
   display: flex;
   justify-content: flex-end;
   gap: 16px;

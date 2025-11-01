@@ -16,6 +16,7 @@ import { downloadScriptPdf, downloadScriptWord } from "../../utils";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Input from "../../components/common/Input";
+import { showToast } from "../../utils/toast";
 
 const UploadScript = () => {
   const navigate = useNavigate();
@@ -47,12 +48,33 @@ const UploadScript = () => {
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef.current.click();
-    console.log(fileInputRef, 'fileInputref_check')
+    console.log(fileInputRef, "fileInputref_check");
   };
+
+  // const handleFileChange = (e) => {
+  //   if(!title) {
+  //     showToast.error("Please give title");
+  //   } else if(!selectedFile) {
+  //     showToast.error("Please select file")
+  //   } else {
+  //     apiCall();
+  //   }
+  // }
+
+  console.log(selectedFile, "Selected_file");
 
   const handleFileChange = async (e) => {
     const files = e.target.files;
-    if (!files || files.length === 0) return;
+    // if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      showToast.error("Please select a file");
+      return;
+    }
+
+    if (!title) {
+      showToast.error("Please give title");
+      return;
+    }
     const file = files[0];
     setSelectedFile(file);
     setLoader(true);
@@ -63,17 +85,17 @@ const UploadScript = () => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("pdf_url", "");
-      formData.append("title", title)
+      formData.append("title", title);
       const response = await fetch(`${BASE_URL}upload-script`, {
         method: "POST",
         body: formData,
       });
-   
+
       if (!response.ok) {
         toast.error("Error in script uploading");
         return;
       }
-         const data = await response.json();
+      const data = await response.json();
       setScriptData(data?.data);
       localStorage.setItem("file_name", data?.data?.filename);
       console.log("upload successful", data);
@@ -139,7 +161,6 @@ const UploadScript = () => {
   };
 
   // sample pdf function for downloading
-  
   const handleDownload = () => {
     console.log("clicked");
     const doc = new jsPDF();
@@ -233,9 +254,12 @@ const UploadScript = () => {
                 "&:hover": { backgroundColor: "#c8ef88ff" },
               }}
               disabled={isDisabled}
-              action={() => navigate("/translated-script", {state: {data: scriptData, pdf:false}} )}
+              action={() =>
+                navigate("/translated-script", {
+                  state: { data: scriptData, pdf: false },
+                })
+              }
               // action={() => navigate("/generate-script")}
-
             />
             <ButtonComp
               label="Sample PDF"
