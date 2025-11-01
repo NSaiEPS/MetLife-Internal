@@ -16,6 +16,7 @@ import ButtonComp from "../Buton/Button";
 import { showToast } from "../../../utils/toast";
 import api from "../../../api/axios";
 import FullScreenGradientLoader from "../GradientLoader";
+import { useNavigate } from "react-router";
 
 const topNOptions = [
   { value: 5, label: "5" },
@@ -30,12 +31,13 @@ const modelOptions = [
   { value: "gpt-4.1", label: "GPT-4.1" },
 ];
 
-const RegenerateScriptPopup = ({ open, onClose, id }) => {
+const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
   const [model, setModel] = useState("gpt-4o-mini");
   const [topn, setTopn] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loader, setLoader] = useState(false);
   const [regenerateData, setRegenerateData] = useState([]);
+  const navigate = useNavigate();
 
   //   console.log(data);
   const handleRegenerate = () => {
@@ -63,8 +65,7 @@ const RegenerateScriptPopup = ({ open, onClose, id }) => {
       const result = await api.post(`scripts/${id}/regenerate`, new_payload);
       console.log(result, "regenerate_result");
       if (result?.status == 200) {
-        setRegenerateData(result?.data)
-        
+        setTableExtraData(result?.data);
         // if (result?.data?.scenes) {
         //   navigate(`/scenes/${result?.data?.script_id}`);
         // }

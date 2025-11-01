@@ -38,7 +38,6 @@ const TranslatedScript = () => {
         console.log(error);
       }
     };
-
     fileUploadData();
   }, [state?.data?.file_id]);
 

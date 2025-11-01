@@ -46,6 +46,11 @@ function DynamicTable({
   showDragAndActions = true,
   pdfId,
 }) {
+  const [tableExtraData, setTableExtraData] = useState({});
+  useEffect(() => {
+    setTableExtraData(extraDetails);
+  }, [extraDetails]);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -80,8 +85,10 @@ function DynamicTable({
   const [openRegenerateePopup, setOpenRegeneratePopup] = useState(false);
 
   useEffect(() => {
-    settingDataInRows(extraDetails?.scenes);
-  }, [extraDetails?.scenes]);
+    if (tableExtraData?.scenes) {
+      settingDataInRows(tableExtraData?.scenes);
+    }
+  }, [tableExtraData?.scenes]);
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
@@ -153,9 +160,9 @@ function DynamicTable({
   const handleDownloadType = (type) => {
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...extraDetails, scenes: rows });
+        downloadScriptPdf({ ...tableExtraData, scenes: rows });
       } else if (type === "word") {
-        downloadScriptWord({ ...extraDetails, scenes: rows });
+        downloadScriptWord({ ...tableExtraData, scenes: rows });
       }
       setOpenDownloadPopup(false);
     } catch (err) {
@@ -263,25 +270,23 @@ function DynamicTable({
             </Button>
             <Tooltip
               title={
-                extraDetails?.data_source === "openai"
+                tableExtraData?.data_source === "openai"
                   ? "OpenAI does not have any source"
                   : ""
               }
-              disableHoverListener={extraDetails?.data_source !== "openai"}
+              disableHoverListener={tableExtraData?.data_source !== "openai"}
               arrow
             >
               <span>
-
-              <Button
-                variant="contained"
-                className={styles1.primaryBtn}
-                onClick={handleShowSource}
-                disabled={extraDetails?.data_source == "openai"}
-              >
-                Show Source
-              </Button>
+                <Button
+                  variant="contained"
+                  className={styles1.primaryBtn}
+                  onClick={handleShowSource}
+                  disabled={tableExtraData?.data_source == "openai"}
+                >
+                  Show Source
+                </Button>
               </span>
-
             </Tooltip>
 
             <ShowSourcePopup
@@ -483,7 +488,7 @@ function DynamicTable({
                 open={openRegenerateePopup}
                 onClose={() => setOpenRegeneratePopup(false)}
                 id={id}
-                hanlde
+                setTableExtraData={setTableExtraData}
                 // data={showSourceData}
               />
             </>

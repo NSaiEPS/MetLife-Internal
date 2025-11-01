@@ -17,69 +17,60 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Input from "../../components/common/Input";
 import { showToast } from "../../utils/toast";
+import { IoMdDownload } from "react-icons/io";
 
 const UploadScript = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef();
-  const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [selectedLang, setSelectedLang] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scriptData, setScriptData] = useState(null);
   const [loader, setLoader] = useState(false);
-  const [loaderText, setLoaderText] = useState("");
-  const languages = [
-    "Spanish",
-    "Hindi",
-    "Arabic",
-    "Nepali",
-    "Portuguese",
-    "Romanian",
-    "Ukrainian",
-    "Bangla",
-    // "English",
-    // "French",
-    // "German",
-    // "Italian",
-    // "Japanese",
-  ];
-
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef.current.click();
     console.log(fileInputRef, "fileInputref_check");
   };
 
-  // const handleFileChange = (e) => {
-  //   if(!title) {
-  //     showToast.error("Please give title");
-  //   } else if(!selectedFile) {
-  //     showToast.error("Please select file")
-  //   } else {
-  //     apiCall();
-  //   }
-  // }
-
   console.log(selectedFile, "Selected_file");
 
   const handleFileChange = async (e) => {
     const files = e.target.files;
-    // if (!files || files.length === 0) return;
+    console.log(files);
     if (!files || files.length === 0) {
-      showToast.error("Please select a file");
-      return;
-    }
-
-    if (!title) {
-      showToast.error("Please give title");
+      showToast.error("Please give input first");
       return;
     }
     const file = files[0];
+
+    if (file.type !== "application/pdf") {
+      showToast.error("Only PDF files are allowed");
+      e.target.value = null;
+      return;
+    }
+    if (
+      selectedFile &&
+      file.name === selectedFile.name &&
+      file.size === selectedFile.size
+    ) {
+      showToast.error("You have already uploaded this file.");
+      return;
+    }
+    // if (!files || files.length === 0) {
+    //   showToast.error("Please select a file");
+    //   return;
+    // }
+
+    if (!title.trim()) {
+      showToast.error("Please give a title before uploading");
+      e.target.value = "";
+      return;
+    }
+    // const file = files[0];
     setSelectedFile(file);
     setLoader(true);
     setUploadSuccess(false);
-    setLoaderText("Uploading script...");
 
     try {
       const formData = new FormData();
@@ -91,76 +82,30 @@ const UploadScript = () => {
         body: formData,
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         toast.error("Error in script uploading");
         return;
       }
       const data = await response.json();
+      if (!data || !data.data) {
+        showToast.error("Invalid response from server");
+        return;
+      }
       setScriptData(data?.data);
-      localStorage.setItem("file_name", data?.data?.filename);
       console.log("upload successful", data);
       toast.success("Script uploaded successfully");
       setUploadSuccess(true);
-      setLoader(false);
     } catch (error) {
       console.log(error);
       toast.error("Error in script uploading!");
     } finally {
       setLoader(false);
-      setLoaderText("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
   console.log(scriptData, "scriptData");
 
-  const handleTranslateScript = async () => {
-    const { file_id } = scriptData;
-    console.log(file_id);
-    // const data = {
-    //   file_id: file_id,
-    //   language: selectedLang,
-    //   provider: 'azure'
-    // };
-    if (!file_id) return;
-    const formData = new FormData();
-    formData.append("file_id", file_id);
-    formData.append("language", selectedLang);
-    // formData.append("provider", "azure");
-    setLoader(true);
-    setLoaderText("Translating script...");
-
-    try {
-      const response = await fetch(`${BASE_URL}translate-script-json`, {
-        method: "POST",
-        // headers: {
-        //   "Content-Type": "application/json",
-        // },
-        body: formData,
-      });
-
-      const translatedData = await response.json();
-
-      if (!response.ok) {
-        toast.error(translatedData?.message || "Error in translating");
-        return;
-      }
-      console.log(translatedData);
-      // downloadScriptPdf(translatedData?.data,true);
-      // downloadScriptWord(translatedData?.data, true);
-      // navigate("/translated-script", { state: translatedData });
-      setLoader(false);
-      toast.success(translatedData?.message || "Translate successful");
-    } catch (error) {
-      console.log(error);
-      toast.error("Error in translating!");
-      return;
-    } finally {
-      setLoader(false);
-      setLoaderText("");
-    }
-  };
-
-  // sample pdf function for downloading
   const handleDownload = () => {
     console.log("clicked");
     const doc = new jsPDF();
@@ -209,10 +154,15 @@ const UploadScript = () => {
     }
   };
 
+  const downloadSvg = `data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'>
+  <path d='M5 20h14v-2H5v2zm7-18v12l4-4h-3V2h-2v8H8l4 4z'/>
+</svg>`;
+
   return (
     <>
       <OneFrameHeader />
-      {loader && <FullScreenGradientLoader text={loaderText} />}
+      {loader && <FullScreenGradientLoader text="Uploading Script..." />}
       <div className={styles.uploadPageContainer}>
         <div className={styles.uploadCard}>
           <h2 className={styles.uploadTitle}>Upload Script</h2>
@@ -246,8 +196,8 @@ const UploadScript = () => {
 
           <div className={styles.buttonRow}>
             <ButtonComp
-              // label={loader ? "Generating" : "Continue & Generate Video"}
-              label="Submit"
+              label={loader ? "Submitting" : "Submit"}
+              // label="Submit"
               variant="contained"
               sx={{
                 backgroundColor: "#99D538",
@@ -259,79 +209,17 @@ const UploadScript = () => {
                   state: { data: scriptData, pdf: false },
                 })
               }
-              // action={() => navigate("/generate-script")}
             />
             <ButtonComp
-              label="Sample PDF"
+              label="Sample PDF Download"
               variant="contained"
               action={handleDownload}
               sx={{
                 backgroundColor: "#239DE0",
                 "&:hover": { backgroundColor: "#7fbcddff" },
               }}
-              // disabled={!uploadSuccess || loader}
             />
-            {/* may use later */}
-            {/*
-             <ButtonComp
-              label={loader ? "Translating" : "Translate Script"}
-              variant="contained"
-              sx={{
-                backgroundColor: "#99D538",
-                "&:hover": { backgroundColor: "#c8ef88ff" },
-                fontFamily: "normal normal bold 16px/20px ",
-              }}
-              action={() => {
-                setOpen(true);
-              }}
-              disabled={!uploadSuccess || loader}
-            />
-
-            <ButtonComp
-              // label={loader ? "Generating" : "Continue & Generate Video"}
-              label="Continue & Generate Video"
-              variant="contained"
-              sx={{
-                backgroundColor: "#239DE0",
-                "&:hover": { backgroundColor: "#7fbcddff" },
-              }}
-              action={() => navigate("/generate-script")}
-              disabled={!uploadSuccess || loader}
-            /> */}
           </div>
-
-          <PopupModal
-            open={open}
-            onClose={() => setOpen(false)}
-            title="Select Language"
-          >
-            <div className={styles.languageList}>
-              {languages.map((lang, index) => (
-                <div
-                  key={index}
-                  className={`${styles.languageItem} ${
-                    selectedLang === lang ? styles.activeLang : ""
-                  }`}
-                  onClick={() => setSelectedLang(lang)}
-                >
-                  {lang}
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.popupButtonRow}>
-              <ButtonComp
-                label="Translate Script"
-                variant="contained"
-                className={styles.downloadBtn}
-                action={() => {
-                  // console.log("Selected Language:", selectedLang);
-                  handleTranslateScript();
-                  setOpen(false);
-                }}
-              />
-            </div>
-          </PopupModal>
         </div>
       </div>
       <Footer />
