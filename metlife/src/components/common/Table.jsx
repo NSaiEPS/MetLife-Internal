@@ -23,6 +23,8 @@ import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
 import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
 import DownloadPopup from "./popup/DownloadPopup";
+import ShowSourcePopup from "./popup/ShowSourcePopup";
+import RegenerateScriptPopup from "./popup/RegenerateScriptPopup";
 import ButtonComp from "./Buton/Button";
 import PopupModal from "../popUps/LanguagePopup";
 import { toast } from "react-toastify";
@@ -45,6 +47,7 @@ function DynamicTable({
 }) {
   // console.log(extraDetails, "extraDetails");
   const { id } = useParams();
+  // console.log(id, "idCheck")
 
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -71,6 +74,7 @@ function DynamicTable({
   ];
   const [loader, setLoader] = useState(false);
   const [selectedLang, setSelectedLang] = useState(null);
+  const [showSourceData, setShowSourceData] = useState([])
   const actions = [
     { icon: <img src={copy} />, onClick: (row) => addScene(row) },
     {
@@ -79,6 +83,10 @@ function DynamicTable({
     },
   ];
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
+  const [openShowPopup, setOpenShowPopup] = useState(false);
+  const [openRegenerateePopup, setOpenRegeneratePopup] = useState(false);
+
+
   // console.log(rows, data);
   useEffect(() => {
     settingDataInRows(extraDetails?.scenes);
@@ -127,6 +135,26 @@ function DynamicTable({
 
   const handleDownloadScript = () => {
     setOpenDownloadPopup(true);
+  };
+
+  const handleShowSource = async () => {
+    setOpenShowPopup(true);
+    try {
+      const response = await fetch(`${BASE_URL}show-source/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        const data = await response.json();
+        // console.log(data?.documents, "check")
+        setShowSourceData(data?.documents);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong!');
+    }
   };
 
   const handleDownloadType = (type) => {
@@ -193,9 +221,16 @@ function DynamicTable({
     // };
     if (!file_id) return;
     const formData = new FormData();
-    formData.append("file_id", file_id);
-    formData.append("language", selectedLang);
-    formData.append("provider", "azure");
+    if(id) {
+        formData.append("script_id", file_id);
+        formData.append("language", selectedLang);
+        formData.append("provider", "azure");
+    } else {
+        formData.append("file_id", file_id);
+        formData.append("language", selectedLang);
+        formData.append("provider", "azure");
+    }
+   
     setLoader(true);
     setLoaderText("Translating script...");
 
@@ -242,9 +277,18 @@ function DynamicTable({
             >
               + Add Scene
             </Button>
-            <Button variant="contained" className={styles1.primaryBtn}>
+            <Button
+              variant="contained"
+              className={styles1.primaryBtn}
+              onClick={handleShowSource}
+            >
               Show Source
             </Button>
+            <ShowSourcePopup
+              open={openShowPopup}
+              onClose={() => setOpenShowPopup(false)}
+              data={showSourceData}
+            />
             <Button
               className={styles1.icon}
               onClick={() => {
@@ -260,7 +304,7 @@ function DynamicTable({
           </div>
         )}
       </div>
-      {!showDragAndActions && loader && (
+      {loader && (
         <FullScreenGradientLoader text={loaderText} />
       )}
       <TableContainer component={Paper} className={styles.tablePaper}>
@@ -429,8 +473,23 @@ function DynamicTable({
             </div>
           </PopupModal>
           {showDragAndActions && (
-            <Button variant="outlined" className={styles.largeOutline}>
+            <>
+              <Button variant="outlined" className={styles.largeOutline}
+              onClick = {() => setOpenRegeneratePopup(true)}
+              >
               Regenerate Script
+            </Button>
+              <RegenerateScriptPopup
+                open={openRegenerateePopup}
+                onClose={() => setOpenRegeneratePopup(false)}
+                // data={showSourceData}
+              />
+            </>
+          )}
+
+          {!showDragAndActions && (
+            <Button variant="outlined" className={styles.largeOutline}>
+              Save
             </Button>
           )}
 

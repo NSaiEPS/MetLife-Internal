@@ -57,7 +57,7 @@ const TranslatedScript = () => {
         }
         const data = await response.json();
         console.log(data?.data?.scenes, "response_data_check");
-        setPdfViewData(data?.data);
+        setPdfViewData(data?.data?.scenes[0]);
       } catch (error) {
         console.log(error);
       }
@@ -114,6 +114,8 @@ const TranslatedScript = () => {
   //     }
   //   };
 
+  console.log(pdfViewData, "pdfViewData")
+
   return (
     <>
       <div className={styles.container}>
@@ -130,6 +132,8 @@ const TranslatedScript = () => {
                 showDragAndActions={false}
                 pdfId={state?.data?.file_id}
               />
+
+              {/* For later use */}
               {/* <ButtonComp
               label={loader ? "Translating" : "Translate Script"}
               variant="contained"
@@ -178,6 +182,7 @@ const TranslatedScript = () => {
             </>
           ) : (
             <FullScreenGradientLoader  text="Fetching details" />
+          
           )}
         </div>
         <Footer />
