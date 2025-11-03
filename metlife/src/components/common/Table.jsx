@@ -31,6 +31,9 @@ import PopupModal from "../popUps/LanguagePopup";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../api/axios";
 import FullScreenGradientLoader from "./GradientLoader";
+import { MdDone } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 
 /**
  * props:
@@ -46,10 +49,14 @@ function DynamicTable({
   showDragAndActions = true,
   pdfId,
 }) {
+  // console.log(extraDetails, "extraDetails");
+
   const [tableExtraData, setTableExtraData] = useState({});
   useEffect(() => {
     setTableExtraData(extraDetails);
   }, [extraDetails]);
+
+  // console.log("Before_Save: ", extraDetails);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -80,9 +87,11 @@ function DynamicTable({
       onClick: (row) => alert(`Delete ${row["Scene No."]}`),
     },
   ];
+  const dispatch = useDispatch();
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const [openShowPopup, setOpenShowPopup] = useState(false);
   const [openRegenerateePopup, setOpenRegeneratePopup] = useState(false);
+  const { saveLoader } = useSelector((store) => store.SaveTranslatedData);
 
   useEffect(() => {
     if (tableExtraData?.scenes) {
@@ -214,6 +223,9 @@ function DynamicTable({
   const handleTranslateScript = async () => {
     const file_id = pdfId || id;
     if (!file_id) return;
+    // if(!selectedLang) {
+    //   toast.error("Please slect a language to translate.")
+    // }
     const formData = new FormData();
     if (id) {
       formData.append("script_id", file_id);
@@ -253,6 +265,16 @@ function DynamicTable({
       setLoader(false);
       setLoaderText("");
     }
+  };
+
+  const handleSave = () => {
+    // const data = {
+    //   data: {extraDetails},
+    // };
+    const data = {
+      data: extraDetails,
+    };
+    dispatch(postTranslatedDataSave(data));
   };
 
   return (
@@ -310,6 +332,7 @@ function DynamicTable({
           </div>
         )}
       </div>
+      {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
       {loader && <FullScreenGradientLoader text={loaderText} />}
       <TableContainer component={Paper} className={styles.tablePaper}>
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -457,7 +480,10 @@ function DynamicTable({
                   }`}
                   onClick={() => setSelectedLang(lang)}
                 >
-                  {lang}
+                  {selectedLang === lang && (
+                    <MdDone size={20} className={styles.tickIcon} />
+                  )}
+                  <span>{lang}</span>
                 </div>
               ))}
             </div>
@@ -493,12 +519,16 @@ function DynamicTable({
               />
             </>
           )}
-
-          {!showDragAndActions && (
-            <Button variant="outlined" className={styles.largeOutline}>
+             <Button
+              label={saveLoader ? "Saving" : "Save"}
+              variant="outlined"
+              className={styles.largeOutline}
+              onClick={handleSave}
+              disabled={saveLoader}
+            >
               Save
             </Button>
-          )}
+      
 
           <Button
             variant="contained"

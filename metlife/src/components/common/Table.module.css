@@ -24,13 +24,22 @@
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
   color: #444;
+  display: flex;
+  align-items: center;
 }
 .languageItem:hover {
-  background-color: #239de01a;
+  background-color: #f4f4f4;
 }
 .activeLang {
   background-color: #239de01a;
   font-weight: 500;
+}
+.tickIcon {
+  width: 20px;
+  height: 20px;
+  margin-right:5px;
+  filter: invert(42%) sepia(78%) saturate(1114%) hue-rotate(176deg)
+    brightness(96%) contrast(91%); /* blue tint */
 }
 
 .popupButtonRow {

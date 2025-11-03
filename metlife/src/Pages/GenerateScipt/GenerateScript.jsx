@@ -73,6 +73,8 @@ const durationOptions = [
   { value: "2 minutes", label: "2 mins" },
   { value: "3 minutes", label: "3 mins" },
   { value: "4 minutes", label: "4 mins" },
+  { value: "5 minutes", label: "5 mins" },
+  { value: "6 minutes", label: "6 mins" },
 ];
 
 const GenerateScript = () => {
@@ -80,7 +82,7 @@ const GenerateScript = () => {
   const [scriptText, setScriptText] = useState();
 
   // selects
-  const [videoType, setVideoType] = useState("");
+  const [videoType, setVideoType] = useState("narrative");
   const [tone, setTone] = useState("");
   const [audience, setAudience] = useState("");
   const [title, setTitle] = useState("");
