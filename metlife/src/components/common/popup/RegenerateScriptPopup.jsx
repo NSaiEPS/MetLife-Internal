@@ -31,7 +31,19 @@ const modelOptions = [
   { value: "gpt-4.1", label: "GPT-4.1" },
 ];
 
-const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
+const RegenerateScriptPopup = ({
+  open,
+  onClose,
+  id,
+  setTableExtraData,
+  sceneId,
+}) => {
+  const onCloseFun = () => {
+    setTopn("");
+    setFeedback("");
+    onClose();
+  };
+  console.log(sceneId, "sceneId");
   const [model, setModel] = useState("gpt-4o-mini");
   const [topn, setTopn] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -45,7 +57,7 @@ const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
       showToast.error("Please give feedback");
     } else if (!model) {
       showToast.error("Please select model");
-    } else if (!topn) {
+    } else if (!topn && !sceneId?.id) {
       showToast.error("Please select TopN");
     } else {
       apiCall();
@@ -60,9 +72,21 @@ const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
       top_n: topn,
       model: model,
     };
-
+    if (sceneId?.id) {
+      delete new_payload.top_n;
+    }
     try {
-      const result = await api.post(`scripts/${id}/regenerate`, new_payload);
+      let apis = `scripts/${id}/regenerate`;
+      if (sceneId?.id) {
+        apis = `scripts/${id}/scenes/${sceneId?.id}`;
+      }
+      let result;
+      if (sceneId?.id) {
+        result = await api.patch(apis, new_payload);
+      } else {
+        result = await api.post(apis, new_payload);
+      }
+
       console.log(result, "regenerate_result");
       if (result?.status == 200) {
         setTableExtraData(result?.data);
@@ -79,7 +103,7 @@ const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
       console.error("Video creation failed:", err);
     } finally {
       setLoader(false);
-      onClose(true);
+      onCloseFun(true);
     }
   };
 
@@ -88,7 +112,7 @@ const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
       {loader && <FullScreenGradientLoader text="Re-Generating..." />}
       <Dialog
         open={open}
-        onClose={onClose}
+        onClose={onCloseFun}
         maxWidth="xs"
         fullWidth
         PaperProps={{
@@ -166,27 +190,29 @@ const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
             </Box>
 
             {/* Top N Dropdown */}
-            <Box sx={{ flex: 1 }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  mb: 1,
-                  textAlign: "left",
-                  fontWeight: 500,
-                  fontSize: "18px",
-                  color: "#333",
-                }}
-              >
-                Top N
-              </Typography>
-              <SelectComp
-                //   label="Top N"
-                options={topNOptions}
-                value={topn}
-                onChange={setTopn}
-                placeholder="Select Top N"
-              />
-            </Box>
+            {!sceneId?.id && (
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mb: 1,
+                    textAlign: "left",
+                    fontWeight: 500,
+                    fontSize: "18px",
+                    color: "#333",
+                  }}
+                >
+                  Top N
+                </Typography>
+                <SelectComp
+                  //   label="Top N"
+                  options={topNOptions}
+                  value={topn}
+                  onChange={setTopn}
+                  placeholder="Select Top N"
+                />
+              </Box>
+            )}
           </Stack>
         </DialogContent>
 
@@ -201,7 +227,7 @@ const RegenerateScriptPopup = ({ open, onClose, id, setTableExtraData }) => {
             }}
             action={handleRegenerate}
           />
-          <Button onClick={onClose} color="inherit" variant="outlined">
+          <Button onClick={onCloseFun} color="inherit" variant="outlined">
             Cancel
           </Button>
         </DialogActions>

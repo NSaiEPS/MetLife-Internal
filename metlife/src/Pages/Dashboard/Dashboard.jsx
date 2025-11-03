@@ -62,6 +62,13 @@ const MyVideosDashboard = () => {
         return (
           <Chip label="Completed" sx={{ bgcolor: "#8BC34A", color: "#fff" }} />
         );
+      case "Script Completed":
+        return (
+          <Chip
+            label="Script Completed"
+            sx={{ bgcolor: "#8BC34A", color: "#fff" }}
+          />
+        );
       case "In Progress":
         return (
           <Chip
@@ -264,7 +271,8 @@ const MyVideosDashboard = () => {
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>
-                    {getStatusChip(video.status ?? "Completed")}
+                    {/* {getStatusChip(video.status ?? "Script Completed")} */}
+                    {getStatusChip("Script Completed")}
                   </TableCell>
                   <TableCell align="center">
                     <Button
