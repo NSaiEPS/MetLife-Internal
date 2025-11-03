@@ -43,7 +43,7 @@ const MyVideosDashboard = () => {
       icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
     },
     {
-      title: "Completed",
+      title: "Completed Scripts",
       value: 0,
       color: "#FFEBEE",
       icon: <PlayCircle fontSize="large" color="error" />,
