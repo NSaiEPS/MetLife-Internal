@@ -519,16 +519,15 @@ function DynamicTable({
               />
             </>
           )}
-             <Button
-              label={saveLoader ? "Saving" : "Save"}
-              variant="outlined"
-              className={styles.largeOutline}
-              onClick={handleSave}
-              disabled={saveLoader}
-            >
-              Save
-            </Button>
-      
+          <Button
+            label={saveLoader ? "Saving" : "Save"}
+            variant="outlined"
+            className={styles.largeOutline}
+            onClick={handleSave}
+            disabled={saveLoader}
+          >
+            Save
+          </Button>
 
           <Button
             variant="contained"
@@ -538,9 +537,13 @@ function DynamicTable({
             Download Script
           </Button>
           {showDragAndActions && (
-            <Button variant="contained" className={styles.primaryBtn}>
-              Create Visual Content
-            </Button>
+            <Tooltip title="Feature coming soon..." arrow>
+              <span>
+                <Button variant="contained" className={styles.primaryBtn}>
+                  Create Visual Content
+                </Button>
+              </span>
+            </Tooltip>
           )}
         </Stack>
 
