@@ -32,7 +32,7 @@ const AddNewScriptPopup = ({
       setOst(fieldData.OST || "");
 
       if (fieldData.Type == "narrator") {
-        setType("narrative");
+        setType("narrator");
       } else {
         setType(fieldData.Type || "");
       }
@@ -96,7 +96,7 @@ const AddNewScriptPopup = ({
             }}
             onChange={(e) => setType(e.target.value)}
           >
-            <MenuItem value="narrative">Narrator</MenuItem>
+            <MenuItem value="narrator">Narrator</MenuItem>
 
             <MenuItem value="monologue">Monologue</MenuItem>
             <MenuItem value="conversational">Conversational</MenuItem>

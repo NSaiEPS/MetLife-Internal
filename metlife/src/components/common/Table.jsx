@@ -22,6 +22,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
+import deleteIcon from "../../assets/delete.svg";
 import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
 import DownloadPopup from "./popup/DownloadPopup";
 import ShowSourcePopup from "./popup/ShowSourcePopup";
@@ -33,7 +34,12 @@ import { BASE_URL } from "../../api/axios";
 import FullScreenGradientLoader from "./GradientLoader";
 import { MdDone } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import {
+  postTranslatedDataSave,
+  setRegenerated,
+  resetSaveState,
+} from "../../redux/features/saveSlice";
+import DeleteScenePopup from "./popup/DeleteScenePopup";
 
 /**
  * props:
@@ -49,15 +55,10 @@ function DynamicTable({
   showDragAndActions = true,
   pdfId,
 }) {
-  // console.log(extraDetails, "extraDetails");
-
   const [tableExtraData, setTableExtraData] = useState({});
   useEffect(() => {
     setTableExtraData(extraDetails);
   }, [extraDetails]);
-  // console.log(tableExtraData, "tableExtraData");
-  // console.log("Before_Save: ", extraDetails);
-
   const { id } = useParams();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -70,6 +71,7 @@ function DynamicTable({
   const languages = [
     "Spanish",
     "Hindi",
+    "English",
     "Arabic",
     "Nepali",
     "Portuguese",
@@ -78,31 +80,72 @@ function DynamicTable({
     "Bangla",
   ];
   const [loader, setLoader] = useState(false);
-  const [selectedLang, setSelectedLang] = useState("English");
+  const [selectedLang, setSelectedLang] = useState("");
   const [showSourceData, setShowSourceData] = useState([]);
   const [sceneData, setSceneData] = useState({});
+  const dispatch = useDispatch();
+  const { saveLoader, saveTranslatedData } = useSelector(
+    (store) => store.SaveTranslatedData
+  );
+  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
+  const [openShowPopup, setOpenShowPopup] = useState(false);
+  const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
+  const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  const [selectedScene, setSelectedScene] = useState(null);
+  const [regenerateDisabled, setRegenerateDisabled] = useState(false);
+  const filteredLanguages = languages.filter(
+    (lang) => lang !== extraDetails?.language
+  );
   const actions = [
     { icon: <img src={copy} />, onClick: (row) => addScene(row) },
     {
-      icon: <img src={reuse} />,
+      icon: (
+        <Tooltip
+          title={
+            regenerateDisabled ? "Please save before regenerating again" : ""
+          }
+          placement="top"
+          arrow
+        >
+          <span>
+            <img
+              src={reuse}
+              alt="regenerate"
+              style={{
+                opacity: regenerateDisabled ? 0.5 : 1,
+                cursor: regenerateDisabled ? "not-allowed" : "pointer",
+              }}
+            />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
-        setSceneData(row);
-
-        setOpenRegeneratePopup(true);
+        if (!regenerateDisabled) {
+          setSceneData(row);
+          setOpenRegeneratePopup(true);
+        }
+      },
+    },
+    {
+      icon: <img src={deleteIcon} alt="icon" />,
+      onClick: (row) => {
+        // setSceneData(row);
+        handleDeleteScene(row);
       },
     },
   ];
-  const dispatch = useDispatch();
-  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
-  const [openShowPopup, setOpenShowPopup] = useState(false);
-  const [openRegenerateePopup, setOpenRegeneratePopup] = useState(false);
-  const { saveLoader } = useSelector((store) => store.SaveTranslatedData);
 
   useEffect(() => {
     if (tableExtraData?.scenes) {
       settingDataInRows(tableExtraData?.scenes);
     }
   }, [tableExtraData?.scenes]);
+
+  useEffect(() => {
+    if (saveTranslatedData && !saveLoader) {
+      setRegenerateDisabled(false);
+    }
+  }, [saveTranslatedData, saveLoader]);
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
@@ -122,9 +165,9 @@ function DynamicTable({
   const addScene = (data) => {
     setPopUpdata(data);
     if (data && data.OST) {
-      setPopupTitle("Edit Script");
+      setPopupTitle("Edit Scene");
     } else {
-      setPopupTitle("Add New Script");
+      setPopupTitle("Add New Scene");
     }
     setOpenPopup(true);
   };
@@ -273,16 +316,15 @@ function DynamicTable({
   };
 
   const handleSave = () => {
-    // const data = {
-    //   data: {extraDetails},
-    // };
     const data = {
       data: extraDetails,
     };
     dispatch(postTranslatedDataSave(data));
   };
-  // console.log(sceneData, "sceneData");
   const handleSetData = (data) => {
+    // setActionsDisabled(true);
+    setRegenerateDisabled(true);
+
     if (sceneData?.id) {
       let scenes = [...rows]?.map((item) => {
         if (item?.["Scene No."] == sceneData?.["Scene No."]) {
@@ -300,10 +342,26 @@ function DynamicTable({
       setTableExtraData(data);
     }
   };
+
+  const handleDeleteScene = (scene) => {
+    console.log(scene, "check_delete_data");
+    setSelectedScene(scene);
+    setOpenDeletePopup(true);
+  };
+
+  const confirmDeleteScene = () => {
+    // console.log("Deleted scene:", selectedScene);
+
+    setOpenDeletePopup(false);
+  };
+
+  console.log(extraDetails?.language, "check_details");
   return (
     <>
       <div className={styles1.header}>
-        <h2 className={styles1.title}>Your Script</h2>
+        <h2 className={styles1.title}>
+          {tableExtraData?.title || "Your Script"}
+        </h2>
         {showDragAndActions && (
           <div className={styles1.headerButtons}>
             <Button
@@ -468,6 +526,13 @@ function DynamicTable({
         handleUpdate={handleUpdate}
       />
 
+      <DeleteScenePopup
+        open={openDeletePopup}
+        onClose={() => setOpenDeletePopup(false)}
+        onConfirm={confirmDeleteScene}
+        rowData={selectedScene}
+      />
+
       <div className={styles.footerButtons}>
         <Stack
           direction="row"
@@ -495,7 +560,7 @@ function DynamicTable({
             title="Select Language"
           >
             <div className={styles.languageList}>
-              {languages.map((lang, index) => (
+              {filteredLanguages.map((lang, index) => (
                 <div
                   key={index}
                   className={`${styles.languageItem} ${
@@ -537,10 +602,9 @@ function DynamicTable({
                 Regenerate Script
               </Button>
               <RegenerateScriptPopup
-                open={openRegenerateePopup}
+                open={openRegeneratePopup}
                 onClose={() => {
                   setOpenRegeneratePopup(false);
-
                   setSceneData({});
                 }}
                 id={id}

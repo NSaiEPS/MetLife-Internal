@@ -20,8 +20,13 @@ const SaveTranslatedPageSlice = createSlice({
   },
 });
 
-export const { setSaveLoader, setSaveTranslatedData } =
-  SaveTranslatedPageSlice.actions;
+export const {
+  setSaveLoader,
+  setSaveTranslatedData,
+  setRegenerated,
+  setSaved,
+  resetSaveState,
+} = SaveTranslatedPageSlice.actions;
 
 export default SaveTranslatedPageSlice.reducer;
 
@@ -31,8 +36,8 @@ export const postTranslatedDataSave = (data) => async (dispatch) => {
     const response = await api.post("mongo/write", data);
     console.log(response, "check_save_response");
     if (response?.status) {
-      dispatch(setSaveTranslatedData(response?.data))
-      console.log(response);
+      dispatch(setSaveTranslatedData(response?.data));
+      // console.log(response);
     }
   } catch (error) {
     console.log(error);

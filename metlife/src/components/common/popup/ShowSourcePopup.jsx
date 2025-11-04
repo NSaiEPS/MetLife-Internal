@@ -12,7 +12,7 @@ import {
 import FullScreenGradientLoader from "../GradientLoader";
 
 const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
-  console.log(data);
+  // console.log(data);
   return (
     <Dialog
       open={open}

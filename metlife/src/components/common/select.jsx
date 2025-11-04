@@ -9,16 +9,23 @@ const SelectComp = ({
   onChange,
   placeholder = "Select",
   fullWidth = true,
+  disabled = false,
 }) => {
   // Find the label of the currently selected value
   const selectedOption = options.find((opt) => opt.value === value);
 
   return (
-    <div className={`${styles.selectWrapper} ${fullWidth ? styles.fullWidth : ""}`}>
+    <div
+      className={`${styles.selectWrapper} ${fullWidth ? styles.fullWidth : ""}`}
+    >
       {/* Label outside the select box */}
       {label && <Typography className={styles.selectLabel}>{label}</Typography>}
 
-      <FormControl fullWidth={fullWidth} variant="outlined" size="medium">
+      <FormControl
+        fullWidth={fullWidth}
+        variant="outlined"
+        size="medium"
+      >
         <Select
           displayEmpty
           value={value ?? ""}
@@ -31,6 +38,7 @@ const SelectComp = ({
             )
           }
           className={styles.selectBox}
+          disabled={disabled}
         >
           {/* Placeholder is not included as an option now, 
               since renderValue handles it */}

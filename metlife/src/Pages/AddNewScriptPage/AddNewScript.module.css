@@ -26,6 +26,7 @@
   font-weight: 600;
   color: #111827;
   font-family: "Poppins", sans-serif;
+  text-transform: capitalize;
   /* padding-left: 150px; */
 }
 

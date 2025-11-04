@@ -28,7 +28,7 @@ import { showToast } from "../../utils/toast";
 // import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
-  { value: "narrative", label: "Narrator" },
+  { value: "narrator", label: "Narrator" },
   { value: "monologue", label: "Monologue" },
   { value: "conversational", label: "Conversational" },
   { value: "mixed", label: "Combined" },
@@ -82,7 +82,7 @@ const GenerateScript = () => {
   const [scriptText, setScriptText] = useState();
 
   // selects
-  const [videoType, setVideoType] = useState("narrative");
+  const [videoType, setVideoType] = useState("narrator");
   const [tone, setTone] = useState("");
   const [audience, setAudience] = useState("");
   const [title, setTitle] = useState("");
@@ -340,11 +340,11 @@ const GenerateScript = () => {
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
-                      label="Top N"
-                      options={topNOptions}
-                      value={topn}
-                      onChange={setTopn}
-                      placeholder="Select Top N"
+                      label="Data Source"
+                      options={dataSourceOptions}
+                      value={datasource}
+                      onChange={setDatasource}
+                      placeholder="Select Data Source"
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
@@ -356,14 +356,14 @@ const GenerateScript = () => {
                       placeholder="Select Model"
                     />
                   </Grid>
-
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                     <SelectComp
-                      label="Data Source"
-                      options={dataSourceOptions}
-                      value={datasource}
-                      onChange={setDatasource}
-                      placeholder="Select Data Source"
+                      label="Top N"
+                      options={topNOptions}
+                      value={topn}
+                      onChange={setTopn}
+                      placeholder="Select Top N"
+                      disabled={datasource === "openai"}
                     />
                   </Grid>
                 </Grid>

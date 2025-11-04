@@ -16,7 +16,6 @@ import ButtonComp from "../Buton/Button";
 import { showToast } from "../../../utils/toast";
 import api from "../../../api/axios";
 import FullScreenGradientLoader from "../GradientLoader";
-import { useNavigate } from "react-router";
 
 const topNOptions = [
   { value: 5, label: "5" },
@@ -43,15 +42,12 @@ const RegenerateScriptPopup = ({
     setFeedback("");
     onClose();
   };
-  console.log(sceneId, "sceneId");
+  // console.log(sceneId, "sceneId");
   const [model, setModel] = useState("gpt-4o-mini");
   const [topn, setTopn] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loader, setLoader] = useState(false);
-  const [regenerateData, setRegenerateData] = useState([]);
-  const navigate = useNavigate();
 
-  //   console.log(data);
   const handleRegenerate = () => {
     if (!feedback) {
       showToast.error("Please give feedback");
@@ -138,7 +134,7 @@ const RegenerateScriptPopup = ({
             fontSize: "1.3rem",
           }}
         >
-          Regenerate Script
+          {sceneId?.id ? "Regenerate Scene" : "Regenerate Script"}
         </DialogTitle>
 
         <DialogContent dividers>

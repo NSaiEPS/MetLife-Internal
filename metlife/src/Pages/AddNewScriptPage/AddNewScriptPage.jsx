@@ -24,9 +24,7 @@ const ScriptPage = () => {
   console.log("Scene ID:", id);
   // dynamic columns & rows
   const [columns] = useState(["Scene No.", "Script", "OST", "Type"]);
-
   const [sceneData, setSceneData] = useState({});
-  console.log(sceneData?.scenes, "sceneData");
   const [loading, setLoading] = useState(false);
   const getSceneDetails = async () => {
     setLoading(true);
@@ -58,6 +56,26 @@ const ScriptPage = () => {
       getSceneDetails();
     }
   }, [id]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (true) {
+        // Show confirmation dialog
+        const message =
+          "You have unsaved changes. Are you sure you want to leave?";
+        event.preventDefault();
+        event.returnValue = message; // Some browsers require this for custom messages
+        return message; // For some older browsers
+      }
+      // Clean up builder data only if there are no unsaved changes
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   return (
     <div className={styles.container}>
       <OneFrameHeader />

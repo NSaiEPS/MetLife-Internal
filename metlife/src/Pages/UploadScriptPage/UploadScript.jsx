@@ -17,16 +17,16 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Input from "../../components/common/Input";
 import { showToast } from "../../utils/toast";
-import { IoMdDownload } from "react-icons/io";
+// import { IoMdDownload } from "react-icons/io";
 
 const UploadScript = () => {
-  const navigate = useNavigate();
-  const fileInputRef = useRef();
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scriptData, setScriptData] = useState(null);
   const [loader, setLoader] = useState(false);
+  const navigate = useNavigate();
+  const fileInputRef = useRef();
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef.current.click();
@@ -57,17 +57,13 @@ const UploadScript = () => {
       showToast.error("You have already uploaded this file.");
       return;
     }
-    // if (!files || files.length === 0) {
-    //   showToast.error("Please select a file");
-    //   return;
-    // }
 
     if (!title.trim()) {
       showToast.error("Please give a title before uploading");
       e.target.value = "";
       return;
     }
-    // const file = files[0];
+
     setSelectedFile(file);
     setLoader(true);
     setUploadSuccess(false);
@@ -103,8 +99,6 @@ const UploadScript = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
-
-  console.log(scriptData, "scriptData");
 
   const handleDownload = () => {
     console.log("clicked");
@@ -153,11 +147,6 @@ const UploadScript = () => {
       setTitle(value);
     }
   };
-
-  const downloadSvg = `data:image/svg+xml;utf8,
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'>
-  <path d='M5 20h14v-2H5v2zm7-18v12l4-4h-3V2h-2v8H8l4 4z'/>
-</svg>`;
 
   return (
     <>
