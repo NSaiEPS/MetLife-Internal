@@ -16,8 +16,8 @@ const TranslatedScript = () => {
   const { state } = useLocation();
   const [pdfViewData, setPdfViewData] = useState([]);
   const [columns] = useState(["Scene No.", "Script", "OST", "Type"]);
-  const loader = useSelector(state => state.SaveTranslatedData)
-  console.log(loader, "check_loading")
+  const loader = useSelector((state) => state.SaveTranslatedData);
+  console.log(loader, "check_loading");
 
   useEffect(() => {
     const fileUploadData = async () => {
@@ -63,7 +63,7 @@ const TranslatedScript = () => {
               />
             </>
           ) : (
-            <FullScreenGradientLoader  text="Fetching details" />
+            <FullScreenGradientLoader text="Fetching details" />
           )}
         </div>
         <Footer />

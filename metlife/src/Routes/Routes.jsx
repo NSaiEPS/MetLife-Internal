@@ -18,6 +18,7 @@ import LoginLayout from "../components/Login/Login"; // Assuming this is your la
 import { getToken, getLoggedInUserType, USERS } from "../utils";
 import Layout from "../components/layout/Layout";
 import MyVideosDashboard from "../Pages/Dashboard/Dashboard";
+import CreateVisualContentPage from "../Pages/VisualContent/CreateVisualContentPage";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ element, allowedRoles = [] }) => {
@@ -82,6 +83,10 @@ export const router = createBrowserRouter([
       {
         path: "/generate-script",
         element: <GenerateScript />,
+      },
+      {
+        path: "/create-visual-content",
+        element: <CreateVisualContentPage />,
       },
       {
         path: "/generate-visual-page",

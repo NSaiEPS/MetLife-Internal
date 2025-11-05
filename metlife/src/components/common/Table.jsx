@@ -40,6 +40,7 @@ import {
   resetSaveState,
 } from "../../redux/features/saveSlice";
 import DeleteScenePopup from "./popup/DeleteScenePopup";
+import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
 
 /**
  * props:
@@ -54,6 +55,9 @@ function DynamicTable({
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
+  setMakeChanges,
+  features = true,
+  visualContentTitle,
 }) {
   const [tableExtraData, setTableExtraData] = useState({});
   useEffect(() => {
@@ -66,7 +70,6 @@ function DynamicTable({
   const [popUpData, setPopUpdata] = useState();
   const [popupTitle, setPopupTitle] = useState("Add New Script");
   const [loaderText, setLoaderText] = useState("");
-
   const [open, setOpen] = useState(false);
   const languages = [
     "Spanish",
@@ -94,10 +97,17 @@ function DynamicTable({
   const [selectedScene, setSelectedScene] = useState(null);
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
   const filteredLanguages = languages.filter(
-    (lang) => lang !== extraDetails?.language
+    (lang) => lang !== tableExtraData?.language
   );
+ 
   const actions = [
-    { icon: <img src={copy} />, onClick: (row) => addScene(row) },
+    {
+      icon: <img src={copy} />,
+      onClick: (row) => {
+        addScene(row);
+        setMakeChanges(true);
+      },
+    },
     {
       icon: (
         <Tooltip
@@ -123,12 +133,14 @@ function DynamicTable({
         if (!regenerateDisabled) {
           setSceneData(row);
           setOpenRegeneratePopup(true);
+          setMakeChanges(true);
         }
       },
     },
     {
       icon: <img src={deleteIcon} alt="icon" />,
       onClick: (row) => {
+        setMakeChanges(true);
         // setSceneData(row);
         handleDeleteScene(row);
       },
@@ -173,6 +185,7 @@ function DynamicTable({
   };
 
   const handleDragEnd = (result) => {
+    setMakeChanges(true);
     if (!result.destination) return;
 
     const updated = Array.from(rows);
@@ -190,6 +203,7 @@ function DynamicTable({
 
   const handleDownloadScript = () => {
     setOpenDownloadPopup(true);
+    setMakeChanges(true);
   };
   const [showSourceLoader, setShowSourceLoader] = useState(false);
   const handleShowSource = async () => {
@@ -212,6 +226,7 @@ function DynamicTable({
     } finally {
       setShowSourceLoader(false);
     }
+    setMakeChanges(true);
   };
 
   const handleDownloadType = (type) => {
@@ -225,9 +240,11 @@ function DynamicTable({
     } catch (err) {
       console.error("Error generating file:", err);
     }
+    setMakeChanges(true);
   };
 
   const handleUpdate = (data) => {
+    setMakeChanges(true);
     console.log(data, "check-data");
     // // // edit
     if (data?.fieldData) {
@@ -298,8 +315,9 @@ function DynamicTable({
         return;
       }
       const translatedData = await response.json();
-      console.log(translatedData);
-      settingDataInRows(translatedData?.data?.scenes);
+      console.log(translatedData, "translated_data");
+      setTableExtraData(translatedData?.data);
+      // settingDataInRows(translatedData?.data?.scenes);
       // downloadScriptPdf(translatedData?.data,true);
       // downloadScriptWord(translatedData?.data, true);
       // navigate("/translated-script", { state: translatedData });
@@ -313,14 +331,9 @@ function DynamicTable({
       setLoader(false);
       setLoaderText("");
     }
+    setMakeChanges(true);
   };
 
-  const handleSave = () => {
-    const data = {
-      data: extraDetails,
-    };
-    dispatch(postTranslatedDataSave(data));
-  };
   const handleSetData = (data) => {
     // setActionsDisabled(true);
     setRegenerateDisabled(true);
@@ -341,28 +354,47 @@ function DynamicTable({
     } else {
       setTableExtraData(data);
     }
+    setMakeChanges(true);
   };
 
   const handleDeleteScene = (scene) => {
     console.log(scene, "check_delete_data");
     setSelectedScene(scene);
     setOpenDeletePopup(true);
+    setMakeChanges(true);
   };
 
   const confirmDeleteScene = () => {
     // console.log("Deleted scene:", selectedScene);
 
     setOpenDeletePopup(false);
+    setMakeChanges(true);
   };
 
-  console.log(extraDetails?.language, "check_details");
+  const handleSave = () => {
+    console.log(tableExtraData, "check_data");
+
+    const data = {
+      data: {
+        ...tableExtraData,
+      },
+    };
+    dispatch(postTranslatedDataSave(data));
+    setMakeChanges(false);
+  };
+
+  const handleCreateVisualContent = () => {
+    dispatch(postCreateVisualContent(tableExtraData));
+  };
+
+  console.log(rows, "check_details");
   return (
     <>
       <div className={styles1.header}>
         <h2 className={styles1.title}>
-          {tableExtraData?.title || "Your Script"}
+          {tableExtraData?.title || visualContentTitle || "Your Script"}
         </h2>
-        {showDragAndActions && (
+        {showDragAndActions && features && (
           <div className={styles1.headerButtons}>
             <Button
               variant="outlined"
@@ -541,66 +573,78 @@ function DynamicTable({
           alignItems="center"
           className={styles.stack}
         >
-          <ButtonComp
-            label={loader ? "Translating" : "Translate Script"}
-            variant="contained"
-            sx={{
-              backgroundColor: "#239DE0",
-              "&:hover": { backgroundColor: "#7fbcddff" },
-              fontFamily: "normal normal bold 16px/20px ",
-            }}
-            action={() => {
-              setOpen(true);
-            }}
-            // disabled={!uploadSuccess || loader}
-          />
-          <PopupModal
-            open={open}
-            onClose={() => setOpen(false)}
-            title="Select Language"
-          >
-            <div className={styles.languageList}>
-              {filteredLanguages.map((lang, index) => (
-                <div
-                  key={index}
-                  className={`${styles.languageItem} ${
-                    selectedLang === lang ? styles.activeLang : ""
-                  }`}
-                  onClick={() => setSelectedLang(lang)}
-                >
-                  {selectedLang === lang && (
-                    <MdDone size={20} className={styles.tickIcon} />
-                  )}
-                  <span>{lang}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.popupButtonRow}>
+          {features && (
+            <>
               <ButtonComp
-                label="Translate Script"
+                label={loader ? "Translating" : "Translate Script"}
                 variant="contained"
-                className={styles.downloadBtn}
-                action={() => {
-                  // console.log("Selected Language:", selectedLang);
-                  handleTranslateScript();
-                  setOpen(false);
+                sx={{
+                  backgroundColor: "#239DE0",
+                  "&:hover": { backgroundColor: "#7fbcddff" },
+                  fontFamily: "normal normal bold 16px/20px ",
                 }}
+                action={() => {
+                  setOpen(true);
+                }}
+                // disabled={!uploadSuccess || loader}
               />
-            </div>
-          </PopupModal>
+              <PopupModal
+                open={open}
+                onClose={() => setOpen(false)}
+                title="Select Language"
+              >
+                <div className={styles.languageList}>
+                  {filteredLanguages.map((lang, index) => (
+                    <div
+                      key={index}
+                      className={`${styles.languageItem} ${
+                        selectedLang === lang ? styles.activeLang : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedLang(lang);
+                        setMakeChanges(true);
+                      }}
+                    >
+                      {selectedLang === lang && (
+                        <MdDone size={20} className={styles.tickIcon} />
+                      )}
+                      <span>{lang}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className={styles.popupButtonRow}>
+                  <ButtonComp
+                    label="Translate Script"
+                    variant="contained"
+                    className={styles.downloadBtn}
+                    action={() => {
+                      // console.log("Selected Language:", selectedLang);
+                      handleTranslateScript();
+                      setOpen(false);
+                    }}
+                  />
+                </div>
+              </PopupModal>
+            </>
+          )}
+
           {showDragAndActions && (
             <>
-              <Button
-                variant="outlined"
-                className={styles.largeOutline}
-                onClick={() => {
-                  setSceneData({});
-                  setOpenRegeneratePopup(true);
-                }}
-              >
-                Regenerate Script
-              </Button>
+              {features && (
+                <Button
+                  variant="outlined"
+                  className={styles.largeOutline}
+                  onClick={() => {
+                    setMakeChanges(true);
+                    setSceneData({});
+                    setOpenRegeneratePopup(true);
+                  }}
+                >
+                  Regenerate Script
+                </Button>
+              )}
+
               <RegenerateScriptPopup
                 open={openRegeneratePopup}
                 onClose={() => {
@@ -615,32 +659,41 @@ function DynamicTable({
               />
             </>
           )}
-          <Button
-            label={saveLoader ? "Saving" : "Save"}
-            variant="outlined"
-            className={styles.largeOutline}
-            onClick={handleSave}
-            disabled={saveLoader}
-          >
-            Save
-          </Button>
-
-          <Button
-            variant="contained"
-            className={styles.successBtn}
-            onClick={handleDownloadScript}
-          >
-            Download Script
-          </Button>
-          {showDragAndActions && (
-            <Tooltip title="Feature coming soon..." arrow>
-              <span>
-                <Button variant="contained" className={styles.primaryBtn}>
-                  Create Visual Content
-                </Button>
-              </span>
-            </Tooltip>
+          {features && (
+            <Button
+              label={saveLoader ? "Saving" : "Save"}
+              variant="outlined"
+              className={styles.largeOutline}
+              onClick={handleSave}
+              disabled={saveLoader}
+            >
+              Save
+            </Button>
           )}
+          {features && (
+            <Button
+              variant="contained"
+              className={styles.successBtn}
+              onClick={handleDownloadScript}
+            >
+              Download Script
+            </Button>
+          )}
+
+          {showDragAndActions && features && (
+            <Button
+              onClick={() => {
+                navigate("/create-visual-content");
+                handleCreateVisualContent();
+              }}
+              variant="contained"
+              className={styles.primaryBtn}
+            >
+              Create Visual Content
+            </Button>
+          )}
+
+        
         </Stack>
 
         <DownloadPopup

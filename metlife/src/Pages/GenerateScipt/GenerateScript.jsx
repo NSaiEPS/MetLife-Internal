@@ -112,9 +112,11 @@ const GenerateScript = () => {
       showToast.error("Please enter Target Audience in Video Filters");
     } else if (!duration) {
       showToast.error("Please select Duration in Video Filters");
-    } else if (!topn) {
-      showToast.error("Please select Top N in Model Filters");
-    } else if (!model) {
+    } 
+    // else if (!topn) {
+    //   showToast.error("Please select Top N in Model Filters");
+    // } 
+    else if (!model) {
       showToast.error("Please select Model in Model Filters");
     } else if (!datasource) {
       showToast.error("Please select Data Source in Model Filters");
@@ -136,7 +138,7 @@ const GenerateScript = () => {
       language: language,
       target_audience: audience,
       // scene_length_style: "short_form",
-      video_style: videoType,
+      video_style: videoType === "narrator" ? "narrative": "narrator",
       model: model,
       top_n: Number(topn),
       data_source: datasource,
