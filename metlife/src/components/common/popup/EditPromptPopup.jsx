@@ -7,7 +7,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { postEditVisualContent } from "../../../redux/features/createVisualSlice";
 
 const EditPromptPopup = ({
@@ -17,8 +17,10 @@ const EditPromptPopup = ({
   script_id,
   handleUpdate,
 }) => {
+  const { saveVisualContentLoader } = useSelector(
+    (store) => store.CreateVisualContent
+  );
   const [description, setDescription] = useState("");
-  const [prompt, setPrompt] = useState("");
   const dispatch = useDispatch();
   console.log(fieldData, "From_popup");
 
@@ -37,12 +39,11 @@ const EditPromptPopup = ({
       prompt: description,
       scene_id: fieldData?.scene_id,
     };
-    dispatch(postEditVisualContent(payload, onClose()));
+    dispatch(postEditVisualContent(payload, onClose));
     handleUpdate({
       prompt: description,
       fieldData: fieldData,
     });
-    // onClose();
   };
 
   return (
@@ -73,10 +74,18 @@ const EditPromptPopup = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          disabled={saveVisualContentLoader}
+        >
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleSave}>
+        <Button
+          variant="contained"
+          disabled={saveVisualContentLoader}
+          onClick={handleSave}
+        >
           Save
         </Button>
       </DialogActions>
