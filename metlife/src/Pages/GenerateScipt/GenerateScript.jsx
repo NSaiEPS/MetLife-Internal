@@ -138,7 +138,7 @@ const GenerateScript = () => {
       language: language,
       target_audience: audience,
       // scene_length_style: "short_form",
-      video_style: videoType === "narrator" ? "narrative": "narrator",
+      video_style: videoType === "narrator" ? "narrative": videoType,
       model: model,
       top_n: Number(topn),
       data_source: datasource,

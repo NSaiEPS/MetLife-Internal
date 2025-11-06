@@ -85,7 +85,7 @@ export const router = createBrowserRouter([
         element: <GenerateScript />,
       },
       {
-        path: "/create-visual-content",
+        path: "/create-visual-content/:id",
         element: <CreateVisualContentPage />,
       },
       {

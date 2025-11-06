@@ -61,6 +61,12 @@
   color: #374151;
 }
 
+.actionsWrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 /* alternate row stripe (zebra) */
 .bodyRow:nth-child(odd) {
   background: #fff;
@@ -68,7 +74,6 @@
 .bodyRow:nth-child(even) {
   background: #fbfdff;
 }
-
 
 @media (max-width: 720px) {
   .headCell,
@@ -78,6 +83,13 @@
   }
 }
 
+.footerButtons {
+  /* margin-top: auto;  */
+  padding-top: 20px;
+  padding-bottom: 70px;
+  display: flex;
+  justify-content: end;
+}
 
 .primaryBtn {
   text-transform: none;

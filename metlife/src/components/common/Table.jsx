@@ -99,7 +99,10 @@ function DynamicTable({
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
   );
- 
+  const { saveVisualContentData, saveVisualContentLoader } = useSelector(
+    (store) => store.CreateVisualContent
+  );
+
   const actions = [
     {
       icon: <img src={copy} />,
@@ -384,10 +387,15 @@ function DynamicTable({
   };
 
   const handleCreateVisualContent = () => {
-    dispatch(postCreateVisualContent(tableExtraData));
+    dispatch(postCreateVisualContent(tableExtraData))
+    .then((result) => {
+      console.log(result, "check_result");
+      if (result) {
+        navigate(`/create-visual-content/${result?.data?.prompt_batch_id}`);
+      }
+    });
   };
 
-  console.log(rows, "check_details");
   return (
     <>
       <div className={styles1.header}>
@@ -445,6 +453,7 @@ function DynamicTable({
           </div>
         )}
       </div>
+      {saveVisualContentLoader && <FullScreenGradientLoader text="loading..." />}
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
       {loader && <FullScreenGradientLoader text={loaderText} />}
       <TableContainer component={Paper} className={styles.tablePaper}>
@@ -683,7 +692,6 @@ function DynamicTable({
           {showDragAndActions && features && (
             <Button
               onClick={() => {
-                navigate("/create-visual-content");
                 handleCreateVisualContent();
               }}
               variant="contained"
@@ -692,8 +700,6 @@ function DynamicTable({
               Create Visual Content
             </Button>
           )}
-
-        
         </Stack>
 
         <DownloadPopup
