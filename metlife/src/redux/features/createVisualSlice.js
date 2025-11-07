@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import reducer from "./saveSlice";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
+import { navigateTo } from "../../utils/navigate";
 
 const initialState = {
   saveVisualContentLoader: false,
@@ -20,37 +21,25 @@ const CreateVisualContentPageSlice = createSlice({
       state.saveVisualContentData = action.payload;
     },
     updateVisualPromt(state, action) {
-      let actualdata = [...state.saveVisualContentData?.prompts]?.map(
-        (item) => {
-          console.log(item?.scene_id ,action?.payload,'hggggggg')
-          let data = { ...item };
-          if (item?.scene_id == action?.payload?.scene_id) {
-            data.prompt = action?.payload?.new_prompt;
-            data.prompt_id = action?.payload?.new_prompt_id;
+      let actualdata = [...state.saveVisualContentData.prompts]?.map((item) => {
+        console.log(item?.scene_id, action?.payload, "hggggggg");
+        let data = { ...item };
+        if (item?.scene_id == action?.payload?.scene_id) {
+          data.prompt = action?.payload?.new_prompt;
+          data.prompt_id = action?.payload?.prompt_id;
+          if (action?.payload?.visual_type) {
+            data.visual_type = action?.payload?.visual_type;
           }
-          return data;
+          if (action?.payload?.clip_prompt) {
+            data.clip_prompt = action?.payload?.clip_prompt;
+          }
         }
-      );
+        return data;
+      });
       let actualSaveVisualContentData = { ...state.saveVisualContentData };
       actualSaveVisualContentData.prompts = actualdata;
       state.saveVisualContentData = actualSaveVisualContentData;
     },
-    // updateVisualPromtType(state, action) {
-    //   let actualdata = [...state.saveVisualContentData?.prompts]?.map(
-    //     (item) => {
-    //       let data = { ...item };
-    //       if (item?.scene_id === action?.payload?.scene_id) {
-    //         data.prompt = action?.payload?.clip_prompt;
-    //         data.prompt_id = action?.payload?.prompt_id;
-
-    //       }
-    //       return data;
-    //     }
-    //   );
-    //   let actualSaveVisualContentData = { ...state.saveVisualContentData };
-    //   actualSaveVisualContentData.prompts = actualdata;
-    //   state.saveVisualContentData = actualSaveVisualContentData;
-    // },
   },
 });
 
@@ -58,7 +47,6 @@ export const {
   setSaveVisualContentData,
   setSaveVisualContentLoader,
   updateVisualPromt,
-
 } = CreateVisualContentPageSlice.actions;
 
 export default CreateVisualContentPageSlice.reducer;
@@ -70,7 +58,8 @@ export const postCreateVisualContent = (data) => async (dispatch) => {
     // console.log(response?.data?.prompts, "check_visual_responnse");
     if (response?.status) {
       dispatch(setSaveVisualContentData(response?.data));
-      return response;
+      navigateTo(`/create-visual-content/${response?.data?.prompt_batch_id}`);
+      // return response;
     }
   } catch (error) {
     console.log(error);
@@ -106,7 +95,7 @@ export const postEditVisualContent = (data, onClose) => async (dispatch) => {
     onClose(false);
   } catch (error) {
     console.error(error);
-    toast.success(error?.response?.data?.message || "Something went wrong!");
+    toast.error(error?.response?.data?.message || "Something went wrong!");
   } finally {
     dispatch(setSaveVisualContentLoader(false));
   }
@@ -126,7 +115,7 @@ export const postRegenerateVisualContent =
       dispatch(
         updateVisualPromt({
           new_prompt: response?.data?.new_prompt,
-          new_prompt_id: response?.data?.new_prompt_id,
+          prompt_id: response?.data?.new_prompt_id,
           scene_id: response?.data?.scene_id,
         })
       );
@@ -137,13 +126,13 @@ export const postRegenerateVisualContent =
       // }
     } catch (error) {
       console.error(error);
-      toast.success(error?.response?.data?.message || "Something went wrong!");
+      toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setSaveVisualContentLoader(false));
     }
   };
 
-// Prompt regenerate
+// clip regenerate
 export const postVisualTypeUpdate = (data) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
@@ -152,14 +141,16 @@ export const postVisualTypeUpdate = (data) => async (dispatch) => {
     toast.success(response?.data?.message || "Clip generated successfully");
     dispatch(
       updateVisualPromt({
-        new_prompt: response?.data?.prompt?.clip_prompt,
+        new_prompt: response?.data?.prompt?.prompt,
         prompt_id: response?.data?.prompt?.prompt_id,
         scene_id: response?.data?.prompt?.scene_id,
+        visual_type: response?.data?.prompt?.visual_type,
+        clip_prompt: response?.data?.prompt?.clip_prompt,
       })
     );
   } catch (error) {
     console.error(error);
-    toast.success(error?.response?.data?.message || "Something went wrong!");
+    toast.error(error?.response?.data?.message || "Something went wrong!");
   } finally {
     dispatch(setSaveVisualContentLoader(false));
   }

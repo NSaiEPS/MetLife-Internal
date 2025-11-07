@@ -24,16 +24,6 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
       scene_id: fieldData?.scene_id,
     };
     dispatch(postRegenerateVisualContent(payload, onClose));
-    // dispatch(
-    //   postRegenerateVisualContent(payload, (res) => {
-    //     handleRegenerate({
-    //       prompt: res.new_prompt,
-    //       scene_id: fieldData.scene_id,
-    //     });
-
-    //     onClose();
-    //   })
-    // );
   };
 
   return (

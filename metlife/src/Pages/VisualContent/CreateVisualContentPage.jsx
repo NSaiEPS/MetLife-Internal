@@ -26,7 +26,10 @@ import {
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useLocation, useParams } from "react-router";
-import { getVisualContent, postVisualTypeUpdate } from "../../redux/features/createVisualSlice";
+import {
+  getVisualContent,
+  postVisualTypeUpdate,
+} from "../../redux/features/createVisualSlice";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import AddNewScriptPopup from "../../components/popUps/addScripts";
@@ -50,7 +53,7 @@ const CreateVisualContentPage = () => {
     {
       icon: <img src={reuse} />,
       onClick: (row) => {
-        console.log(row, 'row_data_check');
+        console.log(row, "row_data_check");
         handlePromptRegenerate(row);
       },
     },
@@ -82,16 +85,17 @@ const CreateVisualContentPage = () => {
     }
   }, [saveVisualContentData?.prompts]);
 
-  console.log(saveVisualContentData, "c")
-
   const settingDataInRows = (reqData) => {
-    console.log(reqData, "check_data_funcgion")
     let newdata = reqData?.map((item, index) => {
-        console.log(item, "check_item")
+      console.log(item, "check_item");
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type ?? "image",
-        Visual_Description: item?.prompt ?? "-",
+        Visual_Type: item?.visual_type === "clip" ? "clip" : "image",
+        // Visual_Description:  item?.prompt ?? "-",
+        Visual_Description:
+          item?.visual_type === "clip"
+            ? item?.clip_prompt ?? "-"
+            : item?.prompt ?? "-",
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
       };
@@ -126,43 +130,35 @@ const CreateVisualContentPage = () => {
     }
   };
 
+  const handleVisualTypeChange = (value, data) => {
+    console.log(data, "check_visual");
+    // return
+    const updatedRows = rows.map((item) =>
+      item.scene_id === data.scene_id ? { ...item, Visual_Type: value } : item
+    );
+    setRows(updatedRows);
 
-// const handleVisualTypeChange = (value, data) => {
-//     const prompt_id = data?.prompt_id;
-//     const prompt_batch_id = id;
-//     const payload = {
-//         prompt_batch_id,
-//         prompt_id,
-//          visual_type: value,    
-//     }
-//     dispatch(postVisualTypeUpdate(payload))
+    const payload = {
+      prompt_batch_id: id,
+      prompt_id: data?.prompt_id,
+      visual_type: value,
+    };
 
-// }
-const handleVisualTypeChange = (value, data) => {
-  const updatedRows = rows.map((item) =>
-    item.scene_id === data.scene_id
-      ? { ...item, Visual_Type: value }
-      : item
-  );
-  setRows(updatedRows);
-
-
-  const payload = {
-    prompt_batch_id: id,
-    prompt_id: data?.prompt_id,
-    visual_type: value,   
+    dispatch(postVisualTypeUpdate(payload));
   };
-
-  dispatch(postVisualTypeUpdate(payload));
-};
   console.log(regeneratePromptData, "Check_regenerate_data");
 
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
+        {saveVisualContentLoader && (
+          <FullScreenGradientLoader text="loading..." />
+        )}
         <div className={styles.header}>
-          <h2 className={styles.title}>{"Visual Content"}</h2>
+          <h2 className={styles.title}>
+            {saveVisualContentData?.title || "Visual Content"}
+          </h2>
         </div>
 
         <div className={styles.tableContainer}>
@@ -200,7 +196,7 @@ const handleVisualTypeChange = (value, data) => {
                             {/* {row[col.key]} */}
                             {col.key === "Visual_Type" ? (
                               <Select
-                                value={row.Visual_Type || "image"}
+                                value={row.Visual_Type}
                                 size="small"
                                 onChange={(e) =>
                                   handleVisualTypeChange(e.target.value, row)
@@ -263,7 +259,7 @@ const handleVisualTypeChange = (value, data) => {
             </>
           ) : (
             <>
-              <NoDataMessage filter={false} loading={saveVisualContentLoader} />
+              <NoDataMessage filter={false} />
             </>
           )}
         </div>

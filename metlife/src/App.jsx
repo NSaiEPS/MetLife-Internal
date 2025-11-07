@@ -6,7 +6,9 @@ import { RouterProvider } from "react-router";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setRouter } from "./utils/navigate";
 function App() {
+  setRouter(router);
   return (
     <>
       {/* <ToastBox /> */}
@@ -23,7 +25,7 @@ function App() {
           display: "flex",
           alignItems: "center",
         }}
-      /> 
+      />
       <RouterProvider router={router} />
     </>
   );

@@ -30,7 +30,7 @@ import RegenerateScriptPopup from "./popup/RegenerateScriptPopup";
 import ButtonComp from "./Buton/Button";
 import PopupModal from "../popUps/LanguagePopup";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../api/axios";
+import api, { BASE_URL } from "../../api/axios";
 import FullScreenGradientLoader from "./GradientLoader";
 import { MdDone } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,6 +41,7 @@ import {
 } from "../../redux/features/saveSlice";
 import DeleteScenePopup from "./popup/DeleteScenePopup";
 import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
+import { postDeleteScene } from "../../redux/features/scriptSlice";
 
 /**
  * props:
@@ -102,6 +103,7 @@ function DynamicTable({
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
   );
+  const { scriptLoader, scriptData } = useSelector((store) => store.Script);
 
   const actions = [
     {
@@ -206,7 +208,7 @@ function DynamicTable({
 
   const handleDownloadScript = () => {
     setOpenDownloadPopup(true);
-    setMakeChanges(true);
+    // setMakeChanges(true);
   };
   const [showSourceLoader, setShowSourceLoader] = useState(false);
   const handleShowSource = async () => {
@@ -229,7 +231,7 @@ function DynamicTable({
     } finally {
       setShowSourceLoader(false);
     }
-    setMakeChanges(true);
+    // setMakeChanges(true);
   };
 
   const handleDownloadType = (type) => {
@@ -243,7 +245,7 @@ function DynamicTable({
     } catch (err) {
       console.error("Error generating file:", err);
     }
-    setMakeChanges(true);
+    // setMakeChanges(true);
   };
 
   const handleUpdate = (data) => {
@@ -366,14 +368,39 @@ function DynamicTable({
     setOpenDeletePopup(true);
     setMakeChanges(true);
   };
+  console.log(rows, "check_rows");
 
-  const confirmDeleteScene = () => {
-    // console.log("Deleted scene:", selectedScene);
+  const confirmDeleteScene = async (scene) => {
+    const payload = {
+      script_id: id,
+      scene_id: scene.id,
+    };
 
-    setOpenDeletePopup(false);
-    setMakeChanges(true);
+    try {
+      await api.post("mongo/delete_scene", payload);
+      console.log(rows);
+      successDelete(scene);
+      setRows((prev) => prev.filter((item) => item.id !== scene.id));
+
+      setOpenDeletePopup(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
+  const successDelete = (scene) => {
+    let updatedRows = [...rows].filter((item) => item.id !== scene.id);
+    console.log(updatedRows, "Updated_rows");
 
+    let Updated_rows = updatedRows.map((item, index) => {
+      let data = { ...item };
+
+      data["Scene No."] = index + 1;
+      return data;
+    });
+    console.log(updatedRows, "Updated_rows");
+
+    setRows(Updated_rows);
+  };
   const handleSave = () => {
     console.log(tableExtraData, "check_data");
 
@@ -387,14 +414,10 @@ function DynamicTable({
   };
 
   const handleCreateVisualContent = () => {
-    dispatch(postCreateVisualContent(tableExtraData))
-    .then((result) => {
-      console.log(result, "check_result");
-      if (result) {
-        navigate(`/create-visual-content/${result?.data?.prompt_batch_id}`);
-      }
-    });
+    dispatch(postCreateVisualContent(tableExtraData));
   };
+
+  console.log(saveTranslatedData, "Save_translated_data");
 
   return (
     <>
@@ -453,9 +476,12 @@ function DynamicTable({
           </div>
         )}
       </div>
-      {saveVisualContentLoader && <FullScreenGradientLoader text="loading..." />}
+      {saveVisualContentLoader && (
+        <FullScreenGradientLoader text="loading..." />
+      )}
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
       {loader && <FullScreenGradientLoader text={loaderText} />}
+      {scriptLoader && <FullScreenGradientLoader text="Deleting..." />}
       <TableContainer component={Paper} className={styles.tablePaper}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
@@ -572,6 +598,7 @@ function DynamicTable({
         onClose={() => setOpenDeletePopup(false)}
         onConfirm={confirmDeleteScene}
         rowData={selectedScene}
+        id={id}
       />
 
       <div className={styles.footerButtons}>
@@ -690,15 +717,30 @@ function DynamicTable({
           )}
 
           {showDragAndActions && features && (
-            <Button
-              onClick={() => {
-                handleCreateVisualContent();
-              }}
-              variant="contained"
-              className={styles.primaryBtn}
-            >
-              Create Visual Content
-            </Button>
+            <>
+              <Tooltip
+                title={
+                  !saveTranslatedData
+                    ? "Please save before creating visual content."
+                    : ""
+                }
+                placement="top"
+                arrow
+              >
+                <span>
+                  <Button
+                    onClick={() => {
+                      handleCreateVisualContent();
+                    }}
+                    variant="contained"
+                    className={styles.primaryBtn}
+                    disabled={!saveTranslatedData}
+                  >
+                    Create Visual Content
+                  </Button>
+                </span>
+              </Tooltip>
+            </>
           )}
         </Stack>
 

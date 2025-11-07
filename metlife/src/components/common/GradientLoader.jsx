@@ -35,7 +35,7 @@ const FullScreenGradientLoader = ({ open = true, text = "Generating..." }) => {
         />
         <Typography
           variant="h6"
-          sx={{ color: "white", fontWeight: 500, letterSpacing: 0.5 }}
+          sx={{ color: "#fff", fontWeight: 500, letterSpacing: 0.5 }}
         >
           {text}
         </Typography>
