@@ -734,7 +734,8 @@ function DynamicTable({
                     }}
                     variant="contained"
                     className={styles.primaryBtn}
-                    disabled={!saveTranslatedData}
+                    disabled={(saveTranslatedData === null)}
+
                   >
                     Create Visual Content
                   </Button>

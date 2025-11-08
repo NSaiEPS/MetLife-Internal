@@ -11,6 +11,10 @@ import { postRegenerateVisualContent } from "../../../redux/features/createVisua
 import { useDispatch, useSelector } from "react-redux";
 
 const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
+  const onCloseTempData = () => {
+    setFeedback("");
+    onClose();
+  }
   const { saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
   );
@@ -23,13 +27,15 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
       prompt_batch_id: id,
       scene_id: fieldData?.scene_id,
     };
-    dispatch(postRegenerateVisualContent(payload, onClose));
+    // dispatch(postRegenerateVisualContent(payload, onClose, onCloseTempData));
+    dispatch(postRegenerateVisualContent(payload, onCloseTempData));
+
   };
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={onCloseTempData}
       PaperProps={{
         sx: {
           width: "500px",
@@ -58,7 +64,7 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
         <Button
           disabled={saveVisualContentLoader}
           variant="outlined"
-          onClick={onClose}
+          onClick={onCloseTempData}
         >
           Cancel
         </Button>

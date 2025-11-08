@@ -60,7 +60,6 @@ const CreateVisualContentPage = () => {
   ];
   const {
     saveVisualContentData,
-    setSaveVisualContentData,
     saveVisualContentLoader,
   } = useSelector((store) => store.CreateVisualContent);
   const script_id = saveVisualContentData?.script_id;
@@ -73,6 +72,7 @@ const CreateVisualContentPage = () => {
   console.log(saveVisualContentData, "save_visual_data");
   const dispatch = useDispatch();
   const { id } = useParams();
+  console.log(saveVisualContentData, "save_visual_contet_data")
 
   useEffect(() => {
     if (!id) return;
@@ -98,6 +98,8 @@ const CreateVisualContentPage = () => {
             : item?.prompt ?? "-",
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
+        prompt: item?.prompt ?? "",
+        clip_prompt: item?.clip_prompt ?? "",
       };
     });
     setRows(newdata);
@@ -132,9 +134,22 @@ const CreateVisualContentPage = () => {
 
   const handleVisualTypeChange = (value, data) => {
     console.log(data, "check_visual");
-    // return
+
+    if (value === "image") {
+      const updatedRows = rows.map(item => 
+        item.scene_id === data.scene_id ? {
+          ...item,
+          Visual_Type: value,
+          Visual_Description: data.prompt
+        } : item
+      )
+      setRows(updatedRows);
+      return;
+    }
+
+
     const updatedRows = rows.map((item) =>
-      item.scene_id === data.scene_id ? { ...item, Visual_Type: value } : item
+      item.scene_id === data.scene_id ? { ...item, Visual_Type: value, Visual_Description: data?.clip_prompt } : item
     );
     setRows(updatedRows);
 
@@ -146,7 +161,6 @@ const CreateVisualContentPage = () => {
 
     dispatch(postVisualTypeUpdate(payload));
   };
-  console.log(regeneratePromptData, "Check_regenerate_data");
 
   return (
     <>
@@ -221,7 +235,6 @@ const CreateVisualContentPage = () => {
                                   className={styles.iconBtn}
                                   size="small"
                                   onClick={() => {
-                                    console.log("clicked");
                                     act.onClick(row);
                                   }}
                                 >

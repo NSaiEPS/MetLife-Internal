@@ -31,7 +31,9 @@ const CreateVisualContentPageSlice = createSlice({
             data.visual_type = action?.payload?.visual_type;
           }
           if (action?.payload?.clip_prompt) {
-            data.clip_prompt = action?.payload?.clip_prompt;
+            // data.clip_prompt = action?.payload?.clip_prompt;
+            data.clip_prompt =
+              action?.payload?.clip_prompt ?? data.clip_prompt ?? "";
           }
         }
         return data;
@@ -103,7 +105,7 @@ export const postEditVisualContent = (data, onClose) => async (dispatch) => {
 
 // Prompt regenerate
 export const postRegenerateVisualContent =
-  (data, onClose) => async (dispatch) => {
+  (data, onCloseTempData) => async (dispatch) => {
     dispatch(setSaveVisualContentLoader(true));
     try {
       const response = await api.post(`prompt/regenerate`, data);
@@ -111,7 +113,8 @@ export const postRegenerateVisualContent =
       toast.success(
         response?.data?.message || "Prompt regenerated successfully"
       );
-      onClose(false);
+      // onClose(false);
+      onCloseTempData(false);
       dispatch(
         updateVisualPromt({
           new_prompt: response?.data?.new_prompt,
@@ -129,6 +132,7 @@ export const postRegenerateVisualContent =
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setSaveVisualContentLoader(false));
+      onCloseTempData(true);
     }
   };
 
