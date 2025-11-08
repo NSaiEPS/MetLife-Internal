@@ -29,6 +29,7 @@ const MyVideosDashboard = () => {
   const { dashBoardInfo, dashboardLoader } = useSelector(
     (store) => store.DashBoard
   );
+  console.log(dashBoardInfo, "check_dashboard_info")
   const stats = [
     {
       title: "Total Videos",
@@ -91,9 +92,16 @@ const MyVideosDashboard = () => {
     dispatch(getDashboardInfo());
   }, []);
 
-  const handleView = (id) => {
-    navigate(`/scenes/${id}`);
+  const handleView = (video) => {
+    if(video?.prompt_batch_id) {
+      navigate(`/create-visual-content/${video?.prompt_batch_id}`);
+      // console.log(video?.prompt_batch_id, "prompt id founded. ")
+    } else {
+      // console.log(video?.script_id, "script id founded. ")
+      navigate(`/scenes/${video?.script_id}`);
+    }
   };
+  
   return (
     <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
       <OneFrameHeader />
@@ -278,7 +286,7 @@ const MyVideosDashboard = () => {
                     <Button
                       variant="text"
                       sx={{ minWidth: 0, p: 1 }}
-                      onClick={() => handleView(video?.script_id)}
+                      onClick={() => handleView(video)}
                     >
                       👁️
                     </Button>

@@ -2,46 +2,46 @@ import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import styles from "./visualContent.module.css";
-import DynamicTable from "../../components/common/Table";
-import { useDispatch, useSelector } from "react-redux";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
-
+import FullScreenGradientLoader from "../../components/common/GradientLoader";
+import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
+import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
-  Box,
-  Typography,
-  IconButton,
   MenuItem,
   Select,
-  //   Paper,
 } from "@mui/material";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import {
   getVisualContent,
   postVisualTypeUpdate,
 } from "../../redux/features/createVisualSlice";
-import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
-import AddNewScriptPopup from "../../components/popUps/addScripts";
-import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
-import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
+import PromptTable from "../../components/common/PromptTable/PromptTable";
 
 const CreateVisualContentPage = () => {
-  const [columns] = useState([
-    { label: "Scene No.", key: "Scene_No." },
-    { label: "Visual Type", key: "Visual_Type" },
-    { label: "Visual Description", key: "Visual_Description" },
-  ]);
+  const columns = [
+  { label: "Scene No.", key: "Scene_No." },
+  {
+    label: "Visual Type",
+    key: "Visual_Type",
+    render: (value, row) => (
+      <Select
+        value={value}
+        size="small"
+        onChange={(e) => handleVisualTypeChange(e.target.value, row)}
+        sx={{ width: 100 }}
+      >
+        <MenuItem value="image">Image</MenuItem>
+        <MenuItem value="clip">Clip</MenuItem>
+      </Select>
+    ),
+  },
+
+  { label: "Visual Description", key: "Visual_Description" },
+];
 
   const actions = [
     {
@@ -58,21 +58,17 @@ const CreateVisualContentPage = () => {
       },
     },
   ];
-  const {
-    saveVisualContentData,
-    saveVisualContentLoader,
-  } = useSelector((store) => store.CreateVisualContent);
+  const { saveVisualContentData, saveVisualContentLoader } = useSelector(
+    (store) => store.CreateVisualContent
+  );
   const script_id = saveVisualContentData?.script_id;
-  const [rows, setRows] = useState([]);
-  const [openEditPromptPopup, setOpenEditPromptPopup] = useState(false);
-  const [editPromptData, setEditPromptData] = useState(null);
-  const [openRegeneratePromptPopup, setOpenRegeneratePromptPopup] =
-    useState(false);
-  const [regeneratePromptData, setRegeneratePromptData] = useState(null);
-  console.log(saveVisualContentData, "save_visual_data");
   const dispatch = useDispatch();
+  const [rows, setRows] = useState([]);
   const { id } = useParams();
-  console.log(saveVisualContentData, "save_visual_contet_data")
+  const [popup, setPopup] = useState({
+    type: null,
+    data: null,
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -106,14 +102,24 @@ const CreateVisualContentPage = () => {
   };
 
   const openEditPrompt = (data) => {
-    setEditPromptData(data);
-    setOpenEditPromptPopup(true);
+    setPopup({
+      type: "edit",
+      data,
+    });
   };
 
   const handlePromptRegenerate = (data) => {
-    console.log(data, "check_data");
-    setRegeneratePromptData(data);
-    setOpenRegeneratePromptPopup(true);
+    setPopup({
+      type: "regenerate",
+      data,
+    });
+  };
+
+  const closePopup = () => {
+    setPopup({
+      type: null,
+      data: null,
+    });
   };
 
   const handleUpdate = (data) => {
@@ -136,20 +142,27 @@ const CreateVisualContentPage = () => {
     console.log(data, "check_visual");
 
     if (value === "image") {
-      const updatedRows = rows.map(item => 
-        item.scene_id === data.scene_id ? {
-          ...item,
-          Visual_Type: value,
-          Visual_Description: data.prompt
-        } : item
-      )
+      const updatedRows = rows.map((item) =>
+        item.scene_id === data.scene_id
+          ? {
+              ...item,
+              Visual_Type: value,
+              Visual_Description: data.prompt || "Generating...",
+            }
+          : item
+      );
       setRows(updatedRows);
       return;
     }
 
-
     const updatedRows = rows.map((item) =>
-      item.scene_id === data.scene_id ? { ...item, Visual_Type: value, Visual_Description: data?.clip_prompt } : item
+      item.scene_id === data.scene_id
+        ? {
+            ...item,
+            Visual_Type: value,
+            Visual_Description: data?.clip_prompt || "Generating...",
+          }
+        : item
     );
     setRows(updatedRows);
 
@@ -178,92 +191,32 @@ const CreateVisualContentPage = () => {
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length > 0 ? (
             <>
-              <TableContainer className={styles.tablePaper}>
-                <Table className={styles.tableRoot}>
-                  <TableHead>
-                    <TableRow className={styles.headRow}>
-                      {columns.map((col, idx) => (
-                        <TableCell
-                          key={idx}
-                          className={styles.headCell}
-                          sx={{ fontWeight: 600 }}
-                        >
-                          {col.label}
-                        </TableCell>
-                      ))}
-                      {actions?.length > 0 && (
-                        <TableCell
-                          className={styles.headCell}
-                          sx={{ fontWeight: 600 }}
-                        >
-                          Action
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  </TableHead>
+      
+              <PromptTable
+                columns={columns}
+                rows={rows}
+                actions={actions}
+               />
+              {popup.type === "edit" && (
+                <EditPromptPopup
+                  open={true}
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={script_id}
+                  handleUpdate={handleUpdate}
+                />
+              )}
 
-                  <TableBody>
-                    {rows.map((row, rIdx) => (
-                      <TableRow key={rIdx} className={styles.bodyRow}>
-                        {columns.map((col, cIdx) => (
-                          <TableCell key={cIdx} className={styles.bodyCell}>
-                            {/* {row[col.key]} */}
-                            {col.key === "Visual_Type" ? (
-                              <Select
-                                value={row.Visual_Type}
-                                size="small"
-                                onChange={(e) =>
-                                  handleVisualTypeChange(e.target.value, row)
-                                }
-                                sx={{ width: 100 }}
-                              >
-                                <MenuItem value="image">Image</MenuItem>
-                                <MenuItem value="clip">Clip</MenuItem>
-                              </Select>
-                            ) : (
-                              row[col.key]
-                            )}
-                          </TableCell>
-                        ))}
+              {popup.type === "regenerate" && (
+                <RegeneratePromptPopup
+                  open={true}
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  id={id}
+                  // handleRegenerate={handleRegenerate}
+                />
+              )}
 
-                        {actions.length > 0 && (
-                          <TableCell className={styles.bodyCell}>
-                            <div className={styles.actionsWrap}>
-                              {actions.map((act, aIdx) => (
-                                <IconButton
-                                  key={aIdx}
-                                  className={styles.iconBtn}
-                                  size="small"
-                                  onClick={() => {
-                                    act.onClick(row);
-                                  }}
-                                >
-                                  {act.icon}
-                                </IconButton>
-                              ))}
-                            </div>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <EditPromptPopup
-                open={openEditPromptPopup}
-                onClose={() => setOpenEditPromptPopup(false)}
-                fieldData={editPromptData}
-                script_id={script_id}
-                handleUpdate={handleUpdate}
-              />
-
-              <RegeneratePromptPopup
-                open={openRegeneratePromptPopup}
-                onClose={() => setOpenRegeneratePromptPopup(false)}
-                fieldData={regeneratePromptData}
-                id={id}
-                // handleRegenerate={handleRegenerate}
-              />
               <div className={styles.footerButtons}>
                 <Button variant="contained" className={styles.primaryBtn}>
                   Generate Visual
