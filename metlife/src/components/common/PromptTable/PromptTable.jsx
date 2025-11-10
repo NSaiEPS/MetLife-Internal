@@ -6,10 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   IconButton,
-  MenuItem,
-  Select,
 } from "@mui/material";
 import styles from "./promptTable.module.css";
 

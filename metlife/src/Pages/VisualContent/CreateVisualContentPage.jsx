@@ -8,11 +8,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import { useParams } from "react-router";
 import {
   getVisualContent,
@@ -20,28 +16,30 @@ import {
 } from "../../redux/features/createVisualSlice";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import PromptTable from "../../components/common/PromptTable/PromptTable";
+import api from "../../api/axios";
+import { postGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 
 const CreateVisualContentPage = () => {
   const columns = [
-  { label: "Scene No.", key: "Scene_No." },
-  {
-    label: "Visual Type",
-    key: "Visual_Type",
-    render: (value, row) => (
-      <Select
-        value={value}
-        size="small"
-        onChange={(e) => handleVisualTypeChange(e.target.value, row)}
-        sx={{ width: 100 }}
-      >
-        <MenuItem value="image">Image</MenuItem>
-        <MenuItem value="clip">Clip</MenuItem>
-      </Select>
-    ),
-  },
+    { label: "Scene No.", key: "Scene_No." },
+    {
+      label: "Visual Type",
+      key: "Visual_Type",
+      render: (value, row) => (
+        <Select
+          value={value}
+          size="small"
+          onChange={(e) => handleVisualTypeChange(e.target.value, row)}
+          sx={{ width: 100 }}
+        >
+          <MenuItem value="image">Image</MenuItem>
+          <MenuItem value="clip">Clip</MenuItem>
+        </Select>
+      ),
+    },
 
-  { label: "Visual Description", key: "Visual_Description" },
-];
+    { label: "Visual Description", key: "Visual_Description" },
+  ];
 
   const actions = [
     {
@@ -60,6 +58,10 @@ const CreateVisualContentPage = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
   );
+  const { generateVisualLoader, generateVisualContentData } = useSelector(
+    (store) => store.GenerateVisualContent
+  );
+  console.log(generateVisualLoader, "generateVisualLoader");
   const script_id = saveVisualContentData?.script_id;
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
@@ -170,12 +172,21 @@ const CreateVisualContentPage = () => {
     dispatch(postVisualTypeUpdate(payload));
   };
 
+  const handleGenerate = async () => {
+    const data = saveVisualContentData;
+
+    dispatch(postGenerateVisualContentImage(data));
+  };
+
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
         {saveVisualContentLoader && (
-          <FullScreenGradientLoader text="loading..." />
+          <FullScreenGradientLoader
+            text="loading..."
+            loader={generateVisualLoader}
+          />
         )}
         <div className={styles.header}>
           <h2 className={styles.title}>
@@ -186,12 +197,7 @@ const CreateVisualContentPage = () => {
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length > 0 ? (
             <>
-      
-              <PromptTable
-                columns={columns}
-                rows={rows}
-                actions={actions}
-               />
+              <PromptTable columns={columns} rows={rows} actions={actions} />
               {popup.type === "edit" && (
                 <EditPromptPopup
                   open={true}
@@ -213,7 +219,12 @@ const CreateVisualContentPage = () => {
               )}
 
               <div className={styles.footerButtons}>
-                <Button variant="contained" className={styles.primaryBtn}>
+                <Button
+                  onClick={handleGenerate}
+                  // disabled={generateVisualLoader}
+                  variant="contained"
+                  className={styles.primaryBtn}
+                >
                   Generate Visual
                 </Button>
               </div>
