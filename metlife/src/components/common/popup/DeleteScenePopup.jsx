@@ -10,32 +10,18 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { postDeleteScene } from "../../../redux/features/scriptSlice";
 import api from "../../../api/axios";
+import FullScreenGradientLoader from "../GradientLoader";
 
-const DeleteScenePopup = ({ open, onClose, rowData, id, onConfirm }) => {
+const DeleteScenePopup = ({
+  open,
+  onClose,
+  rowData,
+  id,
+  onConfirm,
+  loader,
+}) => {
   const { scriptLoader } = useSelector((store) => store.Script);
-  console.log(scriptLoader, "check_selector");
-  console.log(rowData, "Check_rowData");
-  // const handleDelete = async () => {
-  //   const payload = {
-  //     script_id: id,
-  //     scene_id: rowData?.id,
-  //   };
-  //   try {
-  //     const res = await api.post("mongo/delete_scene", payload);
-  //     console.log(res, "check_delete");
-  //     onClose(false);
-  //     // if (res?.status) {
-  //     //   dispatch(setScriptData(res?.data));
-  //     //   console.log(res);
-  //     // }
-  //   } catch (error) {
-  //     console.log(error);
-  //     // toast.error("Something went wrong!");
-  //   } finally {
-  //     // dispatch(setScriptLoader(false));
-  //     onClose(false);
-  //   }
-  // };
+
   return (
     <Dialog
       open={open}
@@ -49,7 +35,15 @@ const DeleteScenePopup = ({ open, onClose, rowData, id, onConfirm }) => {
       <DialogTitle sx={{ fontWeight: 600, textAlign: "center" }}>
         Confirm Delete
       </DialogTitle>
-
+      {loader ? (
+        <>
+          <Typography textAlign="center">
+            <FullScreenGradientLoader text="loading" />
+          </Typography>
+        </>
+      ) : (
+        <></>
+      )}
       <DialogContent>
         <Typography
           variant="body1"
@@ -68,7 +62,6 @@ const DeleteScenePopup = ({ open, onClose, rowData, id, onConfirm }) => {
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
         <Button
           onClick={onClose}
-          // disabled={scriptLoader}
           variant="outlined"
           sx={{
             minWidth: 100,
@@ -79,10 +72,8 @@ const DeleteScenePopup = ({ open, onClose, rowData, id, onConfirm }) => {
           No
         </Button>
         <Button
-          // onClick={handleDelete}
           onClick={() => onConfirm(rowData)}
           variant="contained"
-          // disabled={scriptLoader}
           color="error"
           sx={{
             minWidth: 100,

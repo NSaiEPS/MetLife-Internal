@@ -42,7 +42,7 @@ import {
 import DeleteScenePopup from "./popup/DeleteScenePopup";
 import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
 import { postDeleteScene } from "../../redux/features/scriptSlice";
-import {languages} from "../../utils/languageOptions";
+import { languages } from "../../utils/languageOptions";
 
 /**
  * props:
@@ -201,6 +201,8 @@ function DynamicTable({
     // setMakeChanges(true);
   };
   const [showSourceLoader, setShowSourceLoader] = useState(false);
+  const [deleteLoader, setDeleteLoader] = useState(false);
+
   const handleShowSource = async () => {
     setOpenShowPopup(true);
     setShowSourceLoader(true);
@@ -283,9 +285,6 @@ function DynamicTable({
   const handleTranslateScript = async () => {
     const file_id = pdfId || id;
     if (!file_id) return;
-    // if(!selectedLang) {
-    //   toast.error("Please slect a language to translate.")
-    // }
     const formData = new FormData();
     if (id) {
       formData.append("script_id", file_id);
@@ -310,7 +309,6 @@ function DynamicTable({
         return;
       }
       const translatedData = await response.json();
-      console.log(translatedData, "translated_data");
       setTableExtraData(translatedData?.data);
       // settingDataInRows(translatedData?.data?.scenes);
       // downloadScriptPdf(translatedData?.data,true);
@@ -353,30 +351,29 @@ function DynamicTable({
   };
 
   const handleDeleteScene = (scene) => {
-    console.log(scene, "check_delete_data");
     setSelectedScene(scene);
     setOpenDeletePopup(true);
     setMakeChanges(true);
   };
-  console.log(rows, "check_rows");
 
   const confirmDeleteScene = async (scene) => {
     const payload = {
       script_id: id,
       scene_id: scene.id,
     };
-
+    setDeleteLoader(true);
     try {
       await api.post("mongo/delete_scene", payload);
-      console.log(rows);
       successDelete(scene);
       setRows((prev) => prev.filter((item) => item.id !== scene.id));
-
       setOpenDeletePopup(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setDeleteLoader(false);
     }
   };
+
   const successDelete = (scene) => {
     let updatedRows = [...rows].filter((item) => item.id !== scene.id);
     console.log(updatedRows, "Updated_rows");
@@ -387,10 +384,9 @@ function DynamicTable({
       data["Scene No."] = index + 1;
       return data;
     });
-    console.log(updatedRows, "Updated_rows");
-
     setRows(Updated_rows);
   };
+
   const handleSave = () => {
     console.log(tableExtraData, "check_data");
 
@@ -406,8 +402,6 @@ function DynamicTable({
   const handleCreateVisualContent = () => {
     dispatch(postCreateVisualContent(tableExtraData));
   };
-
-  console.log(saveTranslatedData, "Save_translated_data");
 
   return (
     <>
@@ -589,6 +583,7 @@ function DynamicTable({
         onConfirm={confirmDeleteScene}
         rowData={selectedScene}
         id={id}
+        loader={deleteLoader}
       />
 
       <div className={styles.footerButtons}>
@@ -724,8 +719,7 @@ function DynamicTable({
                     }}
                     variant="contained"
                     className={styles.primaryBtn}
-                    disabled={(saveTranslatedData === null)}
-
+                    disabled={saveTranslatedData === null}
                   >
                     Create Visual Content
                   </Button>
