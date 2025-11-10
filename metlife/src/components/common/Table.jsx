@@ -42,6 +42,7 @@ import {
 import DeleteScenePopup from "./popup/DeleteScenePopup";
 import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
 import { postDeleteScene } from "../../redux/features/scriptSlice";
+import {languages} from "../../utils/languageOptions";
 
 /**
  * props:
@@ -72,17 +73,6 @@ function DynamicTable({
   const [popupTitle, setPopupTitle] = useState("Add New Script");
   const [loaderText, setLoaderText] = useState("");
   const [open, setOpen] = useState(false);
-  const languages = [
-    "Spanish",
-    "Hindi",
-    "English",
-    "Arabic",
-    "Nepali",
-    "Portuguese",
-    "Romanian",
-    "Ukrainian",
-    "Bangla",
-  ];
   const [loader, setLoader] = useState(false);
   const [selectedLang, setSelectedLang] = useState("");
   const [showSourceData, setShowSourceData] = useState([]);

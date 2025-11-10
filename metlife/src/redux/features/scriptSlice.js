@@ -42,14 +42,14 @@ export const postDeleteScene = (data, onClose) => async (dispatch) => {
         scene_id: data?.scene_id,
       })
     );
-    // if (res?.status) {
-    //   dispatch(setScriptData(res?.data));
-    //   console.log(res);
-    // }
   } catch (error) {
     console.log(error);
-    // toast.error("Something went wrong!");
+    toast.error("Something went wrong!");
   } finally {
     dispatch(setScriptLoader(false));
   }
 };
+
+
+// save data
+
