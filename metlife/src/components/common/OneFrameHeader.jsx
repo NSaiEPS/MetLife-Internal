@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography } from "@mui/material";
 import logo from "../../assets/mainImage.svg";
 import styles from "./OneFrameHeader.module.css";
 import { useNavigate } from "react-router";
+import footerImage from "../../assets/SurfAI_white.png";
 
 const OneFrameHeader = ({
   setMakeChanges,
@@ -43,7 +44,7 @@ const OneFrameHeader = ({
         </Typography>
 
         <img
-          src={logo}
+          src={footerImage}
           alt="MetLife logo"
           onClick={handleImageClick}
           className={styles.logo}

@@ -58,7 +58,7 @@ const modelOptions = [
   { value: "gpt-4.1", label: "GPT-4.1" },
 ];
 const dataSourceOptions = [
-  { value: "metlife", label: "MetLife" },
+  { value: "metlife", label: "Company Data" },
   { value: "openai", label: "OpenAI" },
   { value: "metlife+openai", label: "Both" },
 ];
@@ -112,10 +112,10 @@ const GenerateScript = () => {
       showToast.error("Please enter Target Audience in Video Filters");
     } else if (!duration) {
       showToast.error("Please select Duration in Video Filters");
-    } 
+    }
     // else if (!topn) {
     //   showToast.error("Please select Top N in Model Filters");
-    // } 
+    // }
     else if (!model) {
       showToast.error("Please select Model in Model Filters");
     } else if (!datasource) {
@@ -138,7 +138,7 @@ const GenerateScript = () => {
       language: language,
       target_audience: audience,
       // scene_length_style: "short_form",
-      video_style: videoType === "narrator" ? "narrative": videoType,
+      video_style: videoType === "narrator" ? "narrative" : videoType,
       model: model,
       top_n: Number(topn),
       data_source: datasource,
