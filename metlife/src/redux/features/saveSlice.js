@@ -34,11 +34,9 @@ export const postTranslatedDataSave = (data) => async (dispatch) => {
   dispatch(setSaveLoader(true));
   try {
     const response = await api.post("mongo/write", data);
-    // console.log(response, "check_save_response");
     if (response?.status) {
       dispatch(setSaveTranslatedData(response?.data));
       toast.success("Data Saved Successfully");
-      // console.log(response);
     }
   } catch (error) {
     console.log(error);

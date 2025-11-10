@@ -12,6 +12,7 @@ import {
   Grid,
   Button,
   InputBase,
+  Tooltip,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
@@ -92,6 +93,8 @@ const GenerateScript = () => {
   const [model, setModel] = useState("gpt-4o-mini");
   const [datasource, setDatasource] = useState("");
   const [loader, setLoader] = useState(false);
+  const disableTopN = !datasource || datasource === "openai";
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name == "duration") {
@@ -112,10 +115,10 @@ const GenerateScript = () => {
       showToast.error("Please enter Target Audience in Video Filters");
     } else if (!duration) {
       showToast.error("Please select Duration in Video Filters");
-    } 
+    }
     // else if (!topn) {
     //   showToast.error("Please select Top N in Model Filters");
-    // } 
+    // }
     else if (!model) {
       showToast.error("Please select Model in Model Filters");
     } else if (!datasource) {
@@ -138,7 +141,7 @@ const GenerateScript = () => {
       language: language,
       target_audience: audience,
       // scene_length_style: "short_form",
-      video_style: videoType === "narrator" ? "narrative": videoType,
+      video_style: videoType === "narrator" ? "narrative" : videoType,
       model: model,
       top_n: Number(topn),
       data_source: datasource,
@@ -153,10 +156,8 @@ const GenerateScript = () => {
       } else {
         showToast?.error("Some Issue In Generating");
       }
-      console.log("Video created successfully:", result);
     } catch (err) {
       showToast?.error("Some Issue In Generating");
-
       console.error("Video creation failed:", err);
     } finally {
       setLoader(false);
@@ -359,14 +360,49 @@ const GenerateScript = () => {
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    <SelectComp
-                      label="Top N"
-                      options={topNOptions}
-                      value={topn}
-                      onChange={setTopn}
-                      placeholder="Select Top N"
-                      disabled={datasource === "openai"}
-                    />
+                    {/* <Tooltip
+                      title={
+                        datasource === "openai"
+                          ? "OpenAI does not have any source"
+                          : ""
+                      }
+                      placement="left"
+                      arrow
+                    >
+                      <span>
+                        <SelectComp
+                          label="Top N"
+                          options={topNOptions}
+                          value={topn}
+                          onChange={setTopn}
+                          placeholder="Select Top N"
+                          disabled={datasource === "openai"}
+                        />
+                      </span>
+                    </Tooltip> */}
+                    <Tooltip
+                      title={
+                        !datasource
+                          ? "Please select Data Source first"
+                          : datasource === "openai"
+                          ? "OpenAI does not have any source"
+                          : ""
+                      }
+                      placement="left"
+                      arrow
+                      disableHoverListener={!disableTopN}
+                    >
+                      <span style={{ width: "100%" }}>
+                        <SelectComp
+                          label="Top N"
+                          options={topNOptions}
+                          value={topn}
+                          onChange={setTopn}
+                          placeholder="Select Top N"
+                          disabled={disableTopN}
+                        />
+                      </span>
+                    </Tooltip>
                   </Grid>
                 </Grid>
               </AccordionDetails>

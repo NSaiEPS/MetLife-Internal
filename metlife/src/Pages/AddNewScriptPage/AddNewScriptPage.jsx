@@ -64,12 +64,10 @@ const ScriptPage = () => {
     setLoading(true);
     try {
       const result = await api.get(`scripts/${id}`);
-      console.log("Video created successfully:", result);
       if (result?.status == "200") {
         setSceneData(result?.data);
       }
     } catch (e) {
-      console.log(e);
       showToast.error(e?.detail);
     } finally {
       setLoading(false);

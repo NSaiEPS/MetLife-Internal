@@ -77,9 +77,7 @@ export const downloadScriptPdf = (data, uploadDownload = false) => {
 
 // download script word
 export const downloadScriptWord = (data, uploadDownload = false) => {
-  console.log(data, "word_data");
   const fileName = localStorage.getItem("file_name");
-  // console.log(fileName, 'fileNameCheck')
   if (!data) return;
 
   const {

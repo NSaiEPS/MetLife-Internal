@@ -10,6 +10,7 @@ import {
   Stack,
   TextField,
   MenuItem,
+  Tooltip,
 } from "@mui/material";
 import SelectComp from "../select";
 import ButtonComp from "../Buton/Button";
@@ -36,13 +37,13 @@ const RegenerateScriptPopup = ({
   id,
   setTableExtraData,
   sceneId,
+  tableData,
 }) => {
   const onCloseFun = () => {
     setTopn("");
     setFeedback("");
     onClose();
   };
-  // console.log(sceneId, "sceneId");
   const [model, setModel] = useState("gpt-4o-mini");
   const [topn, setTopn] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -82,8 +83,6 @@ const RegenerateScriptPopup = ({
       } else {
         result = await api.post(apis, new_payload);
       }
-
-      console.log(result, "regenerate_result");
       if (result?.status == 200) {
         setTableExtraData(result?.data);
         // if (result?.data?.scenes) {
@@ -92,7 +91,6 @@ const RegenerateScriptPopup = ({
       } else {
         showToast?.error("Some Issue In Generating");
       }
-      console.log("Video created successfully:", result);
     } catch (err) {
       showToast?.error("Some Issue In Re-Generating");
 
@@ -200,13 +198,21 @@ const RegenerateScriptPopup = ({
                 >
                   Top N
                 </Typography>
-                <SelectComp
-                  //   label="Top N"
-                  options={topNOptions}
-                  value={topn}
-                  onChange={setTopn}
-                  placeholder="Select Top N"
-                />
+                <Tooltip
+                title={tableData?.data_source == "openai" ? "OpenAI does not have any source" : ""}
+                arrow
+                >
+                  <span>
+                    <SelectComp
+                      //   label="Top N"
+                      options={topNOptions}
+                      value={topn}
+                      onChange={setTopn}
+                      placeholder="Select Top N"
+                      disabled={tableData?.data_source == "openai"}
+                    />
+                  </span>
+                </Tooltip>
               </Box>
             )}
           </Stack>

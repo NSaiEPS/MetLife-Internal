@@ -17,12 +17,10 @@ const CreateVisualContentPageSlice = createSlice({
       state.saveVisualContentLoader = action.payload;
     },
     setSaveVisualContentData(state, action) {
-      console.log(action);
       state.saveVisualContentData = action.payload;
     },
     updateVisualPromt(state, action) {
       let actualdata = [...state.saveVisualContentData.prompts]?.map((item) => {
-        console.log(item?.scene_id, action?.payload, "hggggggg");
         let data = { ...item };
         if (item?.scene_id == action?.payload?.scene_id) {
           data.prompt = action?.payload?.new_prompt;
@@ -57,7 +55,6 @@ export const postCreateVisualContent = (data) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
     const response = await api.post("prompt/generate", data);
-    // console.log(response?.data?.prompts, "check_visual_responnse");
     if (response?.status) {
       dispatch(setSaveVisualContentData(response?.data));
       navigateTo(`/create-visual-content/${response?.data?.prompt_batch_id}`);
@@ -76,7 +73,6 @@ export const getVisualContent = (id) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
     const response = await api.get(`prompt/get/${id}`);
-    // console.log(response, "view_response");
     if (response?.status) {
       dispatch(setSaveVisualContentData(response?.data));
     }
@@ -109,7 +105,6 @@ export const postRegenerateVisualContent =
     dispatch(setSaveVisualContentLoader(true));
     try {
       const response = await api.post(`prompt/regenerate`, data);
-      console.log(response, "edit_response");
       toast.success(
         response?.data?.message || "Prompt regenerated successfully"
       );
@@ -141,7 +136,6 @@ export const postVisualTypeUpdate = (data) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
     const response = await api.post(`prompt/clip/generate`, data);
-    console.log(response, "clip_response");
     toast.success(response?.data?.message || "Clip generated successfully");
     dispatch(
       updateVisualPromt({

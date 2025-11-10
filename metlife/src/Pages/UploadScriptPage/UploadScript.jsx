@@ -30,14 +30,12 @@ const UploadScript = () => {
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef.current.click();
-    console.log(fileInputRef, "fileInputref_check");
   };
 
-  console.log(selectedFile, "Selected_file");
 
   const handleFileChange = async (e) => {
     const files = e.target.files;
-    console.log(files);
+    // console.log(files);
     if (!files || files.length === 0) {
       showToast.error("Please give input first");
       return;
@@ -88,7 +86,6 @@ const UploadScript = () => {
         return;
       }
       setScriptData(data?.data);
-      console.log("upload successful", data);
       toast.success("Script uploaded successfully");
       setUploadSuccess(true);
     } catch (error) {
@@ -101,7 +98,6 @@ const UploadScript = () => {
   };
 
   const handleDownload = () => {
-    console.log("clicked");
     const doc = new jsPDF();
 
     // Title

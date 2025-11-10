@@ -36,7 +36,6 @@ export const getDashboardInfo = () => async (dispatch) => {
 
     if (res?.status) {
       dispatch(setDashboardInfo(res?.data));
-      console.log(res);
     } else {
       apiErrorHandling(res);
     }

@@ -218,7 +218,7 @@ function DynamicTable({
         setShowSourceData(data?.documents);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("Something went wrong!");
     } finally {
       setShowSourceLoader(false);
@@ -242,11 +242,9 @@ function DynamicTable({
 
   const handleUpdate = (data) => {
     setMakeChanges(true);
-    console.log(data, "check-data");
     // // // edit
     if (data?.fieldData) {
       let newData = rows.map((item) => {
-        console.log(item);
         let child = { ...item };
         if (item?.id === data?.fieldData.id) {
           child = {
@@ -260,7 +258,6 @@ function DynamicTable({
         return child;
       });
       setRows(newData);
-      console.log(newData);
       // setRows((prev) => [
       //   prev.map((scene) => (scene.id === data?.fieldData.id ? data : scene)),
       // ]);
@@ -342,7 +339,6 @@ function DynamicTable({
           return item;
         }
       });
-      console.log(scenes);
       setTableExtraData({ ...extraDetails, scenes: scenes });
     } else {
       setTableExtraData(data);
@@ -376,7 +372,6 @@ function DynamicTable({
 
   const successDelete = (scene) => {
     let updatedRows = [...rows].filter((item) => item.id !== scene.id);
-    console.log(updatedRows, "Updated_rows");
 
     let Updated_rows = updatedRows.map((item, index) => {
       let data = { ...item };
@@ -388,8 +383,6 @@ function DynamicTable({
   };
 
   const handleSave = () => {
-    console.log(tableExtraData, "check_data");
-
     const data = {
       data: {
         ...tableExtraData,
@@ -640,7 +633,6 @@ function DynamicTable({
                     variant="contained"
                     className={styles.downloadBtn}
                     action={() => {
-                      // console.log("Selected Language:", selectedLang);
                       handleTranslateScript();
                       setOpen(false);
                     }}
@@ -676,6 +668,7 @@ function DynamicTable({
                 // setTableExtraData={setTableExtraData}
                 setTableExtraData={(data) => handleSetData(data)}
                 sceneId={sceneData}
+                tableData={tableExtraData}
                 // data={showSourceData}
               />
             </>

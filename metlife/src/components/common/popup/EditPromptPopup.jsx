@@ -22,7 +22,6 @@ const EditPromptPopup = ({
   );
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
-  console.log(fieldData, "From_popup");
 
   // ✅ Load data when popup opens or row changes
   useEffect(() => {

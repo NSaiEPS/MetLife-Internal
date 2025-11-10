@@ -29,7 +29,6 @@ const MyVideosDashboard = () => {
   const { dashBoardInfo, dashboardLoader } = useSelector(
     (store) => store.DashBoard
   );
-  console.log(dashBoardInfo, "check_dashboard_info")
   const stats = [
     {
       title: "Total Videos",

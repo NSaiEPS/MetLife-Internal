@@ -1,0 +1,10 @@
+.tablePaper {
+  border-radius: 10px;
+  box-shadow: none;
+  border: 1px solid #e6e9ef;
+  overflow: hidden;
+}
+
+.tableRoot {
+  width: 100%;
+}

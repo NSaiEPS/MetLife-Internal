@@ -44,7 +44,7 @@ const AddNewScriptPopup = ({
   }, [fieldData, open]);
 
   const handleSave = () => {
-    console.log({ script, ost, type });
+    // console.log({ script, ost, type });
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };

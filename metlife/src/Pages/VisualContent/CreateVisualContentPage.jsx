@@ -53,7 +53,6 @@ const CreateVisualContentPage = () => {
     {
       icon: <img src={reuse} />,
       onClick: (row) => {
-        console.log(row, "row_data_check");
         handlePromptRegenerate(row);
       },
     },
@@ -83,7 +82,6 @@ const CreateVisualContentPage = () => {
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
-      console.log(item, "check_item");
       return {
         "Scene_No.": index + 1,
         Visual_Type: item?.visual_type === "clip" ? "clip" : "image",
@@ -123,7 +121,6 @@ const CreateVisualContentPage = () => {
   };
 
   const handleUpdate = (data) => {
-    console.log(data, "check_updated_data");
     if (data?.fieldData) {
       const newData = rows.map((item) => {
         if (item?.scene_id === data.fieldData.scene_id) {
@@ -139,8 +136,6 @@ const CreateVisualContentPage = () => {
   };
 
   const handleVisualTypeChange = (value, data) => {
-    console.log(data, "check_visual");
-
     if (value === "image") {
       const updatedRows = rows.map((item) =>
         item.scene_id === data.scene_id
