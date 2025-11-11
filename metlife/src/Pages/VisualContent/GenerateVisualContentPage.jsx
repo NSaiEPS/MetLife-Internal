@@ -43,7 +43,7 @@ const GenerateVisualContentPage = () => {
           onClick={() => {
             setPreviewImage(value);
             console.log(row, "visulimges");
-            setVisualImages(row?.image_uploaded_urls);
+            setVisualImages(row);
           }}
         >
           <img

@@ -130,3 +130,21 @@ export const postEditGenerateVisualContent =
       dispatch(setGenerateVisualLoader(false));
     }
   };
+
+// delete visual prompt
+export const deleteGenerateVisualContent =
+  (data, onClose) => async (dispatch) => {
+    dispatch(setGenerateVisualLoader(true));
+    try {
+      const response = await api.delete(`images/delete-image`, data);
+      toast.success(
+        response?.data?.message || "Description updated successfully"
+      );
+      onClose(false);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setGenerateVisualLoader(false));
+    }
+  };

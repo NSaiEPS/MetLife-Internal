@@ -115,7 +115,7 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
               borderRadius: 8,
             }}
           /> */}
-          <ImageCarousel images={visuaiImages} />
+          <ImageCarousel images={visuaiImages?.image_uploaded_urls} />
         </DialogContent>
       </Dialog>
     </>
