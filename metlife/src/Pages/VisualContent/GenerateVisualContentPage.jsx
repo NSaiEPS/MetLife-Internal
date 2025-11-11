@@ -102,6 +102,7 @@ const GenerateVisualContentPage = () => {
 
   useEffect(() => {
     if (generateVisualContentData?.visuals) {
+      console.log("useeffect triggered");
       settingDataInRows(generateVisualContentData?.visuals);
     }
   }, [generateVisualContentData?.visuals]);
@@ -127,7 +128,9 @@ const GenerateVisualContentPage = () => {
   const handleImageUpload = (data) => {
     setPopup({
       type: "upload",
-      data,
+      data: {
+        scene_id: data?.scene_id,
+      },
     });
   };
 

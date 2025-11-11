@@ -65,24 +65,10 @@ const ImageUploadPopup = ({
     formData.append("title", title);
     formData.append("prompt_batch_id", prompt_batch_id);
     formData.append("file", imageFile);
+
     dispatch(postImageUpload(formData));
 
-    // handleImageUpdate({
-    //   fieldData: fieldData,
-    // });
-    // handleImageUpdate({
-    //   fieldData: fieldData,
-    //   new_images: newImagesArray,
-    // });
-
-    dispatch(postImageUpload(formData)).then((newImagesArray) => {
-      handleImageUpdate({
-        fieldData,
-        new_images: newImagesArray,
-      });
-
-      onClose();
-    });
+    onClose();
   };
 
   const handlePrev = () => {
@@ -120,7 +106,6 @@ const ImageUploadPopup = ({
       </DialogTitle>
 
       <DialogContent>
-       
         <Box mt={2}>
           <input type="file" accept="image/*" onChange={handleFileChange} />
 
@@ -142,8 +127,6 @@ const ImageUploadPopup = ({
           )}
         </Box>
       </DialogContent>
-
-    
 
       <DialogActions>
         <Button onClick={onClose} variant="outlined">

@@ -19,23 +19,29 @@ const GenerateVisualContentSlice = createSlice({
     setGenerateVisualContentData(state, action) {
       state.generateVisualContentData = action.payload;
     },
+    // updateGenerateVisual(state, action) {
+    //   console.log(state.generateVisualContentData, "state_checkl");
+    //   let actualData = [...state.generateVisualContentData.visuals]?.map(
+    //     (item) => {
+    //       console.log(item, action?.payload, "state_checkl");
+
+    //       let data = { ...item };
+    //       if (item?.scene_id == action?.payload?.scene_id) {
+    //         data.image_uploaded_urls = action.payload?.new_images;
+    //         // data.image_uploaded_urls = action.payload.new_images;
+    //       }
+    //       return data;
+    //     }
+    //   );
+
+    //   let actualVisualGenerateData = { ...state.generateVisualContentData };
+    //   actualVisualGenerateData.visuals = actualData;
+    //   state.generateVisualContentData = actualVisualGenerateData;
+    // },
+
     updateGenerateVisual(state, action) {
-      console.log(state.generateVisualContentData, "state_checkl");
-      let actualData = [...state.generateVisualContentData.visuals]?.map(
-        (item) => {
-          console.log(item, action?.payload, "state_checkl");
-
-          let data = { ...item };
-          if (item?.scene_id == action?.payload?.scene_id) {
-            data.image_uploaded_urls = action.payload?.new_images;
-            // data.image_uploaded_urls = action.payload.new_images;
-          }
-          return data;
-        }
-      );
-
       let actualVisualGenerateData = { ...state.generateVisualContentData };
-      actualVisualGenerateData.visuals = actualData;
+      actualVisualGenerateData.visuals = action?.payload?.visuals;
       state.generateVisualContentData = actualVisualGenerateData;
     },
   },
@@ -98,14 +104,16 @@ export const postImageUpload = (data) => async (dispatch) => {
 
     const sceneId = response?.data?.visuals?.[sceneNumber - 1]?.scene_id;
     console.log(response, "check_image_upload_response");
+    toast.success(
+      response?.data?.message ?? "Image uploaded & scene updated successfully"
+    );
 
     dispatch(
       updateGenerateVisual({
-        scene_id: sceneId,
-        new_images: newImageUrls,
+        visuals: response?.data?.visuals,
       })
     );
-    return newImageUrls;
+    // return newImageUrls;
   } catch (error) {
     console.log(error);
   } finally {
@@ -136,10 +144,8 @@ export const deleteGenerateVisualContent =
   (data, onClose) => async (dispatch) => {
     dispatch(setGenerateVisualLoader(true));
     try {
-      const response = await api.delete(`images/delete-image`, {data});
-      toast.success(
-        response?.data?.message || "Deleted successfully"
-      );
+      const response = await api.delete(`images/delete-image`, { data });
+      toast.success(response?.data?.message || "Deleted successfully");
       onClose(false);
     } catch (error) {
       console.error(error);
