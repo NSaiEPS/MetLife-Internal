@@ -31,15 +31,17 @@ export const postGenerateVisualContentImage = (data) => async (dispatch) => {
   dispatch(setGenerateVisualLoader(true));
   try {
     const response = await api.post("images/generate-images", data);
-    dispatch(setGenerateVisualContentData(response?.data?.visuals));
-    navigateTo(`/generate-visual-page/${response?.data?.script_id}`);
-    toast.success("Visual Image generated successfully");
     console.log(response);
+    if (response?.status) {
+      dispatch(setGenerateVisualContentData(response?.data?.visuals));
+      navigateTo(`/generate-visual-page/${response?.data?.script_id}`);
+      toast.success("Visual Image generated successfully");
+    }
   } catch (error) {
     console.log(error);
     toast.error("Something went wrong!");
   } finally {
-    dispatch(setSaveVisualContentLoader(false));
+    dispatch(setGenerateVisualLoader(false));
   }
 };
 
@@ -48,11 +50,13 @@ export const getGenerateVisualContentImage = (id) => async (dispatch) => {
   dispatch(setGenerateVisualLoader(true));
   try {
     const response = await api.get(`images/${id}`);
-    dispatch(setGenerateVisualContentData(response?.data));
+    if (response?.status) {
+      dispatch(setGenerateVisualContentData(response?.data));
+    }
     console.log(response);
   } catch (error) {
     console.log(error);
   } finally {
-    dispatch(setSaveVisualContentLoader(false));
+    dispatch(setGenerateVisualLoader(false));
   }
 };
