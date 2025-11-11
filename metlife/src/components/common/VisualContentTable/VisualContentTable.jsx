@@ -10,12 +10,21 @@ import {
   IconButton,
   Dialog,
   DialogContent,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import ImageCarousel from "../carousel/ImageCarousel";
 
 const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
   const [previewImage, setPreviewImage] = useState(null);
-  console.log(rows, "checkRows")
+  const [visuaiImages, setVisualImages] = useState([]);
+  console.log(visuaiImages, "visulimges");
+  // const [previewModal, setPreviewModal] = useState({
+  //   open: false,
+  //   images: [],
+  //   index: 0,
+  // });
+  console.log(rows, "checkRows");
   return (
     <>
       <TableContainer className={styles.tablePaper}>
@@ -40,7 +49,12 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
                 {columns.map((col, cIdx) => (
                   <TableCell key={cIdx}>
                     {col.render
-                      ? col.render(row[col.key], row, setPreviewImage)
+                      ? col.render(
+                          row[col.key],
+                          row,
+                          setPreviewImage,
+                          setVisualImages
+                        )
                       : row[col.key]}
                   </TableCell>
                 ))}
@@ -71,7 +85,6 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
         onClose={() => setPreviewImage(null)}
         maxWidth="md"
       >
-
         <IconButton
           onClick={() => setPreviewImage(null)}
           sx={{
@@ -81,14 +94,18 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
             zIndex: 2,
             backgroundColor: "rgba(0,0,0,0.4)",
             color: "white",
-            "&:hover": { backgroundColor: "rgba(0,0,0,0.6)", transform: "scale(1.2)",  transition: "transform 0.2s ease", },
+            "&:hover": {
+              backgroundColor: "rgba(0,0,0,0.6)",
+              transform: "scale(1.2)",
+              transition: "transform 0.2s ease",
+            },
           }}
         >
           <CloseIcon />
         </IconButton>
 
         <DialogContent>
-          <img
+          {/* <img
             src={previewImage}
             alt="Preview"
             style={{
@@ -97,7 +114,8 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
               objectFit: "contain",
               borderRadius: 8,
             }}
-          />
+          /> */}
+          <ImageCarousel images={visuaiImages} />
         </DialogContent>
       </Dialog>
     </>

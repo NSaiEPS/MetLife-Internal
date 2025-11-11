@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -23,12 +23,24 @@ const ImageUploadPopup = ({
   title,
   handleImageUpdate,
 }) => {
+  console.log(fieldData, "in_popup");
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   //   const [imageTitle, setImageTitle] = useState("");
   const scene_id = fieldData?.scene_id;
   const scene_no = fieldData?.["Scene_No."];
   const dispatch = useDispatch();
+  const existingImages = fieldData?.image_uploaded_urls || [];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (open) {
+      if (existingImages.length > 0) {
+        setCurrentIndex(existingImages.length - 1); // show latest by default
+        setPreviewUrl(existingImages[existingImages.length - 1].url);
+      }
+    }
+  }, [open, fieldData]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -55,11 +67,46 @@ const ImageUploadPopup = ({
     formData.append("file", imageFile);
     dispatch(postImageUpload(formData));
 
-    handleImageUpdate({
-      fieldData: fieldData,
-    });
+    // handleImageUpdate({
+    //   fieldData: fieldData,
+    // });
+    // handleImageUpdate({
+    //   fieldData: fieldData,
+    //   new_images: newImagesArray,
+    // });
 
-    onClose();
+    dispatch(postImageUpload(formData)).then((newImagesArray) => {
+      handleImageUpdate({
+        fieldData,
+        new_images: newImagesArray,
+      });
+
+      onClose();
+    });
+  };
+
+  const handlePrev = () => {
+    if (existingImages.length === 0) return;
+    setCurrentIndex((prev) =>
+      prev === 0 ? existingImages.length - 1 : prev - 1
+    );
+    setPreviewUrl(
+      existingImages[
+        currentIndex === 0 ? existingImages.length - 1 : currentIndex - 1
+      ].url
+    );
+  };
+
+  const handleNext = () => {
+    if (existingImages.length === 0) return;
+    setCurrentIndex((prev) =>
+      prev === existingImages.length - 1 ? 0 : prev + 1
+    );
+    setPreviewUrl(
+      existingImages[
+        currentIndex === existingImages.length - 1 ? 0 : currentIndex + 1
+      ].url
+    );
   };
 
   return (
@@ -73,16 +120,7 @@ const ImageUploadPopup = ({
       </DialogTitle>
 
       <DialogContent>
-        {/** Title Input Field */}
-        {/* <TextField
-          label="Image Title"
-          fullWidth
-          value={imageTitle}
-          onChange={(e) => setImageTitle(e.target.value)}
-          margin="normal"
-        /> */}
-
-        {/** Image Upload */}
+       
         <Box mt={2}>
           <input type="file" accept="image/*" onChange={handleFileChange} />
 
@@ -104,6 +142,8 @@ const ImageUploadPopup = ({
           )}
         </Box>
       </DialogContent>
+
+    
 
       <DialogActions>
         <Button onClick={onClose} variant="outlined">

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 import { useParams } from "react-router";
 import ImageUploadPopup from "../../components/common/popup/ImageUploadPopup";
+import EditVisualPopup from "../../components/common/popup/EditVisualPopup";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
@@ -22,23 +23,12 @@ const GenerateVisualContentPage = () => {
     {
       label: "Visual Type",
       key: "Visual_Type",
-      //   render: (value, row) => (
-      //     <Select
-      //       value={value}
-      //       size="small"
-      //       onChange={(e) => handleVisualTypeChange(e.target.value, row)}
-      //       sx={{ width: 100 }}
-      //     >
-      //       <MenuItem value="image">Image</MenuItem>
-      //       <MenuItem value="clip">Clip</MenuItem>
-      //     </Select>
-      //   ),
     },
     { label: "Visual Description", key: "Visual_Description" },
     {
       label: "Visual Image",
       key: "Visual_Image",
-      render: (value, row, setPreviewImage) => (
+      render: (value, row, setPreviewImage, setVisualImages) => (
         <div
           style={{
             width: "50px",
@@ -50,7 +40,11 @@ const GenerateVisualContentPage = () => {
             overflow: "hidden",
             cursor: "pointer",
           }}
-          onClick={() => setPreviewImage(value)}
+          onClick={() => {
+            setPreviewImage(value);
+            console.log(row, "visulimges");
+            setVisualImages(row?.image_uploaded_urls);
+          }}
         >
           <img
             src={value}
@@ -73,6 +67,7 @@ const GenerateVisualContentPage = () => {
       icon: <img src={copy} />,
       onClick: (row) => {
         // openEditPrompt(row);
+        handleVisualEdit(row);
       },
     },
     {
@@ -118,18 +113,27 @@ const GenerateVisualContentPage = () => {
         "Scene_No.": index + 1,
         Visual_Type: item?.visual_type,
         Visual_Description: item?.prompt,
-        Visual_Image: item?.image_uploaded_url ?? item?.image_url ?? "-",
+        Visual_Image: item?.image_uploaded_url ?? item?.image_url,
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
+        image_uploaded_urls: item?.image_uploaded_urls ?? [
+          { url: item?.image_uploaded_url ?? item?.image_url },
+        ],
       };
     });
     setRows(newdata);
   };
 
-  // Image upload function
   const handleImageUpload = (data) => {
     setPopup({
       type: "upload",
+      data,
+    });
+  };
+
+  const handleVisualEdit = (data) => {
+    setPopup({
+      type: "edit",
       data,
     });
   };
@@ -141,17 +145,39 @@ const GenerateVisualContentPage = () => {
     });
   };
 
-  const handleImageUpdate = (data) => {
+  const handleImageUpdate = ({ fieldData, new_images }) => {
     const updatedRows = rows.map((item) => {
-      if (item.scene_id === data.fieldData.scene_id) {
+      if (item.scene_id === fieldData.scene_id) {
+        const lastImage = new_images?.length
+          ? new_images[new_images.length - 1].url
+          : item.Visual_Image;
+
         return {
           ...item,
-          Visual_Image: data.new_image,
+          Visual_Image: lastImage,
         };
       }
       return item;
     });
+
     setRows(updatedRows);
+  };
+
+  const handleUpdate = (data) => {
+    console.log(data);
+    if (data?.fieldData) {
+      const newData = rows.map((item) => {
+        console.log(item);
+        if (item?.scene_id === data.fieldData.scene_id) {
+          return {
+            ...item,
+            Visual_Description: data.new_prompt,
+          };
+        }
+        return item;
+      });
+      setRows(newData);
+    }
   };
 
   return (
@@ -182,6 +208,18 @@ const GenerateVisualContentPage = () => {
                   prompt_batch_id={prompt_batch_id}
                   title={title}
                   handleImageUpdate={handleImageUpdate}
+                />
+              )}
+
+              {popup.type === "edit" && (
+                <EditVisualPopup
+                  open={true}
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={id}
+                  prompt_batch_id={prompt_batch_id}
+                  handleUpdate={handleUpdate}
+                  // handleImageUpdate={handleImageUpdate}
                 />
               )}
 

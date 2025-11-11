@@ -27,7 +27,8 @@ const GenerateVisualContentSlice = createSlice({
 
           let data = { ...item };
           if (item?.scene_id == action?.payload?.scene_id) {
-            data.image_uploaded_url = action.payload?.new_image;
+            data.image_uploaded_urls = action.payload?.new_images;
+            // data.image_uploaded_urls = action.payload.new_images;
           }
           return data;
         }
@@ -89,27 +90,43 @@ export const postImageUpload = (data) => async (dispatch) => {
     const response = await api.post(`images/upload-image`, data);
     const sceneNumber = parseInt(data.get("scene_number"));
 
-    const newImageUrl =
-      response?.data?.visuals?.[sceneNumber - 1]?.image_uploaded_url;
+    const newImageUrls =
+      response?.data?.visuals?.[sceneNumber - 1]?.image_uploaded_urls || [];
+
+    // const newImageObjects =
+    //   response?.data?.visuals?.[sceneNumber - 1]?.image_uploaded_urls || [];
 
     const sceneId = response?.data?.visuals?.[sceneNumber - 1]?.scene_id;
     console.log(response, "check_image_upload_response");
-    // dispatch(
-    //   updateGenerateVisual({
-    //     scene_id: response?.data?.visuals?.[data?.scene_number - 1]?.scene_id,
-    //     new_image:
-    //       response?.data?.visuals?.[data?.scene_number - 1]?.image_uploaded_url,
-    //   })
-    // );
+
     dispatch(
       updateGenerateVisual({
         scene_id: sceneId,
-        new_image: newImageUrl,
+        new_images: newImageUrls,
       })
     );
+    return newImageUrls;
   } catch (error) {
     console.log(error);
   } finally {
     dispatch(setGenerateVisualLoader(false));
   }
 };
+
+// Edit Visual Prompt
+export const postEditGenerateVisualContent =
+  (data, onClose) => async (dispatch) => {
+    dispatch(setGenerateVisualLoader(true));
+    try {
+      const response = await api.post(`images/edit-visual`, data);
+      toast.success(
+        response?.data?.message || "Description updated successfully"
+      );
+      onClose(false);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setGenerateVisualLoader(false));
+    }
+  };
