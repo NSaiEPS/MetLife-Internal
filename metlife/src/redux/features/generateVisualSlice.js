@@ -136,9 +136,9 @@ export const deleteGenerateVisualContent =
   (data, onClose) => async (dispatch) => {
     dispatch(setGenerateVisualLoader(true));
     try {
-      const response = await api.delete(`images/delete-image`, data);
+      const response = await api.delete(`images/delete-image`, {data});
       toast.success(
-        response?.data?.message || "Description updated successfully"
+        response?.data?.message || "Deleted successfully"
       );
       onClose(false);
     } catch (error) {

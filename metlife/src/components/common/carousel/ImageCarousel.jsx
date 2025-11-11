@@ -4,7 +4,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useSelector } from "react-redux";
 
-const ImageCarousel = ({ images = [] }) => {
+const ImageCarousel = ({ images = [],caroselIndex }) => {
   const [index, setIndex] = useState(0);
   const { generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
@@ -15,6 +15,7 @@ const ImageCarousel = ({ images = [] }) => {
   // reset to last image when images change
   useEffect(() => {
     if (images?.length > 0) {
+        caroselIndex(images?.length - 1)
       setIndex(images?.length - 1); // show latest image by default
     }
   }, [images]);
@@ -48,19 +49,6 @@ const ImageCarousel = ({ images = [] }) => {
         Uploaded Images
       </Typography>
 
-      
-
-      {/* <Box
-        sx={{
-          position: "relative",
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 2,
-        }}
-      > */}
-
       <Box
         sx={{
           width: 350, // ✅ FIXED WIDTH (change as required)
@@ -75,14 +63,7 @@ const ImageCarousel = ({ images = [] }) => {
           overflow: "hidden",
         }}
       >
-        {/* LEFT BUTTON */}
-        {/* <IconButton
-          size="small"
-          onClick={prev}
-          sx={{ position: "absolute", left: 0 }}
-        >
-          <ChevronLeftIcon />
-        </IconButton> */}
+       
 
         <IconButton
           size="small"
@@ -112,14 +93,7 @@ const ImageCarousel = ({ images = [] }) => {
           }}
         />
 
-        {/* RIGHT BUTTON */}
-        {/* <IconButton
-          size="small"
-          onClick={next}
-          sx={{ position: "absolute", right: 0 }}
-        >
-          <ChevronRightIcon />
-        </IconButton> */}
+       
         <IconButton
           size="small"
           onClick={next}

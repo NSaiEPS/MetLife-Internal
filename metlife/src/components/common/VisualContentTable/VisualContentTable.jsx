@@ -14,10 +14,18 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ImageCarousel from "../carousel/ImageCarousel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useParams } from "react-router";
+import { deleteGenerateVisualContent, getGenerateVisualContentImage } from "../../../redux/features/generateVisualSlice";
+import { useDispatch } from "react-redux";
 
 const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [visuaiImages, setVisualImages] = useState([]);
+  const [index, setIndex] = useState(0);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+
   console.log(visuaiImages, "visulimges");
   // const [previewModal, setPreviewModal] = useState({
   //   open: false,
@@ -25,6 +33,18 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
   //   index: 0,
   // });
   console.log(rows, "checkRows");
+
+  const handleDelete = () => {
+    console.log(visuaiImages, index, "visulimges");
+    const payload = {
+      script_id: id,
+      scene_id: visuaiImages?.scene_id,
+      image_url: visuaiImages?.image_uploaded_urls[index]?.url,
+    };
+    dispatch(deleteGenerateVisualContent(payload, () => {setPreviewImage(null)
+      dispatch(getGenerateVisualContentImage(id))
+    }));
+  };
   return (
     <>
       <TableContainer className={styles.tablePaper}>
@@ -85,6 +105,18 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
         onClose={() => setPreviewImage(null)}
         maxWidth="md"
       >
+        {/* <IconButton
+          sx={{
+            backgroundColor: "rgba(255, 0, 0, 0.5)",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "rgba(255, 0, 0, 0.7)",
+            },
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+
         <IconButton
           onClick={() => setPreviewImage(null)}
           sx={{
@@ -102,20 +134,48 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
           }}
         >
           <CloseIcon />
-        </IconButton>
+        </IconButton> */}
+
+        <div
+          style={{
+            position: "absolute",
+            right: 10,
+            top: 10,
+            zIndex: 10,
+            display: "flex",
+            gap: 8,
+          }}
+        >
+          {/* DELETE */}
+          <IconButton
+            onClick={handleDelete}
+            sx={{
+              backgroundColor: "rgba(255, 0, 0, 0.6)",
+              color: "white",
+              "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.8)" },
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+
+          {/* CLOSE */}
+          <IconButton
+            onClick={() => setPreviewImage(null)}
+            sx={{
+              backgroundColor: "rgba(0,0,0,0.4)",
+              color: "white",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.6)" },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </div>
 
         <DialogContent>
-          {/* <img
-            src={previewImage}
-            alt="Preview"
-            style={{
-              width: "100%",
-              maxHeight: "80vh",
-              objectFit: "contain",
-              borderRadius: 8,
-            }}
-          /> */}
-          <ImageCarousel images={visuaiImages?.image_uploaded_urls} />
+          <ImageCarousel
+            images={visuaiImages?.image_uploaded_urls}
+            caroselIndex={setIndex}
+          />
         </DialogContent>
       </Dialog>
     </>
