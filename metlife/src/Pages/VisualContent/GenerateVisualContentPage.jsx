@@ -12,6 +12,7 @@ import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 import { useParams } from "react-router";
+import ImageUploadPopup from "../../components/common/popup/ImageUploadPopup";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
@@ -90,7 +91,7 @@ const GenerateVisualContentPage = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  console.log(generateVisualContentData, "check");
+  console.log(generateVisualContentData, "generateVisualContentData");
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
   const dispatch = useDispatch();
@@ -115,17 +116,11 @@ const GenerateVisualContentPage = () => {
       console.log(item.image_url, "image_url");
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type === "clip" ? "clip" : "image",
-        // Visual_Description:  item?.prompt ?? "-",
-        Visual_Description:
-          item?.visual_type === "clip"
-            ? item?.clip_prompt ?? "-"
-            : item?.prompt ?? "-",
-        Visual_Image: item?.image_url ?? "-",
+        Visual_Type: item?.visual_type,
+        Visual_Description: item?.prompt,
+        Visual_Image: item?.image_uploaded_url ?? item?.image_url ?? "-",
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
-        prompt: item?.prompt ?? "",
-        clip_prompt: item?.clip_prompt ?? "",
       };
     });
     setRows(newdata);
@@ -144,6 +139,19 @@ const GenerateVisualContentPage = () => {
       type: null,
       data: null,
     });
+  };
+
+  const handleImageUpdate = (data) => {
+    const updatedRows = rows.map((item) => {
+      if (item.scene_id === data.fieldData.scene_id) {
+        return {
+          ...item,
+          Visual_Image: data.new_image,
+        };
+      }
+      return item;
+    });
+    setRows(updatedRows);
   };
 
   return (
@@ -165,16 +173,17 @@ const GenerateVisualContentPage = () => {
                 rows={rows}
                 actions={actions}
               />
-              {/* {popup.type === "upload" && (
+              {popup.type === "upload" && (
                 <ImageUploadPopup
-                 open={true} 
-                 onClose={closePopup} 
-                 fieldData={popup.data}
-                 script_id={id}
-                 prompt_batch_id={prompt_batch_id}
-                 title={title}
-                 />
-              )} */}
+                  open={true}
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={id}
+                  prompt_batch_id={prompt_batch_id}
+                  title={title}
+                  handleImageUpdate={handleImageUpdate}
+                />
+              )}
 
               <div className={styles.footerButtons}>
                 <Button variant="contained" className={styles.primaryBtn}>

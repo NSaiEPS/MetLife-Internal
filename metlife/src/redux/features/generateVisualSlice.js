@@ -19,11 +19,32 @@ const GenerateVisualContentSlice = createSlice({
     setGenerateVisualContentData(state, action) {
       state.generateVisualContentData = action.payload;
     },
+    updateGenerateVisual(state, action) {
+      console.log(state.generateVisualContentData, "state_checkl");
+      let actualData = [...state.generateVisualContentData.visuals]?.map(
+        (item) => {
+          console.log(item, action?.payload, "state_checkl");
+
+          let data = { ...item };
+          if (item?.scene_id == action?.payload?.scene_id) {
+            data.image_uploaded_url = action.payload?.new_image;
+          }
+          return data;
+        }
+      );
+
+      let actualVisualGenerateData = { ...state.generateVisualContentData };
+      actualVisualGenerateData.visuals = actualData;
+      state.generateVisualContentData = actualVisualGenerateData;
+    },
   },
 });
 
-export const { setGenerateVisualLoader, setGenerateVisualContentData } =
-  GenerateVisualContentSlice.actions;
+export const {
+  setGenerateVisualLoader,
+  setGenerateVisualContentData,
+  updateGenerateVisual,
+} = GenerateVisualContentSlice.actions;
 
 export default GenerateVisualContentSlice.reducer;
 
@@ -54,6 +75,38 @@ export const getGenerateVisualContentImage = (id) => async (dispatch) => {
       dispatch(setGenerateVisualContentData(response?.data));
     }
     console.log(response);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    dispatch(setGenerateVisualLoader(false));
+  }
+};
+
+// Image upload functionality
+export const postImageUpload = (data) => async (dispatch) => {
+  dispatch(setGenerateVisualLoader(true));
+  try {
+    const response = await api.post(`images/upload-image`, data);
+    const sceneNumber = parseInt(data.get("scene_number"));
+
+    const newImageUrl =
+      response?.data?.visuals?.[sceneNumber - 1]?.image_uploaded_url;
+
+    const sceneId = response?.data?.visuals?.[sceneNumber - 1]?.scene_id;
+    console.log(response, "check_image_upload_response");
+    // dispatch(
+    //   updateGenerateVisual({
+    //     scene_id: response?.data?.visuals?.[data?.scene_number - 1]?.scene_id,
+    //     new_image:
+    //       response?.data?.visuals?.[data?.scene_number - 1]?.image_uploaded_url,
+    //   })
+    // );
+    dispatch(
+      updateGenerateVisual({
+        scene_id: sceneId,
+        new_image: newImageUrl,
+      })
+    );
   } catch (error) {
     console.log(error);
   } finally {

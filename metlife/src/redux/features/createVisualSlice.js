@@ -86,7 +86,6 @@ export const getVisualContent = (id) => async (dispatch) => {
 // Edit Prompt
 export const postEditVisualContent = (data, onClose) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
-
   try {
     const response = await api.post(`prompt/edit`, data);
     toast.success(response?.data?.message || "Prompt updated successfully");
@@ -117,11 +116,6 @@ export const postRegenerateVisualContent =
           scene_id: response?.data?.scene_id,
         })
       );
-
-      // onClose(false);
-      // if (response?.status) {
-      //   dispatch(setSaveVisualContentData(response?.data));
-      // }
     } catch (error) {
       console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
