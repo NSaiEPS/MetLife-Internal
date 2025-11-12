@@ -21,12 +21,10 @@ const ImageUploadPopup = ({
   script_id,
   prompt_batch_id,
   title,
-  handleImageUpdate,
 }) => {
   console.log(fieldData, "in_popup");
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  //   const [imageTitle, setImageTitle] = useState("");
   const scene_id = fieldData?.scene_id;
   const scene_no = fieldData?.["Scene_No."];
   const dispatch = useDispatch();
@@ -51,48 +49,16 @@ const ImageUploadPopup = ({
   };
 
   const handleUploadClick = () => {
-    // if (onUpload) {
-    //   onUpload({
-    //     file: imageFile,
-    //     title: imageTitle,
-    //   });
-    // }
-
     const formData = new FormData();
     formData.append("script_id", script_id);
     formData.append("scene_id", scene_id);
-    formData.append("scene_number", scene_no);
+    formData.append("scene_number", scene_no); 
     formData.append("title", title);
     formData.append("prompt_batch_id", prompt_batch_id);
     formData.append("file", imageFile);
 
-    dispatch(postImageUpload(formData));
-
-    onClose();
-  };
-
-  const handlePrev = () => {
-    if (existingImages.length === 0) return;
-    setCurrentIndex((prev) =>
-      prev === 0 ? existingImages.length - 1 : prev - 1
-    );
-    setPreviewUrl(
-      existingImages[
-        currentIndex === 0 ? existingImages.length - 1 : currentIndex - 1
-      ].url
-    );
-  };
-
-  const handleNext = () => {
-    if (existingImages.length === 0) return;
-    setCurrentIndex((prev) =>
-      prev === existingImages.length - 1 ? 0 : prev + 1
-    );
-    setPreviewUrl(
-      existingImages[
-        currentIndex === existingImages.length - 1 ? 0 : currentIndex + 1
-      ].url
-    );
+    dispatch(postImageUpload(formData, onClose));
+    // onClose();
   };
 
   return (

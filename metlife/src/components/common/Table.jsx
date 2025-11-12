@@ -215,7 +215,8 @@ function DynamicTable({
       });
       if (response.status === 200) {
         const data = await response.json();
-        setShowSourceData(data?.documents);
+        // setShowSourceData(data?.documents);
+        setShowSourceData(data);
       }
     } catch (error) {
       // console.log(error);

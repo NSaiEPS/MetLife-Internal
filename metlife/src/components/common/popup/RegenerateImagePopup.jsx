@@ -9,25 +9,39 @@ import {
 } from "@mui/material";
 import { postRegenerateVisualContent } from "../../../redux/features/createVisualSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { postRegenerateImage } from "../../../redux/features/generateVisualSlice";
 
-const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
+const RegenerateImagePopup = ({
+  open,
+  onClose,
+  fieldData,
+  prompt_batch_id,
+}) => {
+  const { id } = useParams();
+
   const onCloseTempData = () => {
     setFeedback("");
     onClose();
-  }
-  const { saveVisualContentLoader } = useSelector(
-    (store) => store.CreateVisualContent
+  };
+
+  const { generateVisualLoader,} = useSelector(
+    (store) => store.GenerateVisualContent
   );
+
   const [feedback, setFeedback] = useState("");
   const dispatch = useDispatch();
 
   const handleRegenerateApi = () => {
-    const payload = {
-      prompt_batch_id: id,
-      scene_id: fieldData?.scene_id,
-    };
+    const scene_id = fieldData?.scene_id;
+    const prommpt_batch_id = prompt_batch_id;
 
-    dispatch(postRegenerateVisualContent(payload, onCloseTempData));
+    const payload = {
+      script_id: id,
+      scene_id: scene_id,
+      prompt_batch_id: prommpt_batch_id,
+    };
+    dispatch(postRegenerateImage(payload, onCloseTempData));
   };
 
   return (
@@ -42,8 +56,7 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
         },
       }}
     >
-      <DialogTitle>Regenerate Prompt</DialogTitle>
-
+      <DialogTitle>Regenerate Image</DialogTitle>
       <DialogContent>
         <TextField
           label="Your Feedback"
@@ -60,14 +73,14 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
 
       <DialogActions>
         <Button
-          disabled={saveVisualContentLoader}
+          disabled={generateVisualLoader}
           variant="outlined"
           onClick={onCloseTempData}
         >
           Cancel
         </Button>
         <Button
-          disabled={saveVisualContentLoader}
+          disabled={generateVisualLoader}
           variant="contained"
           onClick={handleRegenerateApi}
         >
@@ -78,4 +91,4 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
   );
 };
 
-export default RegeneratePromptPopup;
+export default RegenerateImagePopup;

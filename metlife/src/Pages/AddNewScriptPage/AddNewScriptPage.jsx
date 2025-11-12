@@ -92,7 +92,7 @@ const ScriptPage = () => {
         sceneHandle={true} />
 
       <div className={styles.tableContainer}>
-        {sceneData?.scenes?.length && !loading ? (
+        {sceneData?.scenes?.length && !loading && sceneData.status ? (
           <DynamicTable
             setMakeChanges={setMakeChanges}
             columns={columns}

@@ -28,6 +28,9 @@ const CreateVisualContentPageSlice = createSlice({
           if (action?.payload?.visual_type) {
             data.visual_type = action?.payload?.visual_type;
           }
+          if (action.payload.clip_visual_type) {
+            data.clip_visual_type = action?.payload?.clip_visual_type;
+          }
           if (action?.payload?.clip_prompt) {
             // data.clip_prompt = action?.payload?.clip_prompt;
             data.clip_prompt =
@@ -137,6 +140,7 @@ export const postVisualTypeUpdate = (data) => async (dispatch) => {
         prompt_id: response?.data?.prompt?.prompt_id,
         scene_id: response?.data?.prompt?.scene_id,
         visual_type: response?.data?.prompt?.visual_type,
+        clip_visual_type: response?.data?.prompt?.clip_visual_type,
         clip_prompt: response?.data?.prompt?.clip_prompt,
       })
     );

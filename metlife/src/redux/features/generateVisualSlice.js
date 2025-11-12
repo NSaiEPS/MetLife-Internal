@@ -6,7 +6,7 @@ import { navigateTo } from "../../utils/navigate";
 
 const initialState = {
   generateVisualLoader: false,
-  generateVisualContentData: [],
+  generateVisualContentData: {},
 };
 
 const GenerateVisualContentSlice = createSlice({
@@ -19,25 +19,6 @@ const GenerateVisualContentSlice = createSlice({
     setGenerateVisualContentData(state, action) {
       state.generateVisualContentData = action.payload;
     },
-    // updateGenerateVisual(state, action) {
-    //   console.log(state.generateVisualContentData, "state_checkl");
-    //   let actualData = [...state.generateVisualContentData.visuals]?.map(
-    //     (item) => {
-    //       console.log(item, action?.payload, "state_checkl");
-
-    //       let data = { ...item };
-    //       if (item?.scene_id == action?.payload?.scene_id) {
-    //         data.image_uploaded_urls = action.payload?.new_images;
-    //         // data.image_uploaded_urls = action.payload.new_images;
-    //       }
-    //       return data;
-    //     }
-    //   );
-
-    //   let actualVisualGenerateData = { ...state.generateVisualContentData };
-    //   actualVisualGenerateData.visuals = actualData;
-    //   state.generateVisualContentData = actualVisualGenerateData;
-    // },
 
     updateGenerateVisual(state, action) {
       let actualVisualGenerateData = { ...state.generateVisualContentData };
@@ -90,19 +71,10 @@ export const getGenerateVisualContentImage = (id) => async (dispatch) => {
 };
 
 // Image upload functionality
-export const postImageUpload = (data) => async (dispatch) => {
+export const postImageUpload = (data, onClose) => async (dispatch) => {
   dispatch(setGenerateVisualLoader(true));
   try {
     const response = await api.post(`images/upload-image`, data);
-    const sceneNumber = parseInt(data.get("scene_number"));
-
-    const newImageUrls =
-      response?.data?.visuals?.[sceneNumber - 1]?.image_uploaded_urls || [];
-
-    // const newImageObjects =
-    //   response?.data?.visuals?.[sceneNumber - 1]?.image_uploaded_urls || [];
-
-    const sceneId = response?.data?.visuals?.[sceneNumber - 1]?.scene_id;
     console.log(response, "check_image_upload_response");
     toast.success(
       response?.data?.message ?? "Image uploaded & scene updated successfully"
@@ -113,7 +85,7 @@ export const postImageUpload = (data) => async (dispatch) => {
         visuals: response?.data?.visuals,
       })
     );
-    // return newImageUrls;
+    onClose(false);
   } catch (error) {
     console.log(error);
   } finally {
@@ -152,5 +124,30 @@ export const deleteGenerateVisualContent =
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setGenerateVisualLoader(false));
+    }
+  };
+
+// Regenerate
+export const postRegenerateImage =
+  (data, onCloseTempData) => async (dispatch) => {
+    dispatch(setGenerateVisualLoader(true));
+    try {
+      const response = await api.post(`images/regenerate-image`, data);
+      console.log(response, "check_response");
+      toast.success(
+        response?.data?.message || "Prompt regenerated successfully"
+      );
+      onCloseTempData(false);
+      dispatch(
+        updateGenerateVisual({
+          visuals: response?.data?.visuals,
+        })
+      );
+    } catch (error) {
+      console.error(error);
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setGenerateVisualLoader(false));
+      onCloseTempData(true);
     }
   };

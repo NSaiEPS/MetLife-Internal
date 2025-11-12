@@ -25,6 +25,7 @@ import GradientLoader from "../../components/common/GradientLoader";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { showToast } from "../../utils/toast";
+import { toast } from "react-toastify";
 
 // import Toastfrom  from "../../components/common/ToastBox"
 
@@ -150,8 +151,11 @@ const GenerateScript = () => {
     try {
       const result = await api.post("generate-script", new_payload);
       if (result?.status == 200) {
-        if (result?.data?.scenes) {
+        if (result?.data?.scenes && result?.data?.status === true) {
+          toast.success("Script generated successfully!")
           navigate(`/scenes/${result?.data?.script_id}`);
+        } else {
+          toast.error("Something went wrong while generating!")
         }
       } else {
         showToast?.error("Some Issue In Generating");

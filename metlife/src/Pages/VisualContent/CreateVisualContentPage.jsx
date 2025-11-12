@@ -30,10 +30,10 @@ const CreateVisualContentPage = () => {
           value={value}
           size="small"
           onChange={(e) => handleVisualTypeChange(e.target.value, row)}
-          sx={{ width: 100 }}
+          sx={{ width: 120 }}
         >
           <MenuItem value="image">Image</MenuItem>
-          <MenuItem value="clip">Clip</MenuItem>
+          <MenuItem value="clip">Footage</MenuItem>
         </Select>
       ),
     },
@@ -61,7 +61,6 @@ const CreateVisualContentPage = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  console.log(generateVisualLoader, "generateVisualLoader");
   const script_id = saveVisualContentData?.script_id;
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
@@ -86,10 +85,9 @@ const CreateVisualContentPage = () => {
     let newdata = reqData?.map((item, index) => {
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type === "clip" ? "clip" : "image",
-        // Visual_Description:  item?.prompt ?? "-",
+        Visual_Type: item?.clip_visual_type === "clip" ? "clip" : "image",
         Visual_Description:
-          item?.visual_type === "clip"
+          item?.clip_visual_type === "clip"
             ? item?.clip_prompt ?? "-"
             : item?.prompt ?? "-",
         scene_id: item?.scene_id ?? "",
@@ -174,7 +172,6 @@ const CreateVisualContentPage = () => {
 
   const handleGenerate = async () => {
     const data = saveVisualContentData;
-
     dispatch(postGenerateVisualContentImage(data));
   };
 
@@ -183,9 +180,7 @@ const CreateVisualContentPage = () => {
       <div className={styles.container}>
         <OneFrameHeader />
         {(saveVisualContentLoader || generateVisualLoader) && (
-          <FullScreenGradientLoader
-            text="loading..."
-          />
+          <FullScreenGradientLoader text="loading..." />
         )}
         <div className={styles.header}>
           <h2 className={styles.title}>

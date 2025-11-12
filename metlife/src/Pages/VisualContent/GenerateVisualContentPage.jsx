@@ -14,6 +14,7 @@ import { getGenerateVisualContentImage } from "../../redux/features/generateVisu
 import { useParams } from "react-router";
 import ImageUploadPopup from "../../components/common/popup/ImageUploadPopup";
 import EditVisualPopup from "../../components/common/popup/EditVisualPopup";
+import RegenerateImagePopup from "../../components/common/popup/RegenerateImagePopup";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
@@ -66,7 +67,6 @@ const GenerateVisualContentPage = () => {
     {
       icon: <img src={copy} />,
       onClick: (row) => {
-        // openEditPrompt(row);
         handleVisualEdit(row);
       },
     },
@@ -74,6 +74,7 @@ const GenerateVisualContentPage = () => {
       icon: <img src={reuse} />,
       onClick: (row) => {
         // handlePromptRegenerate(row);
+        handleImageRegenerate(row);
       },
     },
     {
@@ -114,7 +115,7 @@ const GenerateVisualContentPage = () => {
         "Scene_No.": index + 1,
         Visual_Type: item?.visual_type,
         Visual_Description: item?.prompt,
-        Visual_Image: item?.image_uploaded_url ?? item?.image_url,
+        Visual_Image: item?.image_url,
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
         image_uploaded_urls: item?.image_uploaded_urls ?? [
@@ -137,6 +138,13 @@ const GenerateVisualContentPage = () => {
   const handleVisualEdit = (data) => {
     setPopup({
       type: "edit",
+      data,
+    });
+  };
+
+  const handleImageRegenerate = (data) => {
+    setPopup({
+      type: "regenerate",
       data,
     });
   };
@@ -223,6 +231,16 @@ const GenerateVisualContentPage = () => {
                   prompt_batch_id={prompt_batch_id}
                   handleUpdate={handleUpdate}
                   // handleImageUpdate={handleImageUpdate}
+                />
+              )}
+
+              {popup.type === "regenerate" && (
+                <RegenerateImagePopup
+                  open={true}
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  prompt_batch_id={prompt_batch_id}
+                  // handleUpdate={handleUpdate}
                 />
               )}
 
