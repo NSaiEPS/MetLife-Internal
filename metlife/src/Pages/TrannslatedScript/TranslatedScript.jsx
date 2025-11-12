@@ -10,13 +10,11 @@ import PopupModal from "../../components/popUps/LanguagePopup";
 import ButtonComp from "../../components/common/Buton/Button";
 import { toast } from "react-toastify";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import { useSelector } from "react-redux";
 
 const TranslatedScript = () => {
   const { state } = useLocation();
   const [pdfViewData, setPdfViewData] = useState([]);
   const [columns] = useState(["Scene No.", "Script", "OST", "Type"]);
-  const loader = useSelector((state) => state.SaveTranslatedData);
 
   useEffect(() => {
     const fileUploadData = async () => {
@@ -52,8 +50,6 @@ const TranslatedScript = () => {
             <>
               <DynamicTable
                 columns={columns}
-                // data={data}
-                // actions={actions}
                 extraDetails={pdfViewData}
                 showDragAndActions={false}
                 pdfId={state?.data?.file_id}

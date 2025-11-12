@@ -26,14 +26,6 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  console.log(visuaiImages, "visulimges");
-  // const [previewModal, setPreviewModal] = useState({
-  //   open: false,
-  //   images: [],
-  //   index: 0,
-  // });
-  console.log(rows, "checkRows");
-
   const handleDelete = () => {
     console.log(visuaiImages, index, "visulimges");
     const payload = {
@@ -42,9 +34,10 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
       image_url: visuaiImages?.image_uploaded_urls[index]?.url,
     };
     dispatch(deleteGenerateVisualContent(payload, () => {setPreviewImage(null)
-      dispatch(getGenerateVisualContentImage(id))
+      // dispatch(getGenerateVisualContentImage(id))
     }));
   };
+  
   return (
     <>
       <TableContainer className={styles.tablePaper}>
@@ -105,37 +98,6 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
         onClose={() => setPreviewImage(null)}
         maxWidth="md"
       >
-        {/* <IconButton
-          sx={{
-            backgroundColor: "rgba(255, 0, 0, 0.5)",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "rgba(255, 0, 0, 0.7)",
-            },
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-
-        <IconButton
-          onClick={() => setPreviewImage(null)}
-          sx={{
-            position: "absolute",
-            right: 10,
-            top: 10,
-            zIndex: 2,
-            backgroundColor: "rgba(0,0,0,0.4)",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "rgba(0,0,0,0.6)",
-              transform: "scale(1.2)",
-              transition: "transform 0.2s ease",
-            },
-          }}
-        >
-          <CloseIcon />
-        </IconButton> */}
-
         <div
           style={{
             position: "absolute",
@@ -175,6 +137,7 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
           <ImageCarousel
             images={visuaiImages?.image_uploaded_urls}
             caroselIndex={setIndex}
+            previewImage={previewImage}
           />
         </DialogContent>
       </Dialog>

@@ -4,21 +4,22 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useSelector } from "react-redux";
 
-const ImageCarousel = ({ images = [], caroselIndex }) => {
+const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
   const [index, setIndex] = useState(0);
   const { generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  console.log(generateVisualContentData, "generateVisualContent");
-  //   const images = generateVisualContentData?.image_uploaded_urls ?? [];
+  console.log(images, "immges");
 
   // reset to last image when images change
   useEffect(() => {
     if (images?.length > 0) {
       caroselIndex(0);
-      setIndex(0); // show latest image by default
+      // setIndex(0); // show latest image by default
+      setIndex(images.length - 1)
+       caroselIndex(images.length - 1);
     }
-  }, [images]);
+  }, [images, previewImage]);
 
   if (!images || images?.length === 0) {
     return (
