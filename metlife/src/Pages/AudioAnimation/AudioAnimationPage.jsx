@@ -156,6 +156,7 @@ const AudioAnimationPage = () => {
                 />
               </div>
             </div>
+            {/* audio and animation part */}
             {/* <div className={styles.insideContainer}>
               <Typography
                 className={styles.audioSelectionTitle}

@@ -37,6 +37,7 @@ export const postTranslatedDataSave = (data) => async (dispatch) => {
     if (response?.status) {
       dispatch(setSaveTranslatedData(response?.data));
       toast.success("Data Saved Successfully");
+      // return true;
     }
   } catch (error) {
     console.log(error);
@@ -45,3 +46,5 @@ export const postTranslatedDataSave = (data) => async (dispatch) => {
     dispatch(setSaveLoader(false));
   }
 };
+
+
