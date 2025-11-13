@@ -6,10 +6,12 @@ import { useSelector } from "react-redux";
 
 const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
   const [index, setIndex] = useState(0);
+  console.log(caroselIndex, "caroselIndex")
   const { generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
   console.log(images, "immges");
+
 
   useEffect(() => {
     if (!images || images.length === 0) {
@@ -19,11 +21,15 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
     }
 
     if (index >= images.length) {
-      const newIndex = images.length - 1;
+      const newIndex = Math.max(0, images.length - 1);
       setIndex(newIndex);
       caroselIndex(newIndex);
+    } else {
+      caroselIndex(index);
     }
-  }, [images]);
+  }, [images, index, caroselIndex]);
+
+
 
   if (!images || images.length === 0) {
     return (
@@ -84,19 +90,9 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
           <ChevronLeftIcon />
         </IconButton>
 
-        {/* IMAGE */}
-        {/* <img
-          src={images[index].url}
-          alt="carousel-img"
-          style={{
-            width: "100%",
-            maxHeight: 260,
-            objectFit: "contain",
-            borderRadius: 8,
-          }}
-        /> */}
         {images[index] ? (
           <img
+            key={images[index].url}
             src={images[index].url}
             alt="carousel-img"
             style={{
@@ -130,8 +126,11 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
       </Box>
 
       {/* Counter */}
+      {/* <Typography variant="caption" sx={{ mt: 1, display: "block" }}>
+        {index + 1} / {images?.length}
+      </Typography> */}
       <Typography variant="caption" sx={{ mt: 1, display: "block" }}>
-        {index + 1} / {images.length}
+        {images?.length > 0 ? `${index + 1} / ${images.length}` : "0 / 0"}
       </Typography>
     </Box>
   );

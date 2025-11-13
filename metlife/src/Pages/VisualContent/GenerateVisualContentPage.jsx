@@ -86,7 +86,6 @@ const GenerateVisualContentPage = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  console.log(generateVisualContentData, "generateVisualContentData");
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
   const dispatch = useDispatch();

@@ -43,12 +43,11 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
           ...prev,
           image_uploaded_urls:prev.image_uploaded_urls.filter(img =>  img.url !== payload.image_url)
         }))
-        // dispatch(getGenerateVisualContentImage(id))
       })
     );
   };
 
-  console.log(rows, "checkRows");
+  console.log(visuaiImages, "visual");
 
   return (
     <>
