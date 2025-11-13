@@ -16,6 +16,7 @@ const SelectComp = ({
   placeholder = "Select",
   fullWidth = true,
   disabled = false,
+  style = false,
 }) => {
   // Find the label of the currently selected value
   const selectedOption = options.find((opt) => opt.value === value);
@@ -25,7 +26,9 @@ const SelectComp = ({
       className={`${styles.selectWrapper} ${fullWidth ? styles.fullWidth : ""}`}
     >
       {/* Label outside the select box */}
-      {label && <Typography className={styles.selectLabel}>{label}</Typography>}
+
+
+      {label && <Typography sx={{mb: style ? 1 : 0}} className={styles.selectLabel}>{label}</Typography>}
 
       <FormControl fullWidth={fullWidth} variant="outlined" size="medium">
         <Select

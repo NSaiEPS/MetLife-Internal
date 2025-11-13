@@ -11,17 +11,21 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
   );
   console.log(images, "immges");
 
-  // reset to last image when images change
   useEffect(() => {
-    if (images?.length > 0) {
+    if (!images || images.length === 0) {
+      setIndex(0);
       caroselIndex(0);
-      // setIndex(0); // show latest image by default
-      setIndex(images.length - 1)
-       caroselIndex(images.length - 1);
+      return;
     }
-  }, [images, previewImage]);
 
-  if (!images || images?.length === 0) {
+    if (index >= images.length) {
+      const newIndex = images.length - 1;
+      setIndex(newIndex);
+      caroselIndex(newIndex);
+    }
+  }, [images]);
+
+  if (!images || images.length === 0) {
     return (
       <Typography
         variant="body2"
@@ -81,7 +85,7 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
         </IconButton>
 
         {/* IMAGE */}
-        <img
+        {/* <img
           src={images[index].url}
           alt="carousel-img"
           style={{
@@ -90,7 +94,23 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
             objectFit: "contain",
             borderRadius: 8,
           }}
-        />
+        /> */}
+        {images[index] ? (
+          <img
+            src={images[index].url}
+            alt="carousel-img"
+            style={{
+              width: "100%",
+              maxHeight: 260,
+              objectFit: "contain",
+              borderRadius: 8,
+            }}
+          />
+        ) : (
+          <Typography variant="body2" color="gray">
+            Image not found
+          </Typography>
+        )}
 
         <IconButton
           size="small"

@@ -49,7 +49,9 @@ const VideoCreationOptions = () => {
                     Upload a Script
                   </Typography>
                   <Typography className={styles.boxText}>
-                    Already have a script? Upload a .txt, .doc, or .pdf file to
+                    {/* Already have a script? Upload a .txt, .doc, or .pdf file to
+                    get started. */}
+                    Already have a script? Upload a .pdf file to
                     get started.
                   </Typography>
                   <div className={styles.parentContainer}>

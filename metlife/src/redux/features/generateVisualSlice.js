@@ -25,6 +25,19 @@ const GenerateVisualContentSlice = createSlice({
       actualVisualGenerateData.visuals = action?.payload?.visuals;
       state.generateVisualContentData = actualVisualGenerateData;
     },
+
+    removeDeletedImage(state, action) {
+      const { scene_id, image_url } = action.payload;
+      const currentData = { ...state.generateVisualContentData };
+
+      if (!currentData?.image_uploaded_urls) return;
+
+      currentData.image_uploaded_urls = currentData.image_uploaded_urls.filter(
+        (img) => img.url !== image_url
+      );
+
+      state.generateVisualContentData = currentData;
+    },
   },
 });
 
@@ -32,6 +45,7 @@ export const {
   setGenerateVisualLoader,
   setGenerateVisualContentData,
   updateGenerateVisual,
+  removeDeletedImage,
 } = GenerateVisualContentSlice.actions;
 
 export default GenerateVisualContentSlice.reducer;
@@ -118,6 +132,7 @@ export const deleteGenerateVisualContent =
     try {
       const response = await api.delete(`images/delete-image`, { data });
       toast.success(response?.data?.message || "Deleted successfully");
+      dispatch(removeDeletedImage(data));
       onClose(false);
     } catch (error) {
       console.error(error);

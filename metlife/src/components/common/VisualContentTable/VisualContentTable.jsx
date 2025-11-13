@@ -16,7 +16,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import ImageCarousel from "../carousel/ImageCarousel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useParams } from "react-router";
-import { deleteGenerateVisualContent, getGenerateVisualContentImage } from "../../../redux/features/generateVisualSlice";
+import {
+  deleteGenerateVisualContent,
+  getGenerateVisualContentImage,
+} from "../../../redux/features/generateVisualSlice";
 import { useDispatch } from "react-redux";
 
 const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
@@ -33,11 +36,20 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
       scene_id: visuaiImages?.scene_id,
       image_url: visuaiImages?.image_uploaded_urls[index]?.url,
     };
-    dispatch(deleteGenerateVisualContent(payload, () => {setPreviewImage(null)
-      // dispatch(getGenerateVisualContentImage(id))
-    }));
+    dispatch(
+      deleteGenerateVisualContent(payload, () => {
+        setPreviewImage(null);
+        setVisualImages(prev => ({
+          ...prev,
+          image_uploaded_urls:prev.image_uploaded_urls.filter(img =>  img.url !== payload.image_url)
+        }))
+        // dispatch(getGenerateVisualContentImage(id))
+      })
+    );
   };
-  
+
+  console.log(rows, "checkRows");
+
   return (
     <>
       <TableContainer className={styles.tablePaper}>
