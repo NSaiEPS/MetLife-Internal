@@ -18,36 +18,59 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useParams } from "react-router";
 import {
   deleteGenerateVisualContent,
-  getGenerateVisualContentImage,
 } from "../../../redux/features/generateVisualSlice";
 import { useDispatch } from "react-redux";
 
-const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
+const VisualContentTable = ({
+  columns = [],
+  rows = [],
+  actions = [],
+  updateImagesInRow,
+}) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [visuaiImages, setVisualImages] = useState([]);
   const [index, setIndex] = useState(0);
   const { id } = useParams();
   const dispatch = useDispatch();
 
+  console.log(previewImage, "preview");
+
   const handleDelete = () => {
-    console.log(visuaiImages, index, "visulimges");
+    const currentImage = visuaiImages?.image_uploaded_urls[index]?.url;
+
     const payload = {
       script_id: id,
       scene_id: visuaiImages?.scene_id,
-      image_url: visuaiImages?.image_uploaded_urls[index]?.url,
+      image_url: currentImage,
     };
+
     dispatch(
       deleteGenerateVisualContent(payload, () => {
-        setPreviewImage(null);
-        setVisualImages(prev => ({
+        // 1. Remove from local state
+        const updatedImages = visuaiImages.image_uploaded_urls.filter(
+          (img) => img.url !== currentImage
+        );
+
+        // 2. Update table row in parent
+        updateImagesInRow(visuaiImages.scene_id, updatedImages);
+
+        // 3. Update modal carousel
+        setVisualImages((prev) => ({
           ...prev,
-          image_uploaded_urls:prev.image_uploaded_urls.filter(img =>  img.url !== payload.image_url)
-        }))
+          image_uploaded_urls: updatedImages,
+        }));
+
+        // 4. Fix index if needed
+        if (index >= updatedImages.length) {
+          setIndex(updatedImages.length - 1);
+        }
+
+        if (updatedImages.length === 0) {
+          setPreviewImage(null);
+        }
       })
     );
   };
-
-  console.log(visuaiImages, "visual");
 
   return (
     <>
@@ -103,55 +126,58 @@ const VisualContentTable = ({ columns = [], rows = [], actions = [] }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Dialog
-        open={!!previewImage}
-        onClose={() => setPreviewImage(null)}
-        maxWidth="md"
-      >
-        <div
-          style={{
-            position: "absolute",
-            right: 10,
-            top: 10,
-            zIndex: 10,
-            display: "flex",
-            gap: 8,
-          }}
+      {previewImage && previewImage.length > 0 && (
+        <Dialog
+          open={!!previewImage}
+          onClose={() => setPreviewImage(null)}
+          maxWidth="md"
         >
-          {/* DELETE */}
-          <IconButton
-            onClick={handleDelete}
-            sx={{
-              backgroundColor: "rgba(255, 0, 0, 0.6)",
-              color: "white",
-              "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.8)" },
+          <div
+            style={{
+              position: "absolute",
+              right: 10,
+              top: 10,
+              zIndex: 10,
+              display: "flex",
+              gap: 8,
             }}
           >
-            <DeleteIcon />
-          </IconButton>
+            {/* DELETE */}
+            {visuaiImages?.image_uploaded_urls?.length > 0 && (
+              <IconButton
+                onClick={handleDelete}
+                sx={{
+                  backgroundColor: "rgba(255, 0, 0, 0.6)",
+                  color: "white",
+                  "&:hover": { backgroundColor: "rgba(255, 0, 0, 0.8)" },
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
 
-          {/* CLOSE */}
-          <IconButton
-            onClick={() => setPreviewImage(null)}
-            sx={{
-              backgroundColor: "rgba(0,0,0,0.4)",
-              color: "white",
-              "&:hover": { backgroundColor: "rgba(0,0,0,0.6)" },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </div>
+            {/* CLOSE */}
+            <IconButton
+              onClick={() => setPreviewImage(null)}
+              sx={{
+                backgroundColor: "rgba(0,0,0,0.4)",
+                color: "white",
+                "&:hover": { backgroundColor: "rgba(0,0,0,0.6)" },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </div>
 
-        <DialogContent>
-          <ImageCarousel
-            images={visuaiImages?.image_uploaded_urls}
-            caroselIndex={setIndex}
-            previewImage={previewImage}
-          />
-        </DialogContent>
-      </Dialog>
+          <DialogContent>
+            <ImageCarousel
+              images={visuaiImages?.image_uploaded_urls}
+              caroselIndex={setIndex}
+              previewImage={previewImage}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

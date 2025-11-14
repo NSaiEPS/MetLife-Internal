@@ -61,7 +61,9 @@ function DynamicTable({
   setMakeChanges,
   features = true,
   visualContentTitle,
+  makeChanges,
 }) {
+  console.log(makeChanges, "makeChanges")
   const [tableExtraData, setTableExtraData] = useState({});
   useEffect(() => {
     setTableExtraData(extraDetails);
@@ -88,6 +90,7 @@ function DynamicTable({
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [selectedScene, setSelectedScene] = useState(null);
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
+  const [operations, setOperations] = useState(false);
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
   );
@@ -172,6 +175,7 @@ function DynamicTable({
 
   const addScene = (data) => {
     setPopUpdata(data);
+    setOperations(true);
     if (data && data.OST) {
       setPopupTitle("Edit Scene");
     } else {
@@ -182,6 +186,7 @@ function DynamicTable({
 
   const handleDragEnd = (result) => {
     setMakeChanges(true);
+    setOperations(true);
     if (!result.destination) return;
 
     const updated = Array.from(rows);
@@ -244,6 +249,7 @@ function DynamicTable({
 
   const handleUpdate = (data) => {
     setMakeChanges(true);
+    setOperations(true);
     // // // edit
     if (data?.fieldData) {
       let newData = rows.map((item) => {
@@ -282,6 +288,7 @@ function DynamicTable({
   };
 
   const handleTranslateScript = async () => {
+    setOperations(true);
     const file_id = pdfId || id;
     if (!file_id) return;
     const formData = new FormData();
@@ -327,6 +334,7 @@ function DynamicTable({
   };
 
   const handleSetData = (data) => {
+    setOperations(true);
     // setActionsDisabled(true);
     setRegenerateDisabled(true);
 
@@ -350,11 +358,13 @@ function DynamicTable({
 
   const handleDeleteScene = (scene) => {
     setSelectedScene(scene);
+    setOperations(true);
     setOpenDeletePopup(true);
     setMakeChanges(true);
   };
 
   const confirmDeleteScene = async (scene) => {
+    setOperations(true);
     const payload = {
       script_id: id,
       scene_id: scene.id,
@@ -385,6 +395,7 @@ function DynamicTable({
   };
 
   const handleSave = () => {
+    setOperations(false)
     const data = {
       data: {
         ...tableExtraData,
@@ -724,7 +735,9 @@ function DynamicTable({
                     }}
                     variant="contained"
                     className={styles.primaryBtn}
-                    disabled={saveTranslatedData === null}
+                    // disabled={saveTranslatedData === null }
+                    disabled={ saveTranslatedData === null || operations }
+
                   >
                     Create Visual Content
                   </Button>

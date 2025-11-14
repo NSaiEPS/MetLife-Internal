@@ -58,7 +58,6 @@ const ImageUploadPopup = ({
     formData.append("file", imageFile);
 
     dispatch(postImageUpload(formData, onClose));
-    // onClose();
   };
 
   return (

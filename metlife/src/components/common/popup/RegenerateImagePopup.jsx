@@ -7,7 +7,6 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { postRegenerateVisualContent } from "../../../redux/features/createVisualSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { postRegenerateImage } from "../../../redux/features/generateVisualSlice";
@@ -19,6 +18,7 @@ const RegenerateImagePopup = ({
   prompt_batch_id,
 }) => {
   const { id } = useParams();
+  console.log(fieldData, 'fieldDataCheck')
 
   const onCloseTempData = () => {
     setFeedback("");
@@ -40,6 +40,8 @@ const RegenerateImagePopup = ({
       script_id: id,
       scene_id: scene_id,
       prompt_batch_id: prommpt_batch_id,
+      feedback,
+      media_type:fieldData?.Visual_Type,
     };
     dispatch(postRegenerateImage(payload, onCloseTempData));
   };

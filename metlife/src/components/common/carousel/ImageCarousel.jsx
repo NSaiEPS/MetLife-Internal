@@ -6,12 +6,7 @@ import { useSelector } from "react-redux";
 
 const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
   const [index, setIndex] = useState(0);
-  console.log(caroselIndex, "caroselIndex")
-  const { generateVisualContentData } = useSelector(
-    (store) => store.GenerateVisualContent
-  );
-  console.log(images, "immges");
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!images || images.length === 0) {
@@ -24,12 +19,18 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
       const newIndex = Math.max(0, images.length - 1);
       setIndex(newIndex);
       caroselIndex(newIndex);
-    } else {
+      return;
+    }
+
+    // caroselIndex(index);
+    setLoading(true);
+  }, [images]);
+
+  useEffect(() => {
+    if (images.length > 0) {
       caroselIndex(index);
     }
-  }, [images, index, caroselIndex]);
-
-
+  }, [index]);
 
   if (!images || images.length === 0) {
     return (
@@ -62,8 +63,8 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
 
       <Box
         sx={{
-          width: 350, // ✅ FIXED WIDTH (change as required)
-          height: 260, // ✅ FIXED HEIGHT
+          width: 800, // ✅ FIXED WIDTH (change as required)
+          height: "auto", // ✅ FIXED HEIGHT
           margin: "0 auto",
           position: "relative",
           borderRadius: 2,
@@ -76,31 +77,36 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
       >
         <IconButton
           size="small"
-          onClick={prev}
+          onClick={() => {
+            setLoading(true);
+            prev();
+          }}
           sx={{
             position: "absolute",
             left: 5,
-            backgroundColor: "rgba(0,0,0,0.4)", // ✅ Background color
-            color: "white",
+            backgroundColor: "#fff", // ✅ Background color
+            border: "1px solid #000",
+            color: "black",
             "&:hover": {
-              backgroundColor: "rgba(0,0,0,0.7)",
+              transform: "scale(1.05)",
             },
           }}
         >
           <ChevronLeftIcon />
         </IconButton>
 
-        {images[index] ? (
+        {images[index]?.url && images.length > 0 ? (
           <img
             key={images[index].url}
             src={images[index].url}
             alt="carousel-img"
             style={{
               width: "100%",
-              maxHeight: 260,
-              objectFit: "contain",
+              maxHeight: "auto",
+              // objectFit: "cover",
               borderRadius: 8,
             }}
+            onLoad={() => setLoading(false)}
           />
         ) : (
           <Typography variant="body2" color="gray">
@@ -108,27 +114,42 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
           </Typography>
         )}
 
+        {loading && (
+          <Typography
+            variant="body1"
+            sx={{
+              position: "absolute",
+              color: "black",
+              fontWeight: "bold",
+              background: "rgba(255,255,255,0.8)",
+              padding: "6px 12px",
+              borderRadius: "6px",
+            }}
+          >
+            Loading...
+          </Typography>
+        )}
+
         <IconButton
           size="small"
-          onClick={next}
+          onClick={() => {
+            setLoading(true);
+            next();
+          }}
           sx={{
             position: "absolute",
             right: 5,
-            backgroundColor: "rgba(0,0,0,0.4)", // ✅ Background color
-            color: "white",
+            backgroundColor: "#fff", // ✅ Background color
+            border: "1px solid #000",
+            color: "black",
             "&:hover": {
-              backgroundColor: "rgba(0,0,0,0.7)",
+              transform: "scale(1.05)",
             },
           }}
         >
           <ChevronRightIcon />
         </IconButton>
       </Box>
-
-      {/* Counter */}
-      {/* <Typography variant="caption" sx={{ mt: 1, display: "block" }}>
-        {index + 1} / {images?.length}
-      </Typography> */}
       <Typography variant="caption" sx={{ mt: 1, display: "block" }}>
         {images?.length > 0 ? `${index + 1} / ${images.length}` : "0 / 0"}
       </Typography>

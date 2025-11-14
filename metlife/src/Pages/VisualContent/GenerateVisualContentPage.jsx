@@ -15,6 +15,7 @@ import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 import { useParams } from "react-router";
+import { toast } from "react-toastify";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
@@ -42,6 +43,12 @@ const GenerateVisualContentPage = () => {
             cursor: "pointer",
           }}
           onClick={() => {
+            console.log(row.Visual_Image.length === 0, "check_mage");
+            if (row.Visual_Image.length === 0) {
+              toast.error("No Image found to preview");
+              setPreviewImage([]);
+              return;
+            }
             setPreviewImage(value);
             setVisualImages(row);
           }}
@@ -108,27 +115,25 @@ const GenerateVisualContentPage = () => {
   console.log(generateVisualContentData?.visuals, "visuals");
 
   const settingDataInRows = (reqData) => {
-    console.log(reqData, "check_reg");
     let newdata = reqData?.map((item, index) => {
       const firstImageUrl =
-        item?.image_uploaded_urls?.[0]?.url ||
-        item?.image_uploaded_url ||
+        item?.images?.[0]?.url ||
+        item?.images ||
         item?.image_url ||
         item?.url ||
         "";
-      console.log(item, "image_url");
       return {
         "Scene_No.": index + 1,
         Visual_Type: item?.visual_type,
         Visual_Description: item?.prompt,
-        // Visual_Image: item?.image_url,
-        Visual_Image: firstImageUrl,
-
+        Visual_Image:
+          item?.images?.length > 0
+            ? item.images[item.images.length - 1]?.url
+            : firstImageUrl ,
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
-        image_uploaded_urls: item?.image_uploaded_urls ?? [
-          { url: item?.image_uploaded_url ?? item?.image_url ?? item.url },
-        ],
+        image_uploaded_urls:
+          item?.images?.length > 0 ? item.images : [{ url: firstImageUrl }],
       };
     });
     setRows(newdata);
@@ -165,7 +170,6 @@ const GenerateVisualContentPage = () => {
   };
 
   const handleImageUpdate = ({ fieldData, new_images }) => {
-    console.log(fieldData, "check");
     const updatedRows = rows.map((item) => {
       if (item.scene_id === fieldData.scene_id) {
         const lastImage = new_images?.length
@@ -200,6 +204,20 @@ const GenerateVisualContentPage = () => {
     }
   };
 
+  const updateImagesInRow = (sceneId, newImages) => {
+    setRows((prev) =>
+      prev.map((row) =>
+        row.scene_id === sceneId
+          ? {
+              ...row,
+              image_uploaded_urls: newImages,
+              Visual_Image: newImages[newImages.length - 1]?.url || "",
+            }
+          : row
+      )
+    );
+  };
+
   return (
     <>
       <div className={styles.container}>
@@ -218,6 +236,7 @@ const GenerateVisualContentPage = () => {
                 columns={columns}
                 rows={rows}
                 actions={actions}
+                updateImagesInRow={updateImagesInRow}
               />
               {popup.type === "upload" && (
                 <ImageUploadPopup
@@ -239,7 +258,6 @@ const GenerateVisualContentPage = () => {
                   script_id={id}
                   prompt_batch_id={prompt_batch_id}
                   handleUpdate={handleUpdate}
-                  // handleImageUpdate={handleImageUpdate}
                 />
               )}
 

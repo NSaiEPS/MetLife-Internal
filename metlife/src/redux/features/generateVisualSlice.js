@@ -25,19 +25,6 @@ const GenerateVisualContentSlice = createSlice({
       actualVisualGenerateData.visuals = action?.payload?.visuals;
       state.generateVisualContentData = actualVisualGenerateData;
     },
-
-    removeDeletedImage(state, action) {
-      const { scene_id, image_url } = action.payload;
-      const currentData = { ...state.generateVisualContentData };
-
-      if (!currentData?.image_uploaded_urls) return;
-
-      currentData.image_uploaded_urls = currentData.image_uploaded_urls.filter(
-        (img) => img.url !== image_url
-      );
-
-      state.generateVisualContentData = currentData;
-    },
   },
 });
 
@@ -53,7 +40,7 @@ export default GenerateVisualContentSlice.reducer;
 export const postGenerateVisualContentImage = (data) => async (dispatch) => {
   dispatch(setGenerateVisualLoader(true));
   try {
-    const response = await api.post("images/generate-images", data);
+    const response = await api.post("images/generate-visuals", data);
     console.log(response);
     if (response?.status) {
       dispatch(setGenerateVisualContentData(response?.data?.visuals));
@@ -88,7 +75,7 @@ export const getGenerateVisualContentImage = (id) => async (dispatch) => {
 export const postImageUpload = (data, onClose) => async (dispatch) => {
   dispatch(setGenerateVisualLoader(true));
   try {
-    const response = await api.post(`images/upload-image`, data);
+    const response = await api.post(`images/upload-media`, data);
     console.log(response, "check_image_upload_response");
     toast.success(
       response?.data?.message ?? "Image uploaded & scene updated successfully"
@@ -132,7 +119,7 @@ export const deleteGenerateVisualContent =
     try {
       const response = await api.delete(`images/delete-image`, { data });
       toast.success(response?.data?.message || "Deleted successfully");
-      dispatch(removeDeletedImage(data));
+      // dispatch(removeDeletedImage(data));
       onClose(false);
     } catch (error) {
       console.error(error);
@@ -147,7 +134,7 @@ export const postRegenerateImage =
   (data, onCloseTempData) => async (dispatch) => {
     dispatch(setGenerateVisualLoader(true));
     try {
-      const response = await api.post(`images/regenerate-image`, data);
+      const response = await api.post(`images/regenerate-visual`, data);
       console.log(response, "check_response");
       toast.success(
         response?.data?.message || "Prompt regenerated successfully"

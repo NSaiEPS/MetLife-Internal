@@ -97,6 +97,7 @@ const ScriptPage = () => {
             setMakeChanges={setMakeChanges}
             columns={columns}
             extraDetails={sceneData}
+            makeChanges={makeChanges}
           />
         ) : (
           <NoDataMessage filter={false} loading={loading} />
