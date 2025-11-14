@@ -36,7 +36,7 @@
   align-items: center;
   /* padding-top: 30px; */
   /* padding-right: 150px; */
-} 
+}
 
 .icon {
   display: flex;
@@ -96,4 +96,7 @@
 }
 .noDataText {
   text-align: center;
+}
+.BtnSavePrompt {
+  margin-left: 20px;
 }

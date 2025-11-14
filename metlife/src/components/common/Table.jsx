@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -34,36 +34,22 @@ import api, { BASE_URL } from "../../api/axios";
 import FullScreenGradientLoader from "./GradientLoader";
 import { MdDone } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  postTranslatedDataSave,
-  setRegenerated,
-  resetSaveState,
-} from "../../redux/features/saveSlice";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import DeleteScenePopup from "./popup/DeleteScenePopup";
 import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
-import { postDeleteScene } from "../../redux/features/scriptSlice";
 import { languages } from "../../utils/languageOptions";
-import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
+import SinglePromptModal from "./SinglePromptModal";
 
-/**
- * props:
- *  - columns: array of column header strings
- *  - data: array of row objects where keys match column names
- *  - actions: array of { icon: ReactNode, onClick: (row) => void }
- */
 function DynamicTable({
   columns = [],
-  data = [],
-  // actions = [],
+
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
   setMakeChanges,
   features = true,
   visualContentTitle,
-  makeChanges,
 }) {
-  console.log(makeChanges, "makeChanges")
   const [tableExtraData, setTableExtraData] = useState({});
   useEffect(() => {
     setTableExtraData(extraDetails);
@@ -91,13 +77,19 @@ function DynamicTable({
   const [selectedScene, setSelectedScene] = useState(null);
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
   const [operations, setOperations] = useState(false);
+  const [openSavePrompt, setOpenSavePrompt] = useState(false);
+
+  const handleSavePrompt = (prompt) => {
+    console.log("Saving prompt:", prompt);
+    // your saving logic here
+  };
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
   );
-  const { saveVisualContentData, saveVisualContentLoader } = useSelector(
+  const { saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
   );
-  const { scriptLoader, scriptData } = useSelector((store) => store.Script);
+  const { scriptLoader } = useSelector((store) => store.Script);
 
   const actions = [
     {
@@ -395,7 +387,7 @@ function DynamicTable({
   };
 
   const handleSave = () => {
-    setOperations(false)
+    setOperations(false);
     const data = {
       data: {
         ...tableExtraData,
@@ -405,7 +397,7 @@ function DynamicTable({
     //   ...tableExtraData,
     // };
     // console.log(data, dataForAudio, "check_data_For_Both");
-    dispatch(postTranslatedDataSave(data))
+    dispatch(postTranslatedDataSave(data));
     // .then((success) => {
     //   if (success) {
     //     dispatch(postAudioAnimationData(dataForAudio));
@@ -454,6 +446,14 @@ function DynamicTable({
                 </Button>
               </span>
             </Tooltip>
+
+            <Button
+              variant="contained"
+              className={styles1.BtnSavePrompt}
+              onClick={() => setOpenSavePrompt(true)}
+            >
+              Save Prompt
+            </Button>
 
             <ShowSourcePopup
               open={openShowPopup}
@@ -736,8 +736,7 @@ function DynamicTable({
                     variant="contained"
                     className={styles.primaryBtn}
                     // disabled={saveTranslatedData === null }
-                    disabled={ saveTranslatedData === null || operations }
-
+                    disabled={saveTranslatedData === null || operations}
                   >
                     Create Visual Content
                   </Button>
@@ -746,6 +745,13 @@ function DynamicTable({
             </>
           )}
         </Stack>
+        <SinglePromptModal
+          open={openSavePrompt}
+          onClose={() => setOpenSavePrompt(false)}
+          prompt="Write an SEO optimized article about modern React architecture."
+          onSave={handleSavePrompt}
+          size="md"
+        />
 
         <DownloadPopup
           open={openDownloadPopup}

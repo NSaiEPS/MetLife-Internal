@@ -26,6 +26,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { showToast } from "../../utils/toast";
 import { toast } from "react-toastify";
+import SavedPromptsModal from "../../components/common/SavedPromptsModal";
 
 // import Toastfrom  from "../../components/common/ToastBox"
 
@@ -152,10 +153,10 @@ const GenerateScript = () => {
       const result = await api.post("generate-script", new_payload);
       if (result?.status == 200) {
         if (result?.data?.scenes && result?.data?.status === true) {
-          toast.success("Script generated successfully!")
+          toast.success("Script generated successfully!");
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
-          toast.error("Something went wrong while generating!")
+          toast.error("Something went wrong while generating!");
         }
       } else {
         showToast?.error("Some Issue In Generating");
@@ -167,6 +168,24 @@ const GenerateScript = () => {
       setLoader(false);
     }
   };
+
+  const [open, setOpen] = useState(false);
+
+  const prompts = [
+    "Explain React useEffect with examples.",
+    "Generate API code using Axios.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+    "Write optimized React components.",
+  ];
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -204,8 +223,15 @@ const GenerateScript = () => {
               rows={8}
             />
 
-            <img src={path} alt="Bookmark" className={styles.bookmarkIcon} />
-            <button className={styles.savedBtn}>Saved Prompts</button>
+            {/* <img src={path} alt="Bookmark" className={styles.bookmarkIcon} /> */}
+            <button
+              className={styles.savedBtn}
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              Saved Prompts
+            </button>
           </div>
           {/* Accordions */}
           <div className={styles.accordionGroup}>
@@ -426,6 +452,12 @@ const GenerateScript = () => {
         </div>
       </main>
       <Footer />
+
+      <SavedPromptsModal
+        open={open}
+        onClose={() => setOpen(false)}
+        prompts={prompts}
+      />
     </Box>
   );
 };
