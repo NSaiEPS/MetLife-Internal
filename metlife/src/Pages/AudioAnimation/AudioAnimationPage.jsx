@@ -58,10 +58,10 @@ const AudioAnimationPage = () => {
   // const [narration, setNarration] = useState("azure");
   // const [narrationSelections, setNarrationSelections] = useState({});
   const [narrationSelections, setNarrationSelections] = useState({
-  Narrator: "azure",
-  Alex: "azure",
-  Taylor: "azure",
-});
+    Narrator: "azure",
+    Alex: "azure",
+    Taylor: "azure",
+  });
   const [voiceSelections, setVoiceSelections] = useState({});
   // const [entryAnimation, setEntryAnimation] = useState("fadeOut");
   // const [exitAnimation, setExitAnimation] = useState("fadeOut");
@@ -69,6 +69,7 @@ const AudioAnimationPage = () => {
   const dispatch = useDispatch();
   const { audioAnimationLoader, audioAnimationData, audioPreviewData } =
     useSelector((store) => store.AudioAnimation);
+  console.log("audioAnimationData", audioAnimationData);
   const characters =
     audioAnimationData?.characters ||
     audioAnimationData?.voice_map?.characters ||
@@ -102,13 +103,13 @@ const AudioAnimationPage = () => {
       showToast.error("Please select a Narrator");
     } else if (!voiceSelections.Narrator) {
       showToast.error("Please select a narrator voice");
-    } else if (!narrationSelections.Alex) {
+    } else if (!narrationSelections.Alex && characters.includes("Alex")) {
       showToast.error("Please select a Alex");
-    } else if (!voiceSelections.Alex) {
+    } else if (!voiceSelections.Alex && characters.includes("Alex")) {
       showToast.error("Please select a alex voice");
-    } else if (!narrationSelections.Taylor) {
+    } else if (!narrationSelections.Taylor && characters.includes("Taylor")) {
       showToast.error("Please select a Taylor");
-    } else if (!voiceSelections.Taylor) {
+    } else if (!voiceSelections.Taylor && characters.includes("Taylor")) {
       showToast.error("Please select a taylor voice");
     } else {
       apiCall();

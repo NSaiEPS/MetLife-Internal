@@ -83,10 +83,11 @@ function DynamicTable({
   const handleSavePrompt = (prompt) => {
     console.log("Saving_prompt", prompt);
     const payload = {
-      prompt
-    }
+      prompt,
+    };
     dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false)));
   };
+  console.log("tableExtraData", tableExtraData);
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
   );
@@ -748,7 +749,7 @@ function DynamicTable({
         <SinglePromptModal
           open={openSavePrompt}
           onClose={() => setOpenSavePrompt(false)}
-          prompt="Write an SEO optimized article about modern React architecture."
+          prompt={tableExtraData?.latest_prompt}
           onSave={handleSavePrompt}
           size="md"
         />
