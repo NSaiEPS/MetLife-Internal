@@ -100,12 +100,12 @@ const GenerateScript = () => {
   const disableTopN = !datasource || datasource === "openai";
   const dispatch = useDispatch();
 
-  const {promptData} = useSelector(store => store.Prompts);
-  console.log(promptData, "check_selector")
+  const { promptData } = useSelector((store) => store.Prompts);
+  console.log(promptData, "check_selector");
 
   useEffect(() => {
-    dispatch(getPromptsList())
-  }, [])
+    dispatch(getPromptsList());
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -400,26 +400,6 @@ const GenerateScript = () => {
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    {/* <Tooltip
-                      title={
-                        datasource === "openai"
-                          ? "OpenAI does not have any source"
-                          : ""
-                      }
-                      placement="left"
-                      arrow
-                    >
-                      <span>
-                        <SelectComp
-                          label="Top N"
-                          options={topNOptions}
-                          value={topn}
-                          onChange={setTopn}
-                          placeholder="Select Top N"
-                          disabled={datasource === "openai"}
-                        />
-                      </span>
-                    </Tooltip> */}
                     <Tooltip
                       title={
                         !datasource
@@ -465,9 +445,12 @@ const GenerateScript = () => {
 
       <SavedPromptsModal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={(data) => {
+          setOpen(false);
+          setScriptText(data);
+        }}
         // prompts={promptData}
-          prompts={promptData?.map((item) => item.prompt)} 
+        prompts={promptData?.map((item) => item.prompt)}
       />
     </Box>
   );

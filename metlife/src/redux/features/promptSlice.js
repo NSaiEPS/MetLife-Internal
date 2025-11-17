@@ -5,7 +5,7 @@ import { navigateTo } from "../../utils/navigate";
 
 const initialState = {
   promtLoader: false,
-  promptData: null,
+  promptData: [],
 };
 
 const PromptSlice = createSlice({
@@ -18,14 +18,10 @@ const PromptSlice = createSlice({
     setPromptData(state, action) {
       state.promptData = action.payload;
     },
-
   },
 });
 
-export const {
-  setPromptLoader,
-  setPromptData,
-} = PromptSlice.actions;
+export const { setPromptLoader, setPromptData } = PromptSlice.actions;
 
 export default PromptSlice.reducer;
 
@@ -38,7 +34,7 @@ export const postSavePrompt = (id, data, closeModal) => async (dispatch) => {
     if (res.status) {
       dispatch(setPromptData(res?.data));
       toast.success(res?.data?.message || "Prompt saved successfully");
-       if (closeModal) closeModal(); 
+      if (closeModal) closeModal();
     }
   } catch (error) {
     console.log(error);
@@ -47,8 +43,6 @@ export const postSavePrompt = (id, data, closeModal) => async (dispatch) => {
     dispatch(setPromptLoader(false));
   }
 };
-
-
 
 // // Get Preview voices
 export const getPromptsList = () => async (dispatch) => {
