@@ -130,7 +130,8 @@ const VisualContentTable = ({
         <Dialog
           open={!!previewImage}
           onClose={() => setPreviewImage(null)}
-          maxWidth="md"
+          // maxWidth="md"
+          maxWidth={false}
         >
           <div
             style={{

@@ -129,7 +129,7 @@ const GenerateVisualContentPage = () => {
       return {
         "Scene_No.": index + 1,
         Visual_Type: item?.visual_type === "clip" ? "Footage" : item?.visual_type,
-        Visual_Description: item?.prompt,
+        Visual_Description: item?.description,
         Visual_Image:
           item?.images?.length > 0
             ? item.images[item.images.length - 1]?.url

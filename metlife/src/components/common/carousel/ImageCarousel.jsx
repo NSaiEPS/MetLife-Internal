@@ -63,7 +63,7 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
 
       <Box
         sx={{
-          width: 800, // ✅ FIXED WIDTH (change as required)
+          width: 1200, // ✅ FIXED WIDTH (change as required)
           height: "auto", // ✅ FIXED HEIGHT
           margin: "0 auto",
           position: "relative",
@@ -114,7 +114,7 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
           </Typography>
         )}
 
-        {loading && (
+        {loading && images?.length === 2 && (
           <Typography
             variant="body1"
             sx={{
