@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
+import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
@@ -93,6 +94,9 @@ const GenerateVisualContentPage = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
+  const { audioAnimationLoader, } = useSelector(
+    (store) => store.AudioAnimation
+  );
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
   const dispatch = useDispatch();
@@ -124,12 +128,12 @@ const GenerateVisualContentPage = () => {
         "";
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type,
+        Visual_Type: item?.visual_type === "clip" ? "Footage" : item?.visual_type,
         Visual_Description: item?.prompt,
         Visual_Image:
           item?.images?.length > 0
             ? item.images[item.images.length - 1]?.url
-            : firstImageUrl ,
+            : firstImageUrl,
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
         image_uploaded_urls:
@@ -218,11 +222,19 @@ const GenerateVisualContentPage = () => {
     );
   };
 
+  const handleAudioAndAnimation = () => {
+    const payload = {
+      script_id: id,
+    };
+    dispatch(postAudioAnimationData(payload));
+  };
+
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
         {generateVisualLoader && <FullScreenGradientLoader text="loading..." />}
+        {audioAnimationLoader && <FullScreenGradientLoader text="extracting..." />}
         <div className={styles.header}>
           <h2 className={styles.title}>
             {generateVisualContentData?.title || "Visual Content"}
@@ -272,7 +284,11 @@ const GenerateVisualContentPage = () => {
               )}
 
               <div className={styles.footerButtons}>
-                <Button variant="contained" className={styles.primaryBtn}>
+                <Button
+                  variant="contained"
+                  className={styles.primaryBtn}
+                  onClick={handleAudioAndAnimation}
+                >
                   Audio & Animation Toolkit
                 </Button>
               </div>

@@ -61,7 +61,6 @@ export const postCreateVisualContent = (data) => async (dispatch) => {
     if (response?.status) {
       dispatch(setSaveVisualContentData(response?.data));
       navigateTo(`/create-visual-content/${response?.data?.prompt_batch_id}`);
-      // return response;
     }
   } catch (error) {
     console.log(error);

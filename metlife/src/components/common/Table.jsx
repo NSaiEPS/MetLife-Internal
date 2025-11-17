@@ -39,6 +39,7 @@ import DeleteScenePopup from "./popup/DeleteScenePopup";
 import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
 import { languages } from "../../utils/languageOptions";
 import SinglePromptModal from "./SinglePromptModal";
+import { postSavePrompt } from "../../redux/features/promptSlice";
 
 function DynamicTable({
   columns = [],
@@ -80,8 +81,11 @@ function DynamicTable({
   const [openSavePrompt, setOpenSavePrompt] = useState(false);
 
   const handleSavePrompt = (prompt) => {
-    console.log("Saving prompt:", prompt);
-    // your saving logic here
+    console.log("Saving_prompt", prompt);
+    const payload = {
+      prompt
+    }
+    dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false)));
   };
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
@@ -393,10 +397,6 @@ function DynamicTable({
         ...tableExtraData,
       },
     };
-    // const dataForAudio = {
-    //   ...tableExtraData,
-    // };
-    // console.log(data, dataForAudio, "check_data_For_Both");
     dispatch(postTranslatedDataSave(data));
     // .then((success) => {
     //   if (success) {

@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./GenerateScript.module.css";
 import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
   Accordion,
@@ -27,6 +27,8 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { showToast } from "../../utils/toast";
 import { toast } from "react-toastify";
 import SavedPromptsModal from "../../components/common/SavedPromptsModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getPromptsList } from "../../redux/features/promptSlice";
 
 // import Toastfrom  from "../../components/common/ToastBox"
 
@@ -96,6 +98,14 @@ const GenerateScript = () => {
   const [datasource, setDatasource] = useState("");
   const [loader, setLoader] = useState(false);
   const disableTopN = !datasource || datasource === "openai";
+  const dispatch = useDispatch();
+
+  const {promptData} = useSelector(store => store.Prompts);
+  console.log(promptData, "check_selector")
+
+  useEffect(() => {
+    dispatch(getPromptsList())
+  }, [])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -456,7 +466,8 @@ const GenerateScript = () => {
       <SavedPromptsModal
         open={open}
         onClose={() => setOpen(false)}
-        prompts={prompts}
+        // prompts={promptData}
+          prompts={promptData?.map((item) => item.prompt)} 
       />
     </Box>
   );

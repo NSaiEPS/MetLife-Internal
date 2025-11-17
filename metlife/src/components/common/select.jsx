@@ -27,8 +27,11 @@ const SelectComp = ({
     >
       {/* Label outside the select box */}
 
-
-      {label && <Typography sx={{mb: style ? 1 : 0}} className={styles.selectLabel}>{label}</Typography>}
+      {label && (
+        <Typography sx={{ mb: style ? 1 : 0 }} className={styles.selectLabel}>
+          {label}
+        </Typography>
+      )}
 
       <FormControl fullWidth={fullWidth} variant="outlined" size="medium">
         <Select

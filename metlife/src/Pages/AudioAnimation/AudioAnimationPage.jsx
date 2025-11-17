@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./audioAnimation.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import {
@@ -17,38 +17,128 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import Input from "../../components/common/Input";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAudioDetails,
+  getPreviewVoices,
+  postGenerateVoiceAndAudio,
+} from "../../redux/features/audioAnimationSlice";
+import { showToast } from "../../utils/toast";
+import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
+import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
+
+const narrationVoiceOptions = [
+  { label: "Azure", value: "azure" },
+  // { label: "Azure", value: "azure" },
+];
+
+const voiceOptions = [
+  { label: "EN-US Jenny Neural", value: "en-US-JennyNeural" },
+  { label: "EN-US Aria Neural", value: "en-US-AriaNeural" },
+  { label: "EN-US Sara Neural", value: "en-US-SaraNeural" },
+  { label: "EN-US Guy Neural", value: "en-US-GuyNeural" },
+  { label: "EN-US Davis Neural", value: "en-US-DavisNeural" },
+];
+
+// const animationOptions = [
+//   { label: "Fade In", value: "fadeIn" },
+//   { label: "Fade Out", value: "fadeOut" },
+//   { label: "Zoom In", value: "zoomIn" },
+//   { label: "Zoom Out", value: "zoomOut" },
+// ];
 
 const AudioAnimationPage = () => {
-  const navigate = useNavigate();
-  const [loader, setLoader] = useState(false);
-  const [narration, setNarration] = useState("");
-  const [entryAnimation, setEntryAnimation] = useState("fadeOut");
-  const [exitAnimation, setExitAnimation] = useState("fadeOut");
-
-  const narrationVoiceOptions = [
-    { label: "Aria (Female, Warm & Clear)", value: "aria" },
-    { label: "Jenny (Female, Professional)", value: "jenny" },
+  // const [narration, setNarration] = useState("azure");
+  // const [narrationSelections, setNarrationSelections] = useState({});
+  const [narrationSelections, setNarrationSelections] = useState({
+  Narrator: "azure",
+  Alex: "azure",
+  Taylor: "azure",
+});
+  const [voiceSelections, setVoiceSelections] = useState({});
+  // const [entryAnimation, setEntryAnimation] = useState("fadeOut");
+  // const [exitAnimation, setExitAnimation] = useState("fadeOut");
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { audioAnimationLoader, audioAnimationData, audioPreviewData } =
+    useSelector((store) => store.AudioAnimation);
+  const characters =
+    audioAnimationData?.characters ||
+    audioAnimationData?.voice_map?.characters ||
+    [];
+  const sortedLabels = [
+    "Narrator",
+    ...characters.filter((c) => c !== "Narrator"),
   ];
 
-  const animationOptions = [
-    { label: "Fade In", value: "fadeIn" },
-    { label: "Fade Out", value: "fadeOut" },
-    { label: "Zoom In", value: "zoomIn" },
-    { label: "Zoom Out", value: "zoomOut" },
-  ];
+  useEffect(() => {
+    dispatch(getAudioDetails(id));
+    dispatch(getPreviewVoices());
+  }, [id, dispatch]);
+
+  const handleNarrationChange = (charName, value) => {
+    setNarrationSelections((prev) => ({
+      ...prev,
+      [charName]: value,
+    }));
+  };
+
+  const handleVoiceChange = (charName, selected) => {
+    setVoiceSelections((prev) => ({
+      ...prev,
+      [charName]: selected,
+    }));
+  };
+
+  const handleSubmit = () => {
+    if (!narrationSelections.Narrator) {
+      showToast.error("Please select a Narrator");
+    } else if (!voiceSelections.Narrator) {
+      showToast.error("Please select a narrator voice");
+    } else if (!narrationSelections.Alex) {
+      showToast.error("Please select a Alex");
+    } else if (!voiceSelections.Alex) {
+      showToast.error("Please select a alex voice");
+    } else if (!narrationSelections.Taylor) {
+      showToast.error("Please select a Taylor");
+    } else if (!voiceSelections.Taylor) {
+      showToast.error("Please select a taylor voice");
+    } else {
+      apiCall();
+    }
+  };
+
+  const apiCall = () => {
+    const payload = {
+      script_id: id,
+      custom_voice_map: {
+        Alex: voiceSelections.Alex,
+        Taylor: voiceSelections.Taylor,
+        Narrator: voiceSelections.Narrator,
+      },
+    };
+    dispatch(postGenerateVoiceAndAudio(payload));
+  };
+
+  const previewVoices = audioPreviewData?.voices;
+  const getPreviewUrl = (voiceName) => {
+    return previewVoices?.find((v) => v.name === voiceName)?.s3_url || "";
+  };
+
+  console.log(audioAnimationData, "checkaudioAnimation");
 
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
-        {loader && <FullScreenGradientLoader />}
+        {audioAnimationLoader && <FullScreenGradientLoader text="loading..." />}
         <main className={styles.cardWrap}>
           <div className={styles.card}>
             <div className={styles.headerRow}>
@@ -69,90 +159,75 @@ const AudioAnimationPage = () => {
                 Audio Selection
               </Typography>
 
-              <Grid
-                container
-                spacing={2}
-                alignItems="flex-end"
-                sx={{ mt: 2, mb: 2 }}
-              >
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <SelectComp
-                    label="Narration"
-                    options={narrationVoiceOptions}
-                    value={narration}
-                    onChange={setNarration}
-                    placeholder="Select Tool"
-                    style={true}
-                  />
-                </Grid>
+              {sortedLabels.map((charName, index) => (
+                <Grid
+                  container
+                  spacing={2}
+                  alignItems="flex-end"
+                  sx={{ mt: 2, mb: 2 }}
+                  key={index}
+                >
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                    <SelectComp
+                      label={charName}
+                      options={narrationVoiceOptions}
+                      value={narrationSelections[charName]}
+                      onChange={(value) =>
+                        handleNarrationChange(charName, value)
+                      }
+                      placeholder="Select Tool"
+                      style={true}
+                    />
+                  </Grid>
 
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <SelectComp
-                    options={narrationVoiceOptions}
-                    placeholder="Select Voice"
-                    style={true}
-                  />
+                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                    <SelectWithAudio
+                      options={voiceOptions}
+                      placeholder="Select Voice"
+                      value={voiceSelections[charName] || ""}
+                      onChange={(value) => handleVoiceChange(charName, value)}
+                      style={true}
+                      getPreviewUrl={(voice) => getPreviewUrl(voice)}
+                      customOption
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
+              ))}
+              {audioAnimationData?.scenes &&
+                audioAnimationData?.scenes?.length > 0 && (
+                  <>
+                    <Typography
+                      sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                    >
+                      Available Voices
+                    </Typography>
+                    <Grid container spacing={2} sx={{ mt: 1 }}>
+                      {audioAnimationData?.scenes?.map((scene, idx) => (
+                        <Grid
+                          item
+                          xs={12}
+                          md={6}
+                          lg={4}
+                          key={idx}
+                          sx={{ width: "100%" }}
+                        >
+                          <VoicePlayer
+                            description={scene.description}
+                            s3_url={scene.final_audio_s3_url}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </>
+                )}
 
-              <Grid
-                container
-                spacing={2}
-                alignItems="flex-end"
-                sx={{ mt: 2, mb: 2 }}
-              >
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <SelectComp
-                    label="Alex"
-                    options={narrationVoiceOptions}
-                    value={narration}
-                    onChange={setNarration}
-                    placeholder="Select Tool"
-                    style={true}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <SelectComp
-                    options={narrationVoiceOptions}
-                    placeholder="Select Voice"
-                    style={true}
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid
-                container
-                spacing={2}
-                alignItems="flex-end"
-                sx={{ mt: 2, mb: 2 }}
-              >
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <SelectComp
-                    label="Alex"
-                    options={narrationVoiceOptions}
-                    value={narration}
-                    onChange={setNarration}
-                    placeholder="Select Tool"
-                    style={true}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <SelectComp
-                    options={narrationVoiceOptions}
-                    placeholder="Select Voice"
-                    style={true}
-                  />
-                </Grid>
-              </Grid>
               <div className={styles.actions}>
                 <ButtonComp
-                  // disabled={loader}
-                  // label={loader ? "Submit" : "Submitting"}
+                  // disabled={audioAnimationLoader}
+                  // label={audioAnimationLoader ? "Submit" : "Submitting"}
                   label={"Submit"}
                   className={styles.submitBtn}
-                  // action={handleGenerate}
+                  action={handleSubmit}
                 />
               </div>
             </div>

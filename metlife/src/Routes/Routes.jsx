@@ -100,7 +100,7 @@ export const router = createBrowserRouter([
         element: <GenerateVisualContentPage />,
       },
       {
-        path: "/audio-animation-toolkit",
+        path: "/audio-animation-toolkit/:id",
         element: <AudioAnimationPage />,
       },
       {
