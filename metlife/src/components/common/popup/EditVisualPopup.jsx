@@ -20,7 +20,6 @@ const EditVisualPopup = ({
 }) => {
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
-  console.log(fieldData, "Check_inside");
 
   useEffect(() => {
     if (fieldData) {

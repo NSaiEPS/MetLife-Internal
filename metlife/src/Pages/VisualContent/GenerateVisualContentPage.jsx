@@ -27,7 +27,7 @@ const GenerateVisualContentPage = () => {
       label: "Visual Type",
       key: "Visual_Type",
     },
-    { label: "Visual Description", key: "Visual_Description" },
+    { label: "Scenes", key: "Visual_Description" },
     {
       label: "Visual Image",
       key: "Visual_Image",
@@ -44,7 +44,6 @@ const GenerateVisualContentPage = () => {
             cursor: "pointer",
           }}
           onClick={() => {
-            console.log(row.Visual_Image.length === 0, "check_mage");
             if (row.Visual_Image.length === 0) {
               toast.error("No Image found to preview");
               setPreviewImage([]);
@@ -80,7 +79,6 @@ const GenerateVisualContentPage = () => {
     {
       icon: <img src={reuse} />,
       onClick: (row) => {
-        // handlePromptRegenerate(row);
         handleImageRegenerate(row);
       },
     },
@@ -94,9 +92,8 @@ const GenerateVisualContentPage = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  const { audioAnimationLoader, } = useSelector(
-    (store) => store.AudioAnimation
-  );
+  console.log(generateVisualContentData, "generateVisualContentData")
+  const { audioAnimationLoader } = useSelector((store) => store.AudioAnimation);
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
   const dispatch = useDispatch();
@@ -112,11 +109,9 @@ const GenerateVisualContentPage = () => {
 
   useEffect(() => {
     if (generateVisualContentData?.visuals) {
-      console.log("useeffect triggered");
       settingDataInRows(generateVisualContentData?.visuals);
     }
   }, [generateVisualContentData?.visuals]);
-  console.log(generateVisualContentData?.visuals, "visuals");
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
@@ -128,7 +123,8 @@ const GenerateVisualContentPage = () => {
         "";
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type === "clip" ? "Footage" : item?.visual_type,
+        Visual_Type:
+          item?.visual_type === "clip" ? "Footage" : item?.visual_type,
         Visual_Description: item?.description,
         Visual_Image:
           item?.images?.length > 0
@@ -192,10 +188,8 @@ const GenerateVisualContentPage = () => {
   };
 
   const handleUpdate = (data) => {
-    console.log(data);
     if (data?.fieldData) {
       const newData = rows.map((item) => {
-        console.log(item);
         if (item?.scene_id === data.fieldData.scene_id) {
           return {
             ...item,
@@ -234,7 +228,9 @@ const GenerateVisualContentPage = () => {
       <div className={styles.container}>
         <OneFrameHeader />
         {generateVisualLoader && <FullScreenGradientLoader text="loading..." />}
-        {audioAnimationLoader && <FullScreenGradientLoader text="extracting..." />}
+        {audioAnimationLoader && (
+          <FullScreenGradientLoader text="extracting..." />
+        )}
         <div className={styles.header}>
           <h2 className={styles.title}>
             {generateVisualContentData?.title || "Visual Content"}
@@ -249,6 +245,9 @@ const GenerateVisualContentPage = () => {
                 rows={rows}
                 actions={actions}
                 updateImagesInRow={updateImagesInRow}
+                visuals={generateVisualContentData?.visuals}
+                prompt_batch_id={prompt_batch_id}
+                handleUpdate={handleUpdate}
               />
               {popup.type === "upload" && (
                 <ImageUploadPopup

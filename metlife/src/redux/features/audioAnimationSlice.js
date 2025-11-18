@@ -7,6 +7,7 @@ const initialState = {
   audioAnimationLoader: false,
   audioAnimationData: null,
   audioPreviewData: null,
+  labels: null,
 };
 
 const AudioAnimationSlice = createSlice({
@@ -22,6 +23,9 @@ const AudioAnimationSlice = createSlice({
     setAudioPreviewData(state, action) {
       state.audioPreviewData = action.payload;
     },
+    setLabels(state, action) {
+      state.labels = action.payload;
+    },
   },
 });
 
@@ -29,6 +33,7 @@ export const {
   setAudioAnimationData,
   setAudioAnimationLoader,
   setAudioPreviewData,
+  setLabels,
 } = AudioAnimationSlice.actions;
 
 export default AudioAnimationSlice.reducer;
@@ -38,7 +43,7 @@ export const postAudioAnimationData = (data) => async (dispatch) => {
   dispatch(setAudioAnimationLoader(true));
   try {
     const res = await api.post(`extract-characters`, data);
-    console.log(res, "audioResCheck");
+    // console.log(res, "audioResCheck");
     if (res.status) {
       dispatch(setAudioAnimationData(res?.data));
       navigateTo(`/audio-animation-toolkit/${res?.data?.script_id}`);
@@ -96,6 +101,24 @@ export const getPreviewVoices = () => async (dispatch) => {
     // console.log(res, "check_preview");
     if (res.status) {
       dispatch(setAudioPreviewData(res?.data));
+      // toast.success("Audio generated successfully");
+    }
+  } catch (error) {
+    console.log(error);
+    // toast.error("Something went wrong!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+// Get labels
+export const getLabels = (id) => async (dispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res = await api.get(`characters/${id}`);
+    // console.log(res?.data?.characters, "check_labels");
+    if (res.status) {
+      dispatch(setLabels(res?.data?.characters));
       // toast.success("Audio generated successfully");
     }
   } catch (error) {

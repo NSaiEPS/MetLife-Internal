@@ -11,29 +11,39 @@ import {
   Dialog,
   DialogContent,
   Typography,
+  Button,
+  TextField,
+  Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ImageCarousel from "../carousel/ImageCarousel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useParams } from "react-router";
-import {
-  deleteGenerateVisualContent,
-} from "../../../redux/features/generateVisualSlice";
-import { useDispatch } from "react-redux";
+import { deleteGenerateVisualContent, postEditGenerateVisualContent } from "../../../redux/features/generateVisualSlice";
+import { useDispatch , useSelector} from "react-redux";
 
 const VisualContentTable = ({
   columns = [],
   rows = [],
   actions = [],
   updateImagesInRow,
+  visuals,
+  prompt_batch_id,
+  handleUpdate,
 }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [visuaiImages, setVisualImages] = useState([]);
   const [index, setIndex] = useState(0);
+  // const [singlePrompt, setSinglePrompt] = useState("");
+  const [openPromptModal, setOpenPromptModal] = useState(false);
+  const [selectedPrompt, setSelectedPrompt] = useState("");
+
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  console.log(previewImage, "preview");
+  const { generateVisualLoader, generateVisualContentData } = useSelector(
+    (store) => store.GenerateVisualContent
+  );
 
   const handleDelete = () => {
     const currentImage = visuaiImages?.image_uploaded_urls[index]?.url;
@@ -46,21 +56,15 @@ const VisualContentTable = ({
 
     dispatch(
       deleteGenerateVisualContent(payload, () => {
-        // 1. Remove from local state
         const updatedImages = visuaiImages.image_uploaded_urls.filter(
           (img) => img.url !== currentImage
         );
-
-        // 2. Update table row in parent
         updateImagesInRow(visuaiImages.scene_id, updatedImages);
-
-        // 3. Update modal carousel
         setVisualImages((prev) => ({
           ...prev,
           image_uploaded_urls: updatedImages,
         }));
 
-        // 4. Fix index if needed
         if (index >= updatedImages.length) {
           setIndex(updatedImages.length - 1);
         }
@@ -70,6 +74,35 @@ const VisualContentTable = ({
         }
       })
     );
+  };
+
+  const getPromptFromSceneId = (sceneId) => {
+    const found = visuals.find((v) => v.scene_id === sceneId);
+    return found?.prompt || "";
+  };
+
+  console.log(selectedPrompt, "selectedPrompt")
+
+  const handlePrompt = (row) => {
+    const prompt = getPromptFromSceneId(row.scene_id);
+    // setSinglePrompt(prompt);
+    setSelectedPrompt(prompt);
+    setOpenPromptModal(true);
+  };
+
+  const handleEditDescription = (row) => {
+    console.log("clicked", row);
+    const payload = {
+      script_id: id,
+      scene_id: row.scene_id,
+      prompt_batch_id,
+      new_prompt: selectedPrompt
+    }
+    dispatch(postEditGenerateVisualContent(payload, () => setOpenPromptModal(false)))
+    handleUpdate({
+      new_prompt: selectedPrompt,
+      fieldData: row,
+    })
   };
 
   return (
@@ -143,6 +176,19 @@ const VisualContentTable = ({
               gap: 8,
             }}
           >
+            {/* Prompt Button */}
+            <Button
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                backgroundColor: "#1976d2",
+                color: "#fff",
+                borderRadius: "8px",
+              }}
+              onClick={() => handlePrompt(visuaiImages)}
+            >
+              Prompt
+            </Button>
             {/* DELETE */}
             {visuaiImages?.image_uploaded_urls?.length > 0 && (
               <IconButton
@@ -179,6 +225,77 @@ const VisualContentTable = ({
           </DialogContent>
         </Dialog>
       )}
+
+      {/* <Dialog open={openPromptModal} onClose={() => setOpenPromptModal(false)}>
+        <DialogContent>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Scene Prompt
+          </Typography>
+
+          <Typography sx={{ whiteSpace: "pre-wrap" }}>
+            {selectedPrompt || "No prompt found"}
+          </Typography>
+
+          <Button
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={() => setOpenPromptModal(false)}
+          >
+            Close
+          </Button>
+            <Button
+            variant="contained"
+            sx={{ mt: 2 }}
+            // onClick={() => setOpenPromptModal(false)}
+            onClick={() => handleEditDescription}
+          >
+            Submit
+          </Button>
+        </DialogContent>
+      </Dialog> */}
+      <Dialog
+        open={openPromptModal}
+        onClose={() => setOpenPromptModal(false)}
+        fullWidth
+        maxWidth="sm" 
+        // PaperProps={{
+        //   sx: {
+        //     width: "650px", // manually increase width
+        //   },
+        // }}
+      >
+        <DialogContent>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Description
+          </Typography>
+
+          <TextField
+            fullWidth
+            multiline
+            minRows={4}
+            value={selectedPrompt}
+            onChange={(e) => setSelectedPrompt(e.target.value)}
+            placeholder="Enter scene prompt..."
+            sx={{ mb: 2 }}
+          />
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+            <Button
+              variant="outlined"
+              onClick={() => setOpenPromptModal(false)}
+            >
+              Close
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={() => handleEditDescription(visuaiImages)} // ✅ FIXED
+            >
+              Submit
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
