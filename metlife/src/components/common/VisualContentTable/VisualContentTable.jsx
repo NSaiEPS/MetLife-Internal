@@ -20,7 +20,7 @@ import ImageCarousel from "../carousel/ImageCarousel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useParams } from "react-router";
 import { deleteGenerateVisualContent, postEditGenerateVisualContent } from "../../../redux/features/generateVisualSlice";
-import { useDispatch , useSelector} from "react-redux";
+import { useDispatch } from "react-redux";
 
 const VisualContentTable = ({
   columns = [],
@@ -29,8 +29,8 @@ const VisualContentTable = ({
   updateImagesInRow,
   visuals,
   prompt_batch_id,
-  handleUpdate,
 }) => {
+  console.log(visuals, rows)
   const [previewImage, setPreviewImage] = useState(null);
   const [visuaiImages, setVisualImages] = useState([]);
   const [index, setIndex] = useState(0);
@@ -40,10 +40,6 @@ const VisualContentTable = ({
 
   const { id } = useParams();
   const dispatch = useDispatch();
-
-  const { generateVisualLoader, generateVisualContentData } = useSelector(
-    (store) => store.GenerateVisualContent
-  );
 
   const handleDelete = () => {
     const currentImage = visuaiImages?.image_uploaded_urls[index]?.url;
@@ -81,8 +77,6 @@ const VisualContentTable = ({
     return found?.prompt || "";
   };
 
-  console.log(selectedPrompt, "selectedPrompt")
-
   const handlePrompt = (row) => {
     const prompt = getPromptFromSceneId(row.scene_id);
     // setSinglePrompt(prompt);
@@ -99,10 +93,7 @@ const VisualContentTable = ({
       new_prompt: selectedPrompt
     }
     dispatch(postEditGenerateVisualContent(payload, () => setOpenPromptModal(false)))
-    handleUpdate({
-      new_prompt: selectedPrompt,
-      fieldData: row,
-    })
+
   };
 
   return (
@@ -226,33 +217,6 @@ const VisualContentTable = ({
         </Dialog>
       )}
 
-      {/* <Dialog open={openPromptModal} onClose={() => setOpenPromptModal(false)}>
-        <DialogContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Scene Prompt
-          </Typography>
-
-          <Typography sx={{ whiteSpace: "pre-wrap" }}>
-            {selectedPrompt || "No prompt found"}
-          </Typography>
-
-          <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            onClick={() => setOpenPromptModal(false)}
-          >
-            Close
-          </Button>
-            <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            // onClick={() => setOpenPromptModal(false)}
-            onClick={() => handleEditDescription}
-          >
-            Submit
-          </Button>
-        </DialogContent>
-      </Dialog> */}
       <Dialog
         open={openPromptModal}
         onClose={() => setOpenPromptModal(false)}

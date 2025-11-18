@@ -17,6 +17,7 @@ export default function SavedPromptsModal({
   prompts = [],
   size = "md", // "md" or "lg"
 }) {
+  console.log(prompts, "prompts_check")
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");
 
@@ -63,7 +64,7 @@ export default function SavedPromptsModal({
               gap: 2,
             }}
           >
-            {prompts.map((prompt, index) => (
+            { prompts && prompts?.length > 0 && prompts?.map((prompt, index) => (
               <Paper
                 key={index}
                 elevation={1}
@@ -84,13 +85,13 @@ export default function SavedPromptsModal({
                     fontSize: "15px",
                   }}
                 >
-                  {prompt}
+                  {prompt?.prompt}
                 </Typography>
 
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => handleCopy(prompt)}
+                  onClick={() => handleCopy(prompt?.prompt)}
                   startIcon={<ContentCopyIcon />}
                   sx={{
                     textTransform: "none",

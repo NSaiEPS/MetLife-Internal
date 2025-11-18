@@ -43,7 +43,6 @@ import { postSavePrompt } from "../../redux/features/promptSlice";
 
 function DynamicTable({
   columns = [],
-
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
@@ -79,6 +78,8 @@ function DynamicTable({
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
   const [operations, setOperations] = useState(false);
   const [openSavePrompt, setOpenSavePrompt] = useState(false);
+  console.log(tableExtraData?.latest_prompt, "rows_check")
+  const latestPrompt = tableExtraData?.latest_prompt;
 
   const handleSavePrompt = (prompt) => {
     console.log("Saving_prompt", prompt);
@@ -748,7 +749,8 @@ function DynamicTable({
         <SinglePromptModal
           open={openSavePrompt}
           onClose={() => setOpenSavePrompt(false)}
-          prompt="Write an SEO optimized article about modern React architecture."
+          // prompt="Write an SEO optimized article about modern React architecture."
+          prompt={latestPrompt}
           onSave={handleSavePrompt}
           size="md"
         />

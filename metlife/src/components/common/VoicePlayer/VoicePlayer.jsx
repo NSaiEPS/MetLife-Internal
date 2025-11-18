@@ -69,7 +69,7 @@
 
 import { useRef, useState } from "react";
 import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
-import { PlayArrow, Pause } from "@mui/icons-material";
+import { PlayArrow, Pause, Download } from "@mui/icons-material";
 
 const VoicePlayer = ({ description, s3_url }) => {
   const audioRef = useRef(null);
@@ -89,6 +89,15 @@ const VoicePlayer = ({ description, s3_url }) => {
     }
   };
 
+  const handleDownload = () => {
+    if (!s3_url) return;
+
+    const link = document.createElement("a");
+    link.href = s3_url;
+    link.download = `scene-audio-${Date.now()}.mp3`; // filename
+    link.click();
+  };
+
   return (
     <Card
       elevation={1}
@@ -99,9 +108,7 @@ const VoicePlayer = ({ description, s3_url }) => {
         background: "#fff",
       }}
     >
-      <CardContent
-        sx={{ display: "flex", alignItems: "center", gap: 2,}}
-      >
+      <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <IconButton
           color="primary"
           onClick={togglePlay}
@@ -132,6 +139,18 @@ const VoicePlayer = ({ description, s3_url }) => {
             {description}
           </Typography>
         </Box>
+        <IconButton
+          color="secondary"
+          onClick={handleDownload}
+          sx={{
+            border: "1px solid #1976d2",
+            width: 40,
+            height: 40,
+            color: "#1976d2",
+          }}
+        >
+          <Download />
+        </IconButton>
       </CardContent>
 
       <audio ref={audioRef} src={s3_url} preload="none" />

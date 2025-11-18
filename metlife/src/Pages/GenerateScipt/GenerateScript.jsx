@@ -463,12 +463,11 @@ const GenerateScript = () => {
       </main>
       <Footer />
 
-      <SavedPromptsModal
+      {/* <SavedPromptsModal
         open={open}
         onClose={() => setOpen(false)}
-        // prompts={promptData}
-          prompts={promptData?.map((item) => item.prompt)} 
-      />
+        prompts={promptData}
+      /> */}
     </Box>
   );
 };

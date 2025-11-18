@@ -57,8 +57,8 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
 
   return (
     <Box sx={{ textAlign: "center", mt: 1, position: "relative" }}>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Uploaded Images
+      <Typography variant="subtitle2" sx={{ mb: 1, fontSize:'18px', fontWeight: 500 }}>
+        Images
       </Typography>
 
       <Box

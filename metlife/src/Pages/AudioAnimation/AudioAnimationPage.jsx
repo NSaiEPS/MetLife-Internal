@@ -124,10 +124,11 @@ const AudioAnimationPage = () => {
       },
     };
     dispatch(postGenerateVoiceAndAudio(payload));
-    // await dispatch(getAudioDetails(id));
   };
 
   const previewVoices = audioPreviewData?.voices;
+  // const previewVoices = voiceOptions;
+
   const getPreviewUrl = (voiceName) => {
     return previewVoices?.find((v) => v.name === voiceName)?.s3_url || "";
   };
@@ -228,6 +229,7 @@ const AudioAnimationPage = () => {
                   label={"Submit"}
                   className={styles.submitBtn}
                   action={handleSubmit}
+                  disabled={audioAnimationData?.scenes?.length > 0 }
                 />
               </div>
             </div>
