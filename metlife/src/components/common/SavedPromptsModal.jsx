@@ -22,7 +22,7 @@ export default function SavedPromptsModal({
     showToast.info("Prompt copied to clipboard!");
 
     await navigator.clipboard.writeText(text);
-    onClose();
+    onClose(text);
   };
 
   const modalWidth = size === "lg" ? 800 : 600; // 600 = md, 800 = lg
@@ -111,7 +111,7 @@ export default function SavedPromptsModal({
         <Box textAlign="right" mt={3}>
           <Button
             variant="outlined"
-            onClick={onClose}
+            onClick={() => onClose()}
             sx={{
               textTransform: "none",
               borderRadius: 2,
