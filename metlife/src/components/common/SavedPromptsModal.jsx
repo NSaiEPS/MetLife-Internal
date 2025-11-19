@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { showToast } from "../../utils/toast";
+import { NoDataMessage } from "./NoDataMessage";
 
 export default function SavedPromptsModal({
   open,
@@ -64,7 +65,7 @@ export default function SavedPromptsModal({
               gap: 2,
             }}
           >
-            { prompts && prompts?.length > 0 && prompts?.map((prompt, index) => (
+            { prompts && prompts?.length > 0 ? prompts?.map((prompt, index) => (
               <Paper
                 key={index}
                 elevation={1}
@@ -103,7 +104,11 @@ export default function SavedPromptsModal({
                   Use this prompt
                 </Button>
               </Paper>
-            ))}
+            )) : (
+              <>
+                <NoDataMessage loading={false} />
+              </>
+            )}
           </List>
         </Box>
 

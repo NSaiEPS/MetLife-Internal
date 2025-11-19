@@ -1,87 +1,3 @@
-// import React, { useState, useRef } from "react";
-// import {
-//   FormControl,
-//   MenuItem,
-//   Select,
-//   ListItemText,
-//   IconButton,
-//   Typography,
-// } from "@mui/material";
-// import { PlayArrow, Pause } from "@mui/icons-material";
-
-// const SelectWithAudio = ({
-//   options,
-//   label,
-//   value,
-//   onChange,
-//   getPreviewUrl,
-// }) => {
-//   const audioRef = useRef(new Audio());
-//   const [playing, setPlaying] = useState(null);
-
-//   const handlePlay = (url, optionValue) => {
-//     if (!url) return;
-
-//     // Pause if same audio is already playing
-//     if (playing === optionValue) {
-//       audioRef.current.pause();
-//       setPlaying(null);
-//       return;
-//     }
-
-//     audioRef.current.pause();
-//     audioRef.current.src = url;
-//     audioRef.current.play();
-//     setPlaying(optionValue);
-
-//     audioRef.current.onended = () => setPlaying(null);
-//   };
-
-//   return (
-//     <FormControl fullWidth size="small">
-//       <Select
-//         value={value}
-//         displayEmpty
-//         onChange={(e) => onChange(e.target.value)}
-//         MenuProps={{
-//           disableAutoFocusItem: true,
-//         }}
-//       >
-//         {options.map((opt, index) => {
-//           const url = getPreviewUrl(opt.value);
-
-//           return (
-//             <MenuItem
-//               key={index}
-//               value={opt.value}
-//               sx={{
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "space-between",
-//               }}
-//             >
-//               <ListItemText primary={opt.label} />
-
-//               <IconButton
-//                 size="small"
-//                 onClick={(e) => {
-//                   e.stopPropagation(); // prevents select change
-//                   handlePlay(url, opt.value);
-//                 }}
-//               >
-//                 {playing === opt.value ? <Pause /> : <PlayArrow />}
-//               </IconButton>
-//             </MenuItem>
-//           );
-//         })}
-//       </Select>
-//     </FormControl>
-//   );
-// };
-
-// export default SelectWithAudio;
-
-
 import React, { useState, useRef } from "react";
 import {
   FormControl,
@@ -159,6 +75,7 @@ const SelectWithAudio = ({
             <MenuItem
               key={idx}
               value={opt.value}
+               disabled={opt.disabled}
               sx={{
                 display: "flex",
                 justifyContent: "space-between",

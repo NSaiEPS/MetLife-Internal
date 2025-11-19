@@ -87,6 +87,7 @@ function DynamicTable({
       prompt,
     };
     dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false)));
+    setOperations(true);
   };
   console.log("tableExtraData", tableExtraData);
   const filteredLanguages = languages.filter(
@@ -412,6 +413,8 @@ function DynamicTable({
   const handleCreateVisualContent = () => {
     dispatch(postCreateVisualContent(tableExtraData));
   };
+
+  // console.log(extraDetails, "Check_extra_details")
 
   return (
     <>
@@ -750,10 +753,11 @@ function DynamicTable({
         <SinglePromptModal
           open={openSavePrompt}
           onClose={() => setOpenSavePrompt(false)}
-          // prompt="Write an SEO optimized article about modern React architecture."
           prompt={latestPrompt}
           onSave={handleSavePrompt}
           size="md"
+          extraDetails={extraDetails}
+          operations={operations}
         />
 
         <DownloadPopup

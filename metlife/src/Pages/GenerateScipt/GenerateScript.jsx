@@ -14,23 +14,20 @@ import {
   InputBase,
   Tooltip,
 } from "@mui/material";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { showToast } from "../../utils/toast";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getPromptsList } from "../../redux/features/promptSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import path from "../../assets/copy_icon.svg";
-
 import Input from "../../components/common/Input";
 import api from "../../api/axios";
 import GradientLoader from "../../components/common/GradientLoader";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import { showToast } from "../../utils/toast";
-import { toast } from "react-toastify";
 import SavedPromptsModal from "../../components/common/SavedPromptsModal";
-import { useDispatch, useSelector } from "react-redux";
-import { getPromptsList } from "../../redux/features/promptSlice";
-
-// import Toastfrom  from "../../components/common/ToastBox"
 
 const videoTypeOptions = [
   { value: "narrator", label: "Narrator" },
@@ -101,11 +98,11 @@ const GenerateScript = () => {
   const dispatch = useDispatch();
 
   const { promptData } = useSelector((store) => store.Prompts);
-  console.log(promptData, "check_selector");
+  console.log(promptData, "prompt_data");
 
   useEffect(() => {
     dispatch(getPromptsList());
-  }, []);
+  }, [dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -166,7 +163,8 @@ const GenerateScript = () => {
           toast.success("Script generated successfully!");
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
-          toast.error("Something went wrong while generating!");
+          console.log(result, "result_check")
+          toast.error( result?.data?.logline || "Something went wrong while generating!");
         }
       } else {
         showToast?.error("Some Issue In Generating");
@@ -443,11 +441,11 @@ const GenerateScript = () => {
       </main>
       <Footer />
 
-      {/* <SavedPromptsModal
+      <SavedPromptsModal
         open={open}
         onClose={() => setOpen(false)}
         prompts={promptData}
-      /> */}
+      />
     </Box>
   );
 };

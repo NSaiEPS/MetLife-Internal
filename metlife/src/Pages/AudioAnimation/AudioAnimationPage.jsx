@@ -34,24 +34,45 @@ import {
 import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
 import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
-
 const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
-
 const voiceOptions = [
-  { label: "EN-US Jenny Neural", value: "en-US-JennyNeural" },
-  { label: "EN-US Aria Neural", value: "en-US-AriaNeural" },
-  { label: "EN-US Sara Neural", value: "en-US-SaraNeural" },
-  { label: "EN-US Guy Neural", value: "en-US-GuyNeural" },
-  { label: "EN-US Davis Neural", value: "en-US-DavisNeural" },
+  {
+    label: "EN-US Jenny Neural",
+    value: "en-US-JennyNeural",
+    s3_url:
+      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-JennyNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=0bef7d38b32a70d6f814e2cff7d670e14770a62ddff951b567c810636b0ad7a6",
+  },
+  {
+    label: "EN-US Aria Neural",
+    value: "en-US-AriaNeural",
+    s3_url:
+      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-AriaNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=95ed5ffe514efd3ff03b85b5d86815005155cff2d87c81948526111c61734398",
+  },
+  {
+    label: "EN-US Sara Neural",
+    value: "en-US-SaraNeural",
+    s3_url:
+      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-SaraNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=c176b51459777608daa17cd698f0f6fbde7c9cc4fb261eca15e2c635ba6235ec",
+  },
+  {
+    label: "EN-US Guy Neural",
+    value: "en-US-GuyNeural",
+    s3_url:
+      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-GuyNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=fb45dcc46e012322dc245811ec4bf925108adcc9caaf715d9332f68512aed73a",
+  },
+  {
+    label: "EN-US Davis Neural",
+    value: "en-US-DavisNeural",
+    s3_url:
+      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-DavisNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085918Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=1039ba4cf86c3809db5fc91a619a4189e6ba9e228b2a7c46e28aaccc586caeec",
+  },
 ];
-
 // const animationOptions = [
 //   { label: "Fade In", value: "fadeIn" },
 //   { label: "Fade Out", value: "fadeOut" },
 //   { label: "Zoom In", value: "zoomIn" },
 //   { label: "Zoom Out", value: "zoomOut" },
 // ];
-
 const AudioAnimationPage = () => {
   // const [narration, setNarration] = useState("azure");
   // const [narrationSelections, setNarrationSelections] = useState({});
@@ -67,18 +88,26 @@ const AudioAnimationPage = () => {
   const dispatch = useDispatch();
   const { audioAnimationLoader, audioAnimationData, audioPreviewData, labels } =
     useSelector((store) => store.AudioAnimation);
-    console.log(audioAnimationData, "checkAudioAnnimationData")
-  const characters = audioAnimationData?.voice_map?.characters;
+  console.log(audioAnimationData, "checkAudioAnnimationData");
+  const characters = audioAnimationData?.voice_map?.characters || labels;
   let sortedLabels = [];
   if (characters && characters.length > 0) {
     sortedLabels = ["Narrator", ...characters.filter((c) => c !== "Narrator")];
   }
 
   useEffect(() => {
-    // dispatch(getLabels(id));
+    dispatch(getLabels(id));
     dispatch(getAudioDetails(id));
-    dispatch(getPreviewVoices());
+    // dispatch(getPreviewVoices());
   }, [id, dispatch]);
+
+  useEffect(() => {
+    if (audioAnimationData?.custom_voice_map) {
+      setVoiceSelections(audioAnimationData.custom_voice_map);
+    } else {
+      setVoiceSelections({});
+    }
+  }, [audioAnimationData]);
 
   const handleNarrationChange = (charName, value) => {
     setNarrationSelections((prev) => ({
@@ -126,11 +155,14 @@ const AudioAnimationPage = () => {
     dispatch(postGenerateVoiceAndAudio(payload));
   };
 
-  const previewVoices = audioPreviewData?.voices;
-  // const previewVoices = voiceOptions;
+  // const previewVoices = audioPreviewData?.voices;
+  // const getPreviewUrl = (voiceName) => {
+  //   return previewVoices?.find((v) => v.name === voiceName)?.s3_url || "";
+  // };
 
   const getPreviewUrl = (voiceName) => {
-    return previewVoices?.find((v) => v.name === voiceName)?.s3_url || "";
+    const opt = voiceOptions.find((v) => v.value === voiceName);
+    return opt?.s3_url || "";
   };
 
   return (
@@ -183,7 +215,20 @@ const AudioAnimationPage = () => {
 
                     <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                       <SelectWithAudio
-                        options={voiceOptions}
+                        // options={voiceOptions}
+                        // options={voiceOptions.map((opt) => ({
+                        //   ...opt,
+                        //   disabled: voiceSelections[charName] !== opt.value,
+                        // }))}
+                        options={
+                          audioAnimationData?.scenes === null
+                            ? voiceOptions // First time → all options enabled
+                            : voiceOptions.map((opt) => ({
+                                ...opt,
+                                disabled:
+                                  voiceSelections[charName] !== opt.value,
+                              }))
+                        }
                         placeholder="Select Voice"
                         value={voiceSelections[charName] || ""}
                         onChange={(value) => handleVoiceChange(charName, value)}
@@ -229,7 +274,7 @@ const AudioAnimationPage = () => {
                   label={"Submit"}
                   className={styles.submitBtn}
                   action={handleSubmit}
-                  disabled={audioAnimationData?.scenes?.length > 0 }
+                  disabled={audioAnimationData?.scenes?.length > 0}
                 />
               </div>
             </div>

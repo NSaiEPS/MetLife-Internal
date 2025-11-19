@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Box, Typography, Button, Paper, Divider } from "@mui/material";
+import { Modal, Box, Typography, Button, Paper, Divider, Tooltip } from "@mui/material";
 
 export default function SinglePromptModal({
   open,
@@ -7,6 +7,8 @@ export default function SinglePromptModal({
   prompt = "",
   onSave,
   size = "md", // md = 600px, lg = 800px
+  extraDetails,
+  operations,
 }) {
   const modalWidth = size === "lg" ? 800 : 600;
 
@@ -57,14 +59,25 @@ export default function SinglePromptModal({
           >
             Close
           </Button>
-
-          <Button
-            variant="contained"
-            onClick={() => onSave(prompt)}
-            sx={{ textTransform: "none", borderRadius: 2, px: 3 }}
+          <Tooltip
+            title={extraDetails?.is_saved ? "Cannot use this prompt!" : ""}
+            placement="top"
+            arrow
           >
-            SAVE THIS PROMPT
-          </Button>
+            <span>
+              <Button
+                variant="contained"
+                onClick={() => onSave(prompt)}
+                disabled={extraDetails?.is_saved || operations}
+                sx={{ textTransform: "none", borderRadius: 2, px: 3,
+                  opacity:extraDetails?.is_saved ? 0.5 : 1,
+                  cursor: extraDetails?.is_saved ? "not-allowed" : "pointer"
+                 }}
+              >
+                SAVE THIS PROMPT
+              </Button>
+            </span>
+          </Tooltip>
         </Box>
       </Box>
     </Modal>
