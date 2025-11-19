@@ -92,7 +92,13 @@ const MyVideosDashboard = () => {
   }, []);
 
   const handleView = (video) => {
-    if(video?.prompt_batch_id) {
+    if (video?.audio) {
+      console.log("audio founded");
+      navigate(`/audio-animation-toolkit/${video?.script_id}`)
+    } else if (video?.visuals) {
+      console.log("visuals founnd");
+      navigate(`/generate-visual-page/${video?.script_id}`)
+    }  else if (video?.prompt_batch_id) {
       navigate(`/create-visual-content/${video?.prompt_batch_id}`);
       // console.log(video?.prompt_batch_id, "prompt id founded. ")
     } else {
@@ -100,7 +106,7 @@ const MyVideosDashboard = () => {
       navigate(`/scenes/${video?.script_id}`);
     }
   };
-  
+
   return (
     <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
       <OneFrameHeader />

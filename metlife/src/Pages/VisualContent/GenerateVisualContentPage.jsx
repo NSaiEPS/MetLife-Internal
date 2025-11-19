@@ -92,7 +92,7 @@ const GenerateVisualContentPage = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  console.log(generateVisualContentData, "generateVisualContentData")
+  console.log(generateVisualContentData, "generateVisualContentData");
   const { audioAnimationLoader } = useSelector((store) => store.AudioAnimation);
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
@@ -132,6 +132,7 @@ const GenerateVisualContentPage = () => {
             : firstImageUrl,
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
+        new_prompt: item?.prompt,
         image_uploaded_urls:
           item?.images?.length > 0 ? item.images : [{ url: firstImageUrl }],
       };
@@ -215,6 +216,25 @@ const GenerateVisualContentPage = () => {
       )
     );
   };
+  console.log(rows, "check_rows");
+  const updatePromptInRow = (data) => {
+    console.log(data, "check_data_inside_prompt");
+    // setRows((prev) =>
+    //   prev.map((row) =>
+    //     row.scene_id === data?.scene_id
+    //       ? { ...row, prompt: data?.new_prompt }
+    //       : row
+    //   )
+    // );
+    let updatedRows = [...rows]?.map((item) => {
+      let returnData = { ...item };
+      if (item.scene_id == data?.scene_id) {
+        returnData.new_prompt = data?.new_prompt;
+      }
+      return returnData;
+    });
+    setRows(updatedRows);
+  };
 
   const handleAudioAndAnimation = () => {
     const payload = {
@@ -245,9 +265,9 @@ const GenerateVisualContentPage = () => {
                 rows={rows}
                 actions={actions}
                 updateImagesInRow={updateImagesInRow}
-                visuals={generateVisualContentData?.visuals}
-                prompt_batch_id={prompt_batch_id}
-                handleUpdate={handleUpdate}
+                // prompt_batch_id={prompt_batch_id}
+                // handleUpdate={handleUpdate}
+                updatePromptInRow={updatePromptInRow}
               />
               {popup.type === "upload" && (
                 <ImageUploadPopup

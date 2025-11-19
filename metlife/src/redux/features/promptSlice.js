@@ -26,7 +26,7 @@ export const { setPromptLoader, setPromptData } = PromptSlice.actions;
 export default PromptSlice.reducer;
 
 // Post prompt saving
-export const postSavePrompt = (id, data, closeModal) => async (dispatch) => {
+export const postSavePrompt = (id, data, closeModal, setOperations) => async (dispatch) => {
   dispatch(setPromptLoader(true));
   try {
     const res = await api.post(`scripts/${id}/save-prompt`, data);
@@ -35,6 +35,7 @@ export const postSavePrompt = (id, data, closeModal) => async (dispatch) => {
       dispatch(setPromptData(res?.data));
       toast.success(res?.data?.message || "Prompt saved successfully");
       if (closeModal) closeModal();
+      setOperations(true);
     }
   } catch (error) {
     console.log(error);

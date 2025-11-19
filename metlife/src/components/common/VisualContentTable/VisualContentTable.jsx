@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./visualContent.module.css";
 import {
   Table,
@@ -19,18 +19,26 @@ import CloseIcon from "@mui/icons-material/Close";
 import ImageCarousel from "../carousel/ImageCarousel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useParams } from "react-router";
-import { deleteGenerateVisualContent, postEditGenerateVisualContent } from "../../../redux/features/generateVisualSlice";
-import { useDispatch } from "react-redux";
+import {
+  deleteGenerateVisualContent,
+  postEditGenerateVisualContent,
+} from "../../../redux/features/generateVisualSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const VisualContentTable = ({
   columns = [],
   rows = [],
   actions = [],
   updateImagesInRow,
-  visuals,
-  prompt_batch_id,
+  // prompt_batch_id,
+  updatePromptInRow,
 }) => {
-  console.log(visuals, rows)
+  const { generateVisualContentData } = useSelector(
+    (store) => store.GenerateVisualContent
+  );
+  // console.log(generateVisualContentData?.prompt_batch_id, "check_data")
+  // console.log(rows, "check_both_things");
+  const prompt_batch_id = generateVisualContentData?.prompt_batch_id
   const [previewImage, setPreviewImage] = useState(null);
   const [visuaiImages, setVisualImages] = useState([]);
   const [index, setIndex] = useState(0);
@@ -73,8 +81,9 @@ const VisualContentTable = ({
   };
 
   const getPromptFromSceneId = (sceneId) => {
-    const found = visuals.find((v) => v.scene_id === sceneId);
-    return found?.prompt || "";
+    console.log(rows, sceneId, "getPromptFromSceneId");
+    const found = rows.find((v) => v.scene_id === sceneId);
+    return found?.new_prompt || "";
   };
 
   const handlePrompt = (row) => {
@@ -90,10 +99,15 @@ const VisualContentTable = ({
       script_id: id,
       scene_id: row.scene_id,
       prompt_batch_id,
-      new_prompt: selectedPrompt
-    }
-    dispatch(postEditGenerateVisualContent(payload, () => setOpenPromptModal(false)))
-
+      new_prompt: selectedPrompt,
+    };
+    dispatch(
+      postEditGenerateVisualContent(payload, () => setOpenPromptModal(false))
+    );
+    updatePromptInRow({
+      new_prompt: selectedPrompt,
+      scene_id: row.scene_id,
+    });
   };
 
   return (
@@ -221,7 +235,7 @@ const VisualContentTable = ({
         open={openPromptModal}
         onClose={() => setOpenPromptModal(false)}
         fullWidth
-        maxWidth="sm" 
+        maxWidth="sm"
         // PaperProps={{
         //   sx: {
         //     width: "650px", // manually increase width

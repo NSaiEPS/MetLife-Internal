@@ -86,8 +86,8 @@ function DynamicTable({
     const payload = {
       prompt,
     };
-    dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false)));
-    setOperations(true);
+    dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false), setOperations));
+    // setOperations(true);
   };
   console.log("tableExtraData", tableExtraData);
   const filteredLanguages = languages.filter(
