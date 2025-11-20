@@ -184,9 +184,9 @@ const CreateVisualContentPage = () => {
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        {(saveVisualContentLoader || generateVisualLoader) && (
+        {/* {(saveVisualContentLoader || generateVisualLoader) && (
           <FullScreenGradientLoader text="loading..." />
-        )}
+        )} */}
         <div className={styles.header}>
           <h2 className={styles.title}>
             {saveVisualContentData?.title || "Visual Content"}
@@ -230,7 +230,7 @@ const CreateVisualContentPage = () => {
             </>
           ) : (
             <>
-              <NoDataMessage filter={false} />
+              <NoDataMessage filter={false} loading={saveVisualContentLoader} />
             </>
           )}
         </div>

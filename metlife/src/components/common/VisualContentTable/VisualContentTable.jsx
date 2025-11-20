@@ -25,6 +25,7 @@ import {
 } from "../../../redux/features/generateVisualSlice";
 import { useDispatch, useSelector } from "react-redux";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
+import FullScreenGradientLoader from "../GradientLoader";
 
 const VisualContentTable = ({
   columns = [],
@@ -46,6 +47,11 @@ const VisualContentTable = ({
   const { id } = useParams();
   const dispatch = useDispatch();
   console.log(visuaiImages, "visuaiImages");
+  const { generateVisualLoader } = useSelector(
+    (store) => store.GenerateVisualContent
+  );
+
+  const { audioAnimationLoader } = useSelector((store) => store.AudioAnimation);
 
   const handleDelete = () => {
     const currentImage = visuaiImages?.image_uploaded_urls[index]?.url;
@@ -83,7 +89,7 @@ const VisualContentTable = ({
         scene_id: visuaiImages?.scene_id,
         video_url: currentVideo,
       };
-        dispatch(
+      dispatch(
         deleteGenerateVisualContent(payload, () => {
           const updatedVideos = visuaiImages.video_uploaded_urls.filter(
             (vid) => vid.url !== currentVideo
@@ -135,6 +141,10 @@ const VisualContentTable = ({
 
   return (
     <>
+      {generateVisualLoader && <FullScreenGradientLoader text="loading..." />}
+      {audioAnimationLoader && (
+        <FullScreenGradientLoader text="extracting..." />
+      )}
       <TableContainer className={styles.tablePaper}>
         <Table className={styles.tableRoot}>
           <TableHead>

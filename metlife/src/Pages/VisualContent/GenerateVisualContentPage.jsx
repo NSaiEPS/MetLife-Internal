@@ -374,10 +374,10 @@ const GenerateVisualContentPage = () => {
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        {generateVisualLoader && <FullScreenGradientLoader text="loading..." />}
-        {audioAnimationLoader && (
+        {/* {generateVisualLoader && <FullScreenGradientLoader text="loading..." />} */}
+        {/* {audioAnimationLoader && (
           <FullScreenGradientLoader text="extracting..." />
-        )}
+        )} */}
         <div className={styles.header}>
           <h2 className={styles.title}>
             {generateVisualContentData?.title || "Visual Content"}
@@ -450,7 +450,7 @@ const GenerateVisualContentPage = () => {
             </>
           ) : (
             <>
-              <NoDataMessage filter="false" />
+              <NoDataMessage filter={false} loading={generateVisualLoader} />
             </>
           )}
         </div>
