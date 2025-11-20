@@ -35,7 +35,6 @@ const UploadScript = () => {
 
   const handleFileChange = async (e) => {
     const files = e.target.files;
-    // console.log(files);
     if (!files || files.length === 0) {
       showToast.error("Please give input first");
       return;

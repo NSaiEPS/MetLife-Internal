@@ -18,8 +18,6 @@ const RegenerateImagePopup = ({
   prompt_batch_id,
 }) => {
   const { id } = useParams();
-  console.log(fieldData, 'fieldDataCheck')
-
   const onCloseTempData = () => {
     setFeedback("");
     onClose();

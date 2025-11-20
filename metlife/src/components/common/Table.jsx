@@ -78,18 +78,15 @@ function DynamicTable({
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
   const [operations, setOperations] = useState(false);
   const [openSavePrompt, setOpenSavePrompt] = useState(false);
-  console.log(tableExtraData?.latest_prompt, "rows_check")
   const latestPrompt = tableExtraData?.latest_prompt;
 
   const handleSavePrompt = (prompt) => {
-    console.log("Saving_prompt", prompt);
     const payload = {
       prompt,
     };
     dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false), setOperations));
     // setOperations(true);
   };
-  console.log("tableExtraData", tableExtraData);
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
   );
@@ -224,7 +221,7 @@ function DynamicTable({
         setShowSourceData(data);
       }
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       toast.error("Something went wrong!");
     } finally {
       setShowSourceLoader(false);
@@ -413,8 +410,6 @@ function DynamicTable({
   const handleCreateVisualContent = () => {
     dispatch(postCreateVisualContent(tableExtraData));
   };
-
-  // console.log(extraDetails, "Check_extra_details")
 
   return (
     <>

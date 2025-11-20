@@ -24,77 +24,100 @@ import {
   postEditGenerateVisualContent,
 } from "../../../redux/features/generateVisualSlice";
 import { useDispatch, useSelector } from "react-redux";
+import VideoPlayer from "../VideoPlayer/VideoPlayer";
 
 const VisualContentTable = ({
   columns = [],
   rows = [],
   actions = [],
   updateImagesInRow,
-  // prompt_batch_id,
   updatePromptInRow,
 }) => {
   const { generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  // console.log(generateVisualContentData?.prompt_batch_id, "check_data")
-  // console.log(rows, "check_both_things");
-  const prompt_batch_id = generateVisualContentData?.prompt_batch_id
+  const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const [previewImage, setPreviewImage] = useState(null);
   const [visuaiImages, setVisualImages] = useState([]);
   const [index, setIndex] = useState(0);
-  // const [singlePrompt, setSinglePrompt] = useState("");
   const [openPromptModal, setOpenPromptModal] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState("");
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  console.log(visuaiImages, "visuaiImages");
 
   const handleDelete = () => {
     const currentImage = visuaiImages?.image_uploaded_urls[index]?.url;
+    const currentVideo = visuaiImages?.video_uploaded_urls[index]?.url;
+    if (visuaiImages?.Visual_Type === "image") {
+      const payload = {
+        script_id: id,
+        scene_id: visuaiImages?.scene_id,
+        image_url: currentImage,
+      };
 
-    const payload = {
-      script_id: id,
-      scene_id: visuaiImages?.scene_id,
-      image_url: currentImage,
-    };
+      dispatch(
+        deleteGenerateVisualContent(payload, () => {
+          const updatedImages = visuaiImages.image_uploaded_urls.filter(
+            (img) => img.url !== currentImage
+          );
+          updateImagesInRow(visuaiImages.scene_id, updatedImages, "image");
+          setVisualImages((prev) => ({
+            ...prev,
+            image_uploaded_urls: updatedImages,
+          }));
 
-    dispatch(
-      deleteGenerateVisualContent(payload, () => {
-        const updatedImages = visuaiImages.image_uploaded_urls.filter(
-          (img) => img.url !== currentImage
-        );
-        updateImagesInRow(visuaiImages.scene_id, updatedImages);
-        setVisualImages((prev) => ({
-          ...prev,
-          image_uploaded_urls: updatedImages,
-        }));
+          if (index >= updatedImages.length) {
+            setIndex(updatedImages.length - 1);
+          }
 
-        if (index >= updatedImages.length) {
-          setIndex(updatedImages.length - 1);
-        }
+          if (updatedImages.length === 0) {
+            setPreviewImage(null);
+          }
+        })
+      );
+    } else if (visuaiImages?.Visual_Type === "Footage") {
+      const payload = {
+        script_id: id,
+        scene_id: visuaiImages?.scene_id,
+        video_url: currentVideo,
+      };
+        dispatch(
+        deleteGenerateVisualContent(payload, () => {
+          const updatedVideos = visuaiImages.video_uploaded_urls.filter(
+            (vid) => vid.url !== currentVideo
+          );
+          updateImagesInRow(visuaiImages.scene_id, updatedVideos, "video");
+          setVisualImages((prev) => ({
+            ...prev,
+            video_uploaded_urls: updatedVideos,
+          }));
 
-        if (updatedImages.length === 0) {
-          setPreviewImage(null);
-        }
-      })
-    );
+          if (index >= updatedVideos.length) {
+            setIndex(updatedVideos.length - 1);
+          }
+
+          if (updatedVideos.length === 0) {
+            setPreviewImage(null);
+          }
+        })
+      );
+    }
   };
 
   const getPromptFromSceneId = (sceneId) => {
-    console.log(rows, sceneId, "getPromptFromSceneId");
     const found = rows.find((v) => v.scene_id === sceneId);
     return found?.new_prompt || "";
   };
 
   const handlePrompt = (row) => {
     const prompt = getPromptFromSceneId(row.scene_id);
-    // setSinglePrompt(prompt);
     setSelectedPrompt(prompt);
     setOpenPromptModal(true);
   };
 
   const handleEditDescription = (row) => {
-    console.log("clicked", row);
     const payload = {
       script_id: id,
       scene_id: row.scene_id,
@@ -220,17 +243,26 @@ const VisualContentTable = ({
               <CloseIcon />
             </IconButton>
           </div>
-
-          <DialogContent>
-            <ImageCarousel
-              images={visuaiImages?.image_uploaded_urls}
-              caroselIndex={setIndex}
-              previewImage={previewImage}
-            />
-          </DialogContent>
+          {visuaiImages?.Visual_Type === "image" ? (
+            <>
+              <DialogContent>
+                <ImageCarousel
+                  images={visuaiImages?.image_uploaded_urls}
+                  caroselIndex={setIndex}
+                  previewImage={previewImage}
+                />
+              </DialogContent>
+            </>
+          ) : (
+            <>
+              <DialogContent>
+                <VideoPlayer videoUrl={visuaiImages?.Visual_Image} />
+              </DialogContent>
+            </>
+          )}
         </Dialog>
       )}
-
+      {/*  Prompt Edit modal */}
       <Dialog
         open={openPromptModal}
         onClose={() => setOpenPromptModal(false)}

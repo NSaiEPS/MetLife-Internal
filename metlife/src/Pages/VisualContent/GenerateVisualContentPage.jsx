@@ -17,6 +17,7 @@ import { getGenerateVisualContentImage } from "../../redux/features/generateVisu
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
+import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
@@ -42,9 +43,17 @@ const GenerateVisualContentPage = () => {
             justifyContent: "center",
             overflow: "hidden",
             cursor: "pointer",
+            // cursor: row._imageInvalid ? "not-allowed" : "pointer",
+            // opacity: row._imageInvalid ? 0.5 : 1,
           }}
           onClick={() => {
-            if (row.Visual_Image.length === 0) {
+            console.log(row, "check_row");
+            // if (row._imageInvalid) {
+            //   toast.error("Image link expired");
+            //   return;
+            // }
+
+            if (!row.Visual_Image || row.Visual_Image.length === 0) {
               toast.error("No Image found to preview");
               setPreviewImage([]);
               return;
@@ -53,17 +62,82 @@ const GenerateVisualContentPage = () => {
             setVisualImages(row);
           }}
         >
-          <img
-            src={value}
-            alt="visual"
-            onError={(e) => (e.target.src = dummyImage)}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 5,
-            }}
-          />
+          {row?.Visual_Type === "Footage" ? (
+            <>
+              {/* <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: 5,
+                }}
+              >
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                  ry="2"
+                  fill="#e0e0e0"
+                />
+                <polygon points="10,9 16,12 10,15" fill="#757575" />
+              </svg> */}
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: 5,
+                  backgroundColor: "#e0e0e0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg
+                  width="80%"
+                  height="80%"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="3"
+                    y="5"
+                    width="18"
+                    height="14"
+                    rx="2"
+                    ry="2"
+                    fill="#bdbdbd"
+                  />
+                  <polygon points="10,9 16,12 10,15" fill="#757575" />
+                </svg>
+              </div>
+            </>
+          ) : (
+            <>
+              <img
+                src={value}
+                alt="visual"
+                // onError={(e) => {
+                //   e.target.src = dummyImage;
+                //   // markImageInvalid(row.scene_id)
+                // }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: 5,
+                }}
+              />
+            </>
+          )}
         </div>
       ),
     },
@@ -85,14 +159,19 @@ const GenerateVisualContentPage = () => {
     {
       icon: <img src={upload} />,
       onClick: (row) => {
-        handleImageUpload(row);
+        console.log(row, "check_row");
+        if (row.Visual_Type === "image") {
+          handleImageUpload(row);
+        } else if (row.Visual_Type === "Footage") {
+          handleVideoUpload(row);
+        }
       },
     },
   ];
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store) => store.GenerateVisualContent
   );
-  console.log(generateVisualContentData, "generateVisualContentData");
+
   const { audioAnimationLoader } = useSelector((store) => store.AudioAnimation);
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
@@ -115,12 +194,14 @@ const GenerateVisualContentPage = () => {
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
+      console.log(item?.videos, "check_particular_item");
       const firstImageUrl =
         item?.images?.[0]?.url ||
         item?.images ||
         item?.image_url ||
         item?.url ||
         "";
+      const videoPreviewUrl = item?.videos?.[0]?.url;
       return {
         "Scene_No.": index + 1,
         Visual_Type:
@@ -129,12 +210,16 @@ const GenerateVisualContentPage = () => {
         Visual_Image:
           item?.images?.length > 0
             ? item.images[item.images.length - 1]?.url
-            : firstImageUrl,
+            : item?.videos?.length > 0
+            ? videoPreviewUrl
+            : "-",
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
         new_prompt: item?.prompt,
         image_uploaded_urls:
           item?.images?.length > 0 ? item.images : [{ url: firstImageUrl }],
+        video_uploaded_urls:
+          item?.videos?.length > 0 ? item.videos : [{ url: videoPreviewUrl }],
       };
     });
     setRows(newdata);
@@ -143,9 +228,21 @@ const GenerateVisualContentPage = () => {
   const handleImageUpload = (data) => {
     setPopup({
       type: "upload",
-      data: {
-        scene_id: data?.scene_id,
-      },
+      // data: {
+      //   scene_id: data?.scene_id,
+      // },
+       data, 
+    });
+  };
+
+  const handleVideoUpload = (data) => {
+    console.log(data, "popupdata")
+    setPopup({
+      type: "video_upload",
+      data,
+      // data: {
+      //   scene_id: data?.scene_id,
+      // },
     });
   };
 
@@ -202,23 +299,43 @@ const GenerateVisualContentPage = () => {
       setRows(newData);
     }
   };
+  // old delete image dunction
+  // const updateImagesInRow = (sceneId, newImages) => {
+  //   setRows((prev) =>
+  //     prev.map((row) =>
+  //       row.scene_id === sceneId
+  //         ? {
+  //             ...row,
+  //             image_uploaded_urls: newImages,
+  //             Visual_Image: newImages[newImages.length - 1]?.url || "",
+  //           }
+  //         : row
+  //     )
+  //   );
+  // };
 
-  const updateImagesInRow = (sceneId, newImages) => {
+  // delete function with image and video
+  const updateImagesInRow = (sceneId, newFiles, type) => {
     setRows((prev) =>
       prev.map((row) =>
         row.scene_id === sceneId
-          ? {
-              ...row,
-              image_uploaded_urls: newImages,
-              Visual_Image: newImages[newImages.length - 1]?.url || "",
-            }
+          ? type === "image"
+            ? {
+                ...row,
+                image_uploaded_urls: newFiles,
+                Visual_Image: newFiles[newFiles.length - 1]?.url || "",
+              }
+            : {
+                ...row,
+                video_uploaded_urls: newFiles,
+                Visual_Image: newFiles[newFiles.length - 1]?.url || "",
+              }
           : row
       )
     );
   };
-  console.log(rows, "check_rows");
+
   const updatePromptInRow = (data) => {
-    console.log(data, "check_data_inside_prompt");
     // setRows((prev) =>
     //   prev.map((row) =>
     //     row.scene_id === data?.scene_id
@@ -235,6 +352,16 @@ const GenerateVisualContentPage = () => {
     });
     setRows(updatedRows);
   };
+
+  // const markImageInvalid = (sceneId) => {
+  //   setRows((prev) =>
+  //     prev.map((item) =>
+  //       item.scene_id === sceneId
+  //         ? { ...item, _imageInvalid: true, Visual_Image: dummyImage }
+  //         : item
+  //     )
+  //   );
+  // };
 
   const handleAudioAndAnimation = () => {
     const payload = {
@@ -265,8 +392,6 @@ const GenerateVisualContentPage = () => {
                 rows={rows}
                 actions={actions}
                 updateImagesInRow={updateImagesInRow}
-                // prompt_batch_id={prompt_batch_id}
-                // handleUpdate={handleUpdate}
                 updatePromptInRow={updatePromptInRow}
               />
               {popup.type === "upload" && (
@@ -278,6 +403,17 @@ const GenerateVisualContentPage = () => {
                   prompt_batch_id={prompt_batch_id}
                   title={title}
                   handleImageUpdate={handleImageUpdate}
+                />
+              )}
+
+              {popup.type === "video_upload" && (
+                <VideoUploadPopup
+                  open={true}
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={id}
+                  prompt_batch_id={prompt_batch_id}
+                  title={title}
                 />
               )}
 

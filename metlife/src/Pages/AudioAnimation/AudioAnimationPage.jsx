@@ -88,7 +88,6 @@ const AudioAnimationPage = () => {
   const dispatch = useDispatch();
   const { audioAnimationLoader, audioAnimationData, audioPreviewData, labels } =
     useSelector((store) => store.AudioAnimation);
-  console.log(audioAnimationData, "checkAudioAnnimationData");
   const characters = audioAnimationData?.voice_map?.characters || labels;
   let sortedLabels = [];
   if (characters && characters.length > 0) {

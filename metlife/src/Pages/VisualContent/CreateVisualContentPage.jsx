@@ -171,18 +171,12 @@ const CreateVisualContentPage = () => {
 
   const handleGenerate = async () => {
     const data = saveVisualContentData;
-    console.log(data?.prompts, "check_data")
-
     const payload = data?.prompts?.map(item => {
       return {
-        // scene_id: item.scene_id,
-        // scene_number: item.scene_number,
         prompt:item.visual_type === "image" ? item?.prompt
         : item.clip_visual_type === "clip" ? item.clip_prompt : null
       }
     })
-
-    console.log(payload, "check_data_before_send")
     dispatch(postGenerateVisualContentImage(data));
   };
 

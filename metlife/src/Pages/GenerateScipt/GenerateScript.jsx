@@ -98,8 +98,6 @@ const GenerateScript = () => {
   const dispatch = useDispatch();
 
   const { promptData } = useSelector((store) => store.Prompts);
-  console.log(promptData, "prompt_data");
-
   useEffect(() => {
     dispatch(getPromptsList());
   }, [dispatch]);
@@ -163,7 +161,6 @@ const GenerateScript = () => {
           toast.success("Script generated successfully!");
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
-          console.log(result, "result_check")
           toast.error( result?.data?.logline || "Something went wrong while generating!");
         }
       } else {
@@ -194,6 +191,8 @@ const GenerateScript = () => {
     "Write optimized React components.",
     "Write optimized React components.",
   ];
+
+  console.log(scriptText, "checkScriptText")
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -443,7 +442,10 @@ const GenerateScript = () => {
 
       <SavedPromptsModal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={(text) => {
+          setOpen(false);
+          setScriptText(text);
+        }}
         prompts={promptData}
       />
     </Box>

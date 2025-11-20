@@ -8,13 +8,12 @@ import {
   IconButton,
   Box,
   Typography,
-  TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch } from "react-redux";
-import { postImageUpload } from "../../../redux/features/generateVisualSlice";
+import { postImageUpload } from "../../../redux/features/generateVisualSlice"; // <-- create API similar to postImageUpload
 
-const ImageUploadPopup = ({
+const VideoUploadPopup = ({
   open,
   onClose,
   fieldData,
@@ -22,20 +21,19 @@ const ImageUploadPopup = ({
   prompt_batch_id,
   title,
 }) => {
-  const [imageFile, setImageFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const scene_id = fieldData?.scene_id;
   const scene_no = fieldData?.["Scene_No."];
   const dispatch = useDispatch();
-  const existingImages = fieldData?.image_uploaded_urls || [];
+  const existingVideos = fieldData?.video_uploaded_urls || [];
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log(fieldData, "fieldData")
 
   useEffect(() => {
     if (open) {
-      if (existingImages.length > 0) {
-        setCurrentIndex(existingImages.length - 1); // show latest by default
-        setPreviewUrl(existingImages[existingImages.length - 1].url);
+      if (existingVideos.length > 0) {
+        setCurrentIndex(existingVideos.length - 1); // show latest by default
+        setPreviewUrl(existingVideos[existingVideos.length - 1].url);
       }
     }
   }, [open, fieldData]);
@@ -44,7 +42,7 @@ const ImageUploadPopup = ({
     const file = e.target.files[0];
     if (!file) return;
 
-    setImageFile(file);
+    setVideoFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   };
 
@@ -52,18 +50,18 @@ const ImageUploadPopup = ({
     const formData = new FormData();
     formData.append("script_id", script_id);
     formData.append("scene_id", scene_id);
-    formData.append("scene_number", scene_no); 
+    formData.append("scene_number", scene_no);
     formData.append("title", title);
     formData.append("prompt_batch_id", prompt_batch_id);
-    formData.append("file", imageFile);
+    formData.append("file", videoFile);
 
-    dispatch(postImageUpload(formData, onClose));
+    dispatch(postImageUpload(formData, onClose)); // <-- same as image but for video
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h6">{"Upload Image"}</Typography>
+        <Typography variant="h6">{"Upload Video"}</Typography>
 
         <IconButton onClick={onClose}>
           <CloseIcon />
@@ -72,14 +70,15 @@ const ImageUploadPopup = ({
 
       <DialogContent>
         <Box mt={2}>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input type="file" accept="video/*" onChange={handleFileChange} />
 
           {previewUrl && (
             <Box mt={2}>
               <Typography variant="subtitle2">Preview:</Typography>
-              <img
+
+              <video
                 src={previewUrl}
-                alt="preview"
+                controls
                 style={{
                   width: "100%",
                   maxHeight: 300,
@@ -101,7 +100,7 @@ const ImageUploadPopup = ({
         <Button
           onClick={handleUploadClick}
           variant="contained"
-          disabled={!imageFile}
+          disabled={!videoFile}
         >
           Upload
         </Button>
@@ -110,4 +109,4 @@ const ImageUploadPopup = ({
   );
 };
 
-export default ImageUploadPopup;
+export default VideoUploadPopup;

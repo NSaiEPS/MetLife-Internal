@@ -18,7 +18,6 @@ export default function SavedPromptsModal({
   prompts = [],
   size = "md", // "md" or "lg"
 }) {
-  console.log(prompts, "prompts_check")
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");
 
