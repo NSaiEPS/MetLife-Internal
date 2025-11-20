@@ -89,7 +89,7 @@ const GenerateScript = () => {
   const [audience, setAudience] = useState("");
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("English");
-  const [duration, setDuration] = useState("");
+  const [duration, setDuration] = useState("3 minutes");
   const [topn, setTopn] = useState("");
   const [model, setModel] = useState("gpt-4o-mini");
   const [datasource, setDatasource] = useState("");
@@ -402,7 +402,7 @@ const GenerateScript = () => {
                         !datasource
                           ? "Please select Data Source first"
                           : datasource === "openai"
-                          ? "OpenAI does not have any source"
+                          ? "Filter not available for openai!"
                           : ""
                       }
                       placement="left"
