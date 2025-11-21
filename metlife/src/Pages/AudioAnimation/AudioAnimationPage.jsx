@@ -28,12 +28,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
   getLabels,
-  getPreviewVoices,
   postGenerateVoiceAndAudio,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
 import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
+import { navigateTo } from "../../utils/navigate";
 const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
 const voiceOptions = [
   {
@@ -67,26 +67,17 @@ const voiceOptions = [
       "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-DavisNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085918Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=1039ba4cf86c3809db5fc91a619a4189e6ba9e228b2a7c46e28aaccc586caeec",
   },
 ];
-// const animationOptions = [
-//   { label: "Fade In", value: "fadeIn" },
-//   { label: "Fade Out", value: "fadeOut" },
-//   { label: "Zoom In", value: "zoomIn" },
-//   { label: "Zoom Out", value: "zoomOut" },
-// ];
 const AudioAnimationPage = () => {
-  // const [narration, setNarration] = useState("azure");
-  // const [narrationSelections, setNarrationSelections] = useState({});
   const [narrationSelections, setNarrationSelections] = useState({
     Narrator: "azure",
     Alex: "azure",
     Taylor: "azure",
   });
   const [voiceSelections, setVoiceSelections] = useState({});
-  // const [entryAnimation, setEntryAnimation] = useState("fadeOut");
-  // const [exitAnimation, setExitAnimation] = useState("fadeOut");
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { audioAnimationLoader, audioAnimationData, audioPreviewData, labels } =
+  const navigate = useNavigate();
+  const { audioAnimationLoader, audioAnimationData, labels } =
     useSelector((store) => store.AudioAnimation);
   const characters = audioAnimationData?.voice_map?.characters || labels;
   let sortedLabels = [];
@@ -164,6 +155,11 @@ const AudioAnimationPage = () => {
     return opt?.s3_url || "";
   };
 
+  const handleCreateTransition = () => {
+    // navigate("/animation-page")
+    navigateTo(`/animation-page/${id}`);
+  };
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -237,9 +233,7 @@ const AudioAnimationPage = () => {
                       />
                     </Grid>
                   </Grid>
-                ))
-                
-                }
+                ))}
               {audioAnimationData?.scenes &&
                 audioAnimationData?.scenes?.length > 0 && (
                   <>
@@ -270,99 +264,28 @@ const AudioAnimationPage = () => {
 
               <div className={styles.actions}>
                 <ButtonComp
+                  disabled={
+                    !audioAnimationData?.scenes &&
+                    !audioAnimationData?.scenes?.length > 0
+                  }
+                  // label={audioAnimationLoader ? "Submit" : "Submitting"}
+                  label={"Create Transition"}
+                  sx={{ textTransform: "none", backgroundColor: "#99d539" }}
+                  className={styles.createBtn}
+                  action={handleCreateTransition}
+                />
+
+                <ButtonComp
                   // disabled={audioAnimationLoader}
                   // label={audioAnimationLoader ? "Submit" : "Submitting"}
                   label={"Submit"}
+                  sx={{ textTransform: "none" }}
                   className={styles.submitBtn}
                   action={handleSubmit}
                   disabled={audioAnimationData?.scenes?.length > 0}
                 />
               </div>
             </div>
-            {/* audio and animation part */}
-            {/* <div className={styles.insideContainer}>
-              <Typography
-                className={styles.audioSelectionTitle}
-                sx={{ fontSize: "22px", fontWeight: "500", marginBottom: "10px" }}
-              >
-                Animation Selection
-              </Typography>
-              <Grid container spacing={3}>
-
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <Typography variant="h6" fontWeight="400" mb={1}>
-                    Entry
-                  </Typography>
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      p: 3,
-                      border: "1px solid #e0e0e0",
-                      borderRadius: 3,
-                    }}
-                  >
-                    <FormControl>
-                      <RadioGroup
-                        value={entryAnimation}
-                        onChange={(e) => setEntryAnimation(e.target.value)}
-                      >
-                        {animationOptions.map((opt) => (
-                          <FormControlLabel
-                            key={opt.value}
-                            value={opt.value}
-                            control={<Radio color="primary" />}
-                            label={opt.label}
-                            sx={{
-                              "& .MuiFormControlLabel-label": {
-                                color: "#555",
-                                fontSize: "0.95rem",
-                              },
-                            }}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                  </Paper>
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                  <Typography variant="h6" fontWeight="400" mb={1}>
-                    Exit
-                  </Typography>
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      p: 3,
-                      border: "1px solid #e0e0e0",
-                      borderRadius: 3,
-                    }}
-                  >
-                  
-                    <FormControl>
-                      <RadioGroup
-                        value={exitAnimation}
-                        onChange={(e) => setExitAnimation(e.target.value)}
-                      >
-                        {animationOptions.map((opt) => (
-                          <FormControlLabel
-                            key={opt.value}
-                            value={opt.value}
-                            control={<Radio color="primary" />}
-                            label={opt.label}
-                            sx={{
-                              "& .MuiFormControlLabel-label": {
-                                color: "#555",
-                                fontSize: "0.95rem",
-                              },
-                            }}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                  </Paper>
-                </Grid>
-              </Grid>
-            </div> */}
           </div>
         </main>
         <Footer />

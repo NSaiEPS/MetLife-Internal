@@ -21,6 +21,7 @@ import MyVideosDashboard from "../Pages/Dashboard/Dashboard";
 import CreateVisualContentPage from "../Pages/VisualContent/CreateVisualContentPage";
 import GenerateVisualContentPage from "../Pages/VisualContent/GenerateVisualContentPage";
 import AudioAnimationPage from "../Pages/AudioAnimation/AudioAnimationPage";
+import AnimationPage from "../Pages/Animation/AnimationPage";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ element, allowedRoles = [] }) => {
@@ -102,6 +103,10 @@ export const router = createBrowserRouter([
       {
         path: "/audio-animation-toolkit/:id",
         element: <AudioAnimationPage />,
+      },
+      {
+        path: "/animation-page/:id",
+        element: <AnimationPage />,
       },
       {
         path: "video-upload",

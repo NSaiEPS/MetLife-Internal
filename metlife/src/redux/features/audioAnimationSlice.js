@@ -8,6 +8,7 @@ const initialState = {
   audioAnimationData: null,
   audioPreviewData: null,
   labels: null,
+  animationLabels: null,
 };
 
 const AudioAnimationSlice = createSlice({
@@ -26,6 +27,10 @@ const AudioAnimationSlice = createSlice({
     setLabels(state, action) {
       state.labels = action.payload;
     },
+
+    setAnimationLabels(state, action) {
+      state.animationLabels = action.payload;
+    }
   },
 });
 
@@ -34,6 +39,7 @@ export const {
   setAudioAnimationLoader,
   setAudioPreviewData,
   setLabels,
+  setAnimationLabels,
 } = AudioAnimationSlice.actions;
 
 export default AudioAnimationSlice.reducer;
@@ -124,6 +130,41 @@ export const getLabels = (id) => async (dispatch) => {
   } catch (error) {
     console.log(error);
     // toast.error("Something went wrong!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+// Get Media Tranistion options for animation
+export const getMediaTransitions = () => async (dispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res = await api.get(`media/transitions`);
+    if (res.status) {
+      dispatch(setAnimationLabels(res?.data));
+    }
+  } catch (error) {
+    console.log(error);
+    // toast.error("Something went wrong!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+
+// Post Generate Video
+export const postGenerateVideoBatch = (data) => async (dispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res = await api.post(`media/generate-video-batch`, data);
+    console.log(res, "audioResCheck");
+    if (res.status) {
+      dispatch(setAudioAnimationData(res?.data?.results));
+      // toast.success("Video generated successfully");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Something went wrong!");
   } finally {
     dispatch(setAudioAnimationLoader(false));
   }
