@@ -34,6 +34,7 @@ import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
 import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import { navigateTo } from "../../utils/navigate";
+import { NoDataMessage } from "../../components/common/NoDataMessage";
 const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
 const voiceOptions = [
   {
@@ -76,8 +77,9 @@ const AudioAnimationPage = () => {
   const [voiceSelections, setVoiceSelections] = useState({});
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { audioAnimationLoader, audioAnimationData, labels } =
-    useSelector((store) => store.AudioAnimation);
+  const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
+    (store) => store.AudioAnimation
+  );
   const characters = audioAnimationData?.voice_map?.characters || labels;
   let sortedLabels = [];
   if (characters && characters.length > 0) {
@@ -163,130 +165,153 @@ const AudioAnimationPage = () => {
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
-        {audioAnimationLoader && <FullScreenGradientLoader text="loading..." />}
-        <main className={styles.cardWrap}>
-          <div className={styles.card}>
-            <div className={styles.headerRow}>
-              <h1 className={styles.title}>Audio & Animation Toolkit</h1>
-              {/* <Button
+        {sortedLabels && sortedLabels?.length > 0 ? (
+          <>
+            {audioAnimationLoader && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
+
+            <main className={styles.cardWrap}>
+              <div className={styles.card}>
+                <div className={styles.headerRow}>
+                  <h1 className={styles.title}>Audio & Animation Toolkit</h1>
+                  {/* <Button
                 className={styles.icon}
                 onClick={() => navigate("/video-frame")}
               >
                 <IoArrowBackCircleOutline size={30} /> Back
               </Button> */}
-            </div>
+                </div>
 
-            <div className={styles.insideContainer}>
-              <Typography
-                className={styles.audioSelectionTitle}
-                sx={{ fontSize: "22px", fontWeight: "500" }}
-              >
-                Audio Selection
-              </Typography>
-
-              {sortedLabels &&
-                sortedLabels?.length > 0 &&
-                sortedLabels?.map((charName, index) => (
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="flex-end"
-                    sx={{ mt: 2, mb: 2 }}
-                    key={index}
+                <div className={styles.insideContainer}>
+                  <Typography
+                    className={styles.audioSelectionTitle}
+                    sx={{ fontSize: "22px", fontWeight: "500" }}
                   >
-                    <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                      <SelectComp
-                        label={charName}
-                        options={narrationVoiceOptions}
-                        value={narrationSelections[charName]}
-                        onChange={(value) =>
-                          handleNarrationChange(charName, value)
-                        }
-                        placeholder="Select Tool"
-                        style={true}
-                      />
-                    </Grid>
+                    Audio Selection
+                  </Typography>
 
-                    <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                      <SelectWithAudio
-                        // options={voiceOptions}
-                        // options={voiceOptions.map((opt) => ({
-                        //   ...opt,
-                        //   disabled: voiceSelections[charName] !== opt.value,
-                        // }))}
-                        options={
-                          audioAnimationData?.scenes === null
-                            ? voiceOptions // First time → all options enabled
-                            : voiceOptions.map((opt) => ({
-                                ...opt,
-                                disabled:
-                                  voiceSelections[charName] !== opt.value,
-                              }))
-                        }
-                        placeholder="Select Voice"
-                        value={voiceSelections[charName] || ""}
-                        onChange={(value) => handleVoiceChange(charName, value)}
-                        style={true}
-                        getPreviewUrl={(voice) => getPreviewUrl(voice)}
-                        customOption
-                      />
-                    </Grid>
-                  </Grid>
-                ))}
-              {audioAnimationData?.scenes &&
-                audioAnimationData?.scenes?.length > 0 && (
-                  <>
-                    <Typography
-                      sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
-                    >
-                      Available Voices
-                    </Typography>
-                    <Grid container spacing={2} sx={{ mt: 1 }}>
-                      {audioAnimationData?.scenes?.map((scene, idx) => (
-                        <Grid
-                          item
-                          xs={12}
-                          md={6}
-                          lg={4}
-                          key={idx}
-                          sx={{ width: "100%" }}
-                        >
-                          <VoicePlayer
-                            description={scene.description}
-                            s3_url={scene.final_audio_s3_url}
+                  {
+                    // sortedLabels &&
+                    //   sortedLabels?.length > 0 &&
+                    sortedLabels?.map((charName, index) => (
+                      <Grid
+                        container
+                        spacing={2}
+                        alignItems="flex-end"
+                        sx={{ mt: 2, mb: 2 }}
+                        key={index}
+                      >
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                          <SelectComp
+                            label={charName}
+                            options={narrationVoiceOptions}
+                            value={narrationSelections[charName]}
+                            onChange={(value) =>
+                              handleNarrationChange(charName, value)
+                            }
+                            placeholder="Select Tool"
+                            style={true}
                           />
                         </Grid>
-                      ))}
-                    </Grid>
-                  </>
-                )}
 
-              <div className={styles.actions}>
-                <ButtonComp
-                  disabled={
-                    !audioAnimationData?.scenes &&
-                    !audioAnimationData?.scenes?.length > 0
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                          <SelectWithAudio
+                            // options={voiceOptions}
+                            // options={voiceOptions.map((opt) => ({
+                            //   ...opt,
+                            //   disabled: voiceSelections[charName] !== opt.value,
+                            // }))}
+                            options={
+                              audioAnimationData?.scenes === null
+                                ? voiceOptions // First time → all options enabled
+                                : voiceOptions.map((opt) => ({
+                                    ...opt,
+                                    disabled:
+                                      voiceSelections[charName] !== opt.value,
+                                  }))
+                            }
+                            placeholder="Select Voice"
+                            value={voiceSelections[charName] || ""}
+                            onChange={(value) =>
+                              handleVoiceChange(charName, value)
+                            }
+                            style={true}
+                            getPreviewUrl={(voice) => getPreviewUrl(voice)}
+                            customOption
+                          />
+                        </Grid>
+                      </Grid>
+                    ))
                   }
-                  // label={audioAnimationLoader ? "Submit" : "Submitting"}
-                  label={"Create Transition"}
-                  sx={{ textTransform: "none", backgroundColor: "#99d539" }}
-                  className={styles.createBtn}
-                  action={handleCreateTransition}
-                />
+                  {audioAnimationData?.scenes &&
+                  audioAnimationData?.scenes?.length > 0 ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Available Voices
+                      </Typography>
+                      <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {audioAnimationData?.scenes?.map((scene, idx) => (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            lg={4}
+                            key={idx}
+                            sx={{ width: "100%" }}
+                          >
+                            <VoicePlayer
+                              description={scene.description}
+                              s3_url={scene.final_audio_s3_url}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </>
+                  ) : (
+                    <>
+                      <NoDataMessage
+                        filter={false}
+                        loading={audioAnimationLoader}
+                      />
+                    </>
+                  )}
 
-                <ButtonComp
-                  // disabled={audioAnimationLoader}
-                  // label={audioAnimationLoader ? "Submit" : "Submitting"}
-                  label={"Submit"}
-                  sx={{ textTransform: "none" }}
-                  className={styles.submitBtn}
-                  action={handleSubmit}
-                  disabled={audioAnimationData?.scenes?.length > 0}
-                />
+                  <div className={styles.actions}>
+                    <ButtonComp
+                      disabled={
+                        !audioAnimationData?.scenes &&
+                        !audioAnimationData?.scenes?.length > 0
+                      }
+                      // label={audioAnimationLoader ? "Submit" : "Submitting"}
+                      label={"Create Transition"}
+                      sx={{ textTransform: "none", backgroundColor: "#99d539" }}
+                      className={styles.createBtn}
+                      action={handleCreateTransition}
+                    />
+
+                    <ButtonComp
+                      // disabled={audioAnimationLoader}
+                      // label={audioAnimationLoader ? "Submit" : "Submitting"}
+                      label={"Submit"}
+                      sx={{ textTransform: "none" }}
+                      className={styles.submitBtn}
+                      action={handleSubmit}
+                      disabled={audioAnimationData?.scenes?.length > 0}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </main>
+            </main>
+          </>
+        ) : (
+          <>
+            <NoDataMessage filter={false} loading={true} />
+          </>
+        )}
+
         <Footer />
       </Box>
     </>

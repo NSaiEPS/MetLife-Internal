@@ -23,11 +23,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
   getMediaTransitions,
+  getVideosList,
   postGenerateVideoBatch,
 } from "../../redux/features/audioAnimationSlice";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useParams } from "react-router";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
+import GeneratedVideoPlayer from "../../components/common/GeneratedVideo/GeneratedVideoPlayer";
 
 const animationOptions = [
   { label: "Fade In", value: "fadeIn" },
@@ -38,16 +40,19 @@ const animationOptions = [
 const AnimationPage = () => {
   const [entryAnimation, setEntryAnimation] = useState("fade_in");
   const [exitAnimation, setExitAnimation] = useState("fade_out");
-  const { audioAnimationLoader, audioAnimationData, animationLabels } =
-    useSelector((store) => store.AudioAnimation);
+  const {
+    audioAnimationLoader,
+    audioAnimationData,
+    animationLabels,
+    videoAnimationData,
+  } = useSelector((store) => store.AudioAnimation);
   const { id } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getMediaTransitions());
     dispatch(getAudioDetails(id));
+    dispatch(getVideosList(id));
   }, [dispatch, id]);
-//   console.log(audioAnimationData "check_audio_animation_data");
-console.log(animationLabels, 'check_animation_lables')
 
   const handleAllSubmit = () => {
     const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
@@ -55,7 +60,7 @@ console.log(animationLabels, 'check_animation_lables')
       scene_id: id,
       start_transition: entryAnimation,
       end_transition: exitAnimation,
-      ost: "",
+      // ost: "",
     }));
     const payload = {
       script_id: id,
@@ -87,7 +92,7 @@ console.log(animationLabels, 'check_animation_lables')
       scene_id: id,
       start_transition: entryAnimation,
       end_transition: exitAnimation,
-      ost: "",
+      // ost: "",
     }));
 
     const payload = {
@@ -96,19 +101,28 @@ console.log(animationLabels, 'check_animation_lables')
     };
 
     console.log(payload, "check_payload");
-    dispatch(postGenerateVideoBatch(payload))
+    dispatch(postGenerateVideoBatch(payload));
   };
+  //   if(audioAnimationLoader) {
+  // return (
+  //   <FullScreenGradientLoader text="loading..." />
+  // )
+  //   }
 
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
-        {audioAnimationLoader && <FullScreenGradientLoader />}
+
         {(animationLabels?.entry_transitions ||
           animationLabels?.exit_transitions) &&
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
+            {audioAnimationLoader && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
+
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>
@@ -215,6 +229,38 @@ console.log(animationLabels, 'check_animation_lables')
                       </Paper>
                     </Grid>
                   </Grid>
+                  {videoAnimationData && videoAnimationData?.length > 0 ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Available Videos
+                      </Typography>
+                      <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {videoAnimationData?.map((scene, idx) => (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            lg={4}
+                            key={idx}
+                            sx={{ width: "100%" }}
+                          >
+                            <GeneratedVideoPlayer
+                              s3_url={scene?.final_video?.url}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </>
+                  ) : (
+                    <>
+                      <NoDataMessage
+                        filter={false}
+                        loading={audioAnimationLoader}
+                      />
+                    </>
+                  )}
                   <div className={styles.actions}>
                     <ButtonComp
                       label={"Alternative Scenes"}
@@ -230,18 +276,18 @@ console.log(animationLabels, 'check_animation_lables')
                     />
                   </div>
                 </div>
-                <div className={styles.actions_second}>
+                {/* <div className={styles.actions_second}>
                   <ButtonComp
                     sx={{ textTransform: "none", width: "200px" }}
                     label={"Generate Video"}
                   />
-                </div>
+                </div> */}
               </div>
             </main>
           </>
         ) : (
           <>
-            <NoDataMessage filter={false} loading={audioAnimationLoader} />
+            <NoDataMessage filter={false} loading={true} />
           </>
         )}
 

@@ -9,6 +9,7 @@ const initialState = {
   audioPreviewData: null,
   labels: null,
   animationLabels: null,
+  videoAnimationData: null,
 };
 
 const AudioAnimationSlice = createSlice({
@@ -30,6 +31,9 @@ const AudioAnimationSlice = createSlice({
 
     setAnimationLabels(state, action) {
       state.animationLabels = action.payload;
+    },
+    setVideoAnimationData(state,action) {
+      state.videoAnimationData = action.payload
     }
   },
 });
@@ -40,6 +44,7 @@ export const {
   setAudioPreviewData,
   setLabels,
   setAnimationLabels,
+  setVideoAnimationData,
 } = AudioAnimationSlice.actions;
 
 export default AudioAnimationSlice.reducer;
@@ -169,3 +174,23 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
     dispatch(setAudioAnimationLoader(false));
   }
 };
+
+// Get Video data
+export const getVideosList = (id) => async (dispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res = await api.get(`media/${id}`, );
+    console.log(res, "videoResCheck");
+    if (res.status) {
+      dispatch(setVideoAnimationData(res?.data?.results));
+      // toast.success("Video generated successfully");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Something went wrong!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+
