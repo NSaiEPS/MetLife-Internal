@@ -28,6 +28,7 @@ import api from "../../api/axios";
 import GradientLoader from "../../components/common/GradientLoader";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import SavedPromptsModal from "../../components/common/SavedPromptsModal";
+import DataFilters from "../../components/Data Filters/DataFilters";
 
 const videoTypeOptions = [
   { value: "narrator", label: "Narrator" },
@@ -65,12 +66,6 @@ const dataSourceOptions = [
   { value: "metlife+openai", label: "Both" },
 ];
 
-const audienceOptions = [
-  { value: "general", label: "General Audience" },
-  { value: "kids", label: "Kids / Students" },
-  { value: "business", label: "Business" },
-];
-
 const durationOptions = [
   { value: "2 minutes", label: "2 mins" },
   { value: "3 minutes", label: "3 mins" },
@@ -82,10 +77,23 @@ const durationOptions = [
 const GenerateScript = () => {
   const navigate = useNavigate();
   const [scriptText, setScriptText] = useState();
-
+  const [data_filters, setDataFilters] = useState({
+    channel: ["all"],
+    language: ["all"],
+    domain: ["all"],
+    category: ["all"],
+    roles: ["all"],
+    source_type: ["all"],
+    core_skill: ["all"],
+    sub_skill: ["all"],
+    proficiency_level: ["all"],
+    sub_category: [],
+    microsegment: [],
+    skill_domain: [],
+  });
   // selects
   const [videoType, setVideoType] = useState("narrator");
-  const [tone, setTone] = useState("");
+
   const [audience, setAudience] = useState("");
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("English");
@@ -152,6 +160,7 @@ const GenerateScript = () => {
       model: model,
       top_n: Number(topn),
       data_source: datasource,
+      filters: data_filters,
     };
 
     try {
@@ -161,7 +170,9 @@ const GenerateScript = () => {
           toast.success("Script generated successfully!");
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
-          toast.error( result?.data?.logline || "Something went wrong while generating!");
+          toast.error(
+            result?.data?.logline || "Something went wrong while generating!"
+          );
         }
       } else {
         showToast?.error("Some Issue In Generating");
@@ -175,24 +186,7 @@ const GenerateScript = () => {
   };
 
   const [open, setOpen] = useState(false);
-
-  const prompts = [
-    "Explain React useEffect with examples.",
-    "Generate API code using Axios.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-    "Write optimized React components.",
-  ];
-
-  console.log(scriptText, "checkScriptText")
+  const isMetlife = datasource === "metlife" || datasource === "metlife+openai";
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -302,65 +296,6 @@ const GenerateScript = () => {
                 </Grid>
               </AccordionDetails>
             </Accordion>
-
-            <Accordion
-              sx={{
-                border: "none",
-                borderRadius: "10px",
-                boxShadow: "none",
-                "&::before": {
-                  display: "none", // removes divider line
-                },
-              }}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
-                  Data Filters
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={styles.accordionDetails}>
-                <Grid container spacing={2}>
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    <SelectComp
-                      label="Channel"
-                      options={languageOptions}
-                      value={language}
-                      onChange={setLanguage}
-                      placeholder="Select channel"
-                    />
-                  </Grid>
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    <SelectComp
-                      label="Field 1"
-                      options={toneOptions}
-                      value={tone}
-                      onChange={setTone}
-                      placeholder="Select Field 1"
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    <SelectComp
-                      label="Field 2"
-                      options={toneOptions}
-                      value={tone}
-                      onChange={setTone}
-                      placeholder="Select Field 2"
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                    <SelectComp
-                      label="Field 3"
-                      options={toneOptions}
-                      value={tone}
-                      onChange={setTone}
-                      placeholder="Select Select Field 3"
-                    />
-                  </Grid>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
             <Accordion
               sx={{
                 border: "none",
@@ -423,6 +358,42 @@ const GenerateScript = () => {
                   </Grid>
                 </Grid>
               </AccordionDetails>
+            </Accordion>
+            <Accordion
+              disabled={!isMetlife} // disables interaction
+              sx={{
+                border: "none",
+                borderRadius: "10px",
+                boxShadow: "none",
+                "&::before": {
+                  display: "none",
+                },
+              }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={styles.accordionTitle}>
+                  Data Filters
+                </Typography>
+              </AccordionSummary>
+              {!isMetlife ? (
+                <AccordionDetails>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    textAlign={"center"}
+                  >
+                    Data Filters are only available when Data Source is MetLife
+                    or Both.
+                  </Typography>
+                </AccordionDetails>
+              ) : (
+                <AccordionDetails>
+                  <DataFilters
+                    setFilter={setDataFilters}
+                    filter={data_filters}
+                  />
+                </AccordionDetails>
+              )}
             </Accordion>
           </div>
           {/* Action Area */}
