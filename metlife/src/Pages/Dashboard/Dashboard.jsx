@@ -57,60 +57,57 @@ const MyVideosDashboard = () => {
   ];
 
   const getStatusChip = (status) => {
-    // Highest priority: failed
-    if (status?.failed) {
-      return <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
-    }
+    if (!status) return <Chip label="Unknown" />;
 
-    // Completed (videos finished)
-    if (status?.videos) {
+    // Failed
+    if (status.failed)
+      return <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />; // Red
+
+    // All videos done → Completed
+    if (status.videos)
       return (
-        <Chip label="Completed" sx={{ bgcolor: "#8BC34A", color: "#fff" }} />
-      );
-    }
+        <Chip label="Completed" sx={{ bgcolor: "#4CAF50", color: "#fff" }} />
+      ); // Green
 
-    // Audio processing
-    if (status?.audio) {
+    // Audio progress
+    if (status.audio && !status.videos)
       return (
         <Chip
           label="Audio Progress"
           sx={{ bgcolor: "#2196F3", color: "#fff" }}
         />
-      );
-    }
+      ); // Blue
 
-    // Visuals processing
-    if (status?.visuals) {
+    // Visuals progress
+    if (status.visuals)
       return (
         <Chip
           label="Visuals Progress"
-          sx={{ bgcolor: "#2196F3", color: "#fff" }}
+          sx={{ bgcolor: "#9C27B0", color: "#fff" }}
         />
-      );
-    }
+      ); // Purple
 
-    // Prompt batch created → visuals ready
-    if (status?.prompt_batch_id) {
-      return (
-        <Chip
-          label="Visuals Progress"
-          sx={{ bgcolor: "#8BC34A", color: "#fff" }}
-        />
-      );
-    }
-
-    // Script finished
-    if (status?.script_id) {
+    // Script completed
+    if (status.script_id)
       return (
         <Chip
           label="Script Completed"
-          sx={{ bgcolor: "#8BC34A", color: "#fff" }}
+          sx={{ bgcolor: "#FF9800", color: "#fff" }}
         />
-      );
-    }
+      ); // Orange
 
-    // Default
-    return <Chip label="In Progress" />;
+    // Prompt batch started (unique color)
+    if (status.prompt_batch_id)
+      return (
+        <Chip
+          label="Visuals Progress"
+          sx={{ bgcolor: "#009688", color: "#fff" }}
+        />
+      ); // Teal
+
+    return (
+      <Chip label="In Progress" sx={{ bgcolor: "#9E9E9E", color: "#fff" }} />
+    ); // Grey
   };
 
   const handleClick = () => {
