@@ -76,7 +76,6 @@ const AudioAnimationPage = () => {
   const [voiceSelections, setVoiceSelections] = useState({});
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { audioAnimationLoader, audioAnimationData, labels } =
     useSelector((store) => store.AudioAnimation);
   const characters = audioAnimationData?.voice_map?.characters || labels;

@@ -43,10 +43,8 @@ const VisualContentTable = ({
   const [index, setIndex] = useState(0);
   const [openPromptModal, setOpenPromptModal] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState("");
-
   const { id } = useParams();
   const dispatch = useDispatch();
-  console.log(visuaiImages, "visuaiImages");
   const { generateVisualLoader } = useSelector(
     (store) => store.GenerateVisualContent
   );

@@ -64,30 +64,6 @@ const GenerateVisualContentPage = () => {
         >
           {row?.Visual_Type === "Footage" ? (
             <>
-              {/* <svg
-                width="100%"
-                height="100%"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: 5,
-                }}
-              >
-                <rect
-                  x="3"
-                  y="5"
-                  width="18"
-                  height="14"
-                  rx="2"
-                  ry="2"
-                  fill="#e0e0e0"
-                />
-                <polygon points="10,9 16,12 10,15" fill="#757575" />
-              </svg> */}
               <div
                 style={{
                   width: "100%",
@@ -125,10 +101,10 @@ const GenerateVisualContentPage = () => {
               <img
                 src={value}
                 alt="visual"
-                // onError={(e) => {
-                //   e.target.src = dummyImage;
-                //   // markImageInvalid(row.scene_id)
-                // }}
+                onError={(e) => {
+                  e.target.src = dummyImage;
+                  // markImageInvalid(row.scene_id)
+                }}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -374,10 +350,6 @@ const GenerateVisualContentPage = () => {
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        {/* {generateVisualLoader && <FullScreenGradientLoader text="loading..." />} */}
-        {/* {audioAnimationLoader && (
-          <FullScreenGradientLoader text="extracting..." />
-        )} */}
         <div className={styles.header}>
           <h2 className={styles.title}>
             {generateVisualContentData?.title || "Visual Content"}
