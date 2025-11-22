@@ -72,8 +72,8 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
 
       <Box
         sx={{
-          width: 1200, // ✅ FIXED WIDTH (change as required)
-          height: "100%", // ✅ FIXED HEIGHT
+          width: "85vw",
+          height: "85vh", // ✅ FIXED HEIGHT
           margin: "0 auto",
           position: "relative",
           borderRadius: 2,
@@ -106,26 +106,19 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
 
         {images[index]?.url && images.length > 0 ? (
           <>
-            <div
+            <img
+              key={images[index].url}
+              src={images[index].url}
+              alt="carousel-img"
               style={{
                 width: "100%",
-                height: "30%",
+                height: "100%",
+                objectFit: "fill",
+                borderRadius: 8,
               }}
-            >
-              <img
-                key={images[index].url}
-                src={images[index].url}
-                alt="carousel-img"
-                style={{
-                  width: "100%",
-                  maxHeight: "auto",
-                  // objectFit: "cover",
-                  borderRadius: 8,
-                }}
-                onLoad={() => setLoading(false)}
-                onError={handleError}
-              />
-            </div>
+              onLoad={() => setLoading(false)}
+              onError={handleError}
+            />
           </>
         ) : (
           <Typography variant="body2" color="gray">
