@@ -57,33 +57,62 @@ const MyVideosDashboard = () => {
   ];
 
   const getStatusChip = (status) => {
-    switch (status) {
-      case "Completed":
-        return (
-          <Chip label="Completed" sx={{ bgcolor: "#8BC34A", color: "#fff" }} />
-        );
-      case "Script Completed":
-        return (
-          <Chip
-            label="Script Completed"
-            sx={{ bgcolor: "#8BC34A", color: "#fff" }}
-          />
-        );
-      case "In Progress":
-        return (
-          <Chip
-            label="In Progress"
-            sx={{ bgcolor: "#2196F3", color: "#fff" }}
-          />
-        );
-      case "Failed":
-        return (
-          <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />
-        );
-      default:
-        return <Chip label={status} />;
+    // Highest priority: failed
+    if (status?.failed) {
+      return <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
     }
+
+    // Completed (videos finished)
+    if (status?.videos) {
+      return (
+        <Chip label="Completed" sx={{ bgcolor: "#8BC34A", color: "#fff" }} />
+      );
+    }
+
+    // Audio processing
+    if (status?.audio) {
+      return (
+        <Chip
+          label="Audio Progress"
+          sx={{ bgcolor: "#2196F3", color: "#fff" }}
+        />
+      );
+    }
+
+    // Visuals processing
+    if (status?.visuals) {
+      return (
+        <Chip
+          label="Visuals Progress"
+          sx={{ bgcolor: "#2196F3", color: "#fff" }}
+        />
+      );
+    }
+
+    // Prompt batch created → visuals ready
+    if (status?.prompt_batch_id) {
+      return (
+        <Chip
+          label="Visuals Progress"
+          sx={{ bgcolor: "#8BC34A", color: "#fff" }}
+        />
+      );
+    }
+
+    // Script finished
+    if (status?.script_id) {
+      return (
+        <Chip
+          label="Script Completed"
+          sx={{ bgcolor: "#8BC34A", color: "#fff" }}
+        />
+      );
+    }
+
+    // Default
+    return <Chip label="In Progress" />;
   };
+
   const handleClick = () => {
     navigate("/video-frame");
   };
@@ -94,11 +123,11 @@ const MyVideosDashboard = () => {
   const handleView = (video) => {
     if (video?.audio) {
       console.log("audio founded");
-      navigate(`/audio-animation-toolkit/${video?.script_id}`)
+      navigate(`/audio-animation-toolkit/${video?.script_id}`);
     } else if (video?.visuals) {
       console.log("visuals founnd");
-      navigate(`/generate-visual-page/${video?.script_id}`)
-    }  else if (video?.prompt_batch_id) {
+      navigate(`/generate-visual-page/${video?.script_id}`);
+    } else if (video?.prompt_batch_id) {
       navigate(`/create-visual-content/${video?.prompt_batch_id}`);
       // console.log(video?.prompt_batch_id, "prompt id founded. ")
     } else {
@@ -285,7 +314,7 @@ const MyVideosDashboard = () => {
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>
                     {/* {getStatusChip(video.status ?? "Script Completed")} */}
-                    {getStatusChip("Script Completed")}
+                    {getStatusChip(video)}
                   </TableCell>
                   <TableCell align="center">
                     <Button
