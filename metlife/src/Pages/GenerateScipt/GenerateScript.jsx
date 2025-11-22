@@ -162,6 +162,10 @@ const GenerateScript = () => {
       data_source: datasource,
       filters: data_filters,
     };
+    if (datasource === "openai") {
+      delete new_payload.filters;
+      delete new_payload.top_n;
+    }
 
     try {
       const result = await api.post("generate-script", new_payload);

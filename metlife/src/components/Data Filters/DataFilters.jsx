@@ -52,10 +52,6 @@ const DataFilters = ({ setFilter, filter }) => {
 
   return (
     <Box sx={{ width: "100%", px: 2, py: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-        Filters
-      </Typography>
-
       <Grid container spacing={3}>
         {Object.entries(allFilters).map(([key, options]) => (
           <Grid size={{ xs: 12, md: 6, lg: 6 }} key={key}>
