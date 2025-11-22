@@ -35,10 +35,10 @@ const ImageUploadPopup = ({
     if (open) {
       if (existingImages.length > 0) {
         setCurrentIndex(existingImages.length - 1); // show latest by default
-        setPreviewUrl(existingImages[existingImages.length - 1].url);
+        // setPreviewUrl(existingImages[existingImages.length - 1].url); 
       }
     }
-  }, [open, fieldData]);
+  }, [open, fieldData, existingImages]);
 
 
 

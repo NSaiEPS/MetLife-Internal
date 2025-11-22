@@ -247,7 +247,7 @@ const GenerateVisualContentPage = () => {
     const updatedRows = rows.map((item) => {
       if (item.scene_id === fieldData.scene_id) {
         const lastImage = new_images?.length
-          ? new_images[new_images.length - 1].url
+          ? new_images[new_images.length - 1]?.url
           : item.Visual_Image;
 
         return {

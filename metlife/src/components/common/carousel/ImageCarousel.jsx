@@ -25,13 +25,13 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
 
     // caroselIndex(index);
     setLoading(true);
-  }, [images]);
+  }, [images, caroselIndex, index]);
 
   useEffect(() => {
     if (images.length > 0) {
       caroselIndex(index);
     }
-  }, [index]);
+  }, [index, caroselIndex, images?.length]);
 
   if (!images || images.length === 0) {
     return (
@@ -59,7 +59,7 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
   const handleError = (e) => {
     e.target.src = dummy;
   };
-  console.log(images[index].url);
+  // console.log(images[index].url);
 
   return (
     <Box sx={{ textAlign: "center", mt: 1, position: "relative" }}>
