@@ -17,18 +17,19 @@ const CreateVisualContentPageSlice = createSlice({
       state.saveVisualContentLoader = action.payload;
     },
     setSaveVisualContentData(state, action) {
-      console.log(action);
       state.saveVisualContentData = action.payload;
     },
     updateVisualPromt(state, action) {
       let actualdata = [...state.saveVisualContentData.prompts]?.map((item) => {
-        console.log(item?.scene_id, action?.payload, "hggggggg");
         let data = { ...item };
         if (item?.scene_id == action?.payload?.scene_id) {
           data.prompt = action?.payload?.new_prompt;
           data.prompt_id = action?.payload?.prompt_id;
           if (action?.payload?.visual_type) {
             data.visual_type = action?.payload?.visual_type;
+          }
+          if (action.payload.clip_visual_type) {
+            data.clip_visual_type = action?.payload?.clip_visual_type;
           }
           if (action?.payload?.clip_prompt) {
             // data.clip_prompt = action?.payload?.clip_prompt;
@@ -57,11 +58,9 @@ export const postCreateVisualContent = (data) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
     const response = await api.post("prompt/generate", data);
-    // console.log(response?.data?.prompts, "check_visual_responnse");
     if (response?.status) {
       dispatch(setSaveVisualContentData(response?.data));
       navigateTo(`/create-visual-content/${response?.data?.prompt_batch_id}`);
-      // return response;
     }
   } catch (error) {
     console.log(error);
@@ -76,7 +75,6 @@ export const getVisualContent = (id) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
     const response = await api.get(`prompt/get/${id}`);
-    // console.log(response, "view_response");
     if (response?.status) {
       dispatch(setSaveVisualContentData(response?.data));
     }
@@ -90,7 +88,6 @@ export const getVisualContent = (id) => async (dispatch) => {
 // Edit Prompt
 export const postEditVisualContent = (data, onClose) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
-
   try {
     const response = await api.post(`prompt/edit`, data);
     toast.success(response?.data?.message || "Prompt updated successfully");
@@ -109,7 +106,6 @@ export const postRegenerateVisualContent =
     dispatch(setSaveVisualContentLoader(true));
     try {
       const response = await api.post(`prompt/regenerate`, data);
-      console.log(response, "edit_response");
       toast.success(
         response?.data?.message || "Prompt regenerated successfully"
       );
@@ -122,11 +118,6 @@ export const postRegenerateVisualContent =
           scene_id: response?.data?.scene_id,
         })
       );
-
-      // onClose(false);
-      // if (response?.status) {
-      //   dispatch(setSaveVisualContentData(response?.data));
-      // }
     } catch (error) {
       console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
@@ -141,7 +132,6 @@ export const postVisualTypeUpdate = (data) => async (dispatch) => {
   dispatch(setSaveVisualContentLoader(true));
   try {
     const response = await api.post(`prompt/clip/generate`, data);
-    console.log(response, "clip_response");
     toast.success(response?.data?.message || "Clip generated successfully");
     dispatch(
       updateVisualPromt({
@@ -149,6 +139,7 @@ export const postVisualTypeUpdate = (data) => async (dispatch) => {
         prompt_id: response?.data?.prompt?.prompt_id,
         scene_id: response?.data?.prompt?.scene_id,
         visual_type: response?.data?.prompt?.visual_type,
+        clip_visual_type: response?.data?.prompt?.clip_visual_type,
         clip_prompt: response?.data?.prompt?.clip_prompt,
       })
     );

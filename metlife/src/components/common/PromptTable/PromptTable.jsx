@@ -6,16 +6,23 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   IconButton,
-  MenuItem,
-  Select,
 } from "@mui/material";
 import styles from "./promptTable.module.css";
+import { useSelector } from "react-redux";
 
 const PromptTable = ({ columns = [], rows = [], actions = [] }) => {
+    const { saveVisualContentLoader } = useSelector(
+      (store) => store.CreateVisualContent
+    );
+    const { generateVisualLoader, } = useSelector(
+      (store) => store.GenerateVisualContent
+    );
   return (
     <>
+      {(saveVisualContentLoader || generateVisualLoader) && (
+        <FullScreenGradientLoader text="loading..." />
+      )}
       <TableContainer className={styles.tablePaper}>
         <Table className={styles.tableRoot}>
           <TableHead>

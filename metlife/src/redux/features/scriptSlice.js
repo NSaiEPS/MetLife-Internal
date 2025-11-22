@@ -35,7 +35,6 @@ export const postDeleteScene = (data, onClose) => async (dispatch) => {
   dispatch(setScriptLoader(true));
   try {
     const res = await api.post("mongo/delete_scene", data);
-    console.log(res, "check_delete");
     onClose(false);
     dispatch(
       setScriptData({

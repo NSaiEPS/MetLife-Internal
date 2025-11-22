@@ -18,7 +18,6 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
   const { saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
   );
-  console.log(fieldData, id, "check_regenerate");
   const [feedback, setFeedback] = useState("");
   const dispatch = useDispatch();
 
@@ -27,9 +26,8 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
       prompt_batch_id: id,
       scene_id: fieldData?.scene_id,
     };
-    // dispatch(postRegenerateVisualContent(payload, onClose, onCloseTempData));
-    dispatch(postRegenerateVisualContent(payload, onCloseTempData));
 
+    dispatch(postRegenerateVisualContent(payload, onCloseTempData));
   };
 
   return (

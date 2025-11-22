@@ -19,6 +19,9 @@ import { getToken, getLoggedInUserType, USERS } from "../utils";
 import Layout from "../components/layout/Layout";
 import MyVideosDashboard from "../Pages/Dashboard/Dashboard";
 import CreateVisualContentPage from "../Pages/VisualContent/CreateVisualContentPage";
+import GenerateVisualContentPage from "../Pages/VisualContent/GenerateVisualContentPage";
+import AudioAnimationPage from "../Pages/AudioAnimation/AudioAnimationPage";
+import AnimationPage from "../Pages/Animation/AnimationPage";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ element, allowedRoles = [] }) => {
@@ -88,9 +91,22 @@ export const router = createBrowserRouter([
         path: "/create-visual-content/:id",
         element: <CreateVisualContentPage />,
       },
+      // {
+      //   path: "/generate-visual-page",
+      //   // element: <GenerateVisualsPage />,
+      //   element: <GenerateVisualContentPage />,
+      // },
       {
-        path: "/generate-visual-page",
-        element: <GenerateVisualsPage />,
+        path: "/generate-visual-page/:id",
+        element: <GenerateVisualContentPage />,
+      },
+      {
+        path: "/audio-animation-toolkit/:id",
+        element: <AudioAnimationPage />,
+      },
+      {
+        path: "/animation-page/:id",
+        element: <AnimationPage />,
       },
       {
         path: "video-upload",

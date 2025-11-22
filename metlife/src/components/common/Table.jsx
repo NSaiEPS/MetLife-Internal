@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -34,26 +34,15 @@ import api, { BASE_URL } from "../../api/axios";
 import FullScreenGradientLoader from "./GradientLoader";
 import { MdDone } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  postTranslatedDataSave,
-  setRegenerated,
-  resetSaveState,
-} from "../../redux/features/saveSlice";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import DeleteScenePopup from "./popup/DeleteScenePopup";
 import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
-import { postDeleteScene } from "../../redux/features/scriptSlice";
 import { languages } from "../../utils/languageOptions";
+import SinglePromptModal from "./SinglePromptModal";
+import { postSavePrompt } from "../../redux/features/promptSlice";
 
-/**
- * props:
- *  - columns: array of column header strings
- *  - data: array of row objects where keys match column names
- *  - actions: array of { icon: ReactNode, onClick: (row) => void }
- */
 function DynamicTable({
   columns = [],
-  data = [],
-  // actions = [],
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
@@ -87,13 +76,24 @@ function DynamicTable({
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [selectedScene, setSelectedScene] = useState(null);
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
+  const [operations, setOperations] = useState(false);
+  const [openSavePrompt, setOpenSavePrompt] = useState(false);
+  const latestPrompt = tableExtraData?.latest_prompt;
+
+  const handleSavePrompt = (prompt) => {
+    const payload = {
+      prompt,
+    };
+    dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false), setOperations));
+    // setOperations(true);
+  };
   const filteredLanguages = languages.filter(
     (lang) => lang !== tableExtraData?.language
   );
-  const { saveVisualContentData, saveVisualContentLoader } = useSelector(
+  const { saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
   );
-  const { scriptLoader, scriptData } = useSelector((store) => store.Script);
+  const { scriptLoader } = useSelector((store) => store.Script);
 
   const actions = [
     {
@@ -171,6 +171,7 @@ function DynamicTable({
 
   const addScene = (data) => {
     setPopUpdata(data);
+    setOperations(true);
     if (data && data.OST) {
       setPopupTitle("Edit Scene");
     } else {
@@ -181,6 +182,7 @@ function DynamicTable({
 
   const handleDragEnd = (result) => {
     setMakeChanges(true);
+    setOperations(true);
     if (!result.destination) return;
 
     const updated = Array.from(rows);
@@ -215,7 +217,8 @@ function DynamicTable({
       });
       if (response.status === 200) {
         const data = await response.json();
-        setShowSourceData(data?.documents);
+        // setShowSourceData(data?.documents);
+        setShowSourceData(data);
       }
     } catch (error) {
       console.log(error);
@@ -242,11 +245,10 @@ function DynamicTable({
 
   const handleUpdate = (data) => {
     setMakeChanges(true);
-    console.log(data, "check-data");
+    setOperations(true);
     // // // edit
     if (data?.fieldData) {
       let newData = rows.map((item) => {
-        console.log(item);
         let child = { ...item };
         if (item?.id === data?.fieldData.id) {
           child = {
@@ -260,7 +262,6 @@ function DynamicTable({
         return child;
       });
       setRows(newData);
-      console.log(newData);
       // setRows((prev) => [
       //   prev.map((scene) => (scene.id === data?.fieldData.id ? data : scene)),
       // ]);
@@ -283,6 +284,7 @@ function DynamicTable({
   };
 
   const handleTranslateScript = async () => {
+    setOperations(true);
     const file_id = pdfId || id;
     if (!file_id) return;
     const formData = new FormData();
@@ -328,6 +330,7 @@ function DynamicTable({
   };
 
   const handleSetData = (data) => {
+    setOperations(true);
     // setActionsDisabled(true);
     setRegenerateDisabled(true);
 
@@ -342,7 +345,6 @@ function DynamicTable({
           return item;
         }
       });
-      console.log(scenes);
       setTableExtraData({ ...extraDetails, scenes: scenes });
     } else {
       setTableExtraData(data);
@@ -352,11 +354,13 @@ function DynamicTable({
 
   const handleDeleteScene = (scene) => {
     setSelectedScene(scene);
+    setOperations(true);
     setOpenDeletePopup(true);
     setMakeChanges(true);
   };
 
   const confirmDeleteScene = async (scene) => {
+    setOperations(true);
     const payload = {
       script_id: id,
       scene_id: scene.id,
@@ -376,7 +380,6 @@ function DynamicTable({
 
   const successDelete = (scene) => {
     let updatedRows = [...rows].filter((item) => item.id !== scene.id);
-    console.log(updatedRows, "Updated_rows");
 
     let Updated_rows = updatedRows.map((item, index) => {
       let data = { ...item };
@@ -388,14 +391,19 @@ function DynamicTable({
   };
 
   const handleSave = () => {
-    console.log(tableExtraData, "check_data");
-
+    setOperations(false);
     const data = {
       data: {
         ...tableExtraData,
       },
     };
     dispatch(postTranslatedDataSave(data));
+    // .then((success) => {
+    //   if (success) {
+    //     dispatch(postAudioAnimationData(dataForAudio));
+    //   }
+    // });
+
     setMakeChanges(false);
   };
 
@@ -438,6 +446,14 @@ function DynamicTable({
                 </Button>
               </span>
             </Tooltip>
+
+            <Button
+              variant="contained"
+              className={styles1.BtnSavePrompt}
+              onClick={() => setOpenSavePrompt(true)}
+            >
+              Save Prompt
+            </Button>
 
             <ShowSourcePopup
               open={openShowPopup}
@@ -640,7 +656,6 @@ function DynamicTable({
                     variant="contained"
                     className={styles.downloadBtn}
                     action={() => {
-                      // console.log("Selected Language:", selectedLang);
                       handleTranslateScript();
                       setOpen(false);
                     }}
@@ -676,6 +691,7 @@ function DynamicTable({
                 // setTableExtraData={setTableExtraData}
                 setTableExtraData={(data) => handleSetData(data)}
                 sceneId={sceneData}
+                tableData={tableExtraData}
                 // data={showSourceData}
               />
             </>
@@ -719,7 +735,8 @@ function DynamicTable({
                     }}
                     variant="contained"
                     className={styles.primaryBtn}
-                    disabled={saveTranslatedData === null}
+                    // disabled={saveTranslatedData === null }
+                    disabled={saveTranslatedData === null || operations}
                   >
                     Create Visual Content
                   </Button>
@@ -728,6 +745,15 @@ function DynamicTable({
             </>
           )}
         </Stack>
+        <SinglePromptModal
+          open={openSavePrompt}
+          onClose={() => setOpenSavePrompt(false)}
+          prompt={latestPrompt}
+          onSave={handleSavePrompt}
+          size="md"
+          extraDetails={extraDetails}
+          operations={operations}
+        />
 
         <DownloadPopup
           open={openDownloadPopup}

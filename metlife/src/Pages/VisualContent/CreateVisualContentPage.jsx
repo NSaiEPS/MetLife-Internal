@@ -8,11 +8,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import { useParams } from "react-router";
 import {
   getVisualContent,
@@ -20,28 +16,29 @@ import {
 } from "../../redux/features/createVisualSlice";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import PromptTable from "../../components/common/PromptTable/PromptTable";
+import { postGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 
 const CreateVisualContentPage = () => {
   const columns = [
-  { label: "Scene No.", key: "Scene_No." },
-  {
-    label: "Visual Type",
-    key: "Visual_Type",
-    render: (value, row) => (
-      <Select
-        value={value}
-        size="small"
-        onChange={(e) => handleVisualTypeChange(e.target.value, row)}
-        sx={{ width: 100 }}
-      >
-        <MenuItem value="image">Image</MenuItem>
-        <MenuItem value="clip">Clip</MenuItem>
-      </Select>
-    ),
-  },
+    { label: "Scene No.", key: "Scene_No." },
+    {
+      label: "Visual Type",
+      key: "Visual_Type",
+      render: (value, row) => (
+        <Select
+          value={value}
+          size="small"
+          onChange={(e) => handleVisualTypeChange(e.target.value, row)}
+          sx={{ width: 120 }}
+        >
+          <MenuItem value="image">Image</MenuItem>
+          <MenuItem value="clip">Footage</MenuItem>
+        </Select>
+      ),
+    },
 
-  { label: "Visual Description", key: "Visual_Description" },
-];
+    { label: "Visual Description", key: "Visual_Description" },
+  ];
 
   const actions = [
     {
@@ -53,13 +50,15 @@ const CreateVisualContentPage = () => {
     {
       icon: <img src={reuse} />,
       onClick: (row) => {
-        console.log(row, "row_data_check");
         handlePromptRegenerate(row);
       },
     },
   ];
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store) => store.CreateVisualContent
+  );
+  const { generateVisualLoader, generateVisualContentData } = useSelector(
+    (store) => store.GenerateVisualContent
   );
   const script_id = saveVisualContentData?.script_id;
   const dispatch = useDispatch();
@@ -83,13 +82,11 @@ const CreateVisualContentPage = () => {
 
   const settingDataInRows = (reqData) => {
     let newdata = reqData?.map((item, index) => {
-      console.log(item, "check_item");
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type === "clip" ? "clip" : "image",
-        // Visual_Description:  item?.prompt ?? "-",
+        Visual_Type: item?.clip_visual_type === "clip" ? "clip" : "image",
         Visual_Description:
-          item?.visual_type === "clip"
+          item?.clip_visual_type === "clip"
             ? item?.clip_prompt ?? "-"
             : item?.prompt ?? "-",
         scene_id: item?.scene_id ?? "",
@@ -123,7 +120,6 @@ const CreateVisualContentPage = () => {
   };
 
   const handleUpdate = (data) => {
-    console.log(data, "check_updated_data");
     if (data?.fieldData) {
       const newData = rows.map((item) => {
         if (item?.scene_id === data.fieldData.scene_id) {
@@ -139,8 +135,6 @@ const CreateVisualContentPage = () => {
   };
 
   const handleVisualTypeChange = (value, data) => {
-    console.log(data, "check_visual");
-
     if (value === "image") {
       const updatedRows = rows.map((item) =>
         item.scene_id === data.scene_id
@@ -175,13 +169,24 @@ const CreateVisualContentPage = () => {
     dispatch(postVisualTypeUpdate(payload));
   };
 
+  const handleGenerate = async () => {
+    const data = saveVisualContentData;
+    const payload = data?.prompts?.map(item => {
+      return {
+        prompt:item.visual_type === "image" ? item?.prompt
+        : item.clip_visual_type === "clip" ? item.clip_prompt : null
+      }
+    })
+    dispatch(postGenerateVisualContentImage(data));
+  };
+
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        {saveVisualContentLoader && (
+        {/* {(saveVisualContentLoader || generateVisualLoader) && (
           <FullScreenGradientLoader text="loading..." />
-        )}
+        )} */}
         <div className={styles.header}>
           <h2 className={styles.title}>
             {saveVisualContentData?.title || "Visual Content"}
@@ -191,12 +196,7 @@ const CreateVisualContentPage = () => {
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length > 0 ? (
             <>
-      
-              <PromptTable
-                columns={columns}
-                rows={rows}
-                actions={actions}
-               />
+              <PromptTable columns={columns} rows={rows} actions={actions} />
               {popup.type === "edit" && (
                 <EditPromptPopup
                   open={true}
@@ -218,14 +218,19 @@ const CreateVisualContentPage = () => {
               )}
 
               <div className={styles.footerButtons}>
-                <Button variant="contained" className={styles.primaryBtn}>
+                <Button
+                  onClick={handleGenerate}
+                  // disabled={generateVisualLoader}
+                  variant="contained"
+                  className={styles.primaryBtn}
+                >
                   Generate Visual
                 </Button>
               </div>
             </>
           ) : (
             <>
-              <NoDataMessage filter={false} />
+              <NoDataMessage filter={false} loading={saveVisualContentLoader} />
             </>
           )}
         </div>

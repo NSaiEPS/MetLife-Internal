@@ -64,12 +64,10 @@ const ScriptPage = () => {
     setLoading(true);
     try {
       const result = await api.get(`scripts/${id}`);
-      console.log("Video created successfully:", result);
       if (result?.status == "200") {
         setSceneData(result?.data);
       }
     } catch (e) {
-      console.log(e);
       showToast.error(e?.detail);
     } finally {
       setLoading(false);
@@ -94,11 +92,12 @@ const ScriptPage = () => {
         sceneHandle={true} />
 
       <div className={styles.tableContainer}>
-        {sceneData?.scenes?.length && !loading ? (
+        {sceneData?.scenes?.length && !loading && sceneData.status ? (
           <DynamicTable
             setMakeChanges={setMakeChanges}
             columns={columns}
             extraDetails={sceneData}
+            makeChanges={makeChanges}
           />
         ) : (
           <NoDataMessage filter={false} loading={loading} />

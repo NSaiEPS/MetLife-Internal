@@ -1,5 +1,11 @@
 import React from "react";
-import { FormControl, Select, MenuItem, Typography } from "@mui/material";
+import {
+  FormControl,
+  Select,
+  MenuItem,
+  Typography,
+  Tooltip,
+} from "@mui/material";
 import styles from "./select.module.css"; // Import CSS Module
 
 const SelectComp = ({
@@ -10,6 +16,7 @@ const SelectComp = ({
   placeholder = "Select",
   fullWidth = true,
   disabled = false,
+  style = false,
 }) => {
   // Find the label of the currently selected value
   const selectedOption = options.find((opt) => opt.value === value);
@@ -19,13 +26,14 @@ const SelectComp = ({
       className={`${styles.selectWrapper} ${fullWidth ? styles.fullWidth : ""}`}
     >
       {/* Label outside the select box */}
-      {label && <Typography className={styles.selectLabel}>{label}</Typography>}
 
-      <FormControl
-        fullWidth={fullWidth}
-        variant="outlined"
-        size="medium"
-      >
+      {label && (
+        <Typography sx={{ mb: style ? 1 : 0 }} className={styles.selectLabel}>
+          {label}
+        </Typography>
+      )}
+
+      <FormControl fullWidth={fullWidth} variant="outlined" size="medium">
         <Select
           displayEmpty
           value={value ?? ""}
@@ -39,6 +47,10 @@ const SelectComp = ({
           }
           className={styles.selectBox}
           disabled={disabled}
+          style={{
+            opacity: disabled ? 0.5 : 1,
+            cursor: disabled ? "not-allowed" : "pointer",
+          }}
         >
           {/* Placeholder is not included as an option now, 
               since renderValue handles it */}
