@@ -52,7 +52,7 @@ const AnimationPage = () => {
     dispatch(getMediaTransitions());
     dispatch(getAudioDetails(id));
     dispatch(getVideosList(id));
-  }, [dispatch, id, videoAnimationData]);
+  }, [dispatch, id]);
 
   const handleAllSubmit = () => {
     const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);

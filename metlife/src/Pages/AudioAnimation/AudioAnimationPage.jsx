@@ -89,7 +89,7 @@ const AudioAnimationPage = () => {
   useEffect(() => {
     dispatch(getLabels(id));
     dispatch(getAudioDetails(id));
-  }, [id, dispatch, audioAnimationData]);
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (audioAnimationData?.custom_voice_map) {
