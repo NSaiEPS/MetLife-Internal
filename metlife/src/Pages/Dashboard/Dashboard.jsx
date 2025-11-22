@@ -118,18 +118,27 @@ const MyVideosDashboard = () => {
   }, []);
 
   const handleView = (video) => {
+    if (video?.videos) {
+      console.log("audio founded");
+      navigate(`/animation-page/${video?.script_id}`);
+      return;
+    }
     if (video?.audio) {
       console.log("audio founded");
       navigate(`/audio-animation-toolkit/${video?.script_id}`);
+      return;
     } else if (video?.visuals) {
       console.log("visuals founnd");
       navigate(`/generate-visual-page/${video?.script_id}`);
+      return;
     } else if (video?.prompt_batch_id) {
       navigate(`/create-visual-content/${video?.prompt_batch_id}`);
+      return;
       // console.log(video?.prompt_batch_id, "prompt id founded. ")
     } else {
       // console.log(video?.script_id, "script id founded. ")
       navigate(`/scenes/${video?.script_id}`);
+      return;
     }
   };
 
