@@ -52,7 +52,7 @@ const AnimationPage = () => {
     dispatch(getMediaTransitions());
     dispatch(getAudioDetails(id));
     dispatch(getVideosList(id));
-  }, [dispatch, id]);
+  }, [dispatch, id, videoAnimationData]);
 
   const handleAllSubmit = () => {
     const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
@@ -103,11 +103,6 @@ const AnimationPage = () => {
     console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
-  //   if(audioAnimationLoader) {
-  // return (
-  //   <FullScreenGradientLoader text="loading..." />
-  // )
-  //   }
 
   return (
     <>
