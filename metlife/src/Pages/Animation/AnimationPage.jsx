@@ -24,12 +24,14 @@ import {
   getAudioDetails,
   getMediaTransitions,
   getVideosList,
+  postGenerateFullVideo,
   postGenerateVideoBatch,
 } from "../../redux/features/audioAnimationSlice";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useParams } from "react-router";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import GeneratedVideoPlayer from "../../components/common/GeneratedVideo/GeneratedVideoPlayer";
+import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
 
 const animationOptions = [
   { label: "Fade In", value: "fadeIn" },
@@ -45,14 +47,17 @@ const AnimationPage = () => {
     audioAnimationData,
     animationLabels,
     videoAnimationData,
+    generatedVideoData,
   } = useSelector((store) => store.AudioAnimation);
   const { id } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getMediaTransitions());
     dispatch(getAudioDetails(id));
-    dispatch(getVideosList(id));
+    // dispatch(getVideosList(id));
   }, [dispatch, id]);
+
+  console.log(generatedVideoData, "getapi");
 
   const handleAllSubmit = () => {
     const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
@@ -103,6 +108,15 @@ const AnimationPage = () => {
     console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
+
+  const generateVideo = () => {
+    // console.log(id, 'chekc_id')
+    dispatch(postGenerateFullVideo(id));
+  };
+
+  console.log(generatedVideoData, "check_generated_video");
+  console.log(videoAnimationData, "videoAnimationData");
+
 
   return (
     <>
@@ -224,6 +238,7 @@ const AnimationPage = () => {
                       </Paper>
                     </Grid>
                   </Grid>
+                  {/* Available videos */}
                   {videoAnimationData && videoAnimationData?.length > 0 ? (
                     <>
                       <Typography
@@ -249,6 +264,7 @@ const AnimationPage = () => {
                       </Grid>
                     </>
                   ) : (
+                    videoAnimationData?.length > 0 &&
                     <>
                       <NoDataMessage
                         filter={false}
@@ -256,27 +272,51 @@ const AnimationPage = () => {
                       />
                     </>
                   )}
+
+                  {/* Full Video */}
+                  {generatedVideoData ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Generated Video
+                      </Typography>
+
+                      <FullVideoPlayer video_url={generatedVideoData?.url} />
+                    </>
+                  ) : (
+                    generatedVideoData &&
+                    <>
+                      <NoDataMessage
+                        filter={false}
+                        // loading={audioAnimationLoader}
+                      />
+                    </>
+                  )}
+
                   <div className={styles.actions}>
                     <ButtonComp
                       label={"Alternative Scenes"}
                       sx={{ backgroundColor: "#99d539", textTransform: "none" }}
                       action={handleAlternateSubmit}
-                      disabled={audioAnimationLoader}
+                      disabled={audioAnimationLoader || generatedVideoData || videoAnimationData}
                     />
                     <ButtonComp
                       label={"Apply To All"}
                       sx={{ textTransform: "none" }}
                       action={handleAllSubmit}
-                      disabled={audioAnimationLoader}
+                      disabled={audioAnimationLoader || generatedVideoData || videoAnimationData}
                     />
                   </div>
                 </div>
-                {/* <div className={styles.actions_second}>
+                <div className={styles.actions_second}>
                   <ButtonComp
                     sx={{ textTransform: "none", width: "200px" }}
                     label={"Generate Video"}
+                    action={generateVideo}
+                    disabled={audioAnimationLoader || !videoAnimationData}
                   />
-                </div> */}
+                </div>
               </div>
             </main>
           </>
@@ -285,7 +325,6 @@ const AnimationPage = () => {
             <NoDataMessage filter={false} loading={true} />
           </>
         )}
-
         <Footer />
       </Box>
     </>

@@ -196,7 +196,10 @@ const CreateVisualContentPage = () => {
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length > 0 ? (
             <>
-              <PromptTable columns={columns} rows={rows} actions={actions} />
+              <PromptTable
+               columns={columns}
+                rows={rows}
+                 actions={actions} />
               {popup.type === "edit" && (
                 <EditPromptPopup
                   open={true}

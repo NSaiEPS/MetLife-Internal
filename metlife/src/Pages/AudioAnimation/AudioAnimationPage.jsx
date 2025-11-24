@@ -216,14 +216,9 @@ const AudioAnimationPage = () => {
 
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                           <SelectWithAudio
-                            // options={voiceOptions}
-                            // options={voiceOptions.map((opt) => ({
-                            //   ...opt,
-                            //   disabled: voiceSelections[charName] !== opt.value,
-                            // }))}
                             options={
                               audioAnimationData?.scenes === null
-                                ? voiceOptions // First time → all options enabled
+                                ? voiceOptions
                                 : voiceOptions.map((opt) => ({
                                     ...opt,
                                     disabled:
@@ -270,12 +265,14 @@ const AudioAnimationPage = () => {
                       </Grid>
                     </>
                   ) : (
-                    <>
-                      <NoDataMessage
-                        filter={false}
-                        loading={audioAnimationLoader}
-                      />
-                    </>
+                    audioAnimationData?.scenes?.length > 0 && (
+                      <>
+                        <NoDataMessage
+                          filter={false}
+                          loading={audioAnimationLoader}
+                        />
+                      </>
+                    )
                   )}
 
                   <div className={styles.actions}>

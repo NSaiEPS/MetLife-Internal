@@ -71,16 +71,6 @@ const ScriptPage = () => {
       showToast.error(e?.detail);
     } finally {
       setLoading(false);
-      // setSceneData({
-      //   scenes: [
-      //     {
-      //       description: "description",
-      //       on_screen_text: "on_screen_text",
-      //       scene_type: "narrative",
-      //       scene_id: "56yuhjbvew67uikmhuik",
-      //     },
-      //   ],
-      // });
     }
   };
 

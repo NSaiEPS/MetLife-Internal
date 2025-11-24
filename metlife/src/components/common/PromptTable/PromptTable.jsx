@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import styles from "./promptTable.module.css";
 import { useSelector } from "react-redux";
+import FullScreenGradientLoader from "../GradientLoader";
 
 const PromptTable = ({ columns = [], rows = [], actions = [] }) => {
     const { saveVisualContentLoader } = useSelector(

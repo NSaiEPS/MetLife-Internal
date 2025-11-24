@@ -84,7 +84,9 @@ function DynamicTable({
     const payload = {
       prompt,
     };
-    dispatch(postSavePrompt(id, payload, () => setOpenSavePrompt(false), setOperations));
+    dispatch(
+      postSavePrompt(id, payload, () => setOpenSavePrompt(false), setOperations)
+    );
     // setOperations(true);
   };
   const filteredLanguages = languages.filter(
@@ -411,14 +413,73 @@ function DynamicTable({
     dispatch(postCreateVisualContent(tableExtraData));
   };
 
+  const handleVersion = async (id) => {
+    // console.log(id, "Id found");
+    setLoader(true);
+    try {
+      const result = await api.get(`scripts/${id}`);
+      // setTableExtraData(result?.data)
+      console.log(result);
+    } catch (e) {
+      showToast.error(e?.detail);
+    } finally {
+      setLoader(false);
+    }
+  };
+  console.log(tableExtraData, "tableExtraData");
+
   return (
     <>
       <div className={styles1.header}>
         <h2 className={styles1.title}>
           {tableExtraData?.title || visualContentTitle || "Your Script"}
         </h2>
+
         {showDragAndActions && features && (
           <div className={styles1.headerButtons}>
+            <Tooltip
+              title={
+                !tableExtraData?.previous_version_id
+                  ? "Does not have any previous version"
+                  : ""
+              }
+              disableHoverListener={!tableExtraData?.previous_version_id}
+              arrow
+            >
+              <span>
+                <Button
+                  variant="outlined"
+                  className={styles1.outlineBtn}
+                  onClick={() =>
+                    handleVersion(tableExtraData?.previous_version_id)
+                  }
+                  disabled={!tableExtraData?.previous_version_id}
+                >
+                  ← Backward
+                </Button>
+              </span>
+            </Tooltip>
+            <Tooltip
+              title={
+                !tableExtraData?.next_version_id
+                  ? "Does not have any next version"
+                  : ""
+              }
+              disableHoverListener={!tableExtraData?.next_version_id}
+              arrow
+            >
+              <span>
+                <Button
+                  variant="outlined"
+                  className={styles1.outlineBtn}
+                  onClick={() => handleVersion(tableExtraData?.next_version_id)}
+                  disabled={!tableExtraData?.next_version_id}
+                >
+                  Forward →
+                </Button>
+              </span>
+            </Tooltip>
+
             <Button
               variant="outlined"
               className={styles1.outlineBtn}
