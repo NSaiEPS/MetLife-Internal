@@ -56,13 +56,11 @@ const AnimationPage = () => {
     dispatch(getAudioDetails(id));
     // dispatch(getVideosList(id));
   }, [dispatch, id]);
-  console.log(videoAnimationData, "checkAnimationnData")
+  console.log(videoAnimationData, "checkAnimationnData");
 
   useEffect(() => {
-    if (id && videoAnimationData) {
-      dispatch(getVideosList(id));
-    }
-  }, [dispatch, id, videoAnimationData]);
+    dispatch(getVideosList(id));
+  }, [dispatch, id]);
 
   const handleAllSubmit = () => {
     const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
