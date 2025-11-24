@@ -169,7 +169,7 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
     console.log(res, "audioResCheck");
     if (res.status) {
       dispatch(setAudioAnimationData(res?.data?.results));
-      dispatch(getVideosList(data.script_id));
+      // dispatch(getVideosList(data.script_id));
       // toast.success("Video generated successfully");
     }
   } catch (error) {

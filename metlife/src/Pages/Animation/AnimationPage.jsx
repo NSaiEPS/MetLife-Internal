@@ -56,8 +56,13 @@ const AnimationPage = () => {
     dispatch(getAudioDetails(id));
     // dispatch(getVideosList(id));
   }, [dispatch, id]);
+  console.log(videoAnimationData, "checkAnimationnData")
 
-  console.log(generatedVideoData, "getapi");
+  useEffect(() => {
+    if (id && videoAnimationData) {
+      dispatch(getVideosList(id));
+    }
+  }, [dispatch, id, videoAnimationData]);
 
   const handleAllSubmit = () => {
     const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
@@ -89,7 +94,6 @@ const AnimationPage = () => {
       if (scene?.alternative_scene_id) {
         idsToProcess.push(scene.alternative_scene_id);
       }
-
       return idsToProcess;
     });
 
@@ -99,25 +103,19 @@ const AnimationPage = () => {
       end_transition: exitAnimation,
       // ost: "",
     }));
-
     const payload = {
       script_id: id,
       scenes: scenesPayload,
     };
-
     console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
 
   const generateVideo = () => {
-    // console.log(id, 'chekc_id')
     dispatch(postGenerateFullVideo(id));
   };
-
-  console.log(generatedVideoData, "check_generated_video");
-  console.log(videoAnimationData, "videoAnimationData");
-
-
+  // console.log(generatedVideoData, "check_generated_video");
+  // console.log(videoAnimationData, "videoAnimationData");
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -264,13 +262,14 @@ const AnimationPage = () => {
                       </Grid>
                     </>
                   ) : (
-                    videoAnimationData?.length > 0 &&
-                    <>
-                      <NoDataMessage
-                        filter={false}
-                        loading={audioAnimationLoader}
-                      />
-                    </>
+                    videoAnimationData?.length > 0 && (
+                      <>
+                        <NoDataMessage
+                          filter={false}
+                          loading={audioAnimationLoader}
+                        />
+                      </>
+                    )
                   )}
 
                   {/* Full Video */}
@@ -285,13 +284,14 @@ const AnimationPage = () => {
                       <FullVideoPlayer video_url={generatedVideoData?.url} />
                     </>
                   ) : (
-                    generatedVideoData &&
-                    <>
-                      <NoDataMessage
-                        filter={false}
-                        // loading={audioAnimationLoader}
-                      />
-                    </>
+                    generatedVideoData && (
+                      <>
+                        <NoDataMessage
+                          filter={false}
+                          // loading={audioAnimationLoader}
+                        />
+                      </>
+                    )
                   )}
 
                   <div className={styles.actions}>
@@ -299,13 +299,21 @@ const AnimationPage = () => {
                       label={"Alternative Scenes"}
                       sx={{ backgroundColor: "#99d539", textTransform: "none" }}
                       action={handleAlternateSubmit}
-                      disabled={audioAnimationLoader || generatedVideoData || videoAnimationData}
+                      disabled={
+                        audioAnimationLoader ||
+                        generatedVideoData ||
+                        videoAnimationData
+                      }
                     />
                     <ButtonComp
                       label={"Apply To All"}
                       sx={{ textTransform: "none" }}
                       action={handleAllSubmit}
-                      disabled={audioAnimationLoader || generatedVideoData || videoAnimationData}
+                      disabled={
+                        audioAnimationLoader ||
+                        generatedVideoData ||
+                        videoAnimationData
+                      }
                     />
                   </div>
                 </div>
