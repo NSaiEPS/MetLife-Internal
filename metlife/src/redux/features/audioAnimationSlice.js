@@ -188,6 +188,8 @@ export const getVideosList = (id) => async (dispatch) => {
     console.log(res, "videoResCheck");
     if (res.status) {
       dispatch(setVideoAnimationData(res?.data?.results));
+      dispatch(setGeneratedVideoData(res?.data?.final_video));
+
       // toast.success("Video generated successfully");
     }
   } catch (error) {
