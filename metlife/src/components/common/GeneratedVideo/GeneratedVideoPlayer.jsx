@@ -33,9 +33,15 @@
 
 // export default GeneratedVideoPlayer;
 
-
 import { useState } from "react";
-import { Card, CardContent, Typography, IconButton, Modal, Box } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  IconButton,
+  Modal,
+  Box,
+} from "@mui/material";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -53,7 +59,7 @@ const style = {
   p: 2,
 };
 
-const GeneratedVideoPlayer = ({ description, s3_url }) => {
+const GeneratedVideoPlayer = ({ description, s3_url, index }) => {
   const [open, setOpen] = useState(false);
 
   const downloadVideo = () => {
@@ -66,9 +72,11 @@ const GeneratedVideoPlayer = ({ description, s3_url }) => {
   return (
     <>
       {/* --- Card --- */}
-      <Card sx={{  borderRadius: 3 }}>
+      <Card sx={{ borderRadius: 3 }}>
         <CardContent>
-          <Typography sx={{ fontWeight: 500 }}>Generated Video</Typography>
+          <Typography sx={{ fontWeight: 500 }}>
+            Scene {index + 1} Generated Video
+          </Typography>
 
           {/* <Typography sx={{ fontSize: "14px", color: "#555", mt: 1 }}>
             {description}
@@ -105,4 +113,3 @@ const GeneratedVideoPlayer = ({ description, s3_url }) => {
 };
 
 export default GeneratedVideoPlayer;
-
