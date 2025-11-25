@@ -97,7 +97,7 @@ const GenerateScript = () => {
   const [audience, setAudience] = useState("");
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("English");
-  const [duration, setDuration] = useState("3 minutes");
+  const [duration, setDuration] = useState("2 minutes");
   const [topn, setTopn] = useState("");
   const [model, setModel] = useState("gpt-4o-mini");
   const [datasource, setDatasource] = useState("");
@@ -163,7 +163,7 @@ const GenerateScript = () => {
       filters: data_filters,
     };
     if (datasource === "openai") {
-      delete new_payload.filters;
+      // delete new_payload.filters;
       delete new_payload.top_n;
     }
 
@@ -175,7 +175,7 @@ const GenerateScript = () => {
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
           toast.error(
-            result?.data?.logline || "Something went wrong while generating!"
+            result?.data?.detail || "Something went wrong while generating!"
           );
         }
       } else {

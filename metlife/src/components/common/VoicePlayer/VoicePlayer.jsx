@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
 import { PlayArrow, Pause, Download } from "@mui/icons-material";
 
-const VoicePlayer = ({ description, s3_url }) => {
+const VoicePlayer = ({ description, s3_url, index }) => {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
 
@@ -54,7 +54,7 @@ const VoicePlayer = ({ description, s3_url }) => {
 
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 0.5 }}>
-            Scene Audio
+            Scene {index + 1} Audio
           </Typography>
 
           <Typography
