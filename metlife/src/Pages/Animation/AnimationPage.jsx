@@ -253,6 +253,7 @@ const AnimationPage = () => {
                             sx={{ width: "100%" }}
                           >
                             <GeneratedVideoPlayer
+                              index={idx}
                               s3_url={scene?.final_video?.url}
                             />
                           </Grid>
