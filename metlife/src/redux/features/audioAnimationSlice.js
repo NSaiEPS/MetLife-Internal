@@ -168,13 +168,13 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
     const res = await api.post(`media/generate-video-batch`, data);
     console.log(res, "audioResCheck");
     if (res.status) {
-      dispatch(setAudioAnimationData(res?.data?.results));
+      dispatch(setVideoAnimationData(res?.data?.results));
       // dispatch(getVideosList(data.script_id));
       // toast.success("Video generated successfully");
     }
   } catch (error) {
     console.log(error);
-    toast.error("Something went wrong!");
+    // toast.error("Something went wrong!");
   } finally {
     dispatch(setAudioAnimationLoader(false));
   }
@@ -194,7 +194,7 @@ export const getVideosList = (id) => async (dispatch) => {
     }
   } catch (error) {
     console.log(error);
-    toast.error("Something went wrong!");
+    // toast.error( "Something went wrong!");
   } finally {
     dispatch(setAudioAnimationLoader(false));
   }

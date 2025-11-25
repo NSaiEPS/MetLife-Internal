@@ -80,11 +80,11 @@ const AnimationPage = () => {
 
   const handleAlternateSubmit = () => {
     const scenesData = audioAnimationData?.scenes || [];
-    const selectedPrimaryScenes = scenesData.filter(
-      (_, index) => index % 2 === 0
-    );
+    // const selectedPrimaryScenes = scenesData.filter(
+    //   (_, index) => index % 2 === 0
+    // );
 
-    const allSceneIds = selectedPrimaryScenes.flatMap((scene) => {
+    const allSceneIds = scenesData.flatMap((scene) => {
       const idsToProcess = [];
       if (scene?.scene_id) {
         idsToProcess.push(scene.scene_id);
@@ -95,10 +95,10 @@ const AnimationPage = () => {
       return idsToProcess;
     });
 
-    const scenesPayload = allSceneIds.map((id) => ({
+    const scenesPayload = allSceneIds.map((id, index) => ({
       scene_id: id,
-      start_transition: entryAnimation,
-      end_transition: exitAnimation,
+      start_transition: index % 2 === 0 ? entryAnimation : "none",
+      end_transition: index % 2 === 0 ? exitAnimation : "none",
       // ost: "",
     }));
     const payload = {
