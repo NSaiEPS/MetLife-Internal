@@ -257,6 +257,7 @@ const AudioAnimationPage = () => {
                             sx={{ width: "100%" }}
                           >
                             <VoicePlayer
+                              index={idx}
                               description={scene.description}
                               s3_url={scene.final_audio_s3_url}
                             />

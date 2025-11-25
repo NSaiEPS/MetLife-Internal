@@ -54,7 +54,7 @@ const RegenerateScriptPopup = ({
       showToast.error("Please give feedback");
     } else if (!model) {
       showToast.error("Please select model");
-    } else if (!topn && !sceneId?.id) {
+    } else if (!topn && !sceneId?.id && tableData?.data_source != "openai") {
       showToast.error("Please select TopN");
     } else {
       apiCall();
@@ -69,6 +69,9 @@ const RegenerateScriptPopup = ({
       top_n: topn,
       model: model,
     };
+    if (!topn) {
+      delete new_payload.top_n;
+    }
     if (sceneId?.id) {
       delete new_payload.top_n;
     }
@@ -154,7 +157,13 @@ const RegenerateScriptPopup = ({
             multiline
             rows={3}
             fullWidth
-            placeholder="Enter your feedback here..."
+            placeholder="• Description needs more context.
+• Make it more engaging.
+• Some ideas feel underdeveloped. Add examples or clarify key points.
+• The tone should be more professional and smooth.
+• The tone should be more professional and smooth.
+
+ "
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             sx={{ mb: 3 }}
@@ -199,8 +208,12 @@ const RegenerateScriptPopup = ({
                   Top N
                 </Typography>
                 <Tooltip
-                title={tableData?.data_source == "openai" ? "OpenAI does not have any source" : ""}
-                arrow
+                  title={
+                    tableData?.data_source == "openai"
+                      ? "OpenAI does not have any source"
+                      : ""
+                  }
+                  arrow
                 >
                   <span>
                     <SelectComp
