@@ -112,7 +112,7 @@ const AnimationPage = () => {
   const generateVideo = () => {
     dispatch(postGenerateFullVideo(id));
   };
-  // console.log(generatedVideoData, "check_generated_video");
+  console.log(generatedVideoData, "check_generated_video");
   // console.log(videoAnimationData, "videoAnimationData");
   return (
     <>
@@ -282,7 +282,7 @@ const AnimationPage = () => {
                       <FullVideoPlayer video_url={generatedVideoData?.url} />
                     </>
                   ) : (
-                    generatedVideoData && (
+                    !generatedVideoData && (
                       <>
                         <NoDataMessage
                           filter={false}

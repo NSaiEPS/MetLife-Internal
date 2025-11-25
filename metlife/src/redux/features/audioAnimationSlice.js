@@ -219,19 +219,19 @@ export const postGenerateFullVideo = (id) => async (dispatch) => {
 };
 
 // Get Generate full video
-export const getGeneratedFullVideo = (id) => async (dispatch) => {
-  dispatch(setAudioAnimationLoader(true));
-  try {
-    const res = await api.get(`media/generate-video-full/${id}`);
-    console.log(res, "videoResponseCheck");
-    if (res.status) {
-      dispatch(setGeneratedVideoData(res?.data?.full_video));
-      // toast.success("Video generated successfully");
-    }
-  } catch (error) {
-    console.log(error);
-    toast.error("Something went wrong!");
-  } finally {
-    dispatch(setAudioAnimationLoader(false));
-  }
-};
+// export const getGeneratedFullVideo = (id) => async (dispatch) => {
+//   dispatch(setAudioAnimationLoader(true));
+//   try {
+//     const res = await api.get(`media/generate-video-full/${id}`);
+//     console.log(res, "videoResponseCheck");
+//     if (res.status) {
+//       dispatch(setGeneratedVideoData(res?.data?.full_video));
+//       // toast.success("Video generated successfully");
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     toast.error("Something went wrong!");
+//   } finally {
+//     dispatch(setAudioAnimationLoader(false));
+//   }
+// };
