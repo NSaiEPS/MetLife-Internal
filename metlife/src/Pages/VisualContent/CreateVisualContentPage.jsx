@@ -9,7 +9,7 @@ import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, MenuItem, Select } from "@mui/material";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   getVisualContent,
   postVisualTypeUpdate,
@@ -17,6 +17,7 @@ import {
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import PromptTable from "../../components/common/PromptTable/PromptTable";
 import { postGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 const CreateVisualContentPage = () => {
   const columns = [
@@ -62,6 +63,7 @@ const CreateVisualContentPage = () => {
   );
   const script_id = saveVisualContentData?.script_id;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const { id } = useParams();
   const [popup, setPopup] = useState({
@@ -169,37 +171,71 @@ const CreateVisualContentPage = () => {
     dispatch(postVisualTypeUpdate(payload));
   };
 
+  console.log(saveVisualContentData);
+
   const handleGenerate = async () => {
-    const data = saveVisualContentData;
-    const payload = data?.prompts?.map(item => {
-      return {
-        prompt:item.visual_type === "image" ? item?.prompt
-        : item.clip_visual_type === "clip" ? item.clip_prompt : null
+    const prompts = saveVisualContentData?.prompts;
+    const manipulatedPrompts = prompts?.map((item) => {
+      const obj = { ...item };
+
+      if (item.clip_visual_type === "clip") {
+        delete obj.prompt;
+        delete obj.visual_type;
+      } else if (item.visual_type === "image") {
+        delete obj.clip_prompt;
+        delete obj.clip_visual_type;
       }
-    })
-    dispatch(postGenerateVisualContentImage(data));
+      return obj;
+    });
+
+    const finalPayload = {
+      script_id: saveVisualContentData?.script_id,
+      prompt_batch_id: saveVisualContentData?.prompt_batch_id,
+      title: saveVisualContentData?.title,
+      total_scenes: saveVisualContentData?.total_scenes,
+      processed_scenes: saveVisualContentData?.processed_scenes,
+      prompts: manipulatedPrompts,
+    };
+
+    console.log(finalPayload, "payload");
+    // const payload = data?.prompts?.map((item) => {
+    //   return {
+    //     ...item,
+    //     prompt:
+    //       item.visual_type === "image"
+    //         ? item?.prompt
+    //         : item.clip_visual_type === "clip"
+    //         ? item.clip_prompt
+    //         : null,
+    //   };
+    // });
+    dispatch(postGenerateVisualContentImage(finalPayload));
   };
 
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        {/* {(saveVisualContentLoader || generateVisualLoader) && (
-          <FullScreenGradientLoader text="loading..." />
-        )} */}
-        <div className={styles.header}>
-          <h2 className={styles.title}>
-            {saveVisualContentData?.title || "Visual Content"}
-          </h2>
+        <div className={styles.innerContainer}>
+          <div className={styles.header}>
+            <h2 className={styles.title}>
+              {saveVisualContentData?.title || "Visual Content"}
+            </h2>
+            <Button
+              className={styles.icon}
+              onClick={() => {
+                navigate(`/scenes/${id}`);
+              }}
+            >
+              <IoArrowBackCircleOutline size={30} /> Back
+            </Button>
+          </div>
         </div>
 
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length > 0 ? (
             <>
-              <PromptTable
-               columns={columns}
-                rows={rows}
-                 actions={actions} />
+              <PromptTable columns={columns} rows={rows} actions={actions} />
               {popup.type === "edit" && (
                 <EditPromptPopup
                   open={true}

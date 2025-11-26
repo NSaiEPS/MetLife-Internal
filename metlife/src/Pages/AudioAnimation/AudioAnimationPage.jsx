@@ -35,37 +35,46 @@ import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
 import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import { navigateTo } from "../../utils/navigate";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
+import voice1 from "../../assets/voice_preview_en-US-DavisNeural.wav"
+import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
+import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
+import voice4 from "../../assets/voice_preview_en-US-SaraNeural (1).wav";
+import voice5 from "../../assets/voice_preview_en-US-AriaNeural.wav";
+
+
+
+
 const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
 const voiceOptions = [
   {
     label: "EN-US Jenny Neural",
     value: "en-US-JennyNeural",
     s3_url:
-      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-JennyNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=0bef7d38b32a70d6f814e2cff7d670e14770a62ddff951b567c810636b0ad7a6",
+      voice1,
   },
   {
     label: "EN-US Aria Neural",
     value: "en-US-AriaNeural",
     s3_url:
-      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-AriaNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=95ed5ffe514efd3ff03b85b5d86815005155cff2d87c81948526111c61734398",
+      voice2,
   },
   {
     label: "EN-US Sara Neural",
     value: "en-US-SaraNeural",
     s3_url:
-      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-SaraNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=c176b51459777608daa17cd698f0f6fbde7c9cc4fb261eca15e2c635ba6235ec",
+      voice3,
   },
   {
     label: "EN-US Guy Neural",
     value: "en-US-GuyNeural",
     s3_url:
-      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-GuyNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085917Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=fb45dcc46e012322dc245811ec4bf925108adcc9caaf715d9332f68512aed73a",
+      voice4,
   },
   {
     label: "EN-US Davis Neural",
     value: "en-US-DavisNeural",
     s3_url:
-      "https://surfai-oneframe.s3.amazonaws.com/audio/previews/voice_preview_en-US-DavisNeural.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASKVBYMSEZLSHJLPJ%2F20251119%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20251119T085918Z&X-Amz-Expires=518400&X-Amz-SignedHeaders=host&X-Amz-Signature=1039ba4cf86c3809db5fc91a619a4189e6ba9e228b2a7c46e28aaccc586caeec",
+      voice5,
   },
 ];
 const AudioAnimationPage = () => {

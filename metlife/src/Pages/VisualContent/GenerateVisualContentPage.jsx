@@ -14,14 +14,16 @@ import RegenerateImagePopup from "../../components/common/popup/RegenerateImageP
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
 import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 const GenerateVisualContentPage = () => {
   const [rows, setRows] = useState([]);
   const dummyImage = "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
+  const navigate = useNavigate();
   const columns = [
     { label: "Scene No.", key: "Scene_No." },
     {
@@ -207,12 +209,12 @@ const GenerateVisualContentPage = () => {
       // data: {
       //   scene_id: data?.scene_id,
       // },
-       data, 
+      data,
     });
   };
 
   const handleVideoUpload = (data) => {
-    console.log(data, "popupdata")
+    console.log(data, "popupdata");
     setPopup({
       type: "video_upload",
       data,
@@ -350,10 +352,20 @@ const GenerateVisualContentPage = () => {
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        <div className={styles.header}>
-          <h2 className={styles.title}>
-            {generateVisualContentData?.title || "Visual Content"}
-          </h2>
+        <div className={styles.innerContainer}>
+          <div className={styles.header}>
+            <h2 className={styles.title}>
+              {generateVisualContentData?.title || "Visual Content"}
+            </h2>
+            <Button
+              className={styles.icon}
+              onClick={() => {
+                navigate(`/create-visual-content/${id}`);
+              }}
+            >
+              <IoArrowBackCircleOutline size={30} /> Back
+            </Button>
+          </div>
         </div>
 
         <div className={styles.tableContainer}>

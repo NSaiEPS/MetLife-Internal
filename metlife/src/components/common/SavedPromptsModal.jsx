@@ -11,6 +11,7 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { showToast } from "../../utils/toast";
 import { NoDataMessage } from "./NoDataMessage";
+import { useSelector } from "react-redux";
 
 export default function SavedPromptsModal({
   open,
@@ -18,6 +19,9 @@ export default function SavedPromptsModal({
   prompts = [],
   size = "md", // "md" or "lg"
 }) {
+  const { promtLoader } = useSelector((store) => store.Prompts);
+  console.log(promtLoader, "promtLoader")
+
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");
 
@@ -64,48 +68,56 @@ export default function SavedPromptsModal({
               gap: 2,
             }}
           >
-            { prompts && prompts?.length > 0 ? prompts?.map((prompt, index) => (
-              <Paper
-                key={index}
-                elevation={1}
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  bgcolor: "grey.50",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  sx={{
-                    flex: 1,
-                    mr: 2,
-                    color: "text.secondary",
-                    fontSize: "15px",
-                  }}
-                >
-                  {prompt?.prompt}
-                </Typography>
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleCopy(prompt?.prompt)}
-                  startIcon={<ContentCopyIcon />}
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: 600,
-                    borderRadius: 10,
-                    px: 2,
-                  }}
-                >
-                  Use this prompt
-                </Button>
-              </Paper>
-            )) : (
+            {promtLoader ? (
               <>
-                <NoDataMessage loading={false} />
+                <Typography color="text.secondary" textAlign="center">
+                  loading...
+                </Typography>
+              </>
+            ) : prompts && prompts?.length > 0 ? (
+              prompts?.map((prompt, index) => (
+                <Paper
+                  key={index}
+                  elevation={1}
+                  sx={{
+                    p: 2,
+                    borderRadius: 2,
+                    bgcolor: "grey.50",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      flex: 1,
+                      mr: 2,
+                      color: "text.secondary",
+                      fontSize: "15px",
+                    }}
+                  >
+                    {prompt?.prompt}
+                  </Typography>
+
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleCopy(prompt?.prompt)}
+                    startIcon={<ContentCopyIcon />}
+                    sx={{
+                      textTransform: "none",
+                      fontWeight: 600,
+                      borderRadius: 10,
+                      px: 2,
+                    }}
+                  >
+                    Use this prompt
+                  </Button>
+                </Paper>
+              ))
+            ) : (
+              <>
+                <NoDataMessage />
               </>
             )}
           </List>

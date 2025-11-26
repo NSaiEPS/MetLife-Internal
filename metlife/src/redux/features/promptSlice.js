@@ -50,7 +50,6 @@ export const getPromptsList = () => async (dispatch) => {
   dispatch(setPromptLoader(true));
   try {
     const res = await api.get(`saved-prompts`);
-    console.log(res, "check_prepromptsview");
     if (res.status) {
       dispatch(setPromptData(res?.data));
       // toast.success("Audio generated successfully");

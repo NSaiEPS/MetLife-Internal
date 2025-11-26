@@ -105,7 +105,7 @@ const GenerateScript = () => {
   const disableTopN = !datasource || datasource === "openai";
   const dispatch = useDispatch();
 
-  const { promptData } = useSelector((store) => store.Prompts);
+  const { promptData, promtLoader } = useSelector((store) => store.Prompts);
   useEffect(() => {
     dispatch(getPromptsList());
   }, [dispatch]);

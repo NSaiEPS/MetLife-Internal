@@ -10,6 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import FullScreenGradientLoader from "../GradientLoader";
+import { NoDataMessage } from "../NoDataMessage";
 
 const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
   return (
@@ -94,7 +95,8 @@ const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
               ))}
             </Stack>
           ) : (
-            "No Data Available"
+            // "No Data Available"
+            <NoDataMessage />
           )}
         </DialogContent>
 
