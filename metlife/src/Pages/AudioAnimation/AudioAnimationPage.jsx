@@ -35,46 +35,37 @@ import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
 import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import { navigateTo } from "../../utils/navigate";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
-import voice1 from "../../assets/voice_preview_en-US-DavisNeural.wav"
+import voice1 from "../../assets/voice_preview_en-US-DavisNeural.wav";
 import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
 import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
 import voice4 from "../../assets/voice_preview_en-US-SaraNeural (1).wav";
 import voice5 from "../../assets/voice_preview_en-US-AriaNeural.wav";
-
-
-
-
 const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
 const voiceOptions = [
   {
     label: "EN-US Jenny Neural",
     value: "en-US-JennyNeural",
-    s3_url:
-      voice1,
+    s3_url: voice1,
   },
   {
     label: "EN-US Aria Neural",
     value: "en-US-AriaNeural",
-    s3_url:
-      voice2,
+    s3_url: voice2,
   },
   {
     label: "EN-US Sara Neural",
     value: "en-US-SaraNeural",
-    s3_url:
-      voice3,
+    s3_url: voice3,
   },
   {
     label: "EN-US Guy Neural",
     value: "en-US-GuyNeural",
-    s3_url:
-      voice4,
+    s3_url: voice4,
   },
   {
     label: "EN-US Davis Neural",
     value: "en-US-DavisNeural",
-    s3_url:
-      voice5,
+    s3_url: voice5,
   },
 ];
 const AudioAnimationPage = () => {
@@ -89,6 +80,7 @@ const AudioAnimationPage = () => {
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store) => store.AudioAnimation
   );
+  console.log(audioAnimationData, "audio")
   const characters = audioAnimationData?.voice_map?.characters || labels;
   let sortedLabels = [];
   if (characters && characters.length > 0) {
@@ -97,7 +89,7 @@ const AudioAnimationPage = () => {
 
   useEffect(() => {
     dispatch(getLabels(id));
-    dispatch(getAudioDetails(id));
+    // dispatch(getAudioDetails(id));
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -122,13 +114,16 @@ const AudioAnimationPage = () => {
     }));
   };
 
+  console.log(voiceSelections, "voice");
+
   const handleSubmit = () => {
     if (!narrationSelections.Narrator) {
       showToast.error("Please select a Narrator");
     }
-    //  else if (!voiceSelections.Narrator) {
-    //   showToast.error("Please select a narrator voice");
-    // } else if (!narrationSelections.Alex) {
+     else if (!voiceSelections.Narrator) {
+      showToast.error("Please select a narrator voice");
+    } 
+    // else if (!narrationSelections.Alex) {
     //   showToast.error("Please select a Alex");
     // } else if (!voiceSelections.Alex) {
     //   showToast.error("Please select a alex voice");
@@ -291,7 +286,6 @@ const AudioAnimationPage = () => {
                         !audioAnimationData?.scenes &&
                         !audioAnimationData?.scenes?.length > 0
                       }
-                      // label={audioAnimationLoader ? "Submit" : "Submitting"}
                       label={"Create Transition"}
                       sx={{ textTransform: "none", backgroundColor: "#99d539" }}
                       className={styles.createBtn}
