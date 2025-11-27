@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
   getMediaTransitions,
+  getSceneDetails,
   getVideosList,
   postGenerateFullVideo,
   postGenerateVideoBatch,
@@ -32,6 +33,7 @@ import { useParams } from "react-router";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import GeneratedVideoPlayer from "../../components/common/GeneratedVideo/GeneratedVideoPlayer";
 import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
+import { convertToISTParts } from "../../utils";
 
 const animationOptions = [
   { label: "Fade In", value: "fadeIn" },
@@ -48,23 +50,55 @@ const AnimationPage = () => {
     animationLabels,
     videoAnimationData,
     generatedVideoData,
+    sceneData,
   } = useSelector((store) => store.AudioAnimation);
   const { id } = useParams();
   const dispatch = useDispatch();
+  const waitingTime = convertToISTParts(
+    videoAnimationData?.estimated_completion_at
+  );
+  const finalTime = Math.ceil(waitingTime / 60);
+  // const [minutesLeft, setMinutesLeft] = useState(finalTime);
+
+  // useEffect(() => {
+  //   if (!finalTime) return;
+
+  //   setMinutesLeft(finalTime); // initialize
+
+  //   const interval = setInterval(() => {
+  //     setMinutesLeft((prev) => {
+  //       if (prev <= 1) {
+  //         clearInterval(interval);
+  //         dispatch(getSceneDetails(id)); 
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 60 * 1000); // 1 minute interval
+
+  //   return () => clearInterval(interval);
+  // }, [finalTime, dispatch, id]);
+
   useEffect(() => {
     dispatch(getMediaTransitions());
-    dispatch(getAudioDetails(id));
-    // dispatch(getVideosList(id));
-  }, [dispatch, id]);
-  console.log(videoAnimationData, "checkAnimationnData");
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getVideosList(id));
+    dispatch(getSceneDetails(id));
   }, [dispatch, id]);
 
+  useEffect(() => {
+    if (sceneData?.video_exists) {
+      dispatch(getVideosList(id));
+    }
+  }, [dispatch, id, sceneData?.video_exists]);
+
+  console.log(audioAnimationData, "check");
+
   const handleAllSubmit = () => {
-    const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
-    const scenesPayload = sceneIds.map((id) => ({
+    // const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
+    const sceneIds = sceneData?.scenes?.map((item) => item?.scene_id);
+    const scenesPayload = sceneIds?.map((id) => ({
       scene_id: id,
       start_transition: entryAnimation,
       end_transition: exitAnimation,
@@ -79,7 +113,9 @@ const AnimationPage = () => {
   };
 
   const handleAlternateSubmit = () => {
-    const scenesData = audioAnimationData?.scenes || [];
+    // const scenesData = audioAnimationData?.scenes || [];
+    const scenesData = sceneData?.scenes || [];
+
     // const selectedPrimaryScenes = scenesData.filter(
     //   (_, index) => index % 2 === 0
     // );
@@ -113,7 +149,6 @@ const AnimationPage = () => {
     dispatch(postGenerateFullVideo(id));
   };
   console.log(generatedVideoData, "check_generated_video");
-  // console.log(videoAnimationData, "videoAnimationData");
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -124,9 +159,9 @@ const AnimationPage = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {audioAnimationLoader && (
+            {/* {audioAnimationLoader && (
               <FullScreenGradientLoader text="loading..." />
-            )}
+            )} */}
 
             <main className={styles.cardWrap}>
               <div className={styles.card}>

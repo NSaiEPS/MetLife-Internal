@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import { navigateTo } from "../../utils/navigate";
+import { convertToISTParts, } from "../../utils";
 
 const initialState = {
   audioAnimationLoader: false,
@@ -11,6 +12,7 @@ const initialState = {
   animationLabels: null,
   videoAnimationData: null,
   generatedVideoData: null,
+  sceneData: null,
 };
 
 const AudioAnimationSlice = createSlice({
@@ -39,6 +41,9 @@ const AudioAnimationSlice = createSlice({
     setGeneratedVideoData(state, action) {
       state.generatedVideoData = action.payload;
     },
+    setSceneData(state, action) {
+      state.sceneData = action.payload;
+    },
   },
 });
 
@@ -50,6 +55,7 @@ export const {
   setAnimationLabels,
   setVideoAnimationData,
   setGeneratedVideoData,
+  setSceneData,
 } = AudioAnimationSlice.actions;
 
 export default AudioAnimationSlice.reducer;
@@ -168,9 +174,11 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
     const res = await api.post(`media/generate-video-batch`, data);
     console.log(res, "audioResCheck");
     if (res.status) {
-      dispatch(setVideoAnimationData(res?.data?.results));
-      // dispatch(getVideosList(data.script_id));
-      // toast.success("Video generated successfully");
+      dispatch(setVideoAnimationData(res?.data));
+      dispatch(getVideosList(data.script_id));
+      let seconds = convertToISTParts(res.data.estimated_completion_at);
+      const final = Math.ceil(seconds / 60);
+      toast.success(`Video Gnererated in ${final} mins`);
     }
   } catch (error) {
     console.log(error);
@@ -189,7 +197,6 @@ export const getVideosList = (id) => async (dispatch) => {
     if (res.status) {
       dispatch(setVideoAnimationData(res?.data?.results));
       dispatch(setGeneratedVideoData(res?.data?.final_video));
-
       // toast.success("Video generated successfully");
     }
   } catch (error) {
@@ -218,20 +225,18 @@ export const postGenerateFullVideo = (id) => async (dispatch) => {
   }
 };
 
-// Get Generate full video
-// export const getGeneratedFullVideo = (id) => async (dispatch) => {
-//   dispatch(setAudioAnimationLoader(true));
-//   try {
-//     const res = await api.get(`media/generate-video-full/${id}`);
-//     console.log(res, "videoResponseCheck");
-//     if (res.status) {
-//       dispatch(setGeneratedVideoData(res?.data?.full_video));
-//       // toast.success("Video generated successfully");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     toast.error("Something went wrong!");
-//   } finally {
-//     dispatch(setAudioAnimationLoader(false));
-//   }
-// };
+// Get scene details
+export const getSceneDetails = (id) => async (dispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const result = await api.get(`scripts/${id}`);
+    console.log(result, "scene_data");
+    if (result?.status) {
+      dispatch(setSceneData(result?.data));
+    }
+  } catch (e) {
+    toast.error(e?.detail);
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};

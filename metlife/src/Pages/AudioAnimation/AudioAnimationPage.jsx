@@ -68,6 +68,7 @@ const voiceOptions = [
     s3_url: voice5,
   },
 ];
+
 const AudioAnimationPage = () => {
   const [narrationSelections, setNarrationSelections] = useState({
     Narrator: "azure",
@@ -80,7 +81,7 @@ const AudioAnimationPage = () => {
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store) => store.AudioAnimation
   );
-  console.log(audioAnimationData, "audio")
+  console.log(audioAnimationData, "audio");
   const characters = audioAnimationData?.voice_map?.characters || labels;
   let sortedLabels = [];
   if (characters && characters.length > 0) {
@@ -89,7 +90,7 @@ const AudioAnimationPage = () => {
 
   useEffect(() => {
     dispatch(getLabels(id));
-    // dispatch(getAudioDetails(id));
+    dispatch(getAudioDetails(id));
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -119,10 +120,12 @@ const AudioAnimationPage = () => {
   const handleSubmit = () => {
     if (!narrationSelections.Narrator) {
       showToast.error("Please select a Narrator");
+      return;
     }
-     else if (!voiceSelections.Narrator) {
+    if (!voiceSelections.Narrator) {
       showToast.error("Please select a narrator voice");
-    } 
+      return;
+    }
     // else if (!narrationSelections.Alex) {
     //   showToast.error("Please select a Alex");
     // } else if (!voiceSelections.Alex) {
@@ -132,19 +135,30 @@ const AudioAnimationPage = () => {
     // } else if (!voiceSelections.Taylor) {
     //   showToast.error("Please select a taylor voice");
     // }
-    else {
-      apiCall();
-    }
+    // else {
+    // }
+    apiCall();
   };
 
   const apiCall = () => {
+    // const payload = {
+    //   script_id: id,
+    //   custom_voice_map: {
+    //     Narrator: voiceSelections.Narrator,
+    //     Alex: voiceSelections.Alex,
+    //     Taylor: voiceSelections.Taylor,
+    //   },
+    // };
+    const custom_voice_map = {};
+    Object.keys(voiceSelections).forEach((char) => {
+      if (voiceSelections[char]) {
+        custom_voice_map[char] = voiceSelections[char];
+      }
+    });
+
     const payload = {
       script_id: id,
-      custom_voice_map: {
-        Alex: voiceSelections.Alex,
-        Taylor: voiceSelections.Taylor,
-        Narrator: voiceSelections.Narrator,
-      },
+      custom_voice_map,
     };
     dispatch(postGenerateVoiceAndAudio(payload));
   };
@@ -229,6 +243,21 @@ const AudioAnimationPage = () => {
                                       voiceSelections[charName] !== opt.value,
                                   }))
                             }
+                            // options={
+                            //   audioAnimationData?.scenes === null
+                            //     ? voiceOptions
+                            //     : voiceOptions.map((opt) => {
+                            //         const selectedVoice =
+                            //           voiceSelections[charName];
+
+                            //         return {
+                            //           ...opt,
+                            //           disabled: selectedVoice
+                            //             ? selectedVoice !== opt.value
+                            //             : false,
+                            //         };
+                            //       })
+                            // }
                             placeholder="Select Voice"
                             value={voiceSelections[charName] || ""}
                             onChange={(value) =>

@@ -284,3 +284,56 @@ export const formatRelativeTime = (
 
   return dayjs.utc(date).tz("Asia/Kolkata").format(format);
 };
+
+export const convertToISTParts = (isoString) => {
+  if (!isoString) return 0;
+ const backendDate = new Date(isoString);
+    const now = new Date();
+
+    // IST offset = +5:30 in ms
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+
+    // Convert both times to IST
+    const backendIST = new Date(backendDate.getTime() + IST_OFFSET);
+    const nowIST = new Date(now.getTime());
+    console.log(backendIST, "backendIST", nowIST, "nowIST");
+    // Difference in milliseconds
+    const diffMs =  backendIST -nowIST;
+
+    // Convert ms → seconds
+    // added 1 more minute for 
+    return Math.floor(diffMs / 1000)+60; 
+};
+
+// export const getTimeDifferenceInMinutes = (timeString) => {
+//   if (!timeString) return NaN;
+
+//   // Get today's date (YYYY-MM-DD)
+//   const today = new Date();
+//   const year = today.getFullYear();
+//   const month = String(today.getMonth() + 1).padStart(2, "0");
+//   const day = String(today.getDate()).padStart(2, "0");
+
+//   // Build full date-time string
+//   const fullDateTime = `${year}-${month}-${day} ${timeString}`;
+
+//   // Parse to Date object
+//   const baseTime = new Date(fullDateTime);
+
+//   if (isNaN(baseTime.getTime())) {
+//     console.log("Invalid:", fullDateTime);
+//     return NaN;
+//   }
+
+//   // ---- Add 5.5 hours (5 hours 30 minutes) ----
+//   const addedTime = new Date(baseTime.getTime() + (5.5 * 60 * 60 * 1000));
+
+//   // Current time
+//   const now = new Date();
+
+//   // Difference in ms
+//   const diffMs = addedTime - now;
+
+//   // Return minutes (rounded up)
+//   return Math.ceil(diffMs / (1000 * 60));
+// };
