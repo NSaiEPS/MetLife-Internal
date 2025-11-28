@@ -34,6 +34,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import GeneratedVideoPlayer from "../../components/common/GeneratedVideo/GeneratedVideoPlayer";
 import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
 import { convertToISTParts } from "../../utils";
+import Timer from "../../components/common/Timer/Timer";
 
 const animationOptions = [
   { label: "Fade In", value: "fadeIn" },
@@ -44,6 +45,7 @@ const animationOptions = [
 const AnimationPage = () => {
   const [entryAnimation, setEntryAnimation] = useState("fade_in");
   const [exitAnimation, setExitAnimation] = useState("fade_out");
+  const [timerDone, setTimerDone] = useState(false);
   const {
     audioAnimationLoader,
     audioAnimationData,
@@ -58,26 +60,6 @@ const AnimationPage = () => {
     videoAnimationData?.estimated_completion_at
   );
   const finalTime = Math.ceil(waitingTime / 60);
-  // const [minutesLeft, setMinutesLeft] = useState(finalTime);
-
-  // useEffect(() => {
-  //   if (!finalTime) return;
-
-  //   setMinutesLeft(finalTime); // initialize
-
-  //   const interval = setInterval(() => {
-  //     setMinutesLeft((prev) => {
-  //       if (prev <= 1) {
-  //         clearInterval(interval);
-  //         dispatch(getSceneDetails(id)); 
-  //         return 0;
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 60 * 1000); // 1 minute interval
-
-  //   return () => clearInterval(interval);
-  // }, [finalTime, dispatch, id]);
 
   useEffect(() => {
     dispatch(getMediaTransitions());
@@ -88,12 +70,18 @@ const AnimationPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (sceneData?.video_exists) {
-      dispatch(getVideosList(id));
-    }
-  }, [dispatch, id, sceneData?.video_exists]);
+    if (!timerDone) return;
 
-  console.log(audioAnimationData, "check");
+    dispatch(getSceneDetails(id));
+  }, [timerDone, dispatch, id]);
+
+  useEffect(() => {
+    if (!sceneData) return;
+    if (!timerDone) return;
+    if (!sceneData.video_exists) return;
+
+    dispatch(getVideosList(id));
+  }, [sceneData, timerDone, dispatch, id]);
 
   const handleAllSubmit = () => {
     // const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
@@ -108,18 +96,12 @@ const AnimationPage = () => {
       script_id: id,
       scenes: scenesPayload,
     };
-    // console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
 
   const handleAlternateSubmit = () => {
     // const scenesData = audioAnimationData?.scenes || [];
     const scenesData = sceneData?.scenes || [];
-
-    // const selectedPrimaryScenes = scenesData.filter(
-    //   (_, index) => index % 2 === 0
-    // );
-
     const allSceneIds = scenesData.flatMap((scene) => {
       const idsToProcess = [];
       if (scene?.scene_id) {
@@ -137,18 +119,18 @@ const AnimationPage = () => {
       end_transition: index % 2 === 0 ? exitAnimation : "none",
       // ost: "",
     }));
+
     const payload = {
       script_id: id,
       scenes: scenesPayload,
     };
-    console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
 
   const generateVideo = () => {
     dispatch(postGenerateFullVideo(id));
   };
-  console.log(generatedVideoData, "check_generated_video");
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -162,6 +144,13 @@ const AnimationPage = () => {
             {/* {audioAnimationLoader && (
               <FullScreenGradientLoader text="loading..." />
             )} */}
+
+            {!timerDone && finalTime > 0 && (
+              <Timer
+                minutes={finalTime}
+                onComplete={() => setTimerDone(true)}
+              />
+            )}
 
             <main className={styles.cardWrap}>
               <div className={styles.card}>
@@ -347,6 +336,7 @@ const AnimationPage = () => {
                         audioAnimationLoader ||
                         generatedVideoData ||
                         videoAnimationData
+                        // false
                       }
                     />
                   </div>

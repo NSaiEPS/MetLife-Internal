@@ -175,7 +175,7 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
     console.log(res, "audioResCheck");
     if (res.status) {
       dispatch(setVideoAnimationData(res?.data));
-      dispatch(getVideosList(data.script_id));
+      // dispatch(getVideosList(data.script_id));
       let seconds = convertToISTParts(res.data.estimated_completion_at);
       const final = Math.ceil(seconds / 60);
       toast.success(`Video Gnererated in ${final} mins`);
@@ -193,7 +193,7 @@ export const getVideosList = (id) => async (dispatch) => {
   dispatch(setAudioAnimationLoader(true));
   try {
     const res = await api.get(`media/${id}`);
-    console.log(res, "videoResCheck");
+    console.log(res, "getVideoResponseCheck");
     if (res.status) {
       dispatch(setVideoAnimationData(res?.data?.results));
       dispatch(setGeneratedVideoData(res?.data?.final_video));
