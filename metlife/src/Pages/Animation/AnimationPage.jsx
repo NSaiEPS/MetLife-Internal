@@ -70,8 +70,16 @@ const AnimationPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (!timerDone) return;
+    if (!sceneData) return;
 
+    // If video already exists on FIRST load → user came from dashboard
+    if (sceneData.video_exists) {
+      dispatch(getVideosList(id));
+    }
+  }, [sceneData, dispatch, id]);
+
+  useEffect(() => {
+    if (!timerDone) return;
     dispatch(getSceneDetails(id));
   }, [timerDone, dispatch, id]);
 
