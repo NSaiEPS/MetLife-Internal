@@ -69,7 +69,7 @@ const AnimationPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (sceneData?.video_exists) {
+    if (sceneData?.video_exists === true) {
       dispatch(getVideosList(id));
     }
   }, [sceneData, dispatch, id]);
