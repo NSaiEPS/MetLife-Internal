@@ -48,7 +48,6 @@ const AnimationPage = () => {
   const [timerDone, setTimerDone] = useState(false);
   const {
     audioAnimationLoader,
-    audioAnimationData,
     animationLabels,
     videoAnimationData,
     generatedVideoData,
@@ -70,10 +69,7 @@ const AnimationPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (!sceneData) return;
-
-    // If video already exists on FIRST load → user came from dashboard
-    if (sceneData.video_exists) {
+    if (sceneData?.video_exists) {
       dispatch(getVideosList(id));
     }
   }, [sceneData, dispatch, id]);
@@ -139,6 +135,8 @@ const AnimationPage = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
+  console.log(videoAnimationData, "videoAnimationData")
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -149,9 +147,9 @@ const AnimationPage = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {/* {audioAnimationLoader && (
+            {audioAnimationLoader && (
               <FullScreenGradientLoader text="loading..." />
-            )} */}
+            )}
 
             {!timerDone && finalTime > 0 && (
               <Timer
@@ -267,7 +265,7 @@ const AnimationPage = () => {
                     </Grid>
                   </Grid>
                   {/* Available videos */}
-                  {videoAnimationData && videoAnimationData?.length > 0 ? (
+                  {videoAnimationData?.length > 0 ? (
                     <>
                       <Typography
                         sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}

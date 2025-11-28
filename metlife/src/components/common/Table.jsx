@@ -234,7 +234,7 @@ function DynamicTable({
   const handleDownloadType = (type) => {
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...tableExtraData, scenes: rows });
+        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true );
       } else if (type === "word") {
         downloadScriptWord({ ...tableExtraData, scenes: rows });
       }

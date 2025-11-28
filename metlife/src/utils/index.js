@@ -19,60 +19,127 @@ import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { Page, Text, View, StyleSheet, Font, pdf } from "@react-pdf/renderer";
+import regular from "../assets/NotoSans-Regular.ttf";
+import arabic from "../assets/NotoSansArabic-Regular.ttf";
+import devnagri from "../assets/NotoSansDevanagari-Regular.ttf";
+import bengali from "../assets/NotoSansBengali-Regular.ttf";
+import PdfDocument from "../components/common/Pdf/PdfDocument";
+import React from "react";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-export const downloadScriptPdf = (data, uploadDownload = false) => {
-  const doc = new jsPDF();
-  const fileName = localStorage.getItem("file_name");
-  doc.setFontSize(18);
-  doc.text(fileName ?? data.title ?? data?.provider, 14, 15);
-  doc.setFontSize(12);
 
-  doc.text(`Logline: ${data.logline ?? data?.language}`, 14, 25);
-  doc.text(`Duration: ${data.suggested_duration_minutes ?? "2mins"}`, 14, 32);
-  const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+// Register fonts
+Font.register({ family: "NotoEnglish", src: regular });
+Font.register({ family: "NotoHindiNepali", src: devnagri });
+Font.register({ family: "NotoBangla", src: bengali });
+Font.register({ family: "NotoArabic", src: arabic });
 
-  let tableRows = data.scenes.map((scene, index) => [
-    // scene?.scene_number.toString(),
-    index + 1,
-    scene?.Script || scene?.header || "",
-    scene?.on_screen_text || scene?.OST || "",
-    scene?.Type || "",
-  ]);
-  if (uploadDownload) {
-    tableRows = data.scenes.map((scene, index) => [
-      // scene?.scene_number.toString(),
-      index + 1,
-      scene?.description || scene?.header || "",
-      scene?.on_screen_text || scene?.OST || "",
-      scene?.scene_type || "",
-    ]);
-  }
+// Detect font
+const detectFont = (text = "") => {
+  if (/[\u0600-\u06FF]/.test(text)) return "NotoArabic"; // Arabic
+  if (/[\u0900-\u097F]/.test(text)) return "NotoHindiNepali"; // Hindi/Nepali
+  if (/[\u0980-\u09FF]/.test(text)) return "NotoBangla"; // Bangla
+  return "NotoEnglish"; // Default English
+};
 
-  doc.autoTable({
-    startY: 40,
-    head: [tableColumn],
-    body: tableRows,
-    theme: "grid",
-    headStyles: {
-      fillColor: [22, 160, 133],
-      textColor: 255,
-      fontStyle: "bold",
-    },
-    styles: { fontSize: 11, cellWidth: "wrap" }, // wrap long text
-    columnStyles: {
-      0: { cellWidth: 20 }, // Scene No.
-      1: { cellWidth: 80 }, // Script
-      2: { cellWidth: 50 }, // OST
-      3: { cellWidth: 30 }, // Type
-    },
-    didDrawCell: (data) => {
-      // Optional: customize cell drawing here
-    },
-  });
-  // doc.save(`${data.title}.pdf`);
-  doc.save(`${fileName || "Script"}.pdf`);
+// Styles
+const styles = StyleSheet.create({
+  page: { padding: 25, backgroundColor: "#fff" },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  infoText: { fontSize: 14, marginBottom: 4 },
+  table: {
+    display: "table",
+    width: "100%",
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  tableRow: { flexDirection: "row" },
+  tableHeader: { backgroundColor: "#1AA06D" },
+  th: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#fff",
+    padding: 6,
+    borderRightWidth: 1,
+    borderRightColor: "#fff",
+  },
+  td: {
+    flex: 1,
+    fontSize: 11,
+    padding: 6,
+    borderRightWidth: 1,
+    borderRightColor: "#ddd",
+  },
+  tdLast: { flex: 1, fontSize: 11, padding: 6 },
+  rowBorder: { borderBottomWidth: 1, borderBottomColor: "#ddd" },
+});
+
+// export const downloadScriptPdf = (data, uploadDownload = false) => {
+//   const doc = new jsPDF();
+//   const fileName = localStorage.getItem("file_name");
+//   doc.setFontSize(18);
+//   doc.text(fileName ?? data.title ?? data?.provider, 14, 15);
+//   doc.setFontSize(12);
+
+//   doc.text(`Logline: ${data.logline ?? data?.language}`, 14, 25);
+//   doc.text(`Duration: ${data.suggested_duration_minutes ?? "2mins"}`, 14, 32);
+//   const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+
+//   let tableRows = data.scenes.map((scene, index) => [
+//     // scene?.scene_number.toString(),
+//     index + 1,
+//     scene?.Script || scene?.header || "",
+//     scene?.on_screen_text || scene?.OST || "",
+//     scene?.Type || "",
+//   ]);
+//   if (uploadDownload) {
+//     tableRows = data.scenes.map((scene, index) => [
+//       // scene?.scene_number.toString(),
+//       index + 1,
+//       scene?.description || scene?.header || "",
+//       scene?.on_screen_text || scene?.OST || "",
+//       scene?.scene_type || "",
+//     ]);
+//   }
+
+//   doc.autoTable({
+//     startY: 40,
+//     head: [tableColumn],
+//     body: tableRows,
+//     theme: "grid",
+//     headStyles: {
+//       fillColor: [22, 160, 133],
+//       textColor: 255,
+//       fontStyle: "bold",
+//     },
+//     styles: { fontSize: 11, cellWidth: "wrap" }, // wrap long text
+//     columnStyles: {
+//       0: { cellWidth: 20 }, // Scene No.
+//       1: { cellWidth: 80 }, // Script
+//       2: { cellWidth: 50 }, // OST
+//       3: { cellWidth: 30 }, // Type
+//     },
+//     didDrawCell: (data) => {
+//       // Optional: customize cell drawing here
+//     },
+//   });
+//   // doc.save(`${data.title}.pdf`);
+//   doc.save(`${fileName || "Script"}.pdf`);
+
+// };
+
+export const downloadScriptPdf = async (data, uploadDownload = false) => {
+  const fileName = localStorage.getItem("file_name") || "Script";
+
+  const blob = await pdf(
+    React.createElement(PdfDocument, { data, uploadDownload })
+  ).toBlob();
+
+  saveAs(blob, `${fileName}.pdf`);
 };
 
 // download script word
@@ -287,22 +354,22 @@ export const formatRelativeTime = (
 
 export const convertToISTParts = (isoString) => {
   if (!isoString) return 0;
- const backendDate = new Date(isoString);
-    const now = new Date();
+  const backendDate = new Date(isoString);
+  const now = new Date();
 
-    // IST offset = +5:30 in ms
-    const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+  // IST offset = +5:30 in ms
+  const IST_OFFSET = 5.5 * 60 * 60 * 1000;
 
-    // Convert both times to IST
-    const backendIST = new Date(backendDate.getTime() + IST_OFFSET);
-    const nowIST = new Date(now.getTime());
-    console.log(backendIST, "backendIST", nowIST, "nowIST");
-    // Difference in milliseconds
-    const diffMs =  backendIST -nowIST;
+  // Convert both times to IST
+  const backendIST = new Date(backendDate.getTime() + IST_OFFSET);
+  const nowIST = new Date(now.getTime());
+  console.log(backendIST, "backendIST", nowIST, "nowIST");
+  // Difference in milliseconds
+  const diffMs = backendIST - nowIST;
 
-    // Convert ms → seconds
-    // added 1 more minute for 
-    return Math.floor(diffMs / 1000)+60; 
+  // Convert ms → seconds
+  // added 1 more minute for
+  return Math.floor(diffMs / 1000) + 60;
 };
 
 // export const getTimeDifferenceInMinutes = (timeString) => {

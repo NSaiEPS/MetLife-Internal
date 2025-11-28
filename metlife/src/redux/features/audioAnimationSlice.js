@@ -190,10 +190,10 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
 
 // Get Video data
 export const getVideosList = (id) => async (dispatch) => {
-  dispatch(setAudioAnimationLoader(true));
+  // dispatch(setAudioAnimationLoader(true));
   try {
     const res = await api.get(`media/${id}`);
-    console.log(res, "getVideoResponseCheck");
+    console.log(res, "getVideoListResponseCheck");
     if (res.status) {
       dispatch(setVideoAnimationData(res?.data?.results));
       dispatch(setGeneratedVideoData(res?.data?.final_video));
@@ -203,7 +203,7 @@ export const getVideosList = (id) => async (dispatch) => {
     console.log(error);
     // toast.error( "Something went wrong!");
   } finally {
-    dispatch(setAudioAnimationLoader(false));
+    // dispatch(setAudioAnimationLoader(false));
   }
 };
 
@@ -227,7 +227,7 @@ export const postGenerateFullVideo = (id) => async (dispatch) => {
 
 // Get scene details
 export const getSceneDetails = (id) => async (dispatch) => {
-  dispatch(setAudioAnimationLoader(true));
+  // dispatch(setAudioAnimationLoader(true));
   try {
     const result = await api.get(`scripts/${id}`);
     console.log(result, "scene_data");
@@ -237,6 +237,6 @@ export const getSceneDetails = (id) => async (dispatch) => {
   } catch (e) {
     toast.error(e?.detail);
   } finally {
-    dispatch(setAudioAnimationLoader(false));
+    // dispatch(setAudioAnimationLoader(false));
   }
 };
