@@ -160,7 +160,7 @@ export const getMediaTransitions = () => async (dispatch) => {
       dispatch(setAnimationLabels(res?.data));
     }
   } catch (error) {
-    console.log(error);
+    console.log(error); 
     // toast.error("Something went wrong!");
   } finally {
     dispatch(setAudioAnimationLoader(false));

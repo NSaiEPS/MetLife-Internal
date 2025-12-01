@@ -29,6 +29,7 @@ import {
   getAudioDetails,
   getLabels,
   postGenerateVoiceAndAudio,
+  setSceneData,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
@@ -175,6 +176,7 @@ const AudioAnimationPage = () => {
 
   const handleCreateTransition = () => {
     // navigate("/animation-page")
+   dispatch(setSceneData({}))
     navigateTo(`/animation-page/${id}`);
   };
 
