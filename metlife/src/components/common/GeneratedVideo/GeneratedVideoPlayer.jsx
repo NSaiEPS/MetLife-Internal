@@ -78,13 +78,13 @@ const GeneratedVideoPlayer = ({
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
             {/* ---- Thumbnail Preview ---- */}
             <Box
-              onClick={() => setOpen(true)}
+              // onClick={() => setOpen(true)}
               sx={{
                 width: 60,
                 height: 60,
                 borderRadius: "20%",
                 overflow: "hidden",
-                cursor: "pointer",
+                // cursor: "pointer",
                 border: "2px solid #ddd",
               }}
             >
@@ -98,6 +98,13 @@ const GeneratedVideoPlayer = ({
                 }}
               />
             </Box>
+
+            <Typography
+              sx={{ fontSize: "14px", color: "#555", mt: 1, cursor:'pointer' }}
+              onClick={() => setOpen(true)}
+            >
+              {"Video Preview"}
+            </Typography>
 
             {/* ---- Download Button ---- */}
             <IconButton onClick={downloadVideo} sx={{ color: "#4c9ad1" }}>
