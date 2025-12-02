@@ -152,6 +152,7 @@ const FullVideoPlayer = ({ video_url }) => {
               height: 48,
               bgcolor: "#f5f5f5",
               borderRadius: "50%",
+              color: "#4c9ad1",
               "&:hover": { bgcolor: "#e9e9e9" },
             }}
           >

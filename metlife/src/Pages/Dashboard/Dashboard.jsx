@@ -30,7 +30,7 @@ const MyVideosDashboard = () => {
     (store) => store.DashBoard
   );
   const completed_result = dashBoardInfo.filter((item) => {
-    if (item.audio && item.videos && item.visuals) {
+    if (item.videos) {
       return item;
     }
   });

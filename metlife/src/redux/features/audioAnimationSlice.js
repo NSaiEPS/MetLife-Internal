@@ -2,10 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import { navigateTo } from "../../utils/navigate";
-import { convertToISTParts, } from "../../utils";
+import { convertToISTParts } from "../../utils";
 
 const initialState = {
   audioAnimationLoader: false,
+  videoAnimationLoader: false,
   audioAnimationData: null,
   audioPreviewData: null,
   labels: null,
@@ -20,6 +21,9 @@ const AudioAnimationSlice = createSlice({
   initialState,
   reducers: {
     setAudioAnimationLoader(state, action) {
+      state.audioAnimationLoader = action.payload;
+    },
+    setVideoAnimationLoader(state, action) {
       state.audioAnimationLoader = action.payload;
     },
     setAudioAnimationData(state, action) {
@@ -50,6 +54,7 @@ const AudioAnimationSlice = createSlice({
 export const {
   setAudioAnimationData,
   setAudioAnimationLoader,
+  setVideoAnimationLoader,
   setAudioPreviewData,
   setLabels,
   setAnimationLabels,
@@ -160,7 +165,7 @@ export const getMediaTransitions = () => async (dispatch) => {
       dispatch(setAnimationLabels(res?.data));
     }
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     // toast.error("Something went wrong!");
   } finally {
     dispatch(setAudioAnimationLoader(false));
@@ -169,7 +174,7 @@ export const getMediaTransitions = () => async (dispatch) => {
 
 // Post Generate Video
 export const postGenerateVideoBatch = (data) => async (dispatch) => {
-  dispatch(setAudioAnimationLoader(true));
+  dispatch(setVideoAnimationLoader(true));
   try {
     const res = await api.post(`media/generate-video-batch`, data);
     console.log(res, "audioResCheck");
@@ -184,13 +189,13 @@ export const postGenerateVideoBatch = (data) => async (dispatch) => {
     console.log(error);
     // toast.error("Something went wrong!");
   } finally {
-    dispatch(setAudioAnimationLoader(false));
+    dispatch(setVideoAnimationLoader(false));
   }
 };
 
 // Get Video data
 export const getVideosList = (id) => async (dispatch) => {
-  // dispatch(setAudioAnimationLoader(true));
+  dispatch(setVideoAnimationLoader(true));
   try {
     const res = await api.get(`media/${id}`);
     console.log(res, "getVideoListResponseCheck");
@@ -203,7 +208,7 @@ export const getVideosList = (id) => async (dispatch) => {
     console.log(error);
     // toast.error( "Something went wrong!");
   } finally {
-    // dispatch(setAudioAnimationLoader(false));
+    dispatch(setVideoAnimationLoader(false));
   }
 };
 
