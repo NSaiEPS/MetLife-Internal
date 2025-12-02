@@ -30,6 +30,8 @@ import {
   getLabels,
   postGenerateVoiceAndAudio,
   setSceneData,
+  setVideoAnimationData,
+  setGeneratedVideoData,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
@@ -116,8 +118,6 @@ const AudioAnimationPage = () => {
     }));
   };
 
-  console.log(voiceSelections, "voice");
-
   const handleSubmit = () => {
     if (!narrationSelections.Narrator) {
       showToast.error("Please select a Narrator");
@@ -142,14 +142,6 @@ const AudioAnimationPage = () => {
   };
 
   const apiCall = () => {
-    // const payload = {
-    //   script_id: id,
-    //   custom_voice_map: {
-    //     Narrator: voiceSelections.Narrator,
-    //     Alex: voiceSelections.Alex,
-    //     Taylor: voiceSelections.Taylor,
-    //   },
-    // };
     const custom_voice_map = {};
     Object.keys(voiceSelections).forEach((char) => {
       if (voiceSelections[char]) {
@@ -175,8 +167,9 @@ const AudioAnimationPage = () => {
   };
 
   const handleCreateTransition = () => {
-    // navigate("/animation-page")
-   dispatch(setSceneData({}))
+    dispatch(setSceneData({}));
+    dispatch(setVideoAnimationData(null));
+    dispatch(setGeneratedVideoData(null));
     navigateTo(`/animation-page/${id}`);
   };
 
@@ -189,7 +182,6 @@ const AudioAnimationPage = () => {
             {audioAnimationLoader && (
               <FullScreenGradientLoader text="loading..." />
             )}
-
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>

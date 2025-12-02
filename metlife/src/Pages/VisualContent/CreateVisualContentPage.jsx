@@ -198,17 +198,6 @@ const CreateVisualContentPage = () => {
     };
 
     console.log(finalPayload, "payload");
-    // const payload = data?.prompts?.map((item) => {
-    //   return {
-    //     ...item,
-    //     prompt:
-    //       item.visual_type === "image"
-    //         ? item?.prompt
-    //         : item.clip_visual_type === "clip"
-    //         ? item.clip_prompt
-    //         : null,
-    //   };
-    // });
     dispatch(postGenerateVisualContentImage(finalPayload));
   };
 
@@ -216,7 +205,7 @@ const CreateVisualContentPage = () => {
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        <div className={styles.innerContainer}>
+        {/* <div className={styles.innerContainer}>
           <div className={styles.header}>
             <h2 className={styles.title}>
               {saveVisualContentData?.title || "Visual Content"}
@@ -230,11 +219,27 @@ const CreateVisualContentPage = () => {
               <IoArrowBackCircleOutline size={30} /> Back
             </Button>
           </div>
-        </div>
+        </div> */}
 
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length > 0 ? (
             <>
+              <div className={styles.innerContainer}>
+                <div className={styles.header}>
+                  <h2 className={styles.title}>
+                    {saveVisualContentData?.title || "Visual Content"}
+                  </h2>
+                  <Button
+                    className={styles.icon}
+                    onClick={() => {
+                      navigate(`/scenes/${script_id}`);
+                    }}
+                  >
+                    <IoArrowBackCircleOutline size={30} /> Back
+                  </Button>
+                </div>
+              </div>
+
               <PromptTable columns={columns} rows={rows} actions={actions} />
               {popup.type === "edit" && (
                 <EditPromptPopup

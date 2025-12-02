@@ -130,7 +130,13 @@ const AnimationPage = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
-  console.log(videoAnimationData, "videoAnimationData");
+  console.log(
+    audioAnimationLoader ,
+      generatedVideoData,
+      videoAnimationData,
+      sceneData?.video_exists === true,
+    "check__all"
+  );
 
   return (
     <>
@@ -331,7 +337,7 @@ const AnimationPage = () => {
                       action={handleAlternateSubmit}
                       disabled={
                         audioAnimationLoader ||
-                        // generatedVideoData ||
+                        generatedVideoData ||
                         videoAnimationData ||
                         sceneData?.video_exists === true
                       }
@@ -342,7 +348,7 @@ const AnimationPage = () => {
                       action={handleAllSubmit}
                       disabled={
                         audioAnimationLoader ||
-                        // generatedVideoData ||
+                        generatedVideoData ||
                         videoAnimationData ||
                         sceneData?.video_exists === true
                         // false
