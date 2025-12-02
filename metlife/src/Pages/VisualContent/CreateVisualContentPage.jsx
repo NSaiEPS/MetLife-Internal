@@ -224,7 +224,7 @@ const CreateVisualContentPage = () => {
             <Button
               className={styles.icon}
               onClick={() => {
-                navigate(`/scenes/${script_id}`);
+                navigate(`/scenes/${id}`);
               }}
             >
               <IoArrowBackCircleOutline size={30} /> Back

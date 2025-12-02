@@ -164,8 +164,6 @@ const GenerateVisualContentPage = () => {
     dispatch(getGenerateVisualContentImage(id));
   }, [id, dispatch]);
 
-  // console.log(first)
-
   useEffect(() => {
     if (generateVisualContentData?.visuals) {
       settingDataInRows(generateVisualContentData?.visuals);
@@ -362,7 +360,7 @@ const GenerateVisualContentPage = () => {
             <Button
               className={styles.icon}
               onClick={() => {
-                navigate(`/create-visual-content/${prompt_batch_id}`);
+                navigate(`/create-visual-content/${id}`);
               }}
             >
               <IoArrowBackCircleOutline size={30} /> Back

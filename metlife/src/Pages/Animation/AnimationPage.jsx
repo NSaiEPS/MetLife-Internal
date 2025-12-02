@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
   getMediaTransitions,
-  getSceneDetails,
   getVideosList,
   postGenerateFullVideo,
   postGenerateVideoBatch,
@@ -33,8 +32,6 @@ import { useParams } from "react-router";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import GeneratedVideoPlayer from "../../components/common/GeneratedVideo/GeneratedVideoPlayer";
 import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
-import { convertToISTParts } from "../../utils";
-import Timer from "../../components/common/Timer/Timer";
 
 const animationOptions = [
   { label: "Fade In", value: "fadeIn" },
@@ -45,48 +42,29 @@ const animationOptions = [
 const AnimationPage = () => {
   const [entryAnimation, setEntryAnimation] = useState("fade_in");
   const [exitAnimation, setExitAnimation] = useState("fade_out");
-  const [timerDone, setTimerDone] = useState(false);
   const {
     audioAnimationLoader,
+    audioAnimationData,
     animationLabels,
     videoAnimationData,
     generatedVideoData,
-    sceneData,
   } = useSelector((store) => store.AudioAnimation);
   const { id } = useParams();
   const dispatch = useDispatch();
-  const waitingTime = convertToISTParts(
-    videoAnimationData?.estimated_completion_at
-  );
-  const finalTime = Math.ceil(waitingTime / 60);
-
   useEffect(() => {
     dispatch(getMediaTransitions());
-    dispatch(getSceneDetails(id));
+    dispatch(getAudioDetails(id));
+    // dispatch(getVideosList(id));
+  }, [dispatch, id]);
+  console.log(videoAnimationData, "checkAnimationnData");
+
+  useEffect(() => {
+    dispatch(getVideosList(id));
   }, [dispatch, id]);
 
-  useEffect(() => {
-    if (sceneData?.video_exists == true) {
-      dispatch(getVideosList(id));
-    }
-  }, [sceneData?.video_exists, dispatch, id]);
-
-  useEffect(() => {
-    if (timerDone) {
-      dispatch(getSceneDetails(id));
-    }
-  }, [timerDone, dispatch, id]);
-
-  useEffect(() => {
-    if (timerDone && sceneData?.video_exists === true) {
-      dispatch(getVideosList(id));
-    }
-  }, [timerDone, sceneData?.video_exists, dispatch, id]);
-
   const handleAllSubmit = () => {
-    // const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
-    const sceneIds = sceneData?.scenes?.map((item) => item?.scene_id);
-    const scenesPayload = sceneIds?.map((id) => ({
+    const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
+    const scenesPayload = sceneIds.map((id) => ({
       scene_id: id,
       start_transition: entryAnimation,
       end_transition: exitAnimation,
@@ -96,11 +74,16 @@ const AnimationPage = () => {
       script_id: id,
       scenes: scenesPayload,
     };
+    // console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
 
   const handleAlternateSubmit = () => {
-    const scenesData = sceneData?.scenes || [];
+    const scenesData = audioAnimationData?.scenes || [];
+    // const selectedPrimaryScenes = scenesData.filter(
+    //   (_, index) => index % 2 === 0
+    // );
+
     const allSceneIds = scenesData.flatMap((scene) => {
       const idsToProcess = [];
       if (scene?.scene_id) {
@@ -118,20 +101,19 @@ const AnimationPage = () => {
       end_transition: index % 2 === 0 ? exitAnimation : "none",
       // ost: "",
     }));
-
     const payload = {
       script_id: id,
       scenes: scenesPayload,
     };
+    console.log(payload, "check_payload");
     dispatch(postGenerateVideoBatch(payload));
   };
 
   const generateVideo = () => {
     dispatch(postGenerateFullVideo(id));
   };
-
-  console.log(videoAnimationData, "videoAnimationData");
-
+  console.log(generatedVideoData, "check_generated_video");
+  // console.log(videoAnimationData, "videoAnimationData");
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -253,76 +235,63 @@ const AnimationPage = () => {
                     </Grid>
                   </Grid>
                   {/* Available videos */}
-                  {!timerDone && finalTime > 0 && (
-                    <Timer
-                      time={finalTime}
-                      // minutes={finalTime}
-                      onComplete={() => setTimerDone(true)}
-                    />
-                  )}
-                  {
-                    videoAnimationData?.length > 0 &&
-                      sceneData?.video_exists === true && (
-                        <>
-                          <Typography
-                            sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                  {videoAnimationData && videoAnimationData?.length > 0 ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Available Videos
+                      </Typography>
+                      <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {videoAnimationData?.map((scene, idx) => (
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            lg={4}
+                            key={idx}
+                            sx={{ width: "100%" }}
                           >
-                            Available Videos
-                          </Typography>
-                          <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {videoAnimationData?.map((scene, idx) => (
-                              <Grid
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                                key={idx}
-                                sx={{ width: "100%" }}
-                              >
-                                <GeneratedVideoPlayer
-                                  index={idx}
-                                  s3_url={scene?.final_video?.url}
-                                />
-                              </Grid>
-                            ))}
+                            <GeneratedVideoPlayer
+                              index={idx}
+                              s3_url={scene?.final_video?.url}
+                            />
                           </Grid>
-                        </>
-                      )
-                    //  : (
-                    //   <>
-                    //     {
-                    //       <NoDataMessage
-                    //         filter={false}
-                    //         loading={!videoAnimationData}
-                    //       />
-                    //     }
-
-                    //   </>
-                    // )
-                  }
-
-                  {/* Full Video */}
-                  {
-                    generatedVideoData && sceneData?.video_exists === true && (
+                        ))}
+                      </Grid>
+                    </>
+                  ) : (
+                    videoAnimationData?.length > 0 && (
                       <>
-                        <Typography
-                          sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
-                        >
-                          Generated Video
-                        </Typography>
-
-                        <FullVideoPlayer video_url={generatedVideoData?.url} />
+                        <NoDataMessage
+                          filter={false}
+                          loading={audioAnimationLoader}
+                        />
                       </>
                     )
-                    //  : (
-                    //   <>
-                    //     <NoDataMessage
-                    //       filter={false}
-                    //       // loading={audioAnimationLoader}
-                    //     />
-                    //   </>
-                    // )
-                  }
+                  )}
+
+                  {/* Full Video */}
+                  {generatedVideoData ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Generated Video
+                      </Typography>
+
+                      <FullVideoPlayer video_url={generatedVideoData?.url} />
+                    </>
+                  ) : (
+                    !generatedVideoData && (
+                      <>
+                        <NoDataMessage
+                          filter={false}
+                          // loading={audioAnimationLoader}
+                        />
+                      </>
+                    )
+                  )}
 
                   <div className={styles.actions}>
                     <ButtonComp
@@ -331,9 +300,8 @@ const AnimationPage = () => {
                       action={handleAlternateSubmit}
                       disabled={
                         audioAnimationLoader ||
-                        // generatedVideoData ||
-                        videoAnimationData ||
-                        sceneData?.video_exists === true
+                        generatedVideoData ||
+                        videoAnimationData
                       }
                     />
                     <ButtonComp
@@ -342,10 +310,8 @@ const AnimationPage = () => {
                       action={handleAllSubmit}
                       disabled={
                         audioAnimationLoader ||
-                        // generatedVideoData ||
-                        videoAnimationData ||
-                        sceneData?.video_exists === true
-                        // false
+                        generatedVideoData ||
+                        videoAnimationData
                       }
                     />
                   </div>
@@ -355,11 +321,7 @@ const AnimationPage = () => {
                     sx={{ textTransform: "none", width: "200px" }}
                     label={"Generate Video"}
                     action={generateVideo}
-                    disabled={
-                      audioAnimationLoader ||
-                      !videoAnimationData ||
-                      generatedVideoData
-                    }
+                    disabled={audioAnimationLoader || !videoAnimationData}
                   />
                 </div>
               </div>
