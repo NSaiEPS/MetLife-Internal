@@ -29,6 +29,36 @@ const MyVideosDashboard = () => {
   const { dashBoardInfo, dashboardLoader } = useSelector(
     (store) => store.DashBoard
   );
+  const completed_result = dashBoardInfo.filter((item) => {
+    if (item.audio && item.videos && item.visuals) {
+      return item;
+    }
+  });
+
+  const inprogress_video = dashBoardInfo.filter((item) => {
+    if (item.audio && !item.videos) {
+      return item;
+    }
+  });
+
+  const inprogress_visuals = dashBoardInfo.filter((item) => {
+    if (item.visuals && !item.videos && !item.audio) {
+      return item;
+    }
+  });
+
+  const inprogress_script = dashBoardInfo.filter((item) => {
+    if (!item.visuals && !item.videos && !item.audio) {
+      return item;
+    }
+  });
+
+  const total_progress =
+    inprogress_video?.length +
+    inprogress_visuals?.length +
+    inprogress_script?.length;
+
+  console.log(inprogress_visuals, "result__check");
   const stats = [
     {
       title: "Total Videos",
@@ -37,14 +67,14 @@ const MyVideosDashboard = () => {
       icon: <VideoLibrary fontSize="large" color="primary" />,
     },
     {
-      title: "In Progress",
-      value: 0,
+      title: "Completed Scripts",
+      value: completed_result?.length,
       color: "#E8F5E9",
       icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
     },
     {
-      title: "Completed Scripts",
-      value: 0,
+      title: "In Progress",
+      value: total_progress,
       color: "#FFEBEE",
       icon: <PlayCircle fontSize="large" color="error" />,
     },
@@ -57,6 +87,7 @@ const MyVideosDashboard = () => {
   ];
 
   const getStatusChip = (status) => {
+    console.log(status?.failed, "status_check");
     if (!status) return <Chip label="Unknown" />;
 
     // Failed
@@ -134,9 +165,7 @@ const MyVideosDashboard = () => {
     } else if (video?.prompt_batch_id) {
       navigate(`/create-visual-content/${video?.prompt_batch_id}`);
       return;
-      // console.log(video?.prompt_batch_id, "prompt id founded. ")
     } else {
-      // console.log(video?.script_id, "script id founded. ")
       navigate(`/scenes/${video?.script_id}`);
       return;
     }
