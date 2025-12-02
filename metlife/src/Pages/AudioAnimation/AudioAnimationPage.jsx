@@ -84,8 +84,8 @@ const AudioAnimationPage = () => {
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store) => store.AudioAnimation
   );
-  console.log(audioAnimationData, "audio");
   const characters = audioAnimationData?.voice_map?.characters || labels;
+  console.log(characters, "check__Characters");
   let sortedLabels = [];
   if (characters && characters.length > 0) {
     sortedLabels = ["Narrator", ...characters.filter((c) => c !== "Narrator")];

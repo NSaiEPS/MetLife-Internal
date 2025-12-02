@@ -24,16 +24,32 @@ const style = {
   p: 2,
 };
 
-const GeneratedVideoPlayer = ({ description, s3_url, index, image_url, data }) => {
+const GeneratedVideoPlayer = ({
+  description,
+  s3_url,
+  index,
+  image_url,
+  data,
+}) => {
   const [open, setOpen] = useState(false);
   const dummyImage = "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
 
+  // const downloadVideo = () => {
+  //   const link = document.createElement("a");
+  //   link.href = s3_url;
+  //   link.download = "scene_video.mp4";
+  //   link.click();
+  // };
 
   const downloadVideo = () => {
     const link = document.createElement("a");
     link.href = s3_url;
-    link.download = "scene_video.mp4";
+    link.setAttribute("download", `scene_${index + 1}.mp4`);
+    link.setAttribute("target", "_blank");
+
+    document.body.appendChild(link);
     link.click();
+    link.remove();
   };
 
   return (
@@ -66,7 +82,7 @@ const GeneratedVideoPlayer = ({ description, s3_url, index, image_url, data }) =
               sx={{
                 width: 60,
                 height: 60,
-                borderRadius: "50%",
+                borderRadius: "20%",
                 overflow: "hidden",
                 cursor: "pointer",
                 border: "2px solid #ddd",
@@ -84,7 +100,7 @@ const GeneratedVideoPlayer = ({ description, s3_url, index, image_url, data }) =
             </Box>
 
             {/* ---- Download Button ---- */}
-            <IconButton onClick={downloadVideo}  sx={{ color: "#4c9ad1" }} >
+            <IconButton onClick={downloadVideo} sx={{ color: "#4c9ad1" }}>
               <DownloadIcon />
             </IconButton>
           </Box>
