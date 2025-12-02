@@ -73,7 +73,7 @@ const MyVideosDashboard = () => {
     if (status.audio && !status.videos)
       return (
         <Chip
-          label="Audio Progress"
+          label="Audio in Progress"
           sx={{ bgcolor: "#2196F3", color: "#fff" }}
         />
       ); // Blue
@@ -82,7 +82,7 @@ const MyVideosDashboard = () => {
     if (status.visuals)
       return (
         <Chip
-          label="Visuals Progress"
+          label="Visuals in Progress"
           sx={{ bgcolor: "#9C27B0", color: "#fff" }}
         />
       ); // Purple
@@ -100,7 +100,7 @@ const MyVideosDashboard = () => {
     if (status.prompt_batch_id)
       return (
         <Chip
-          label="Visuals Progress"
+          label="Visuals in Progress"
           sx={{ bgcolor: "#009688", color: "#fff" }}
         />
       ); // Teal
