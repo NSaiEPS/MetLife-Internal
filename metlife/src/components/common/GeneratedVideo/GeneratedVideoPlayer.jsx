@@ -1,38 +1,3 @@
-// import { Card, CardContent, IconButton, Typography } from "@mui/material";
-// import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-// import DownloadIcon from "@mui/icons-material/Download";
-
-// const GeneratedVideoPlayer = ({ s3_url }) => {
-//   const downloadVideo = () => {
-//     const link = document.createElement("a");
-//     link.href = s3_url;
-//     link.download = "scene_video.mp4";
-//     link.click();
-//   };
-
-//   return (
-//     <Card sx={{ p: 2, borderRadius: 3 }}>
-//       <CardContent>
-//         <video
-//           width="100%"
-//           controls
-//           style={{ borderRadius: 8, marginBottom: 8 }}
-//         >
-//           <source src={s3_url} type="video/mp4" />
-//         </video>
-
-//         <Typography sx={{ fontWeight: 500 }}>Scene Video</Typography>
-
-//         <IconButton onClick={downloadVideo} sx={{ mt: 1 }}>
-//           <DownloadIcon />
-//         </IconButton>
-//       </CardContent>
-//     </Card>
-//   );
-// };
-
-// export default GeneratedVideoPlayer;
-
 import { useState } from "react";
 import {
   Card,
@@ -59,14 +24,32 @@ const style = {
   p: 2,
 };
 
-const GeneratedVideoPlayer = ({ description, s3_url, index }) => {
+const GeneratedVideoPlayer = ({
+  description,
+  s3_url,
+  index,
+  image_url,
+  data,
+}) => {
   const [open, setOpen] = useState(false);
+  const dummyImage = "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
+
+  // const downloadVideo = () => {
+  //   const link = document.createElement("a");
+  //   link.href = s3_url;
+  //   link.download = "scene_video.mp4";
+  //   link.click();
+  // };
 
   const downloadVideo = () => {
     const link = document.createElement("a");
     link.href = s3_url;
-    link.download = "scene_video.mp4";
+    link.setAttribute("download", `scene_${index + 1}.mp4`);
+    link.setAttribute("target", "_blank");
+
+    document.body.appendChild(link);
     link.click();
+    link.remove();
   };
 
   return (
@@ -75,19 +58,49 @@ const GeneratedVideoPlayer = ({ description, s3_url, index }) => {
       <Card sx={{ borderRadius: 3 }}>
         <CardContent>
           <Typography sx={{ fontWeight: 500 }}>
-            Scene {index + 1} Generated Video
+            Scene {index + 1} {description}
           </Typography>
 
           {/* <Typography sx={{ fontSize: "14px", color: "#555", mt: 1 }}>
             {description}
           </Typography> */}
 
-          <Box sx={{ display: "flex", mt: 2 }}>
+          {/* <Box sx={{ display: "flex", mt: 1 }}>
             <IconButton onClick={() => setOpen(true)}>
               <PlayCircleOutlineIcon fontSize="large" />
             </IconButton>
 
             <IconButton onClick={downloadVideo}>
+              <DownloadIcon />
+            </IconButton>
+          </Box> */}
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
+            {/* ---- Thumbnail Preview ---- */}
+            <Box
+              onClick={() => setOpen(true)}
+              sx={{
+                width: 60,
+                height: 60,
+                borderRadius: "20%",
+                overflow: "hidden",
+                cursor: "pointer",
+                border: "2px solid #ddd",
+              }}
+            >
+              <img
+                src={image_url || dummyImage} // fallback image
+                alt="preview"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
+
+            {/* ---- Download Button ---- */}
+            <IconButton onClick={downloadVideo} sx={{ color: "#4c9ad1" }}>
               <DownloadIcon />
             </IconButton>
           </Box>

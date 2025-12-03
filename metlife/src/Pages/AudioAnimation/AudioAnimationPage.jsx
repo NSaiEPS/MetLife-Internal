@@ -29,6 +29,9 @@ import {
   getAudioDetails,
   getLabels,
   postGenerateVoiceAndAudio,
+  setSceneData,
+  setVideoAnimationData,
+  setGeneratedVideoData,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
@@ -80,8 +83,8 @@ const AudioAnimationPage = () => {
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store) => store.AudioAnimation
   );
-  console.log(audioAnimationData, "audio")
   const characters = audioAnimationData?.voice_map?.characters || labels;
+  console.log(characters, "check__Characters");
   let sortedLabels = [];
   if (characters && characters.length > 0) {
     sortedLabels = ["Narrator", ...characters.filter((c) => c !== "Narrator")];
@@ -114,8 +117,6 @@ const AudioAnimationPage = () => {
     }));
   };
 
-  console.log(voiceSelections, "voice");
-
   const handleSubmit = () => {
     if (!narrationSelections.Narrator) {
       showToast.error("Please select a Narrator");
@@ -138,6 +139,13 @@ const AudioAnimationPage = () => {
   };
 
   const apiCall = () => {
+    const custom_voice_map = {};
+    Object.keys(voiceSelections).forEach((char) => {
+      if (voiceSelections[char]) {
+        custom_voice_map[char] = voiceSelections[char];
+      }
+    });
+
     const payload = {
       script_id: id,
       custom_voice_map: {
@@ -160,7 +168,9 @@ const AudioAnimationPage = () => {
   };
 
   const handleCreateTransition = () => {
-    // navigate("/animation-page")
+    dispatch(setSceneData({}));
+    dispatch(setVideoAnimationData(null));
+    dispatch(setGeneratedVideoData(null));
     navigateTo(`/animation-page/${id}`);
   };
 
@@ -173,7 +183,6 @@ const AudioAnimationPage = () => {
             {audioAnimationLoader && (
               <FullScreenGradientLoader text="loading..." />
             )}
-
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>

@@ -352,25 +352,25 @@ const GenerateVisualContentPage = () => {
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        <div className={styles.innerContainer}>
-          <div className={styles.header}>
-            <h2 className={styles.title}>
-              {generateVisualContentData?.title || "Visual Content"}
-            </h2>
-            <Button
-              className={styles.icon}
-              onClick={() => {
-                navigate(`/create-visual-content/${id}`);
-              }}
-            >
-              <IoArrowBackCircleOutline size={30} /> Back
-            </Button>
-          </div>
-        </div>
 
         <div className={styles.tableContainer}>
           {generateVisualContentData?.visuals?.length > 0 ? (
             <>
+              <div className={styles.innerContainer}>
+                <div className={styles.header}>
+                  <h2 className={styles.title}>
+                    {generateVisualContentData?.title || "Visual Content"}
+                  </h2>
+                  <Button
+                    className={styles.icon}
+                    onClick={() => {
+                      navigate(`/create-visual-content/${prompt_batch_id}`);
+                    }}
+                  >
+                    <IoArrowBackCircleOutline size={30} /> Back
+                  </Button>
+                </div>
+              </div>
               <VisualContentTable
                 columns={columns}
                 rows={rows}

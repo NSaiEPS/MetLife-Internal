@@ -53,7 +53,36 @@ const MyVideosDashboard: React.FC = () => {
   const { dashBoardInfo, dashboardLoader } = useSelector(
     (store: RootState) => store.DashBoard
   );
+  const completed_result = dashBoardInfo.filter((item) => {
+    if (item.videos) {
+      return item;
+    }
+  });
 
+  const inprogress_video = dashBoardInfo.filter((item) => {
+    if (item.audio && !item.videos) {
+      return item;
+    }
+  });
+
+  const inprogress_visuals = dashBoardInfo.filter((item) => {
+    if (item.visuals && !item.videos && !item.audio) {
+      return item;
+    }
+  });
+
+  const inprogress_script = dashBoardInfo.filter((item) => {
+    if (!item.visuals && !item.videos && !item.audio) {
+      return item;
+    }
+  });
+
+  const total_progress =
+    inprogress_video?.length +
+    inprogress_visuals?.length +
+    inprogress_script?.length;
+
+  console.log(inprogress_visuals, "result__check");
   const stats = [
     {
       title: "Total Videos",
@@ -63,14 +92,14 @@ const MyVideosDashboard: React.FC = () => {
       iconColor: "#1976D2",
     },
     {
-      title: "In Progress",
-      value: 0,
+      title: "Completed Scripts",
+      value: completed_result?.length,
       color: "#E8F5E9",
       icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
     },
     {
-      title: "Completed Scripts",
-      value: 0,
+      title: "In Progress",
+      value: total_progress,
       color: "#FFEBEE",
       icon: <PlayCircle fontSize="large" color="error" />,
     },
@@ -82,7 +111,8 @@ const MyVideosDashboard: React.FC = () => {
     },
   ];
 
-  const getStatusChip = (status: DashboardItem) => {
+  const getStatusChip = (status) => {
+    console.log(status?.failed, "status_check");
     if (!status) return <Chip label="Unknown" />;
 
     if (status.failed)
@@ -129,8 +159,19 @@ const MyVideosDashboard: React.FC = () => {
       navigate(`/animation-page/${video.script_id}`);
       return;
     }
-    if (video.audio) {
-      navigate(`/audio-animation-toolkit/${video.script_id}`);
+    if (video?.audio) {
+      console.log("audio founded");
+      navigate(`/audio-animation-toolkit/${video?.script_id}`);
+      return;
+    } else if (video?.visuals) {
+      console.log("visuals founnd");
+      navigate(`/generate-visual-page/${video?.script_id}`);
+      return;
+    } else if (video?.prompt_batch_id) {
+      navigate(`/create-visual-content/${video?.prompt_batch_id}`);
+      return;
+    } else {
+      navigate(`/scenes/${video?.script_id}`);
       return;
     }
     if (video.visuals) {

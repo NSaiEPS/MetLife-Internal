@@ -44,7 +44,7 @@ const AnimationPage = () => {
   const [exitAnimation, setExitAnimation] = useState("fade_out");
   const {
     audioAnimationLoader,
-    audioAnimationData,
+    videoAnimationLoader,
     animationLabels,
     videoAnimationData,
     generatedVideoData,
@@ -112,8 +112,9 @@ const AnimationPage = () => {
   const generateVideo = () => {
     dispatch(postGenerateFullVideo(id));
   };
-  console.log(generatedVideoData, "check_generated_video");
-  // console.log(videoAnimationData, "videoAnimationData");
+
+  console.log(videoAnimationLoader, "check__video_animaiton__loader");
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -124,7 +125,7 @@ const AnimationPage = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {audioAnimationLoader && (
+            {(audioAnimationLoader || videoAnimationLoader) && (
               <FullScreenGradientLoader text="loading..." />
             )}
 
@@ -164,7 +165,7 @@ const AnimationPage = () => {
                           borderRadius: 3,
                         }}
                       >
-                        <FormControl>
+                        <FormControl disabled={videoAnimationData}>
                           <RadioGroup
                             value={entryAnimation}
                             onChange={(e) => setEntryAnimation(e.target.value)}
@@ -207,7 +208,7 @@ const AnimationPage = () => {
                           borderRadius: 3,
                         }}
                       >
-                        <FormControl>
+                        <FormControl disabled={videoAnimationData}>
                           <RadioGroup
                             value={exitAnimation}
                             onChange={(e) => setExitAnimation(e.target.value)}
@@ -252,10 +253,27 @@ const AnimationPage = () => {
                             key={idx}
                             sx={{ width: "100%" }}
                           >
-                            <GeneratedVideoPlayer
-                              index={idx}
-                              s3_url={scene?.final_video?.url}
-                            />
+                            Available Videos
+                          </Typography>
+                          <Grid container spacing={2} sx={{ mt: 1 }}>
+                            {videoAnimationData?.map((scene, idx) => (
+                              <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                key={idx}
+                                sx={{ width: "100%" }}
+                              >
+                                <GeneratedVideoPlayer
+                                  data={scene}
+                                  image_url={scene.image_urls[0]}
+                                  index={idx}
+                                  description={scene?.ost}
+                                  s3_url={scene?.final_video?.url}
+                                />
+                              </Grid>
+                            ))}
                           </Grid>
                         ))}
                       </Grid>
@@ -263,10 +281,15 @@ const AnimationPage = () => {
                   ) : (
                     videoAnimationData?.length > 0 && (
                       <>
-                        <NoDataMessage
-                          filter={false}
-                          loading={audioAnimationLoader}
-                        />
+                        <Typography
+                          sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                        >
+                          Generated Video
+                        </Typography>
+
+                        <FullVideoPlayer
+                        
+                         video_url={generatedVideoData?.url} />
                       </>
                     )
                   )}
@@ -300,8 +323,10 @@ const AnimationPage = () => {
                       action={handleAlternateSubmit}
                       disabled={
                         audioAnimationLoader ||
+                        videoAnimationLoader ||
                         generatedVideoData ||
-                        videoAnimationData
+                        videoAnimationData ||
+                        sceneData?.video_exists === true
                       }
                     />
                     <ButtonComp
@@ -310,8 +335,11 @@ const AnimationPage = () => {
                       action={handleAllSubmit}
                       disabled={
                         audioAnimationLoader ||
+                        videoAnimationLoader ||
                         generatedVideoData ||
-                        videoAnimationData
+                        videoAnimationData ||
+                        sceneData?.video_exists === true
+                        // false
                       }
                     />
                   </div>
@@ -321,7 +349,12 @@ const AnimationPage = () => {
                     sx={{ textTransform: "none", width: "200px" }}
                     label={"Generate Video"}
                     action={generateVideo}
-                    disabled={audioAnimationLoader || !videoAnimationData}
+                    disabled={
+                      audioAnimationLoader ||
+                      videoAnimationLoader ||
+                      !videoAnimationData ||
+                      generatedVideoData
+                    }
                   />
                 </div>
               </div>

@@ -31,8 +31,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
-import deleteIcon from "../../assets/delete.svg";
-
+import deleteIcon from "../../assets/Group_Delete.svg"; //check
 import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
 import DownloadPopup from "./popup/DownloadPopup";
 import ShowSourcePopup from "./popup/ShowSourcePopup";
