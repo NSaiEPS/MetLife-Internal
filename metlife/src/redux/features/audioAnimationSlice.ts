@@ -1,0 +1,274 @@
+import { createSlice,  } from "@reduxjs/toolkit";
+import type{PayloadAction} from "@reduxjs/toolkit"
+import api from "../../api/axios";
+import { toast } from "react-toastify";
+import { navigateTo } from "../../utils/navigate";
+import { convertToISTParts } from "../../utils";
+import type { AppDispatch } from "../store";
+
+// ---------- Types ----------
+export interface AudioAnimationState {
+  audioAnimationLoader: boolean;
+  videoAnimationLoader: boolean;
+  audioAnimationData: Record<string, unknown> | null;
+  audioPreviewData: Record<string, unknown> | null;
+  labels: Record<string, unknown> | null;
+  animationLabels: {
+    entry_transitions?: string[];
+    exit_transitions?: string[];
+  } | null;
+  videoAnimationData: any[] | null; // list of scenes
+  generatedVideoData: Record<string, unknown> | null;
+  sceneData: {
+    scenes?: Array<{
+      scene_id?: string;
+      alternative_scene_id?: string;
+    }>;
+    video_exists?: boolean;
+    [key: string]: any;
+  } | null;
+}
+
+interface ApiResponse<T = any> {
+  status: boolean;
+  data: T;
+}
+
+// ---------- Initial State ----------
+const initialState: AudioAnimationState = {
+  audioAnimationLoader: false,
+  videoAnimationLoader: false,
+  audioAnimationData: null,
+  audioPreviewData: null,
+  labels: null,
+  animationLabels: null,
+  videoAnimationData: null,
+  generatedVideoData: null,
+  sceneData: null,
+};
+
+// ---------- Slice ----------
+const AudioAnimationSlice = createSlice({
+  name: "audio_animation_toolkit",
+  initialState,
+  reducers: {
+    setAudioAnimationLoader: (state, action: PayloadAction<boolean>) => {
+      state.audioAnimationLoader = action.payload;
+    },
+    setVideoAnimationLoader: (state, action: PayloadAction<boolean>) => {
+      state.videoAnimationLoader = action.payload;
+    },
+    setAudioAnimationData: (
+      state,
+      action: PayloadAction<Record<string, unknown> | null>
+    ) => {
+      state.audioAnimationData = action.payload;
+    },
+    setAudioPreviewData: (
+      state,
+      action: PayloadAction<Record<string, unknown> | null>
+    ) => {
+      state.audioPreviewData = action.payload;
+    },
+    setLabels: (
+      state,
+      action: PayloadAction<Record<string, unknown> | null>
+    ) => {
+      state.labels = action.payload;
+    },
+    setAnimationLabels: (
+      state,
+      action: PayloadAction<Record<string, unknown> | null>
+    ) => {
+      state.animationLabels = action.payload as any;
+    },
+    setVideoAnimationData: (
+      state,
+      action: PayloadAction<any[] | null>
+    ) => {
+      state.videoAnimationData = action.payload;
+    },
+    setGeneratedVideoData: (
+      state,
+      action: PayloadAction<Record<string, unknown> | null>
+    ) => {
+      state.generatedVideoData = action.payload;
+    },
+    setSceneData: (
+      state,
+      action: PayloadAction<AudioAnimationState["sceneData"]>
+    ) => {
+      state.sceneData = action.payload;
+    },
+  },
+});
+
+// Export Actions
+export const {
+  setAudioAnimationData,
+  setAudioAnimationLoader,
+  setVideoAnimationLoader,
+  setAudioPreviewData,
+  setLabels,
+  setAnimationLabels,
+  setVideoAnimationData,
+  setGeneratedVideoData,
+  setSceneData,
+} = AudioAnimationSlice.actions;
+
+export default AudioAnimationSlice.reducer;
+
+// ---------- Async Thunks ----------
+export const postAudioAnimationData =
+  (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
+    dispatch(setAudioAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.post("extract-characters", data);
+      if (res.status) {
+        dispatch(setAudioAnimationData(res.data));
+        navigateTo(`/audio-animation-toolkit/${res.data?.script_id}`);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while extracting characters!");
+    } finally {
+      dispatch(setAudioAnimationLoader(false));
+    }
+  };
+
+export const postGenerateVoiceAndAudio =
+  (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
+    dispatch(setAudioAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.post(
+        "audio/generate-voice-and-audio",
+        data
+      );
+      if (res.status) {
+        dispatch(setAudioAnimationData(res.data));
+        toast.success("Audio generated successfully");
+      }
+    } catch (error) {
+      toast.error("Audio generation failed!");
+    } finally {
+      dispatch(setAudioAnimationLoader(false));
+    }
+  };
+
+export const getAudioDetails =
+  (id: string) => async (dispatch: AppDispatch) => {
+    dispatch(setAudioAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.get(`audio/audio/${id}`);
+      if (res.status) {
+        dispatch(setAudioAnimationData(res.data?.data));
+      }
+    } catch (error) {
+      toast.error("Failed to fetch audio details!");
+    } finally {
+      dispatch(setAudioAnimationLoader(false));
+    }
+  };
+
+export const getPreviewVoices = () => async (dispatch: AppDispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res: ApiResponse = await api.get("audio/preview-voices");
+    if (res.status) {
+      dispatch(setAudioPreviewData(res.data));
+    }
+  } catch {
+    toast.error("Failed to fetch preview voices!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+export const getLabels = (id: string) => async (dispatch: AppDispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res: ApiResponse = await api.get(`characters/${id}`);
+    if (res.status) {
+      dispatch(setLabels(res.data?.characters));
+    }
+  } catch {
+    toast.error("Failed to fetch character labels!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+export const getMediaTransitions = () => async (dispatch: AppDispatch) => {
+  dispatch(setAudioAnimationLoader(true));
+  try {
+    const res: ApiResponse = await api.get("media/transitions");
+    if (res.status) {
+      dispatch(setAnimationLabels(res.data));
+    }
+  } catch {
+    toast.error("Failed to fetch media transitions!");
+  } finally {
+    dispatch(setAudioAnimationLoader(false));
+  }
+};
+
+export const postGenerateVideoBatch =
+  (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
+    dispatch(setVideoAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.post("media/generate-video-batch", data);
+      if (res.status) {
+        dispatch(setVideoAnimationData(res.data));
+        const seconds = convertToISTParts(res.data.estimated_completion_at);
+        toast.success(`Video Generated in ${Math.ceil(seconds / 60)} mins`);
+      }
+    } catch {
+      toast.error("Failed to generate video batch!");
+    } finally {
+      dispatch(setVideoAnimationLoader(false));
+    }
+  };
+
+export const getVideosList =
+  (id: string) => async (dispatch: AppDispatch) => {
+    dispatch(setVideoAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.get(`media/${id}`);
+      if (res.status) {
+        dispatch(setVideoAnimationData(res.data?.results || []));
+        dispatch(setGeneratedVideoData(res.data?.final_video || null));
+      }
+    } catch {
+      toast.error("Failed to fetch videos list!");
+    } finally {
+      dispatch(setVideoAnimationLoader(false));
+    }
+  };
+
+export const postGenerateFullVideo =
+  (id: string) => async (dispatch: AppDispatch) => {
+    dispatch(setAudioAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.post(
+        `media/generate-video-full/${id}`
+      );
+      if (res.status) {
+        dispatch(setGeneratedVideoData(res.data?.full_video || null));
+      }
+    } catch {
+      toast.error("Something went wrong while generating full video!");
+    } finally {
+      dispatch(setAudioAnimationLoader(false));
+    }
+  };
+
+export const getSceneDetails =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      const res: ApiResponse = await api.get(`scripts/${id}`);
+      if (res.status) {
+        dispatch(setSceneData(res.data));
+      }
+    } catch (error: any) {
+      toast.error(error?.detail || "Failed to fetch scene details!");
+    }
+  };
