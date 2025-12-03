@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import styles from "./generateVisualContent.module.css";
@@ -123,19 +123,37 @@ const GenerateVisualContentPage = () => {
 
   const actions = [
     {
-      icon: <img src={copy} />,
+      icon: (
+        <Tooltip title="Edit" placement="top" arrow>
+          <span>
+            <img src={copy} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         handleVisualEdit(row);
       },
     },
     {
-      icon: <img src={reuse} />,
+      icon: (
+        <Tooltip title="Regenerate" placement="top" arrow>
+          <span>
+            <img src={reuse} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         handleImageRegenerate(row);
       },
     },
     {
-      icon: <img src={upload} />,
+      icon: (
+        <Tooltip title="Upload Image" placement="top" arrow>
+          <span>
+            <img src={upload} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         console.log(row, "check_row");
         if (row.Visual_Type === "image") {
@@ -163,8 +181,6 @@ const GenerateVisualContentPage = () => {
   useEffect(() => {
     dispatch(getGenerateVisualContentImage(id));
   }, [id, dispatch]);
-
-  // console.log(first)
 
   useEffect(() => {
     if (generateVisualContentData?.visuals) {

@@ -8,7 +8,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button, MenuItem, Select, Tooltip } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import {
   getVisualContent,
@@ -43,13 +43,25 @@ const CreateVisualContentPage = () => {
 
   const actions = [
     {
-      icon: <img src={copy} />,
+      icon: (
+        <Tooltip title="Edit" palcement="top" arrow>
+          <span>
+            <img src={copy} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         openEditPrompt(row);
       },
     },
     {
-      icon: <img src={reuse} />,
+      icon: (
+        <Tooltip title="Regenerate" placement="top" arrow>
+          <span>
+            <img src={reuse} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         handlePromptRegenerate(row);
       },

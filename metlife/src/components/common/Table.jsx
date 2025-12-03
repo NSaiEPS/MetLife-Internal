@@ -101,7 +101,13 @@ function DynamicTable({
 
   const actions = [
     {
-      icon: <img src={copy} />,
+      icon: (
+        <Tooltip title="Edit" placement="top" arrow>
+          <span>
+            <img src={copy} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         addScene(row);
         setMakeChanges(true);
@@ -111,7 +117,9 @@ function DynamicTable({
       icon: (
         <Tooltip
           title={
-            regenerateDisabled ? "Please save before regenerating again" : ""
+            regenerateDisabled
+              ? "Please save before regenerating again"
+              : "Regenerate"
           }
           placement="top"
           arrow
@@ -137,7 +145,13 @@ function DynamicTable({
       },
     },
     {
-      icon: <img src={deleteIcon} alt="icon" />,
+      icon: (
+        <Tooltip title="Delete" placement="top" arrow>
+          <span>
+            <img src={deleteIcon} alt="icon" />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row) => {
         setMakeChanges(true);
         // setSceneData(row);
@@ -590,13 +604,19 @@ function DynamicTable({
                           {/* Drag handle cell */}
                           {showDragAndActions && (
                             <TableCell className={styles.bodyCell}>
-                              <IconButton
-                                {...provided.dragHandleProps}
-                                size="small"
-                                className={styles.dragHandle}
+                              <Tooltip
+                              title="Drag & Drop" placement="top" arrow
                               >
-                                <DragIndicatorIcon />
-                              </IconButton>
+                                <span>
+                                  <IconButton
+                                    {...provided.dragHandleProps}
+                                    size="small"
+                                    className={styles.dragHandle}
+                                  >
+                                    <DragIndicatorIcon />
+                                  </IconButton>
+                                </span>
+                              </Tooltip>
                             </TableCell>
                           )}
                           {/* <TableCell className={styles.bodyCell}>
@@ -622,16 +642,18 @@ function DynamicTable({
                             <TableCell className={styles.bodyCell}>
                               <div className={styles.actionsWrap}>
                                 {actions.map((act, aIdx) => (
-                                  <IconButton
-                                    key={aIdx}
-                                    className={styles.iconBtn}
-                                    size="small"
-                                    onClick={() => {
-                                      act.onClick(row);
-                                    }}
-                                  >
-                                    {act.icon}
-                                  </IconButton>
+                                  <>
+                                    <IconButton
+                                      key={aIdx}
+                                      className={styles.iconBtn}
+                                      size="small"
+                                      onClick={() => {
+                                        act.onClick(row);
+                                      }}
+                                    >
+                                      {act.icon}
+                                    </IconButton>
+                                  </>
                                 ))}
                               </div>
                             </TableCell>
