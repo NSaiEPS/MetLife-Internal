@@ -282,7 +282,7 @@ const AnimationPage = () => {
                               >
                                 <GeneratedVideoPlayer
                                   data={scene}
-                                  image_url={scene.image_urls[0]}
+                                  image_url={scene?.image_urls[0]}
                                   index={idx}
                                   description={scene?.ost}
                                   s3_url={scene?.final_video?.url}

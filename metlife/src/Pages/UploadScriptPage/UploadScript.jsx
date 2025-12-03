@@ -42,7 +42,7 @@ const UploadScript = () => {
     }
     const file = files[0];
 
-    if (file.type !== "application/pdf") {
+    if (file && file.type !== "application/pdf") {
       showToast.error("Only PDF files are allowed");
       e.target.value = null;
       return;
