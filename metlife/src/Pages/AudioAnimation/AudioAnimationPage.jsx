@@ -83,16 +83,20 @@ const AudioAnimationPage = () => {
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store) => store.AudioAnimation
   );
-  console.log('audio__animation__data', Object.keys(audioAnimationData?.custom_voice_map));
+  // console.log('audio__animation__data', Object.keys(audioAnimationData?.custom_voice_map || {}));
+  console.log('audio__animation__data', (audioAnimationData?.Characters));
+
   const dispatch = useDispatch();
-  const characters = audioAnimationData?.voice_map?.characters || labels;
+  // const characters = audioAnimationData?.voice_map?.characters || labels;
+  const characters = audioAnimationData?.voice_map?.characters || audioAnimationData?.Characters || Object.keys(audioAnimationData?.custom_voice_map || {});
+  console.log(characters, 'characters')
   let sortedLabels = [];
   if (characters && characters.length > 0) {
     sortedLabels = ["Narrator", ...characters.filter((c) => c !== "Narrator")];
   }
 
   useEffect(() => {
-    dispatch(getLabels(id));
+    // dispatch(getLabels(id));
     dispatch(getAudioDetails(id));
   }, [id, dispatch]);
 
