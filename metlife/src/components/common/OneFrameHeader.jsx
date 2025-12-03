@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography } from "@mui/material";
 import logo from "../../assets/mainImage.svg";
 import styles from "./OneFrameHeader.module.css";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const OneFrameHeader = ({
   setMakeChanges,
@@ -10,6 +10,8 @@ const OneFrameHeader = ({
   sceneHandle = false,
 }) => {
   const navigate = useNavigate();
+  const {pathname} = useLocation();
+  console.log(pathname, 'check__pathname')
 
   // const handleImageClick = () => {
   //   setMakeChanges(true);
@@ -31,6 +33,7 @@ const OneFrameHeader = ({
 
     // ✅ Either no unsaved changes, or user confirmed
     // setMakeChanges(true); // or false, depending on when you want to mark changes
+    if(pathname === "/dashboard" || pathname === "/") return;
     navigate("/");
   };
   return (

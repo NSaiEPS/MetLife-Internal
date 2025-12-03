@@ -19,7 +19,7 @@ import AddNewScriptPopup from "../popUps/addScripts";
 import { downloadScriptPdf, downloadScriptWord } from "../../utils";
 import { showToast } from "../../utils/toast";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
 import deleteIcon from "../../assets/Group_Delete.svg"; //check
@@ -79,6 +79,8 @@ function DynamicTable({
   const [operations, setOperations] = useState(false);
   const [openSavePrompt, setOpenSavePrompt] = useState(false);
   const latestPrompt = tableExtraData?.latest_prompt;
+  const scriptIdForTranslatedPage = saveTranslatedData?.script_id;
+  const { pathname } = useLocation();
 
   const handleSavePrompt = (prompt) => {
     const payload = {
@@ -234,7 +236,7 @@ function DynamicTable({
   const handleDownloadType = (type) => {
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true );
+        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
       } else if (type === "word") {
         downloadScriptWord({ ...tableExtraData, scenes: rows });
       }
@@ -399,12 +401,13 @@ function DynamicTable({
         ...tableExtraData,
       },
     };
-    dispatch(postTranslatedDataSave(data));
-    // .then((success) => {
-    //   if (success) {
-    //     dispatch(postAudioAnimationData(dataForAudio));
-    //   }
-    // });
+    dispatch(
+      postTranslatedDataSave(data, (id) => {
+        if (pathname === "/translated-script") {
+          navigate(`/scenes/${id}`);
+        }
+      })
+    );
 
     setMakeChanges(false);
   };
@@ -426,7 +429,6 @@ function DynamicTable({
       setLoader(false);
     }
   };
-  console.log(tableExtraData, "tableExtraData");
 
   return (
     <>

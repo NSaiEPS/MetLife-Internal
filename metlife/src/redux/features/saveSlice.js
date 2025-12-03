@@ -30,14 +30,16 @@ export const {
 
 export default SaveTranslatedPageSlice.reducer;
 
-export const postTranslatedDataSave = (data) => async (dispatch) => {
+export const postTranslatedDataSave = (data,successfully) => async (dispatch) => {
   dispatch(setSaveLoader(true));
   try {
     const response = await api.post("mongo/write", data);
     if (response?.status) {
       dispatch(setSaveTranslatedData(response?.data));
+      if(successfully){
+        successfully(response?.data?.script_id)
+      }
       toast.success("Data Saved Successfully");
-      // return true;
     }
   } catch (error) {
     console.log(error);

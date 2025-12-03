@@ -8,6 +8,10 @@ import {
   DialogActions,
   Button,
   TextField,
+  TextareaAutosize,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
 } from "@mui/material";
 
 const EditVisualPopup = ({
@@ -20,10 +24,16 @@ const EditVisualPopup = ({
 }) => {
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
+  console.log(fieldData, "check_field_data");
 
   useEffect(() => {
     if (fieldData) {
-      setDescription(fieldData.Visual_Description || "");
+      const description = (fieldData.Visual_Description || "").replace(
+        /\r?\n|\r/g,
+        " "
+      );
+      setDescription(description);
+      // setDescription(fieldData.Visual_Description || "");
     } else {
       setDescription("");
     }
@@ -32,7 +42,7 @@ const EditVisualPopup = ({
   const handleSave = () => {
     const payload = {
       script_id,
-      scene_id:fieldData?.scene_id,
+      scene_id: fieldData?.scene_id,
       prompt_batch_id,
       new_prompt: description,
     };
@@ -81,7 +91,7 @@ const EditVisualPopup = ({
         <Button
           variant="contained"
           //   disabled={saveVisualContentLoader}
-            onClick={handleSave}
+          onClick={handleSave}
         >
           Save
         </Button>

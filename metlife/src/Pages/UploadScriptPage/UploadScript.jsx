@@ -17,6 +17,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Input from "../../components/common/Input";
 import { showToast } from "../../utils/toast";
+import DownloadPopup from "../../components/common/popup/DownloadPopup";
 // import { IoMdDownload } from "react-icons/io";
 
 const UploadScript = () => {
@@ -25,13 +26,13 @@ const UploadScript = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scriptData, setScriptData] = useState(null);
   const [loader, setLoader] = useState(false);
+  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef();
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef.current.click();
   };
-
 
   const handleFileChange = async (e) => {
     const files = e.target.files;
@@ -96,45 +97,205 @@ const UploadScript = () => {
     }
   };
 
-  const handleDownload = () => {
-    const doc = new jsPDF();
-
-    // Title
-    doc.setFontSize(18);
-    doc.text("Sample Script", 14, 20);
-
-    // Table data
-    const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-    const tableRows = [
-      ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-      [
-        "02",
-        "Create a 90-second explainer video script about photosynthesis",
-        "Dummy text",
-        "Monologue",
-      ],
-      ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-      [
-        "04",
-        "Create a 90-second explainer video script about photosynthesis",
-        "Dummy text",
-        "Monologue",
-      ],
-      ["05", "Create a 90-second video", "Dummy text", "Narration"],
-    ];
-
-    // Add table
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 30,
-      theme: "grid",
-      headStyles: { fillColor: [100, 149, 237] },
-    });
-
-    // Save PDF
-    doc.save("Sample_Script.pdf");
+  const handleDownloadScript = () => {
+    setOpenDownloadPopup(true);
+    // setMakeChanges(true);
   };
+
+  const handleDownloadType = (type) => {
+    try {
+      if (type === "pdf") {
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(18);
+        doc.text("Sample Script", 14, 20);
+
+        // Table data
+        const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+        const tableRows = [
+          ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
+          [
+            "02",
+            "Create a 90-second explainer video script about photosynthesis",
+            "Dummy text",
+            "Monologue",
+          ],
+          ["03", "Create a 90-second video", "Dummy text", "Conversation"],
+          [
+            "04",
+            "Create a 90-second explainer video script about photosynthesis",
+            "Dummy text",
+            "Monologue",
+          ],
+          ["05", "Create a 90-second video", "Dummy text", "Narration"],
+        ];
+
+        // Add table
+        doc.autoTable({
+          head: [tableColumn],
+          body: tableRows,
+          startY: 30,
+          theme: "grid",
+          headStyles: { fillColor: [100, 149, 237] },
+        });
+
+        // Save PDF
+        doc.save("Sample_Script.pdf");
+      } else if (type === "word") {
+        //download word file:-
+        import("docx").then(
+          ({
+            Document,
+            Packer,
+            Paragraph,
+            Table,
+            TableCell,
+            TableRow,
+            TextRun,
+          }) => {
+            const doc = new Document({
+              sections: [
+                {
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: "Sample Script",
+                          bold: true,
+                          size: 32, // = 16pt
+                        }),
+                      ],
+                      spacing: { after: 300 },
+                    }),
+
+                    // Table
+                    new Table({
+                      rows: [
+                        // Header Row
+                        new TableRow({
+                          children: [
+                            new TableCell({
+                              children: [new Paragraph("Scene No.")],
+                            }),
+                            new TableCell({
+                              children: [new Paragraph("Script")],
+                            }),
+                            new TableCell({ children: [new Paragraph("OST")] }),
+                            new TableCell({
+                              children: [new Paragraph("Type")],
+                            }),
+                          ],
+                        }),
+
+                        // Data Rows
+                        ...[
+                          [
+                            "01",
+                            "Create a 90-second explainer",
+                            "Dummy text",
+                            "Narration",
+                          ],
+                          [
+                            "02",
+                            "Create a 90-second explainer video script about photosynthesis",
+                            "Dummy text",
+                            "Monologue",
+                          ],
+                          [
+                            "03",
+                            "Create a 90-second video",
+                            "Dummy text",
+                            "Conversation",
+                          ],
+                          [
+                            "04",
+                            "Create a 90-second explainer video script about photosynthesis",
+                            "Dummy text",
+                            "Monologue",
+                          ],
+                          [
+                            "05",
+                            "Create a 90-second video",
+                            "Dummy text",
+                            "Narration",
+                          ],
+                        ].map(
+                          (row) =>
+                            new TableRow({
+                              children: row.map(
+                                (cell) =>
+                                  new TableCell({
+                                    children: [new Paragraph(cell)],
+                                  })
+                              ),
+                            })
+                        ),
+                      ],
+                    }),
+                  ],
+                },
+              ],
+            });
+
+            // Download as .docx
+            Packer.toBlob(doc).then((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "Sample_Script.docx";
+              a.click();
+            });
+          }
+        );
+      }
+      setOpenDownloadPopup(false);
+    } catch (err) {
+      console.error("Error generating file:", err);
+    }
+    // setMakeChanges(true);
+  };
+
+  // Sample PDF download function
+  // const handleDownload = () => {
+  //   const doc = new jsPDF();
+
+  //   // Title
+  //   doc.setFontSize(18);
+  //   doc.text("Sample Script", 14, 20);
+
+  //   // Table data
+  //   const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+  //   const tableRows = [
+  //     ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
+  //     [
+  //       "02",
+  //       "Create a 90-second explainer video script about photosynthesis",
+  //       "Dummy text",
+  //       "Monologue",
+  //     ],
+  //     ["03", "Create a 90-second video", "Dummy text", "Conversation"],
+  //     [
+  //       "04",
+  //       "Create a 90-second explainer video script about photosynthesis",
+  //       "Dummy text",
+  //       "Monologue",
+  //     ],
+  //     ["05", "Create a 90-second video", "Dummy text", "Narration"],
+  //   ];
+
+  //   // Add table
+  //   doc.autoTable({
+  //     head: [tableColumn],
+  //     body: tableRows,
+  //     startY: 30,
+  //     theme: "grid",
+  //     headStyles: { fillColor: [100, 149, 237] },
+  //   });
+
+  //   // Save PDF
+  //   doc.save("Sample_Script.pdf");
+  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -195,9 +356,10 @@ const UploadScript = () => {
               }
             />
             <ButtonComp
-              label="Sample PDF Download"
+              label="Sample Download"
               variant="contained"
-              action={handleDownload}
+              // action={handleDownload}
+              action={handleDownloadScript}
               sx={{
                 backgroundColor: "#239DE0",
                 "&:hover": { backgroundColor: "#7fbcddff" },
@@ -205,6 +367,11 @@ const UploadScript = () => {
             />
           </div>
         </div>
+        <DownloadPopup
+          open={openDownloadPopup}
+          onClose={() => setOpenDownloadPopup(false)}
+          onSelect={handleDownloadType}
+        />
       </div>
       <Footer />
     </>

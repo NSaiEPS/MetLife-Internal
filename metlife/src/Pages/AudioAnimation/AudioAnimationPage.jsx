@@ -34,10 +34,10 @@ import {
   setGeneratedVideoData,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
-import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
-import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import { navigateTo } from "../../utils/navigate";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
+import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
+import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import voice1 from "../../assets/voice_preview_en-US-DavisNeural.wav";
 import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
 import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
@@ -80,12 +80,12 @@ const AudioAnimationPage = () => {
   });
   const [voiceSelections, setVoiceSelections] = useState({});
   const { id } = useParams();
-  const dispatch = useDispatch();
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store) => store.AudioAnimation
   );
+  console.log('audio__animation__data', Object.keys(audioAnimationData?.custom_voice_map));
+  const dispatch = useDispatch();
   const characters = audioAnimationData?.voice_map?.characters || labels;
-  console.log(characters, "check__Characters");
   let sortedLabels = [];
   if (characters && characters.length > 0) {
     sortedLabels = ["Narrator", ...characters.filter((c) => c !== "Narrator")];

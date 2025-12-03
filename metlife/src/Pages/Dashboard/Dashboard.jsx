@@ -144,9 +144,10 @@ const MyVideosDashboard = () => {
   const handleClick = () => {
     navigate("/video-frame");
   };
+
   useEffect(() => {
     dispatch(getDashboardInfo());
-  }, []);
+  }, [dispatch]);
 
   const handleView = (video) => {
     if (video?.videos) {
@@ -179,6 +180,9 @@ const MyVideosDashboard = () => {
       <Box
         sx={{
           p: 4,
+          // padding: '32px 130px'
+          // maxWidth: '1220px',
+          // margin: 'auto'
         }}
       >
         {/* Header */}
@@ -344,7 +348,7 @@ const MyVideosDashboard = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell>
-                  <TableCell>{video.title}</TableCell>
+                  <TableCell>{`${video.language === null ? "" : video.language} ${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>

@@ -29,7 +29,9 @@ const AddNewScriptPopup = ({
   useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
-      setOst(fieldData.OST || "");
+      const cleanOST = (fieldData.OST || "").replace(/\r?\n|\r/g, " ");
+      setOst(cleanOST);
+      // setOst(fieldData.OST || "");
 
       if (fieldData.Type == "narrator") {
         setType("narrator");
@@ -86,6 +88,7 @@ const AddNewScriptPopup = ({
         <FormControl fullWidth margin="normal">
           <InputLabel>Type</InputLabel>
           <Select
+            disabled
             value={type}
             label="Type"
             sx={{

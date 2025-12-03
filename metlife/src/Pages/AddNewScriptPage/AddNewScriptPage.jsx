@@ -9,7 +9,7 @@ import { useParams } from "react-router";
 import Footer from "../../components/common/mainFooter";
 // import copy from "../../assets/copy.svg";
 // import reuse from "../../assets/reuse.svg";
-import AddNewScriptPopup from "../../components/popUps/addScripts";
+// import AddNewScriptPopup from "../../components/popUps/addScripts";
 import { downloadScriptPdf } from "../../utils/index";
 import { Scriptdata } from "../../../script";
 import api from "../../api/axios";

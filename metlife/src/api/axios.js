@@ -27,7 +27,7 @@ api.interceptors.response.use(
       return Promise.reject(error.response.data); // Return the error response data
     } else if (error.request) {
       // The request was made but no response was received
-      console.error("No response received");
+      // console.error("No response received");
       message.error(
         "Unable to connect. Please check your network and try again."
       );
