@@ -29,6 +29,7 @@ import GradientLoader from "../../components/common/GradientLoader";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import SavedPromptsModal from "../../components/common/SavedPromptsModal";
 import DataFilters from "../../components/Data Filters/DataFilters";
+import CharacterParent from "../../components/Conversationaly Character/CharacterParent";
 
 const videoTypeOptions = [
   { value: "narrator", label: "Narrator" },
@@ -303,6 +304,9 @@ const GenerateScript = () => {
                     />
                   </Grid>
                 </Grid>
+                {(videoType == "conversational" || videoType == "mixed") && (
+                  <CharacterParent />
+                )}
               </AccordionDetails>
             </Accordion>
             <Accordion
