@@ -43,32 +43,73 @@ import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
 import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
 import voice4 from "../../assets/voice_preview_en-US-SaraNeural (1).wav";
 import voice5 from "../../assets/voice_preview_en-US-AriaNeural.wav";
+import voice6 from "../../assets/voice_preview_es-MX-JorgeNeural.wav";
+import voice7 from "../../assets/voice_preview_es-MX-DaliaNeural.wav";
+import voice8 from "../../assets/voice_preview_es-ES-ElviraNeural.wav";
+import voice9 from "../../assets/voice_preview_es-ES-ArnauNeural.wav";
+import voice10 from "../../assets/voice_preview_es-ES-AlvaroNeural.wav";
+import voice11 from "../../assets/voice_preview_es-ES-AbrilNeural.wav";
+
 const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
 const voiceOptions = [
   {
     label: "EN-US Jenny Neural",
     value: "en-US-JennyNeural",
-    s3_url: voice1,
+    s3_url: voice2,
   },
   {
     label: "EN-US Aria Neural",
     value: "en-US-AriaNeural",
-    s3_url: voice2,
+    s3_url: voice5,
   },
   {
     label: "EN-US Sara Neural",
     value: "en-US-SaraNeural",
-    s3_url: voice3,
+    s3_url: voice4,
   },
   {
     label: "EN-US Guy Neural",
     value: "en-US-GuyNeural",
-    s3_url: voice4,
+    s3_url: voice3,
   },
   {
     label: "EN-US Davis Neural",
     value: "en-US-DavisNeural",
-    s3_url: voice5,
+    s3_url: voice1,
+  },
+  {
+    label: "Spanish Voice Options",
+    disabled: true, // prevents clicking
+  },
+  {
+    label: "es-MX-JorgeNeural",
+    value: "es-MX-JorgeNeural",
+    s3_url: voice6,
+  },
+  {
+    label: "es-MX-DaliaNeural",
+    value: "es-MX-DaliaNeural",
+    s3_url: voice7,
+  },
+  {
+    label: "es-ES-ElviraNeural",
+    value: "es-ES-ElviraNeural",
+    s3_url: voice8,
+  },
+  {
+    label: "es-ES-ArnauNeural",
+    value: "es-ES-ArnauNeural",
+    s3_url: voice9,
+  },
+  {
+    label: "es-ES-AlvaroNeural",
+    value: "es-ES-AlvaroNeural",
+    s3_url: voice10,
+  },
+  {
+    label: "es-ES-AbrilNeural",
+    value: "es-ES-AbrilNeural",
+    s3_url: voice11,
   },
 ];
 
@@ -84,12 +125,15 @@ const AudioAnimationPage = () => {
     (store) => store.AudioAnimation
   );
   // console.log('audio__animation__data', Object.keys(audioAnimationData?.custom_voice_map || {}));
-  console.log('audio__animation__data', (audioAnimationData?.Characters));
+  console.log("audio__animation__data", audioAnimationData?.Characters);
 
   const dispatch = useDispatch();
   // const characters = audioAnimationData?.voice_map?.characters || labels;
-  const characters = audioAnimationData?.voice_map?.characters || audioAnimationData?.Characters || Object.keys(audioAnimationData?.custom_voice_map || {});
-  console.log(characters, 'characters')
+  const characters =
+    audioAnimationData?.voice_map?.characters ||
+    audioAnimationData?.Characters ||
+    Object.keys(audioAnimationData?.custom_voice_map || {});
+  console.log(characters, "characters");
   let sortedLabels = [];
   if (characters && characters.length > 0) {
     sortedLabels = ["Narrator", ...characters.filter((c) => c !== "Narrator")];
@@ -241,21 +285,6 @@ const AudioAnimationPage = () => {
                                       voiceSelections[charName] !== opt.value,
                                   }))
                             }
-                            // options={
-                            //   audioAnimationData?.scenes === null
-                            //     ? voiceOptions
-                            //     : voiceOptions.map((opt) => {
-                            //         const selectedVoice =
-                            //           voiceSelections[charName];
-
-                            //         return {
-                            //           ...opt,
-                            //           disabled: selectedVoice
-                            //             ? selectedVoice !== opt.value
-                            //             : false,
-                            //         };
-                            //       })
-                            // }
                             placeholder="Select Voice"
                             value={voiceSelections[charName] || ""}
                             onChange={(value) =>

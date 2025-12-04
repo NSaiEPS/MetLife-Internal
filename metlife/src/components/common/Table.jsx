@@ -79,9 +79,7 @@ function DynamicTable({
   const [operations, setOperations] = useState(false);
   const [openSavePrompt, setOpenSavePrompt] = useState(false);
   const latestPrompt = tableExtraData?.latest_prompt;
-  const scriptIdForTranslatedPage = saveTranslatedData?.script_id;
   const { pathname } = useLocation();
-  console.log(id, "checkPathname");
 
   const handleSavePrompt = (prompt) => {
     const payload = {

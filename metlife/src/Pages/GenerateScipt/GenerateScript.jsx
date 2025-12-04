@@ -93,7 +93,6 @@ const GenerateScript = () => {
   });
   // selects
   const [videoType, setVideoType] = useState("narrator");
-
   const [audience, setAudience] = useState("");
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("English");
@@ -109,6 +108,12 @@ const GenerateScript = () => {
   useEffect(() => {
     dispatch(getPromptsList());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (datasource === "openai") {
+      setTopn("");
+    }
+  }, [datasource]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
