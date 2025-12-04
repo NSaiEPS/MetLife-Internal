@@ -37,7 +37,7 @@ const visualOptions = [
 
 const GenerateVisualsPage = () => {
   const [scenes, setScenes] = useState(initialScenes);
-  const [selectedSceneId, setSelectedSceneId] = useState(scenes[0].id);
+  const [selectedSceneId, setSelectedSceneId] = useState(scenes[0]?.id);
   const [selectedVisualType, setSelectedVisualType] = useState("image");
 
   // derived
@@ -65,7 +65,7 @@ const GenerateVisualsPage = () => {
     const updated = scenes.filter((s) => s.id !== id);
     setScenes(updated);
     if (selectedSceneId === id && updated.length)
-      setSelectedSceneId(updated[0].id);
+      setSelectedSceneId(updated[0]?.id);
   };
 
   const handleCopyScene = (id) => {

@@ -277,7 +277,7 @@ const MyVideosDashboard: React.FC = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell>
-                  <TableCell>{video.title}</TableCell>
+                   <TableCell>{`${video.language === null ? "" : video.language} ${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>{getStatusChip(video)}</TableCell>

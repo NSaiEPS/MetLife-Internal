@@ -104,7 +104,7 @@ const GenerateScript: React.FC = () => {
 
   // States
   const [scriptText, setScriptText] = useState<string>("");
-  const [dataFilters, setDataFilters] = useState<DataFiltersType>({
+  const [data_filters, setDataFilters] = useState<DataFiltersType>({
     channel: ["all"],
     language: ["all"],
     domain: ["all"],
@@ -186,7 +186,7 @@ const GenerateScript: React.FC = () => {
       model,
       top_n: Number(topn),
       data_source: datasource,
-      filters: dataFilters,
+      filters: data_filters,
     };
 
     if (datasource === "openai") delete new_payload.top_n;
@@ -428,7 +428,7 @@ const GenerateScript: React.FC = () => {
 
       <SavedPromptsModal
         open={open}
-        onClose={(text) => {
+        onClose={(text : string) => {
           setOpen(false);
           setScriptText(text);
         }}

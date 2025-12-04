@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../redux/store"; // adjust path as needed
 import { postEditGenerateVisualContent } from "../../../redux/features/generateVisualSlice";
+
 import {
   Dialog,
   DialogTitle,
@@ -10,7 +12,24 @@ import {
   TextField,
 } from "@mui/material";
 
-const EditVisualPopup = ({
+// ---------- Props Types ----------
+interface FieldDataType {
+  Visual_Description?: string;
+  scene_id?: string | number;
+  [key: string]: any;
+}
+
+interface EditVisualPopupProps {
+  open: boolean;
+  onClose: () => void;
+  fieldData?: FieldDataType | null;
+  script_id: string;
+  prompt_batch_id: string;
+  handleUpdate: (data: { new_prompt: string; fieldData: FieldDataType | null }) => void;
+}
+
+// ---------- Component ----------
+const EditVisualPopup: React.FC<EditVisualPopupProps> = ({
   open,
   onClose,
   fieldData,
@@ -18,12 +37,16 @@ const EditVisualPopup = ({
   prompt_batch_id,
   handleUpdate,
 }) => {
-  const [description, setDescription] = useState("");
-  const dispatch = useDispatch();
+  const [description, setDescription] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (fieldData) {
-      setDescription(fieldData.Visual_Description || "");
+    const description = (fieldData.Visual_Description || "").replace(
+        /\r?\n|\r/g,
+        " "
+      );
+      setDescription(description);
     } else {
       setDescription("");
     }
@@ -32,14 +55,16 @@ const EditVisualPopup = ({
   const handleSave = () => {
     const payload = {
       script_id,
-      scene_id:fieldData?.scene_id,
+      scene_id: fieldData?.scene_id,
       prompt_batch_id,
       new_prompt: description,
     };
+
     dispatch(postEditGenerateVisualContent(payload, onClose));
+
     handleUpdate({
       new_prompt: description,
-      fieldData: fieldData,
+      fieldData: fieldData ?? null,
     });
   };
 
@@ -71,18 +96,11 @@ const EditVisualPopup = ({
       </DialogContent>
 
       <DialogActions>
-        <Button
-          onClick={onClose}
-          variant="outlined"
-          //   disabled={saveVisualContentLoader}
-        >
+        <Button onClick={onClose} variant="outlined">
           Cancel
         </Button>
-        <Button
-          variant="contained"
-          //   disabled={saveVisualContentLoader}
-            onClick={handleSave}
-        >
+
+        <Button variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

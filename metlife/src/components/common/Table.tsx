@@ -28,7 +28,7 @@ import { downloadScriptPdf, downloadScriptWord } from "../../utils";
 import { showToast } from "../../utils/toast";
 
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { useNavigate, useParams } from "react-router";
+import { useLocation , useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
 import deleteIcon from "../../assets/delete.svg";
@@ -53,10 +53,6 @@ import { postCreateVisualContent } from "../../redux/features/createVisualSlice"
 import { languages } from "../../utils/languageOptions";
 import SinglePromptModal from "./SinglePromptModal";
 import { postSavePrompt } from "../../redux/features/promptSlice";
-
-// ---------------------------------------------
-// TYPES
-// ---------------------------------------------
 
 export interface SceneRow {
   id: string | number;
@@ -118,11 +114,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const params = useParams<{ id?: string }>();
   const id : any = params?.id;
   const navigate = useNavigate();
-
-  // Redux Selectors
-  const { saveLoader, saveTranslatedData } = useSelector(
+   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData
   );
+    const scriptIdForTranslatedPage = saveTranslatedData?.script_id;
+    const { pathname } = useLocation();
+
+  // Redux Selectors
+ 
 
   console.log("saveTranslatedData",saveTranslatedData)
 
@@ -157,7 +156,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   useEffect(() => {
     if (tableExtraData?.scenes) {
-      settingDataInRows(tableExtraData.scenes[0].scenes);
+      settingDataInRows(tableExtraData.scenes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableExtraData?.scenes]);
@@ -179,10 +178,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     (lang) => lang !== tableExtraData?.language
   );
 
-  const actions = [
+ const actions = [
     {
-      icon: <img src={copy} alt="copy" />,
-      onClick: (row: SceneRow) => {
+      icon: (
+        <Tooltip title="Edit" placement="top" arrow>
+          <span>
+            <img src={copy} />
+          </span>
+        </Tooltip>
+      ),
+      onClick: (row : any) => {
         addScene(row);
         setMakeChanges(true);
       },
@@ -190,7 +195,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     {
       icon: (
         <Tooltip
-          title={regenerateDisabled ? "Please save before regenerating again" : ""}
+          title={
+            regenerateDisabled
+              ? "Please save before regenerating again"
+              : "Regenerate"
+          }
           placement="top"
           arrow
         >
@@ -206,7 +215,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           </span>
         </Tooltip>
       ),
-      onClick: (row: SceneRow) => {
+      onClick: (row : any) => {
         if (!regenerateDisabled) {
           setSceneData(row);
           setOpenRegeneratePopup(true);
@@ -215,9 +224,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       },
     },
     {
-      icon: <img src={deleteIcon} alt="delete" />,
-      onClick: (row: SceneRow) => {
+      icon: (
+        <Tooltip title="Delete" placement="top" arrow>
+          <span>
+            <img src={deleteIcon} alt="icon" />
+          </span>
+        </Tooltip>
+      ),
+      onClick: (row : any) => {
         setMakeChanges(true);
+        // setSceneData(row);
         handleDeleteScene(row);
       },
     },
@@ -264,15 +280,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     showToast.success("Updated Successfully!");
   };
 
-  const handleDownloadType = (type: "pdf" | "word") => {
+  const handleDownloadType = (type : string) => {
     try {
-      const payload = { ...tableExtraData, scenes: rows };
-      if (type === "pdf") downloadScriptPdf(payload);
-      if (type === "word") downloadScriptWord(payload);
+      if (type === "pdf") {
+        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
+      } else if (type === "word") {
+        downloadScriptWord({ ...tableExtraData, scenes: rows });
+      }
       setOpenDownloadPopup(false);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error("Error generating file:", err);
     }
+    // setMakeChanges(true);
   };
 
   const handleUpdate = (data: any) => {
@@ -377,6 +396,24 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setMakeChanges(true);
   };
 
+   const handleSave = () => {
+    setOperations(false);
+    const data = {
+      data: {
+        ...tableExtraData,
+      },
+    };
+    dispatch(
+      postTranslatedDataSave(data, (id) => {
+        if (pathname === "/translated-script") {
+          navigate(`/scenes/${id}`);
+        }
+      })
+    );
+
+    setMakeChanges(false);
+  };
+
   
 
   const handleDeleteScene = (scene: SceneRow) => {
@@ -413,16 +450,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setRows(updated);
   };
 
-  const handleSave = () => {
-    setOperations(false);
-    const data = {
-      data: {
-        ...tableExtraData,
-      },
-    };
-    dispatch(postTranslatedDataSave(data));
-    setMakeChanges(false);
-  };
 
   const handleCreateVisualContent = () => {
     dispatch(postCreateVisualContent(tableExtraData));
@@ -583,57 +610,62 @@ console.log("abc" , tableExtraData)
                 </TableHead>
 
                 <TableBody>
-                  {rows.map((row, rIdx) => (
-                    <Draggable
-                      key={String(row.id)}
-                      draggableId={String(row.id)}
-                      index={rIdx}
-                      isDragDisabled={!showDragAndActions}
-                    >
-                      {(providedDraggable) => (
-                        <TableRow
-                          ref={providedDraggable.innerRef}
-                          {...providedDraggable.draggableProps}
-                          className={styles.bodyRow}
-                        >
-                          {showDragAndActions && (
-                            <TableCell className={styles.bodyCell}>
-                              <IconButton
-                                {...providedDraggable.dragHandleProps}
-                                size="small"
-                                className={styles.dragHandle}
-                              >
-                                <DragIndicatorIcon />
-                              </IconButton>
-                            </TableCell>
-                          )}
+           {rows.map((row, rIdx) => (
+  <Draggable
+    key={String(row.id)}
+    draggableId={String(row.id)}
+    index={rIdx}
+    isDragDisabled={!showDragAndActions}
+  >
+    {(providedDraggable) => (
+      <TableRow
+        ref={providedDraggable.innerRef}
+        {...providedDraggable.draggableProps}
+        className={styles.bodyRow}
+      >
+        {showDragAndActions && (
+          <TableCell className={styles.bodyCell}>
+            <Tooltip title="Drag & Drop" placement="top" arrow>
+              <span>
+                <IconButton
+                  {...providedDraggable.dragHandleProps}   // ✅ FIXED HERE
+                  size="small"
+                  className={styles.dragHandle}
+                >
+                  <DragIndicatorIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </TableCell>
+        )}
 
-                          {columns.map((col, cIdx) => (
-                            <TableCell key={cIdx} className={styles.bodyCell}>
-                              {row[col as keyof SceneRow]}
-                            </TableCell>
-                          ))}
+        {columns.map((col, cIdx) => (
+          <TableCell key={cIdx} className={styles.bodyCell}>
+            {row[col as keyof SceneRow]}
+          </TableCell>
+        ))}
 
-                          {showDragAndActions && (
-                            <TableCell className={styles.bodyCell}>
-                              <div className={styles.actionsWrap}>
-                                {actions.map((act, aIdx) => (
-                                  <IconButton
-                                    key={aIdx}
-                                    className={styles.iconBtn}
-                                    size="small"
-                                    onClick={() => act.onClick(row)}
-                                  >
-                                    {act.icon}
-                                  </IconButton>
-                                ))}
-                              </div>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      )}
-                    </Draggable>
-                  ))}
+        {showDragAndActions && (
+          <TableCell className={styles.bodyCell}>
+            <div className={styles.actionsWrap}>
+              {actions.map((act, aIdx) => (
+                <IconButton
+                  key={aIdx}
+                  className={styles.iconBtn}
+                  size="small"
+                  onClick={() => act.onClick(row)}
+                >
+                  {act.icon}
+                </IconButton>
+              ))}
+            </div>
+          </TableCell>
+        )}
+      </TableRow>
+    )}
+  </Draggable>
+))}
+
 
                   {/*
                     `provided.placeholder` belongs to Droppable's render-props.

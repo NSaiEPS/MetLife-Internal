@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button , Tooltip} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import styles from "./generateVisualContent.module.css";
@@ -153,18 +153,49 @@ const GenerateVisualContentPage: React.FC = () => {
   const handleImageRegenerate = (data: VisualRow) => setPopup({ type: "regenerate", data });
   const closePopup = () => setPopup({ type: null, data: null });
 
-  const actions: Action<VisualRow>[] = [
-    { icon: <img src={copy} />, onClick: handleVisualEdit },
-    { icon: <img src={reuse} />, onClick: handleImageRegenerate },
+ const actions = [
     {
-      icon: <img src={upload} />,
-      onClick: (row) => {
-        if (row.Visual_Type === "image") handleImageUpload(row);
-        else if (row.Visual_Type === "Footage") handleVideoUpload(row);
+      icon: (
+        <Tooltip title="Edit" placement="top" arrow>
+          <span>
+            <img src={copy} />
+          </span>
+        </Tooltip>
+      ),
+      onClick: (row : any) => {
+        handleVisualEdit(row);
+      },
+    },
+    {
+      icon: (
+        <Tooltip title="Regenerate" placement="top" arrow>
+          <span>
+            <img src={reuse} />
+          </span>
+        </Tooltip>
+      ),
+      onClick: (row :any) => {
+        handleImageRegenerate(row);
+      },
+    },
+    {
+      icon: (
+        <Tooltip title="Upload Image" placement="top" arrow>
+          <span>
+            <img src={upload} />
+          </span>
+        </Tooltip>
+      ),
+      onClick: (row : any) => {
+        console.log(row, "check_row");
+        if (row.Visual_Type === "image") {
+          handleImageUpload(row);
+        } else if (row.Visual_Type === "Footage") {
+          handleVideoUpload(row);
+        }
       },
     },
   ];
-
   // ---------- Effects ----------
   useEffect(() => {
     if (id) dispatch(getGenerateVisualContentImage(id));

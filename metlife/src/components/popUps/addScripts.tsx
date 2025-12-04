@@ -39,11 +39,18 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   const [ost, setOst] = useState("");
   const [type, setType] = useState("");
 
-  useEffect(() => {
+    useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
-      setOst(fieldData.OST || "");
-      setType(fieldData.Type === "narrator" ? "narrator" : fieldData.Type || "");
+      const cleanOST = (fieldData.OST || "").replace(/\r?\n|\r/g, " ");
+      setOst(cleanOST);
+      // setOst(fieldData.OST || "");
+
+      if (fieldData.Type == "narrator") {
+        setType("narrator");
+      } else {
+        setType(fieldData.Type || "");
+      }
     } else {
       setScript("");
       setOst("");
@@ -94,6 +101,7 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
         <FormControl fullWidth margin="normal">
           <InputLabel>Type</InputLabel>
           <Select
+          disabled
             value={type}
             label="Type"
             sx={{ "& .MuiSelect-select": { textAlign: "justify" } }}

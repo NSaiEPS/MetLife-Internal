@@ -2,7 +2,7 @@ import React from "react";
 import { AppBar, Toolbar, Typography } from "@mui/material";
 import logo from "../../assets/mainImage.svg";
 import styles from "./OneFrameHeader.module.css";
-import { useNavigate } from "react-router";
+import { useNavigate , useLocation } from "react-router";
 
 interface OneFrameHeaderProps {
   // setMakeChanges?: (value: boolean) => void;
@@ -16,21 +16,24 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   sceneHandle = false,
 }) => {
   const navigate = useNavigate();
+   const {pathname} = useLocation();
 
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    if (sceneHandle && makeChanges) {
+   if (sceneHandle && makeChanges) {
       const confirmLeave = window.confirm(
         "⚠️ You have unsaved changes. Are you sure you want to leave this page?"
       );
 
       if (!confirmLeave) {
+        // ❌ User canceled — stay on the same page
         e.preventDefault();
         return;
       }
     }
 
     // ✅ Either no unsaved changes, or user confirmed
-    // setMakeChanges?.(true); // optional call if needed
+    // setMakeChanges(true); // or false, depending on when you want to mark changes
+    if(pathname === "/dashboard" || pathname === "/") return;
     navigate("/");
   };
 

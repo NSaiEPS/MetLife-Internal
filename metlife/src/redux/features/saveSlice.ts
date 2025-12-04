@@ -4,9 +4,7 @@ import api from "../../api/axios";
 import type { AppDispatch,  } from "../store";// adjust path based on your project
 import { toast } from "react-toastify";
 
-// -----------------------------
-// TYPES
-// -----------------------------
+
 
 export interface TranslatedData {
   [key: string]: any; // ❗ Replace with actual structure if known
@@ -21,18 +19,12 @@ export interface SaveRequestPayload {
   [key: string]: any; // body to send in POST
 }
 
-// -----------------------------
-// INITIAL STATE
-// -----------------------------
 
 const initialState: SaveTranslatedPageState = {
   saveLoader: false,
   saveTranslatedData: null,
 };
 
-// -----------------------------
-// SLICE
-// -----------------------------
 
 const SaveTranslatedPageSlice = createSlice({
   name: "save_translated_data",
@@ -47,32 +39,28 @@ const SaveTranslatedPageSlice = createSlice({
   },
 });
 
-// -----------------------------
-// EXPORT ACTIONS
-// -----------------------------
-
 export const { setSaveLoader, setSaveTranslatedData } =
   SaveTranslatedPageSlice.actions;
 
-// -----------------------------
-// REDUCER
-// -----------------------------
 
 export default SaveTranslatedPageSlice.reducer;
 
-// -----------------------------
-// ASYNC THUNK
-// -----------------------------
+type SuccessCallback = (scriptId: string) => void;
 
 export const postTranslatedDataSave =
-  (data: SaveRequestPayload) => async (dispatch: AppDispatch) => {
+  (data: TranslatedData, successfully?: SuccessCallback) =>
+  async (dispatch: AppDispatch) => {
     dispatch(setSaveLoader(true));
-
     try {
       const response = await api.post("mongo/write", data);
 
-      if (response?.status === 200) {
+      if (response?.status) {
         dispatch(setSaveTranslatedData(response.data));
+
+        if (successfully) {
+          successfully(response.data?.script_id);
+        }
+
         toast.success("Data Saved Successfully");
       }
     } catch (error) {
