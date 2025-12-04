@@ -82,7 +82,7 @@ const CharacterParent = () => {
           Add Character
         </Button>
 
-        {showSubmit && (
+        {/* {showSubmit && (
           <Button
             variant="contained"
             color="success"
@@ -91,7 +91,7 @@ const CharacterParent = () => {
           >
             Submit
           </Button>
-        )}
+        )} */}
       </Box>
 
       {/* CHARACTER PROMPT */}
