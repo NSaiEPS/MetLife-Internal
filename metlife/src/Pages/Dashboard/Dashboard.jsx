@@ -351,8 +351,7 @@ const MyVideosDashboard = () => {
                   <TableCell>{`${
                     video.language === null
                       ? ""
-                      : video.language.slice(0, 2) +
-                       "_"
+                      : video.language.slice(0, 2) + "_"
                   }${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>

@@ -98,7 +98,7 @@ const GenerateScript = () => {
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("English");
   const [duration, setDuration] = useState("2 minutes");
-  const [topn, setTopn] = useState("");
+  const [topn, setTopn] = useState("5");
   const [model, setModel] = useState("gpt-4o-mini");
   const [datasource, setDatasource] = useState("");
   const [loader, setLoader] = useState(false);

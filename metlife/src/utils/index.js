@@ -139,13 +139,19 @@ export const downloadScriptPdf = async (data, uploadDownload = false) => {
     React.createElement(PdfDocument, { data, uploadDownload })
   ).toBlob();
 
-  saveAs(blob, `${fileName}.pdf`);
+  saveAs(
+    blob,
+    data?.source == "file"
+      ? `${data?.filename}.pdf`
+      : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`
+  );
 };
 
 // download script word
 export const downloadScriptWord = (data, uploadDownload = false) => {
   const fileName = localStorage.getItem("file_name");
   if (!data) return;
+  console.log(data, "data_checK_word");
 
   const {
     title,
@@ -246,7 +252,8 @@ export const downloadScriptWord = (data, uploadDownload = false) => {
               new TextRun({
                 // text: title ?? data?.provider ?? filename ?? "Script",
                 text:
-                  fileName ?? title ?? data?.provider ?? filename ?? "Script",
+                  // fileName ?? title ?? data?.provider ?? filename ?? "Script",
+                  title ?? data?.provider ?? filename ?? "Script",
                 bold: true,
                 size: 32,
               }),
@@ -294,7 +301,12 @@ export const downloadScriptWord = (data, uploadDownload = false) => {
 
   // ✅ Download Word file
   Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, `${fileName || "Script"}.docx`);
+    saveAs(
+      blob,
+      data?.source == "file"
+        ? `${data?.filename}.docx`
+        : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`
+    );
   });
 };
 

@@ -81,6 +81,7 @@ function DynamicTable({
   const latestPrompt = tableExtraData?.latest_prompt;
   const scriptIdForTranslatedPage = saveTranslatedData?.script_id;
   const { pathname } = useLocation();
+  console.log(id, "checkPathname");
 
   const handleSavePrompt = (prompt) => {
     const payload = {
@@ -503,34 +504,37 @@ function DynamicTable({
             >
               + Add Scene
             </Button>
-            <Tooltip
-              title={
-                tableExtraData?.data_source === "openai"
-                  ? "OpenAI does not have any source"
-                  : ""
-              }
-              disableHoverListener={tableExtraData?.data_source !== "openai"}
-              arrow
-            >
-              <span>
-                <Button
-                  variant="contained"
-                  className={styles1.primaryBtn}
-                  onClick={handleShowSource}
-                  disabled={tableExtraData?.data_source == "openai"}
-                >
-                  Show Source
-                </Button>
-              </span>
-            </Tooltip>
-
-            <Button
-              variant="contained"
-              className={styles1.BtnSavePrompt}
-              onClick={() => setOpenSavePrompt(true)}
-            >
-              Save Prompt
-            </Button>
+            {!id?.startsWith("SCRIPT") && (
+              <Tooltip
+                title={
+                  tableExtraData?.data_source === "openai"
+                    ? "OpenAI does not have any source"
+                    : ""
+                }
+                disableHoverListener={tableExtraData?.data_source !== "openai"}
+                arrow
+              >
+                <span>
+                  <Button
+                    variant="contained"
+                    className={styles1.primaryBtn}
+                    onClick={handleShowSource}
+                    disabled={tableExtraData?.data_source == "openai"}
+                  >
+                    Show Source
+                  </Button>
+                </span>
+              </Tooltip>
+            )}
+            {!id?.startsWith("SCRIPT") && (
+              <Button
+                variant="contained"
+                className={styles1.BtnSavePrompt}
+                onClick={() => setOpenSavePrompt(true)}
+              >
+                Save Prompt
+              </Button>
+            )}
 
             <ShowSourcePopup
               open={openShowPopup}
@@ -605,7 +609,9 @@ function DynamicTable({
                           {showDragAndActions && (
                             <TableCell className={styles.bodyCell}>
                               <Tooltip
-                              title="Drag & Drop" placement="top" arrow
+                                title="Drag & Drop"
+                                placement="top"
+                                arrow
                               >
                                 <span>
                                   <IconButton
