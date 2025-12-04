@@ -1,78 +1,3 @@
-// import { useState } from "react";
-// import {
-//   Card,
-//   CardContent,
-//   Typography,
-//   IconButton,
-//   Modal,
-//   Box,
-// } from "@mui/material";
-// import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-// import CloseIcon from "@mui/icons-material/Close";
-// import DownloadIcon from "@mui/icons-material/Download";
-
-// const modalStyle = {
-//   position: "absolute",
-//   top: "50%",
-//   left: "50%",
-//   transform: "translate(-50%, -50%)",
-//   width: "80%",
-//   maxWidth: "900px",
-//   bgcolor: "background.paper",
-//   boxShadow: 24,
-//   borderRadius: 3,
-//   p: 2,
-// };
-
-// const FullVideoPlayer = ({ video_url }) => {
-//   console.log(video_url, "check_video_url");
-//   const [open, setOpen] = useState(false);
-
-//   const downloadVideo = () => {
-//     const link = document.createElement("a");
-//     link.href = video_url;
-//     link.download = "full_video.mp4";
-//     link.click();
-//   };
-
-//   return (
-//     <>
-//       <Card sx={{ borderRadius: 3 }}>
-//         <CardContent>
-//           <Typography sx={{ fontWeight: 500 }}>Final Video</Typography>
-
-//           <Box sx={{ display: "flex", mt: 2 }}>
-//             <IconButton onClick={() => setOpen(true)}>
-//               <PlayCircleOutlineIcon fontSize="large" />
-//             </IconButton>
-
-//             <IconButton onClick={downloadVideo}>
-//               <DownloadIcon />
-//             </IconButton>
-//           </Box>
-//         </CardContent>
-//       </Card>
-
-//       {/* Popup Modal */}
-//       <Modal open={open} onClose={() => setOpen(false)}>
-//         <Box sx={modalStyle}>
-//           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-//             <IconButton onClick={() => setOpen(false)}>
-//               <CloseIcon />
-//             </IconButton>
-//           </Box>
-
-//           <video width="100%" controls style={{ borderRadius: 8 }}>
-//             <source src={video_url} type="video/mp4" />
-//           </video>
-//         </Box>
-//       </Modal>
-//     </>
-//   );
-// };
-
-// export default FullVideoPlayer;
-
 import { useState } from "react";
 import {
   Card,
@@ -81,14 +6,21 @@ import {
   IconButton,
   Modal,
   Box,
-  Divider,
 } from "@mui/material";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 
+// ------------------ TYPES ------------------
+
+interface FullVideoPlayerProps {
+  video_url: string;
+}
+
+// ------------------ STYLES ------------------
+
 const modalStyle = {
-  position: "absolute",
+  position: "absolute" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -100,8 +32,10 @@ const modalStyle = {
   p: 2,
 };
 
-const FullVideoPlayer = ({ video_url }) => {
-  const [open, setOpen] = useState(false);
+// ------------------ COMPONENT ------------------
+
+const FullVideoPlayer: React.FC<FullVideoPlayerProps> = ({ video_url }) => {
+  const [open, setOpen] = useState<boolean>(false);
 
   const downloadVideo = () => {
     const link = document.createElement("a");
@@ -161,7 +95,7 @@ const FullVideoPlayer = ({ video_url }) => {
         </Box>
       </Card>
 
-      {/* Modal with Video */}
+      {/* Modal */}
       <Modal open={open} onClose={() => setOpen(false)}>
         <Box sx={modalStyle}>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>

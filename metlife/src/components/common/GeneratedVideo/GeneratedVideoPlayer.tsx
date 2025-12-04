@@ -11,8 +11,16 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 
-const style = {
-  position: "absolute",
+interface GeneratedVideoPlayerProps {
+  description: string;
+  s3_url: string;
+  index: number;
+  image_url?: string | null;
+  data?: any; // If you know the structure, we can type it better
+}
+
+const modalStyle = {
+  position: "absolute" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -24,22 +32,16 @@ const style = {
   p: 2,
 };
 
-const GeneratedVideoPlayer = ({
+const GeneratedVideoPlayer: React.FC<GeneratedVideoPlayerProps> = ({
   description,
   s3_url,
   index,
   image_url,
-  data,
 }) => {
-  const [open, setOpen] = useState(false);
-  const dummyImage = "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
+  const [open, setOpen] = useState<boolean>(false);
 
-  // const downloadVideo = () => {
-  //   const link = document.createElement("a");
-  //   link.href = s3_url;
-  //   link.download = "scene_video.mp4";
-  //   link.click();
-  // };
+  const dummyImage =
+    "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
 
   const downloadVideo = () => {
     const link = document.createElement("a");
@@ -54,42 +56,28 @@ const GeneratedVideoPlayer = ({
 
   return (
     <>
-      {/* --- Card --- */}
+      {/* Card */}
       <Card sx={{ borderRadius: 3 }}>
         <CardContent>
           <Typography sx={{ fontWeight: 500 }}>
             Scene {index + 1} {description}
           </Typography>
 
-          {/* <Typography sx={{ fontSize: "14px", color: "#555", mt: 1 }}>
-            {description}
-          </Typography> */}
-
-          {/* <Box sx={{ display: "flex", mt: 1 }}>
-            <IconButton onClick={() => setOpen(true)}>
-              <PlayCircleOutlineIcon fontSize="large" />
-            </IconButton>
-
-            <IconButton onClick={downloadVideo}>
-              <DownloadIcon />
-            </IconButton>
-          </Box> */}
-
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
-            {/* ---- Thumbnail Preview ---- */}
+            {/* Thumbnail Preview */}
             <Box
-              onClick={() => setOpen(true)}
+              // onClick={() => setOpen(true)}
               sx={{
                 width: 60,
                 height: 60,
                 borderRadius: "20%",
                 overflow: "hidden",
-                cursor: "pointer",
+                // cursor: "pointer",
                 border: "2px solid #ddd",
               }}
             >
               <img
-                src={image_url || dummyImage} // fallback image
+                src={image_url || dummyImage}
                 alt="preview"
                 style={{
                   width: "100%",
@@ -98,8 +86,13 @@ const GeneratedVideoPlayer = ({
                 }}
               />
             </Box>
-
-            {/* ---- Download Button ---- */}
+     <Typography
+              sx={{ fontSize: "14px", color: "#555", mt: 1, cursor:'pointer' }}
+              onClick={() => setOpen(true)}
+            >
+              {"Video Preview"}
+            </Typography>
+            {/* Download Button */}
             <IconButton onClick={downloadVideo} sx={{ color: "#4c9ad1" }}>
               <DownloadIcon />
             </IconButton>
@@ -107,9 +100,9 @@ const GeneratedVideoPlayer = ({
         </CardContent>
       </Card>
 
-      {/* --- Popup Modal --- */}
+      {/* Popup Modal */}
       <Modal open={open} onClose={() => setOpen(false)}>
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <IconButton onClick={() => setOpen(false)}>
               <CloseIcon />

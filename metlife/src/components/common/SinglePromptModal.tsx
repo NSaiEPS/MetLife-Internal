@@ -1,19 +1,47 @@
 import React from "react";
-import { Modal, Box, Typography, Button, Paper, Divider, Tooltip } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Divider,
+  Tooltip,
+} from "@mui/material";
 
-export default function SinglePromptModal({
+// ---------- TYPES ----------
+interface ExtraDetails {
+  is_saved?: boolean;
+  [key: string]: any;
+}
+
+type ModalSize = "md" | "lg";
+
+interface SinglePromptModalProps {
+  open: boolean;
+  onClose: () => void;
+  prompt?: string;
+  onSave: (prompt: string) => void;
+  size?: ModalSize; // md = 600px, lg = 800px
+  extraDetails?: ExtraDetails;
+  operations?: boolean;
+}
+
+// ---------- COMPONENT ----------
+
+const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
   open,
   onClose,
   prompt = "",
   onSave,
-  size = "md", // md = 600px, lg = 800px
+  size = "md",
   extraDetails,
   operations,
-}) {
+}) => {
   const modalWidth = size === "lg" ? 800 : 600;
 
   return (
-    <Modal open={open}>
+    <Modal open={open} onClose={onClose}>
       <Box
         sx={{
           position: "absolute",
@@ -45,6 +73,7 @@ export default function SinglePromptModal({
             fontSize: "16px",
             lineHeight: 1.5,
             color: "text.secondary",
+            whiteSpace: "pre-wrap",
           }}
         >
           {prompt}
@@ -55,10 +84,15 @@ export default function SinglePromptModal({
           <Button
             variant="outlined"
             onClick={onClose}
-            sx={{ textTransform: "none", borderRadius: 2, px: 3 }}
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              px: 3,
+            }}
           >
             Close
           </Button>
+
           <Tooltip
             title={extraDetails?.is_saved ? "Cannot use this prompt!" : ""}
             placement="top"
@@ -68,11 +102,16 @@ export default function SinglePromptModal({
               <Button
                 variant="contained"
                 onClick={() => onSave(prompt)}
-                disabled={extraDetails?.is_saved || operations}
-                sx={{ textTransform: "none", borderRadius: 2, px: 3,
-                  opacity:extraDetails?.is_saved ? 0.5 : 1,
-                  cursor: extraDetails?.is_saved ? "not-allowed" : "pointer"
-                 }}
+                 disabled={extraDetails?.is_saved || operations}
+                sx={{
+                  textTransform: "none",
+                  borderRadius: 2,
+                  px: 3,
+                  opacity: extraDetails?.is_saved ? 0.5 : 1,
+                  cursor: extraDetails?.is_saved
+                    ? "not-allowed"
+                    : "pointer",
+                }}
               >
                 SAVE THIS PROMPT
               </Button>
@@ -82,4 +121,6 @@ export default function SinglePromptModal({
       </Box>
     </Modal>
   );
-}
+};
+
+export default SinglePromptModal;

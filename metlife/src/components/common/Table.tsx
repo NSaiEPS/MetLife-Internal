@@ -532,35 +532,37 @@ console.log("abc" , tableExtraData)
             </Button>
 
             {/* Show Source */}
-            <Tooltip
-              title={
-                tableExtraData?.data_source === "openai"
-                  ? "OpenAI does not have any source"
-                  : ""
-              }
-              disableHoverListener={tableExtraData?.data_source !== "openai"}
-              arrow
-            >
-              <span>
-                <Button
-                  variant="contained"
-                  className={styles1.primaryBtn}
-                  onClick={handleShowSource}
-                  disabled={tableExtraData?.data_source == "openai"}
-                >
-                  Show Source
-                </Button>
-              </span>
-            </Tooltip>
-
-            {/* Save Prompt */}
-            <Button
-              variant="contained"
-              className={styles1.BtnSavePrompt}
-              onClick={() => setOpenSavePrompt(true)}
-            >
-              Save Prompt
-            </Button>
+             {!id?.startsWith("SCRIPT") && (
+              <Tooltip
+                title={
+                  tableExtraData?.data_source === "openai"
+                    ? "OpenAI does not have any source"
+                    : ""
+                }
+                disableHoverListener={tableExtraData?.data_source !== "openai"}
+                arrow
+              >
+                <span>
+                  <Button
+                    variant="contained"
+                    className={styles1.primaryBtn}
+                    onClick={handleShowSource}
+                    disabled={tableExtraData?.data_source == "openai"}
+                  >
+                    Show Source
+                  </Button>
+                </span>
+              </Tooltip>
+            )}
+            {!id?.startsWith("SCRIPT") && (
+              <Button
+                variant="contained"
+                className={styles1.BtnSavePrompt}
+                onClick={() => setOpenSavePrompt(true)}
+              >
+                Save Prompt
+              </Button>
+            )}
 
             {/* Back Button */}
             <Button

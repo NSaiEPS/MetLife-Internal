@@ -54,6 +54,35 @@ const MyVideosDashboard: React.FC = () => {
     (store: RootState) => store.DashBoard
   );
 
+    const completed_result = dashBoardInfo.filter((item) => {
+    if (item.videos) {
+      return item;
+    }
+  });
+
+  const inprogress_video = dashBoardInfo.filter((item) => {
+    if (item.audio && !item.videos) {
+      return item;
+    }
+  });
+
+  const inprogress_visuals = dashBoardInfo.filter((item) => {
+    if (item.visuals && !item.videos && !item.audio) {
+      return item;
+    }
+  });
+
+   const inprogress_script = dashBoardInfo.filter((item) => {
+    if (!item.visuals && !item.videos && !item.audio) {
+      return item;
+    }
+  });
+
+   const total_progress =
+    inprogress_video?.length +
+    inprogress_visuals?.length +
+    inprogress_script?.length;
+
   const stats = [
     {
       title: "Total Videos",
@@ -64,14 +93,14 @@ const MyVideosDashboard: React.FC = () => {
     },
     {
       title: "In Progress",
-      value: 0,
+       value: completed_result?.length,
       color: "#E8F5E9",
       icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
     },
     {
       title: "Completed Scripts",
-      value: 0,
-      color: "#FFEBEE",
+      value: total_progress,
+         color: "#FFEBEE",
       icon: <PlayCircle fontSize="large" color="error" />,
     },
     {
@@ -277,7 +306,12 @@ const MyVideosDashboard: React.FC = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell>
-                   <TableCell>{`${video.language === null ? "" : video.language} ${video.title}`}</TableCell>
+                        <TableCell>{`${
+                    video.language === null
+                      ? ""
+                      : video.language.slice(0, 2) + "_"
+
+                  }${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>{getStatusChip(video)}</TableCell>

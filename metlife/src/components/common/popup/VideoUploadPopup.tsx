@@ -11,9 +11,35 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch } from "react-redux";
-import { postImageUpload } from "../../../redux/features/generateVisualSlice"; // <-- create API similar to postImageUpload
+import type { AppDispatch } from "../../../redux/store"; // <-- update this path
+import { postImageUpload } from "../../../redux/features/generateVisualSlice";
 
-const VideoUploadPopup = ({
+// ---------- TYPES ----------
+
+interface ExistingVideo {
+  url: string;
+  [key: string]: any;
+}
+
+interface FieldData {
+  scene_id?: string;
+  ["Scene_No."]?: string | number;
+  video_uploaded_urls?: ExistingVideo[];
+  [key: string]: any;
+}
+
+interface VideoUploadPopupProps {
+  open: boolean;
+  onClose: () => void;
+  fieldData: FieldData;
+  script_id: string;
+  prompt_batch_id: string;
+  title: string;
+}
+
+// ---------- COMPONENT ----------
+
+const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   open,
   onClose,
   fieldData,
@@ -21,47 +47,54 @@ const VideoUploadPopup = ({
   prompt_batch_id,
   title,
 }) => {
-  const [videoFile, setVideoFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const scene_id = fieldData?.scene_id;
   const scene_no = fieldData?.["Scene_No."];
-  const dispatch = useDispatch();
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const existingVideos = fieldData?.video_uploaded_urls || [];
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
+  // Load last uploaded video on open
   useEffect(() => {
-    if (open) {
-      if (existingVideos.length > 0) {
-        setCurrentIndex(existingVideos.length - 1); // show latest by default
-        setPreviewUrl(existingVideos[existingVideos.length - 1].url);
-      }
+    if (open && existingVideos.length > 0) {
+      const lastIndex = existingVideos.length - 1;
+      setCurrentIndex(lastIndex);
+      setPreviewUrl(existingVideos[lastIndex].url);
     }
-  }, [open, fieldData]);
+  }, [open, fieldData, existingVideos]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setVideoFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   };
 
+  // Upload logic
   const handleUploadClick = () => {
+    if (!videoFile) return;
+
     const formData = new FormData();
     formData.append("script_id", script_id);
-    formData.append("scene_id", scene_id);
-    formData.append("scene_number", scene_no);
+    formData.append("scene_id", String(scene_id));
+    formData.append("scene_number", String(scene_no));
     formData.append("title", title);
     formData.append("prompt_batch_id", prompt_batch_id);
     formData.append("file", videoFile);
 
-    dispatch(postImageUpload(formData, onClose)); // <-- same as image but for video
+    dispatch(postImageUpload(formData, onClose));
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h6">{"Upload Video"}</Typography>
+        <Typography variant="h6">Upload Video</Typography>
 
         <IconButton onClick={onClose}>
           <CloseIcon />

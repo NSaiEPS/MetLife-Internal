@@ -5,17 +5,24 @@ import Loader from "./Loader";
 import { useNavigate } from "react-router";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 
-const Timer = ({ time, onComplete }) => {
+interface TimerProps {
+  time: number;             // e.g., 1.5 minutes
+  onComplete?: () => void;  // optional callback
+}
+
+const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
+  // Convert time to seconds
   const exactMinutes = Math.floor(time);
   const exactSeconds = Math.round((time - exactMinutes) * 60);
   const TOTAL_TIME = exactMinutes * 60 + exactSeconds;
 
-  const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
-  const animationRef = useRef(null);
+  const [timeLeft, setTimeLeft] = useState<number>(TOTAL_TIME);
+  const animationRef = useRef<number | null>(null);
 
+  // Framer Motion animation
   const rawHeight = useMotionValue(100);
   const smoothHeight = useSpring(rawHeight, {
     stiffness: 70,
@@ -27,7 +34,7 @@ const Timer = ({ time, onComplete }) => {
   useEffect(() => {
     const startTime = performance.now();
 
-    const updateAnimation = (currentTime) => {
+    const updateAnimation = (currentTime: number) => {
       const elapsed = (currentTime - startTime) / 1000;
       const remaining = Math.max(0, TOTAL_TIME - elapsed);
       const progress = remaining / TOTAL_TIME;
@@ -45,10 +52,12 @@ const Timer = ({ time, onComplete }) => {
 
     animationRef.current = requestAnimationFrame(updateAnimation);
 
-    return () =>
-      animationRef.current && cancelAnimationFrame(animationRef.current);
-  }, [TOTAL_TIME, onComplete]);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [TOTAL_TIME, onComplete, rawHeight]);
 
+  // Format time
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
@@ -134,28 +143,22 @@ const Timer = ({ time, onComplete }) => {
                 border: "2px solid rgba(255,255,255,0.5)",
               }}
             >
-              <Typography
-                variant="h6"
-                fontWeight={700}
-                color="#333"
-                textAlign="center"
-              >
+              <Typography variant="h6" fontWeight={700} color="#333">
                 {minutes}:{seconds}
               </Typography>
+
               <Typography
                 variant="body2"
                 color="text.secondary"
-                textAlign="center"
                 fontWeight={600}
                 fontSize="12px"
-                // sx={{ mt: 0.5 }} // slight spacing
               >
                 remaining
               </Typography>
             </Box>
           </Box>
 
-          {/* Ring border */}
+          {/* Ring */}
           <Box
             sx={{
               position: "absolute",
@@ -167,36 +170,18 @@ const Timer = ({ time, onComplete }) => {
           />
         </Box>
 
-        {/* Loader below the circle */}
         <Loader exactMinutes={exactMinutes} exactSeconds={exactSeconds} />
 
-        {/* CSS keyframes for shimmer */}
+        {/* CSS keyframes */}
         <style>
           {`
           @keyframes shimmer {
-            0% {
-              transform: translateX(-100%) skewX(-15deg);
-            }
-            100% {
-              transform: translateX(100%) skewX(-15deg);
-            }
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(100%) skewX(-15deg); }
           }
         `}
         </style>
       </Box>
-      {/* <Backdrop
-        open={open}
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 9999,
-          backdropFilter: "blur(5px)",
-          backgroundColor: "rgba(0,0,0,0.35)",
-          position: "relative",
-        }}
-      >
-     
-       
-      </Backdrop> */}
     </>
   );
 };

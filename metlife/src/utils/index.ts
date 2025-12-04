@@ -1,3 +1,4 @@
+// utils.ts
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import {
@@ -14,26 +15,28 @@ import {
   BorderStyle,
   ShadingType,
 } from "docx";
+
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { pdf, Font } from "@react-pdf/renderer";
-import React from "react";
-
+import { Page, Text, View, StyleSheet, Font, pdf } from "@react-pdf/renderer";
 import regular from "../assets/NotoSans-Regular.ttf";
 import arabic from "../assets/NotoSansArabic-Regular.ttf";
 import devnagri from "../assets/NotoSansDevanagari-Regular.ttf";
 import bengali from "../assets/NotoSansBengali-Regular.ttf";
 import PdfDocument from "../components/common/Pdf/PdfDocument";
+import React from "react";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// ---------- Types ----------
-interface Scene {
-  [key: string]: any;
+// ==========================
+// TYPES
+// ==========================
+export interface SceneItem {
+  ["Scene No."]?: number;
   Script?: string;
   description?: string;
   header?: string;
@@ -43,23 +46,26 @@ interface Scene {
   scene_type?: string;
 }
 
-interface ScriptData {
+export interface PDFData {
   title?: string;
   filename?: string;
-  logline?: string;
-  suggested_duration_minutes?: string | number;
-  scenes?: Scene[];
   provider?: string;
   language?: string;
+  logline?: string;
+  suggested_duration_minutes?: string | number;
+  scenes?: SceneItem[];
+  source?: string;
 }
 
-// ---------- Fonts ----------
+// ==========================
+// Font registration
+// ==========================
 Font.register({ family: "NotoEnglish", src: regular });
 Font.register({ family: "NotoHindiNepali", src: devnagri });
 Font.register({ family: "NotoBangla", src: bengali });
 Font.register({ family: "NotoArabic", src: arabic });
 
-// Detect font family
+// Detect font
 export const detectFont = (text: string = ""): string => {
   if (/[\u0600-\u06FF]/.test(text)) return "NotoArabic";
   if (/[\u0900-\u097F]/.test(text)) return "NotoHindiNepali";
@@ -67,84 +73,81 @@ export const detectFont = (text: string = ""): string => {
   return "NotoEnglish";
 };
 
-// ---------- PDF DOWNLOAD ----------
-export const downloadScriptPdf = (
-  data: ScriptData,
+// ==========================
+// PDF STYLES
+// ==========================
+const styles = StyleSheet.create({
+  page: { padding: 25, backgroundColor: "#fff" },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  infoText: { fontSize: 14, marginBottom: 4 },
+  table: {
+    display: "flex",
+    width: "100%",
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  tableRow: { flexDirection: "row" },
+  tableHeader: { backgroundColor: "#1AA06D" },
+  th: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#fff",
+    padding: 6,
+    borderRightWidth: 1,
+    borderRightColor: "#fff",
+  },
+  td: {
+    flex: 1,
+    fontSize: 11,
+    padding: 6,
+    borderRightWidth: 1,
+    borderRightColor: "#ddd",
+  },
+  tdLast: { flex: 1, fontSize: 11, padding: 6 },
+  rowBorder: { borderBottomWidth: 1, borderBottomColor: "#ddd" },
+});
+
+// ==========================
+// PDF DOWNLOAD
+// ==========================
+export const downloadScriptPdf = async (
+  data: any | PDFData,
   uploadDownload: boolean = false
-) => {
-  const doc = new jsPDF();
-  const fileName = localStorage.getItem("file_name") ?? "";
+): Promise<void> => {
+  // const blob = await pdf(
+  //   React.createElement(PdfDocument, { data, uploadDownload })
+    
+  // ).toBlob();
 
-  doc.setFontSize(18);
-  doc.text(fileName || data.title || data.provider || "Script", 14, 15);
+  const blob = await pdf(
+  React.createElement(PdfDocument, { data, uploadDownload })
+).toBlob();
 
-  doc.setFontSize(12);
-  doc.text(`Logline: ${data.logline ?? data.language}`, 14, 25);
-  doc.text(
-    `Duration: ${data.suggested_duration_minutes ?? "2 mins"}`,
-    14,
-    32
+  saveAs(
+    blob,
+    data?.source === "file"
+      ? `${data?.filename}.pdf`
+      : `${data?.language?.slice(0, 2)}_${data?.title}.pdf`
   );
+};
 
-  const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-
-  let tableRows = data?.scenes?.map((scene, index) => [
-    index + 1,
-    scene.Script || scene.header || "",
-    scene.on_screen_text || scene.OST || "",
-    scene.Type || "",
-  ]);
-
-  if (uploadDownload) {
-    tableRows = data?.scenes?.map((scene, index) => [
-      index + 1,
-      scene.description || scene.header || "",
-      scene.on_screen_text || scene.OST || "",
-      scene.scene_type || "",
-    ]);
-  }
-
-  (doc as any).autoTable({
-    startY: 40,
-    head: [tableColumn],
-    body: tableRows,
-    theme: "grid",
-    headStyles: {
-      fillColor: [22, 160, 133],
-      textColor: 255,
-      fontStyle: "bold",
-    },
-    styles: { fontSize: 11, cellWidth: "wrap" },
-    columnStyles: {
-      0: { cellWidth: 20 },
-      1: { cellWidth: 80 },
-      2: { cellWidth: 50 },
-      3: { cellWidth: 30 },
-    },
-  });
-
-  doc.save(`${fileName || "Script"}.pdf`);
-}
-
-// ---------- WORD DOWNLOAD ----------
+// ==========================
+// WORD DOWNLOAD
+// ==========================
 export const downloadScriptWord = (
-  data: ScriptData,
+  data: PDFData,
   uploadDownload: boolean = false
-) => {
+): void => {
   if (!data) return;
 
-  const fileName =
-    localStorage.getItem("file_name") ||
-    data.title ||
-    data.provider ||
-    data.filename ||
-    "Script";
-
   const {
+    title,
+    filename,
     logline,
     suggested_duration_minutes,
     scenes = [],
-    language,
   } = data;
 
   const columnWidths = {
@@ -154,69 +157,89 @@ export const downloadScriptWord = (
     type: 1500,
   };
 
-  const makeCell = (
-    text: string,
-    width: number,
-    options: {  align?: keyof typeof AlignmentType; bold?: boolean; color?: string; size?: number } = {}
-  ) =>
-    new TableCell({
-      width: { size: width, type: WidthType.DXA },
-      verticalAlign: VerticalAlign.CENTER,
-      margins: { top: 100, bottom: 100, left: 100, right: 100 },
-      children: [
-        new Paragraph({
-         alignment: options.align ? AlignmentType[options.align] : AlignmentType.LEFT,
-          spacing: { after: 100 },
-          children: [
-            new TextRun({
-              text,
-              bold: options.bold,
-              color: options.color ?? "000000",
-              size: options.size ?? 20,
-            }),
-          ],
-        }),
-      ],
-    });
+const makeCell = (
+  text: string,
+  width: number,
+  options: {
+    align?: keyof typeof AlignmentType; // ✅ FIXED
+    bold?: boolean;
+    color?: string;
+    size?: number;
+  } = {}
+) =>
+  new TableCell({
+    width: { size: width, type: WidthType.DXA },
+    verticalAlign: VerticalAlign.CENTER,
+    margins: { top: 100, bottom: 100, left: 100, right: 100 },
+    children: [
+      new Paragraph({
+        alignment: options.align
+          ? AlignmentType[options.align] // convert key → enum value
+          : AlignmentType.LEFT,
+
+        spacing: { after: 100 },
+
+        children: [
+          new TextRun({
+            text,
+            bold: options.bold ?? false,
+            color: options.color ?? "000000",
+            size: options.size ?? 20,
+          }),
+        ],
+      }),
+    ],
+  });
+
 
   const tableHeader = new TableRow({
     tableHeader: true,
-    children: ["Scene No.", "Script", "OST", "Type"].map(
-      (header) =>
-        new TableCell({
-          shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" },
-          children: [new Paragraph({ text: header, style: "tableHeader" })],
-        })
-    ),
+    children: [
+      new TableCell({
+        shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" },
+        children: [new Paragraph({ text: "Scene No.", style: "tableHeader" })],
+      }),
+      new TableCell({
+        shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" },
+        children: [new Paragraph({ text: "Script", style: "tableHeader" })],
+      }),
+      new TableCell({
+        shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" },
+        children: [new Paragraph({ text: "OST", style: "tableHeader" })],
+      }),
+      new TableCell({
+        shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" },
+        children: [new Paragraph({ text: "Type", style: "tableHeader" })],
+      }),
+    ],
   });
 
-  const tableRows = scenes.map((scene, index) => {
-    const sceneNumber = String(scene["Scene No."] ?? index + 1);
-
-    const scriptText = uploadDownload
-      ? scene.description || scene.header || "-"
-      : scene.Script || scene.header || "-";
-
-    const ostText = scene.on_screen_text || scene.OST || "-";
-
-    const typeText = uploadDownload
-      ? scene.scene_type || scene.Type || "-"
-      : scene.Type || scene.scene_type || "-";
-
-    return new TableRow({
+  const tableRows = scenes.map((scene, index) =>
+    new TableRow({
       children: [
-        makeCell(sceneNumber, columnWidths.sceneNo, {
-        align: "CENTER",
-
-        }),
-        makeCell(scriptText, columnWidths.script),
-        makeCell(ostText, columnWidths.ost),
-        makeCell(typeText, columnWidths.type, {
+        makeCell(String(scene["Scene No."] ?? index + 1), columnWidths.sceneNo, {
           align: "CENTER",
         }),
+        makeCell(
+          uploadDownload
+            ? scene.description || scene.header || "-"
+            : scene.Script || scene.header || "-",
+          columnWidths.script
+        ),
+        makeCell(
+          scene.on_screen_text || scene.OST || "-",
+          columnWidths.ost
+        ),
+        makeCell(
+          uploadDownload
+            ? scene.scene_type || scene.Type || "-"
+            : scene.Type || scene.scene_type || "-",
+          columnWidths.type,
+          { align: "CENTER" }
+        ),
       ],
-    });
-  });
+    })
+  );
 
   const doc = new Document({
     sections: [
@@ -225,7 +248,7 @@ export const downloadScriptWord = (
           new Paragraph({
             children: [
               new TextRun({
-                text: fileName,
+                text: title ?? data.provider ?? filename ?? "Script",
                 bold: true,
                 size: 32,
               }),
@@ -236,7 +259,7 @@ export const downloadScriptWord = (
           new Paragraph({
             children: [
               new TextRun({
-                text: `Logline: ${logline ?? language ?? "-"}`,
+                text: `Logline: ${logline ?? data?.language ?? "-"}`,
                 italics: true,
               }),
             ],
@@ -272,43 +295,37 @@ export const downloadScriptWord = (
   });
 
   Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, `${fileName}.docx`);
+    saveAs(
+      blob,
+      data?.source === "file"
+        ? `${data?.filename}.docx`
+        : `${data?.language?.slice(0, 2)}_${data?.title}.docx`
+    );
   });
 };
 
-// ---------- Other Utils ----------
 export const getToken = (): string | undefined => {
-  try {
-    const data = JSON.parse(localStorage.getItem("authDetails") || "{}");
-    return data?.access_token;
-  } catch {
-    return undefined;
-  }
+  const data = JSON.parse(localStorage.getItem("authDetails") || "null");
+  return data?.access_token;
 };
 
-export const downloadCSV = (response: any, name: string = "data") => {
-  const blob = new Blob([response.data], {
-    type: "text/csv;charset=utf-8;",
-  });
+export const downloadCSV = (
+  response: { data: BlobPart },
+  name: string = "data"
+): void => {
+  const blob = new Blob([response.data], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = `${name}.csv`;
-  document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
 
 export const getLoggedInUserType = (): number | undefined => {
-  try {
-    const parsedData = JSON.parse(
-      localStorage.getItem("authDetails") || "{}"
-    );
-    return parsedData?.role_id;
-  } catch {
-    return undefined;
-  }
+  const data = localStorage.getItem("authDetails");
+  const parsed = data ? JSON.parse(data) : null;
+  return parsed?.role_id;
 };
 
 export const USERS = {
@@ -316,13 +333,13 @@ export const USERS = {
   SUPPORT_USER: 2,
 };
 
-export const formatNumberWithCommas = (input: any): string => {
+export const formatNumberWithCommas = (input: number | string): string => {
   const num = Number(input);
   if (isNaN(num)) return "";
   return num.toLocaleString("en-US");
 };
 
-export const apiErrorHandling = (res: any) => {
+export const apiErrorHandling = (res: any): void => {
   if (res?.message !== "You are not authorised to use this api") {
     toast.error(res?.message ?? "Something went wrong!");
   }
@@ -331,7 +348,7 @@ export const apiErrorHandling = (res: any) => {
 export const formatRelativeTime = (
   date: string,
   format: string = "DD MMM YYYY, hh:mm:ss A"
-) => {
+): string => {
   if (!date) return "-";
   return dayjs.utc(date).tz("Asia/Kolkata").format(format);
 };
@@ -340,11 +357,11 @@ export const convertToISTParts = (isoString: string): number => {
   if (!isoString) return 0;
   const backendDate = new Date(isoString);
   const now = new Date();
+
   const IST_OFFSET = 5.5 * 60 * 60 * 1000;
 
   const backendIST = new Date(backendDate.getTime() + IST_OFFSET);
   const nowIST = new Date(now.getTime());
 
-  const diffMs = backendIST.getTime() - nowIST.getTime();
-  return Math.floor(diffMs / 1000) + 60;
+  return Math.floor((backendIST.getTime() - nowIST.getTime()) / 1000) + 60;
 };

@@ -124,7 +124,7 @@ const GenerateScript: React.FC = () => {
   const [title, setTitle] = useState<string>("");
  const [language, setLanguage] = useState<string | number>("English");
   const [duration, setDuration] = useState<string | number>("2 minutes");
-  const [topn, setTopn] = useState<string | null>("");
+  const [topn, setTopn] = useState<string | null>("5");
   const [model, setModel] = useState<string | number>("gpt-4o-mini");
   const [datasource, setDatasource] = useState<string | number>("");
   const [loader, setLoader] = useState<boolean>(false);
