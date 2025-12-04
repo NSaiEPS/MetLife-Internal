@@ -348,7 +348,12 @@ const MyVideosDashboard = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell>
-                  <TableCell>{`${video.language === null ? "" : video.language} ${video.title}`}</TableCell>
+                  <TableCell>{`${
+                    video.language === null
+                      ? ""
+                      : video.language.slice(0, 2) +
+                       "_"
+                  }${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>
