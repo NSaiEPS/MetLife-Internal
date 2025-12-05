@@ -52,10 +52,10 @@ import voice11 from "../../assets/voice_preview_es-ES-AbrilNeural.wav";
 import voice12 from "../../assets/d0081a4a-4922-4fbd-b1a6-0af564cf810a.mp3";
 import voice13 from "../../assets/3b043e5b-c661-4546-84d0-21148addc39b.mp3";
 
-
 const narrationVoiceOptions = [
   { label: "Azure", value: "azure" },
-  { label: "SPEECHIFY", value: "speechify" },
+  { label: "Speechify", value: "speechify" },
+  { label: "Voicemaker", value: "voicemaker" },
 ];
 
 const allVoiceOptions = {
@@ -144,6 +144,32 @@ const allVoiceOptions = {
       label: "Celia",
       value: "celia",
       s3_url: voice13,
+    },
+  ],
+  voicemaker: [
+    {
+      label: "AI2-Stacy",
+      value: "ai2-Stacy",
+      // s3_url: voice6,
+    },
+    {
+      label: "AI3-Jony",
+      value: "ai3-Jony",
+      // s3_url: voice6,
+    },
+    {
+      label: "Spanish Voice Options",
+      disabled: true, // prevents clicking
+    },
+    {
+      label: "AI3-ES-ES-Alvaro",
+      value: "ai3-es-ES-Alvaro",
+      // s3_url: voice12,
+    },
+    {
+      label: "ai3-es-ES-Elvira",
+      value: "AI3-ES-ES-Elvira",
+      // s3_url: voice13,
     },
   ],
 };
@@ -307,7 +333,11 @@ const AudioAnimationPage = () => {
   // };
 
   const getPreviewUrl = (voiceName) => {
-    const opt = voiceOptions.find((v) => v.value === voiceName);
+    // const opt = voiceOptions.find((v) => v.value === voiceName);
+    // return opt?.s3_url || "";
+
+    const all = Object.values(allVoiceOptions).flat();
+    const opt = all.find((v) => v.value === voiceName);
     return opt?.s3_url || "";
   };
 
