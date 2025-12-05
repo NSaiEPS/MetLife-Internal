@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
 // PDF DOWNLOAD
 // ==========================
 export const downloadScriptPdf = async (data :any, uploadDownload = false) => {
-  
+  console.log(data,'datadatadata')
   const fileName = localStorage.getItem("file_name") || "Script";
 
   const blob = await pdf(

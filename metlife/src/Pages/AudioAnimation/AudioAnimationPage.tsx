@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./audioAnimation.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import {
-  Box,
-  Typography,
-  Grid,
-} from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import Input from "../../components/common/Input";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
@@ -69,119 +65,131 @@ const narrationVoiceOptions = [
 ];
 
 const allVoiceOptions = {
-  azure: [
-    {
-      label: "EN-US Jenny Neural",
-      value: "en-US-JennyNeural",
-      s3_url: voice2,
-    },
-    {
-      label: "EN-US Aria Neural",
-      value: "en-US-AriaNeural",
-      s3_url: voice5,
-    },
-    {
-      label: "EN-US Sara Neural",
-      value: "en-US-SaraNeural",
-      s3_url: voice4,
-    },
-    {
-      label: "EN-US Guy Neural",
-      value: "en-US-GuyNeural",
-      s3_url: voice3,
-    },
-    {
-      label: "EN-US Davis Neural",
-      value: "en-US-DavisNeural",
-      s3_url: voice1,
-    },
-    {
-      label: "Spanish Voice Options",
-      disabled: true, // prevents clicking
-    },
-    {
-      label: "es-MX-JorgeNeural",
-      value: "es-MX-JorgeNeural",
-      s3_url: voice6,
-    },
-    {
-      label: "es-MX-DaliaNeural",
-      value: "es-MX-DaliaNeural",
-      s3_url: voice7,
-    },
-    {
-      label: "es-ES-ElviraNeural",
-      value: "es-ES-ElviraNeural",
-      s3_url: voice8,
-    },
-    {
-      label: "es-ES-ArnauNeural",
-      value: "es-ES-ArnauNeural",
-      s3_url: voice9,
-    },
-    {
-      label: "es-ES-AlvaroNeural",
-      value: "es-ES-AlvaroNeural",
-      s3_url: voice10,
-    },
-    {
-      label: "es-ES-AbrilNeural",
-      value: "es-ES-AbrilNeural",
-      s3_url: voice11,
-    },
-  ],
-  speechify: [
-    {
-      label: "Oliver",
-      value: "oliver",
-      // s3_url: voice6,
-    },
-    {
-      label: "Emily",
-      value: "emily",
-      // s3_url: voice6,
-    },
-    {
-      label: "Spanish Voice Options",
-      disabled: true, // prevents clicking
-    },
-    {
-      label: "Alejandro",
-      value: "alejandro",
-      s3_url: voice12,
-    },
-    {
-      label: "Celia",
-      value: "celia",
-      s3_url: voice13,
-    },
-  ],
-  voicemaker: [
-    {
-      label: "AI2-Stacy",
-      value: "ai2-Stacy",
-      // s3_url: voice6,
-    },
-    {
-      label: "AI3-Jony",
-      value: "ai3-Jony",
-      // s3_url: voice6,
-    },
-    {
-      label: "Spanish Voice Options",
-      disabled: true, // prevents clicking
-    },
-    {
-      label: "AI3-ES-ES-Alvaro",
-      value: "ai3-es-ES-Alvaro",
-      // s3_url: voice12,
-    },
-    {
-      label: "ai3-es-ES-Elvira",
-      value: "AI3-ES-ES-Elvira",
-      // s3_url: voice13,
-    },
-  ],
+  azure: {
+    english: [
+      {
+        label: "EN-US Jenny Neural",
+        value: "en-US-JennyNeural",
+        s3_url: voice2,
+      },
+      {
+        label: "EN-US Aria Neural",
+        value: "en-US-AriaNeural",
+        s3_url: voice5,
+      },
+      {
+        label: "EN-US Sara Neural",
+        value: "en-US-SaraNeural",
+        s3_url: voice4,
+      },
+      {
+        label: "EN-US Guy Neural",
+        value: "en-US-GuyNeural",
+        s3_url: voice3,
+      },
+      {
+        label: "EN-US Davis Neural",
+        value: "en-US-DavisNeural",
+        s3_url: voice1,
+      },
+    ],
+    spanish: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true, // prevents clicking
+      },
+      {
+        label: "es-MX-JorgeNeural",
+        value: "es-MX-JorgeNeural",
+        s3_url: voice6,
+      },
+      {
+        label: "es-MX-DaliaNeural",
+        value: "es-MX-DaliaNeural",
+        s3_url: voice7,
+      },
+      {
+        label: "es-ES-ElviraNeural",
+        value: "es-ES-ElviraNeural",
+        s3_url: voice8,
+      },
+      {
+        label: "es-ES-ArnauNeural",
+        value: "es-ES-ArnauNeural",
+        s3_url: voice9,
+      },
+      {
+        label: "es-ES-AlvaroNeural",
+        value: "es-ES-AlvaroNeural",
+        s3_url: voice10,
+      },
+      {
+        label: "es-ES-AbrilNeural",
+        value: "es-ES-AbrilNeural",
+        s3_url: voice11,
+      },
+    ],
+  },
+  speechify: {
+    english: [
+      {
+        label: "Oliver",
+        value: "oliver",
+        s3_url: voice3,
+      },
+      {
+        label: "Emily",
+        value: "emily",
+        s3_url: voice5,
+      },
+    ],
+    spanish: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true, // prevents clicking
+      },
+      {
+        label: "Alejandro",
+        value: "alejandro",
+        s3_url: voice12,
+      },
+      {
+        label: "Celia",
+        value: "celia",
+        s3_url: voice13,
+      },
+    ],
+  },
+  voicemaker: {
+    english: [
+      {
+        label: "AI2-Stacy",
+        value: "ai2-Stacy",
+        s3_url: voice4,
+      },
+      {
+        label: "AI3-Jony",
+        value: "ai3-Jony",
+        s3_url: voice1,
+      },
+    ],
+    spanish: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true, // prevents clicking
+      },
+      {
+        label: "AI3-ES-ES-Alvaro",
+        value: "ai3-es-ES-Alvaro",
+        // s3_url: voice12,
+      },
+      {
+        label: "AI3-ES-ES-Elvira",
+        value: "AI3-ES-ES-Elvira",
+        // s3_url: voice13,
+      },
+    ],
+  },
 };
 
 const voiceOptions = [
@@ -262,8 +270,9 @@ const AudioAnimationPage: React.FC = () => {
       Taylor: "azure",
     });
 
-  const [voiceSelections, setVoiceSelections] =
-    useState<VoiceSelectionsType>({});
+  const [voiceSelections, setVoiceSelections] = useState<VoiceSelectionsType>(
+    {}
+  );
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -272,11 +281,17 @@ const AudioAnimationPage: React.FC = () => {
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
   );
 
- const characters = audioAnimationData?.voice_map?.characters || audioAnimationData?.Characters || Object.keys(audioAnimationData?.custom_voice_map || {});
+  const characters =
+    audioAnimationData?.voice_map?.characters ||
+    audioAnimationData?.Characters ||
+    Object.keys(audioAnimationData?.custom_voice_map || {});
   let sortedLabels: string[] = [];
 
   if (characters && characters.length > 0) {
-    sortedLabels = ["Narrator", ...characters.filter((c: string) => c !== "Narrator")];
+    sortedLabels = [
+      "Narrator",
+      ...characters.filter((c: string) => c !== "Narrator"),
+    ];
   }
 
   useEffect(() => {
@@ -312,11 +327,20 @@ const AudioAnimationPage: React.FC = () => {
   //   return voiceOptions.find((v) => v.value === voiceName)?.s3_url || "";
   // };
 
-    const getPreviewUrl = (voiceName : string) => {
+  // const getPreviewUrl = (voiceName: string) => {
+  //   // const opt = voiceOptions.find((v) => v.value === voiceName);
+  //   // return opt?.s3_url || "";
+
+  //   const all = Object.values(allVoiceOptions).flat();
+  //   const opt = all.find((v) => v.value === voiceName);
+  //   return opt?.s3_url || "";
+  // };
+
+  const getPreviewUrl = (voiceName: string, options = []) => {
     // const opt = voiceOptions.find((v) => v.value === voiceName);
     // return opt?.s3_url || "";
 
-    const all = Object.values(allVoiceOptions).flat();
+    const all = options;
     const opt = all.find((v) => v.value === voiceName);
     return opt?.s3_url || "";
   };
@@ -358,7 +382,7 @@ const AudioAnimationPage: React.FC = () => {
   };
 
   return (
-        <>
+    <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
@@ -411,7 +435,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                           <SelectWithAudio
+                          <SelectWithAudio
                             // options={
                             //   audioAnimationData?.scenes === null
                             //     ? voiceOptions
@@ -423,12 +447,11 @@ const AudioAnimationPage: React.FC = () => {
                             // }
                             options={
                               audioAnimationData?.scenes === null
-                                ? allVoiceOptions?.[
+                                ? allVoiceOptions[narrationSelections[charName]]
+                                    ?.english
+                                : allVoiceOptions[
                                     narrationSelections[charName]
-                                  ]
-                                : allVoiceOptions?.[
-                                    narrationSelections[charName]
-                                  ].map((opt : any) => ({
+                                  ]?.english?.map((opt) => ({
                                     ...opt,
                                     disabled:
                                       voiceSelections[charName] !== opt.value,
@@ -440,7 +463,14 @@ const AudioAnimationPage: React.FC = () => {
                               handleVoiceChange(charName, value)
                             }
                             style={true}
-                            getPreviewUrl={(voice) => getPreviewUrl(voice)}
+                            // getPreviewUrl={(voice) => getPreviewUrl(voice)}
+                            getPreviewUrl={(voice) =>
+                              getPreviewUrl(
+                                voice,
+                                allVoiceOptions[narrationSelections[charName]]
+                                  ?.english
+                              )
+                            }
                             customOption
                           />
                         </Grid>
@@ -456,22 +486,24 @@ const AudioAnimationPage: React.FC = () => {
                         Available Voices
                       </Typography>
                       <Grid container spacing={2} sx={{ mt: 1 }}>
-                        {audioAnimationData?.scenes?.map((scene : any, idx : number) => (
-                          <Grid
-                            item
-                            xs={12}
-                            md={6}
-                            lg={4}
-                            key={idx}
-                            sx={{ width: "100%" }}
-                          >
-                            <VoicePlayer
-                              index={idx}
-                              description={scene.description}
-                              s3_url={scene.final_audio_s3_url}
-                            />
-                          </Grid>
-                        ))}
+                        {audioAnimationData?.scenes?.map(
+                          (scene: any, idx: number) => (
+                            <Grid
+                              item
+                              xs={12}
+                              md={6}
+                              lg={4}
+                              key={idx}
+                              sx={{ width: "100%" }}
+                            >
+                              <VoicePlayer
+                                index={idx}
+                                description={scene.description}
+                                s3_url={scene.final_audio_s3_url}
+                              />
+                            </Grid>
+                          )
+                        )}
                       </Grid>
                     </>
                   ) : (
@@ -526,6 +558,3 @@ const AudioAnimationPage: React.FC = () => {
 export default AudioAnimationPage;
 
 // ////////////////////////
-
-
-
