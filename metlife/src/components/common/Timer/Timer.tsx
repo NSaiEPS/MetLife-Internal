@@ -61,7 +61,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
-  return (
+   return (
     <>
       <Box
         sx={{
@@ -143,22 +143,28 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
                 border: "2px solid rgba(255,255,255,0.5)",
               }}
             >
-              <Typography variant="h6" fontWeight={700} color="#333">
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                color="#333"
+                textAlign="center"
+              >
                 {minutes}:{seconds}
               </Typography>
-
               <Typography
                 variant="body2"
                 color="text.secondary"
+                textAlign="center"
                 fontWeight={600}
                 fontSize="12px"
+                // sx={{ mt: 0.5 }} // slight spacing
               >
                 remaining
               </Typography>
             </Box>
           </Box>
 
-          {/* Ring */}
+          {/* Ring border */}
           <Box
             sx={{
               position: "absolute",
@@ -170,18 +176,36 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
           />
         </Box>
 
+        {/* Loader below the circle */}
         <Loader exactMinutes={exactMinutes} exactSeconds={exactSeconds} />
 
-        {/* CSS keyframes */}
+        {/* CSS keyframes for shimmer */}
         <style>
           {`
           @keyframes shimmer {
-            0% { transform: translateX(-100%) skewX(-15deg); }
-            100% { transform: translateX(100%) skewX(-15deg); }
+            0% {
+              transform: translateX(-100%) skewX(-15deg);
+            }
+            100% {
+              transform: translateX(100%) skewX(-15deg);
+            }
           }
         `}
         </style>
       </Box>
+      {/* <Backdrop
+        open={open}
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 9999,
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(0,0,0,0.35)",
+          position: "relative",
+        }}
+      >
+     
+       
+      </Backdrop> */}
     </>
   );
 };

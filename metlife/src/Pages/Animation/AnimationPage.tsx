@@ -83,80 +83,89 @@ const AnimationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
 
-  const waitingTime = convertToISTParts(
-    videoAnimationData?.[0]?.final_video?.url ? "" : ""
+  // const waitingTime = convertToISTParts(
+  //   videoAnimationData?.[0]?.final_video?.url ? "" : ""
+  // );
+   const waitingTime = convertToISTParts(
+    videoAnimationData?.estimated_completion_at
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
   /* ---------- FETCH DATA ---------- */
 
   useEffect(() => {
-    if (!id) return;
     dispatch(getMediaTransitions());
     dispatch(getSceneDetails(id));
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (sceneData?.video_exists) {
-      dispatch(getVideosList(id!));
+    if (sceneData?.video_exists == true) {
+      dispatch(getVideosList(id));
     }
   }, [sceneData?.video_exists, dispatch, id]);
 
   useEffect(() => {
-    if (timerDone) dispatch(getSceneDetails(id!));
+    if (timerDone) {
+      dispatch(getSceneDetails(id));
+    }
   }, [timerDone, dispatch, id]);
 
   useEffect(() => {
-    if (timerDone && sceneData?.video_exists) {
-      dispatch(getVideosList(id!));
+    if (timerDone && sceneData?.video_exists === true) {
+      dispatch(getVideosList(id));
     }
   }, [timerDone, sceneData?.video_exists, dispatch, id]);
 
   /* ---------- HANDLERS ---------- */
 
   const handleAllSubmit = () => {
-    const sceneIds = sceneData?.scenes?.map((s) => s.scene_id) || [];
-
-    const scenesPayload = sceneIds.map((scene_id) => ({
-      scene_id,
+    // const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
+    const sceneIds = sceneData?.scenes?.map((item) => item?.scene_id);
+    const scenesPayload = sceneIds?.map((id) => ({
+      scene_id: id,
       start_transition: entryAnimation,
       end_transition: exitAnimation,
+      // ost: "",
     }));
-
-    dispatch(
-      postGenerateVideoBatch({
-        script_id: id,
-        scenes: scenesPayload,
-      })
-    );
+    const payload = {
+      script_id: id,
+      scenes: scenesPayload,
+    };
+    dispatch(postGenerateVideoBatch(payload));
   };
 
   const handleAlternateSubmit = () => {
-    const allSceneIds =
-      sceneData?.scenes?.flatMap((s) => {
-        const ids: string[] = [];
-        if (s.scene_id) ids.push(s.scene_id);
-        if (s.alternative_scene_id) ids.push(s.alternative_scene_id);
-        return ids;
-      }) || [];
+    const scenesData = sceneData?.scenes || [];
+    const allSceneIds = scenesData.flatMap((scene) => {
+      const idsToProcess = [];
+      if (scene?.scene_id) {
+        idsToProcess.push(scene.scene_id);
+      }
+      if (scene?.alternative_scene_id) {
+        idsToProcess.push(scene.alternative_scene_id);
+      }
+      return idsToProcess;
+    });
 
-    const scenesPayload = allSceneIds.map((scene_id, index) => ({
-      scene_id,
+    const scenesPayload = allSceneIds.map((id, index) => ({
+      scene_id: id,
       start_transition: index % 2 === 0 ? entryAnimation : "none",
       end_transition: index % 2 === 0 ? exitAnimation : "none",
+      // ost: "",
     }));
 
-    dispatch(
-      postGenerateVideoBatch({
-        script_id: id,
-        scenes: scenesPayload,
-      })
-    );
+    const payload = {
+      script_id: id,
+      scenes: scenesPayload,
+    };
+    dispatch(postGenerateVideoBatch(payload));
   };
 
   const generateVideo = () => {
-    dispatch(postGenerateFullVideo(id!));
+    dispatch(postGenerateFullVideo(id));
   };
+
+  console.log(videoAnimationLoader, "check__video_animaiton__loader");
 
   return (
     <>
@@ -165,8 +174,8 @@ const AnimationPage: React.FC = () => {
 
         {(animationLabels?.entry_transitions ||
           animationLabels?.exit_transitions) &&
-        ((animationLabels?.entry_transitions?.length &&animationLabels?.entry_transitions?.length > 0 )||
-          (animationLabels?.exit_transitions?.length  && animationLabels?.exit_transitions?.length > 0))  ? (
+        (animationLabels?.entry_transitions?.length > 0 ||
+          animationLabels?.exit_transitions?.length > 0) ? (
           <>
             {(audioAnimationLoader || videoAnimationLoader) && (
               <FullScreenGradientLoader text="loading..." />
@@ -178,9 +187,9 @@ const AnimationPage: React.FC = () => {
                   <h1 className={styles.title}>Animation Toolkit</h1>
                 </div>
 
+                {/* animation part */}
                 <div className={styles.insideContainer}>
-                  {/* ---------------- Animation Selection ---------------- */}
-                      <Typography
+                  <Typography
                     className={styles.audioSelectionTitle}
                     sx={{
                       fontSize: "22px",
@@ -190,11 +199,9 @@ const AnimationPage: React.FC = () => {
                   >
                     Animation Selection
                   </Typography>
-
                   <Grid container spacing={3}>
-                    {/* ENTRY */}
-                      <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                       <Typography
+                    <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                      <Typography
                         variant="h6"
                         fontWeight="500"
                         fontSize="16px"
@@ -202,8 +209,7 @@ const AnimationPage: React.FC = () => {
                       >
                         Entry
                       </Typography>
-
-                    <Paper
+                      <Paper
                         elevation={0}
                         sx={{
                           p: 3,
@@ -211,25 +217,32 @@ const AnimationPage: React.FC = () => {
                           borderRadius: 3,
                         }}
                       >
-                        <FormControl disabled={!!videoAnimationData?.length}>
+                        <FormControl disabled={videoAnimationData}>
                           <RadioGroup
                             value={entryAnimation}
                             onChange={(e) => setEntryAnimation(e.target.value)}
                           >
-                            {animationLabels?.entry_transitions?.map((opt, i) => (
-                              <FormControlLabel
-                                key={i}
-                                value={opt}
-                                control={<Radio />}
-                                label={opt}
-                              />
-                            ))}
+                            {animationLabels?.entry_transitions?.map(
+                              (opt, index) => (
+                                <FormControlLabel
+                                  key={index}
+                                  value={opt}
+                                  control={<Radio color="primary" />}
+                                  label={opt}
+                                  sx={{
+                                    "& .MuiFormControlLabel-label": {
+                                      color: "#555",
+                                      fontSize: "0.95rem",
+                                    },
+                                  }}
+                                />
+                              )
+                            )}
                           </RadioGroup>
                         </FormControl>
                       </Paper>
                     </Grid>
 
-                    {/* EXIT */}
                     <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                       <Typography
                         variant="h6"
@@ -239,8 +252,7 @@ const AnimationPage: React.FC = () => {
                       >
                         Exit
                       </Typography>
-
-                           <Paper
+                      <Paper
                         elevation={0}
                         sx={{
                           p: 3,
@@ -337,9 +349,7 @@ const AnimationPage: React.FC = () => {
                           Generated Video
                         </Typography>
 
-                        <FullVideoPlayer
-                        
-                         video_url={generatedVideoData?.url} />
+                        <FullVideoPlayer video_url={generatedVideoData?.url} />
                       </>
                     )
                     //  : (
@@ -409,9 +419,4 @@ const AnimationPage: React.FC = () => {
 
 export default AnimationPage;
 
-
-
 // ///////////////////////
-
-
-
