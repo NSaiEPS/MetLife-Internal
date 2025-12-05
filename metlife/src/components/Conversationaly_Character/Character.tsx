@@ -1,25 +1,20 @@
-import {
-  Box,
-  Typography,
-  IconButton,
-  Avatar,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Box, Typography, IconButton, Avatar } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { useState, useRef } from "react";
-import { showToast } from "../../utils/toast";
+import React from "react";
 
 // =========================
 // Types
 // =========================
+
+export type InputType = "prompt" | "image";
 
 export interface CharacterData {
   name: string;
   role: string;
   prompt?: string;
   img?: string;
+  inputType: InputType;
 }
 
 interface CharacterProps {
@@ -31,22 +26,8 @@ interface CharacterProps {
   isEmpty?: boolean;
 }
 
-interface CharacterPromptProps {
-  index: number;
-  data: CharacterData;
-  updateCharacter: (index: number, updated: CharacterData) => void;
-  closePrompt: () => void;
-}
-
-interface ErrorState {
-  name?: boolean;
-  role?: boolean;
-  img?: boolean;
-  prompt?: boolean;
-}
-
 // =========================
-// Character Component
+// Component
 // =========================
 
 export const Character: React.FC<CharacterProps> = ({
@@ -70,16 +51,7 @@ export const Character: React.FC<CharacterProps> = ({
         opacity: isEmpty ? 0.8 : 1,
       }}
     >
-      <Avatar
-        src={data.img}
-        sx={{
-          width: 60,
-          height: 60,
-          border: isEmpty ? "2px dashed #ccc" : "none",
-        }}
-      >
-        {!data.img && "?"}
-      </Avatar>
+      {data.img && <Avatar src={data.img} sx={{ width: 60, height: 60 }} />}
 
       <Box flex={1}>
         <Typography fontWeight={600}>
@@ -87,7 +59,7 @@ export const Character: React.FC<CharacterProps> = ({
             ? data.name.length > 20
               ? `${data.name.slice(0, 20)}...`
               : data.name
-            : "Please enter details"}
+            : "Please enter character details"}
         </Typography>
 
         <Typography
@@ -98,7 +70,7 @@ export const Character: React.FC<CharacterProps> = ({
             ? data.role.length > 20
               ? `${data.role.slice(0, 20)}...`
               : data.role
-            : "No role specified"}
+            : ""}
         </Typography>
       </Box>
 
@@ -115,8 +87,44 @@ export const Character: React.FC<CharacterProps> = ({
   );
 };
 
+import { useState, useRef } from "react";
+import {
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+
 // =========================
-// CharacterPrompt Component
+// Types
+// =========================
+
+export interface CharacterData {
+  name: string;
+  role: string;
+  prompt?: string;
+  img?: string;
+  inputType: InputType;
+}
+
+interface CharacterPromptProps {
+  index: number;
+  data: CharacterData;
+  updateCharacter: (index: number, updated: CharacterData) => void;
+  closePrompt: () => void;
+}
+
+interface ErrorState {
+  name?: boolean;
+  role?: boolean;
+  prompt?: boolean;
+  img?: boolean;
+}
+
+// =========================
+// Component
 // =========================
 
 export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
@@ -134,16 +142,16 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   // Validation
   // -------------------------
 
-  const validate = () => {
+  const validate = (): boolean => {
     const err: ErrorState = {
       name: !form.name.trim(),
       role: !form.role.trim(),
     };
 
-    if (!form.prompt && !form.img) {
-      showToast.error("Image or Prompt is mandatory!");
-      err.img = true;
-      err.prompt = true;
+    if (form.inputType === "prompt") {
+      err.prompt = !form.prompt?.trim();
+    } else {
+      err.img = !form.img;
     }
 
     setErrors(err);
@@ -157,7 +165,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   };
 
   // -------------------------
-  // Image Selection
+  // Image Upload
   // -------------------------
 
   const handleImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +182,22 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   };
 
   // -------------------------
+  // Input Type Change
+  // -------------------------
+
+  const handleInputTypeChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    const newInputType = e.target.value as InputType;
+
+    setForm({
+      ...form,
+      inputType: newInputType,
+      ...(newInputType === "prompt" ? { img: "" } : { prompt: "" }),
+    });
+
+    setPreview("");
+  };
+
+  // -------------------------
   // JSX
   // -------------------------
 
@@ -186,7 +210,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        zIndex: 999,
+        zIndex: 99,
       }}
     >
       <Box
@@ -200,56 +224,6 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
           gap: 3,
         }}
       >
-        {/* IMAGE UPLOAD */}
-        <Box sx={{ position: "relative", width: "fit-content", mx: "auto" }}>
-          <Avatar
-            src={preview}
-            sx={{
-              width: 80,
-              height: 80,
-              border: errors.img ? "2px solid #d32f2f" : "none",
-            }}
-          />
-
-          <IconButton
-            onClick={triggerFileInput}
-            sx={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              backgroundColor: "white",
-              border: "1px solid #ccc",
-              width: 28,
-              height: 28,
-              "&:hover": { backgroundColor: "#f5f5f5" },
-            }}
-          >
-            <EditIcon sx={{ fontSize: 16 }} />
-          </IconButton>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            hidden
-            accept="image/*"
-            onChange={handleImgSelect}
-          />
-        </Box>
-
-        {errors.img && (
-          <Box
-            sx={{
-              color: "#d32f2f",
-              fontSize: "0.75rem",
-              textAlign: "center",
-              mt: -2,
-            }}
-          >
-            Image is required
-          </Box>
-        )}
-
-        {/* NAME */}
         <TextField
           label="Character Name"
           value={form.name}
@@ -258,7 +232,6 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
 
-        {/* ROLE */}
         <TextField
           label="Character Role"
           value={form.role}
@@ -267,19 +240,88 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
           onChange={(e) => setForm({ ...form, role: e.target.value })}
         />
 
-        {/* PROMPT */}
-        <TextField
-          label="Character Prompt"
-          multiline
-          rows={3}
-          value={form.prompt}
-          error={!!errors.prompt}
-          helperText={errors.prompt && "Required (Image or Prompt required)"}
-          onChange={(e) => setForm({ ...form, prompt: e.target.value })}
-        />
+        {/* INPUT TYPE DROPDOWN */}
+        <FormControl fullWidth>
+          <InputLabel>Input Type</InputLabel>
+          <Select
+            value={form.inputType}
+            label="Input Type"
+            onChange={handleInputTypeChange}
+          >
+            <MenuItem value="prompt">Prompt</MenuItem>
+            <MenuItem value="image">Image</MenuItem>
+          </Select>
+        </FormControl>
 
-        {/* ACTIONS */}
-        <Box display="flex" justifyContent="space-between">
+        {/* CONDITIONAL INPUT */}
+        {form.inputType === "prompt" ? (
+          <TextField
+            label="Character Prompt"
+            multiline
+            rows={3}
+            value={form.prompt}
+            error={!!errors.prompt}
+            helperText={errors.prompt && "Required"}
+            onChange={(e) => setForm({ ...form, prompt: e.target.value })}
+          />
+        ) : (
+          <>
+            <Box
+              sx={{ position: "relative", width: "fit-content", mx: "auto" }}
+            >
+              <Avatar
+                src={preview}
+                sx={{
+                  width: 80,
+                  height: 80,
+                  border: errors.img ? "2px solid #d32f2f" : "none",
+                }}
+              />
+
+              <IconButton
+                onClick={triggerFileInput}
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: "white",
+                  border: "1px solid #ccc",
+                  width: 28,
+                  height: 28,
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+              >
+                <EditIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                hidden
+                accept="image/*"
+                onChange={handleImgSelect}
+              />
+            </Box>
+
+            {errors.img && (
+              <Box
+                sx={{
+                  color: "#d32f2f",
+                  fontSize: "0.75rem",
+                  textAlign: "center",
+                  mt: -2,
+                }}
+              >
+                Image is required
+              </Box>
+            )}
+          </>
+        )}
+
+        {/* ACTION BUTTONS */}
+        <Box display="flex" justifyContent="space-between" mt={1}>
           <Button variant="outlined" color="error" onClick={closePrompt}>
             Cancel
           </Button>

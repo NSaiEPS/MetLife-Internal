@@ -3,11 +3,14 @@ import { Box, Button } from "@mui/material";
 import { Character, CharacterPrompt } from "./Character";
 
 // ---------- Types ----------
+export type InputType = "prompt" | "image";
+
 export interface CharacterType {
   name: string;
   role: string;
   prompt: string;
   img: string;
+  inputType: InputType;
 }
 
 // ---------- Empty Character ----------
@@ -16,42 +19,47 @@ const emptyCharacter: CharacterType = {
   role: "",
   prompt: "",
   img: "",
+  inputType: "prompt",
 };
 
 const CharacterParent: React.FC = () => {
-  const [characters, setCharacters] = useState<CharacterType[]>([emptyCharacter]);
+  const [characters, setCharacters] = useState<CharacterType[]>([
+    emptyCharacter,
+  ]);
+
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showSubmit, setShowSubmit] = useState<boolean>(false);
-
-  // ---------- Validate characters ----------
+  console.log(editingIndex, "editingIndex");
+  // ---------- Validate Characters ----------
   useEffect(() => {
-    const hasValidCharacter = characters.some(
-      (char) =>
-        char.name.trim() &&
-        char.role.trim() &&
-        char.prompt.trim() &&
-        char.img
-    );
+    const hasValidCharacter = characters.some((char) => {
+      const hasBasicInfo = char.name.trim() && char.role.trim();
+      const hasValidInput =
+        char.inputType === "prompt" ? char.prompt.trim() : char.img;
+
+      return Boolean(hasBasicInfo && hasValidInput);
+    });
 
     setShowSubmit(hasValidCharacter);
   }, [characters]);
 
-  // ---------- Open/Close Prompt ----------
+  // ---------- Open / Close Prompt ----------
   const openPrompt = (index: number) => setEditingIndex(index);
   const closePrompt = () => setEditingIndex(null);
 
   // ---------- Add New Character ----------
   const addCharacter = () => {
+    // Only open prompt, don't push empty object yet
     setEditingIndex(characters.length);
   };
 
   // ---------- Update Character ----------
   const updateCharacter = (index: number, updatedData: CharacterType) => {
     if (index >= characters.length) {
-      // Adding a new character
+      // New character
       setCharacters((prev) => [...prev, updatedData]);
     } else {
-      // Editing an existing character
+      // Existing character edit
       setCharacters((prev) =>
         prev.map((item, i) => (i === index ? updatedData : item))
       );
@@ -69,13 +77,13 @@ const CharacterParent: React.FC = () => {
 
   // ---------- Submit ----------
   const handleSubmit = () => {
-    const validCharacters = characters.filter(
-      (char) =>
-        char.name.trim() &&
-        char.role.trim() &&
-        char.prompt.trim() &&
-        char.img
-    );
+    const validCharacters = characters.filter((char) => {
+      const hasBasicInfo = char.name.trim() && char.role.trim();
+      const hasValidInput =
+        char.inputType === "prompt" ? char.prompt.trim() : char.img;
+
+      return Boolean(hasBasicInfo && hasValidInput);
+    });
 
     console.log("Final character list:", validCharacters);
   };
@@ -106,7 +114,6 @@ const CharacterParent: React.FC = () => {
           Add Character
         </Button>
 
-        {/* 
         {showSubmit && (
           <Button
             variant="contained"
@@ -117,10 +124,9 @@ const CharacterParent: React.FC = () => {
             Submit
           </Button>
         )}
-        */}
       </Box>
 
-      {/* CHARACTER PROMPT */}
+      {/* CHARACTER PROMPT MODAL */}
       {editingIndex !== null && (
         <CharacterPrompt
           index={editingIndex}
