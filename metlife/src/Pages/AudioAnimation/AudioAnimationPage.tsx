@@ -32,6 +32,14 @@ import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
 import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
 import voice4 from "../../assets/voice_preview_en-US-SaraNeural (1).wav";
 import voice5 from "../../assets/voice_preview_en-US-AriaNeural.wav";
+import voice6 from "../../assets/voice_preview_es-MX-JorgeNeural.wav";
+import voice7 from "../../assets/voice_preview_es-MX-DaliaNeural.wav";
+import voice8 from "../../assets/voice_preview_es-ES-ElviraNeural.wav";
+import voice9 from "../../assets/voice_preview_es-ES-ArnauNeural.wav";
+import voice10 from "../../assets/voice_preview_es-ES-AlvaroNeural.wav";
+import voice11 from "../../assets/voice_preview_es-ES-AbrilNeural.wav";
+import voice12 from "../../assets/d0081a4a-4922-4fbd-b1a6-0af564cf810a.mp3";
+import voice13 from "../../assets/3b043e5b-c661-4546-84d0-21148addc39b.mp3";
 
 interface VoiceOption {
   label: string;
@@ -54,15 +62,197 @@ interface AudioAnimationState {
   labels: string[];
 }
 
-const narrationVoiceOptions = [{ label: "Azure", value: "azure" }];
-
-const voiceOptions: VoiceOption[] = [
-  { label: "EN-US Jenny Neural", value: "en-US-JennyNeural", s3_url: voice1 },
-  { label: "EN-US Aria Neural", value: "en-US-AriaNeural", s3_url: voice2 },
-  { label: "EN-US Sara Neural", value: "en-US-SaraNeural", s3_url: voice3 },
-  { label: "EN-US Guy Neural", value: "en-US-GuyNeural", s3_url: voice4 },
-  { label: "EN-US Davis Neural", value: "en-US-DavisNeural", s3_url: voice5 },
+const narrationVoiceOptions = [
+  { label: "Azure", value: "azure" },
+  { label: "Speechify", value: "speechify" },
+  { label: "Voicemaker", value: "voicemaker" },
 ];
+
+const allVoiceOptions = {
+  azure: [
+    {
+      label: "EN-US Jenny Neural",
+      value: "en-US-JennyNeural",
+      s3_url: voice2,
+    },
+    {
+      label: "EN-US Aria Neural",
+      value: "en-US-AriaNeural",
+      s3_url: voice5,
+    },
+    {
+      label: "EN-US Sara Neural",
+      value: "en-US-SaraNeural",
+      s3_url: voice4,
+    },
+    {
+      label: "EN-US Guy Neural",
+      value: "en-US-GuyNeural",
+      s3_url: voice3,
+    },
+    {
+      label: "EN-US Davis Neural",
+      value: "en-US-DavisNeural",
+      s3_url: voice1,
+    },
+    {
+      label: "Spanish Voice Options",
+      disabled: true, // prevents clicking
+    },
+    {
+      label: "es-MX-JorgeNeural",
+      value: "es-MX-JorgeNeural",
+      s3_url: voice6,
+    },
+    {
+      label: "es-MX-DaliaNeural",
+      value: "es-MX-DaliaNeural",
+      s3_url: voice7,
+    },
+    {
+      label: "es-ES-ElviraNeural",
+      value: "es-ES-ElviraNeural",
+      s3_url: voice8,
+    },
+    {
+      label: "es-ES-ArnauNeural",
+      value: "es-ES-ArnauNeural",
+      s3_url: voice9,
+    },
+    {
+      label: "es-ES-AlvaroNeural",
+      value: "es-ES-AlvaroNeural",
+      s3_url: voice10,
+    },
+    {
+      label: "es-ES-AbrilNeural",
+      value: "es-ES-AbrilNeural",
+      s3_url: voice11,
+    },
+  ],
+  speechify: [
+    {
+      label: "Oliver",
+      value: "oliver",
+      // s3_url: voice6,
+    },
+    {
+      label: "Emily",
+      value: "emily",
+      // s3_url: voice6,
+    },
+    {
+      label: "Spanish Voice Options",
+      disabled: true, // prevents clicking
+    },
+    {
+      label: "Alejandro",
+      value: "alejandro",
+      s3_url: voice12,
+    },
+    {
+      label: "Celia",
+      value: "celia",
+      s3_url: voice13,
+    },
+  ],
+  voicemaker: [
+    {
+      label: "AI2-Stacy",
+      value: "ai2-Stacy",
+      // s3_url: voice6,
+    },
+    {
+      label: "AI3-Jony",
+      value: "ai3-Jony",
+      // s3_url: voice6,
+    },
+    {
+      label: "Spanish Voice Options",
+      disabled: true, // prevents clicking
+    },
+    {
+      label: "AI3-ES-ES-Alvaro",
+      value: "ai3-es-ES-Alvaro",
+      // s3_url: voice12,
+    },
+    {
+      label: "ai3-es-ES-Elvira",
+      value: "AI3-ES-ES-Elvira",
+      // s3_url: voice13,
+    },
+  ],
+};
+
+const voiceOptions = [
+  {
+    label: "EN-US Jenny Neural",
+    value: "en-US-JennyNeural",
+    s3_url: voice2,
+  },
+  {
+    label: "EN-US Aria Neural",
+    value: "en-US-AriaNeural",
+    s3_url: voice5,
+  },
+  {
+    label: "EN-US Sara Neural",
+    value: "en-US-SaraNeural",
+    s3_url: voice4,
+  },
+  {
+    label: "EN-US Guy Neural",
+    value: "en-US-GuyNeural",
+    s3_url: voice3,
+  },
+  {
+    label: "EN-US Davis Neural",
+    value: "en-US-DavisNeural",
+    s3_url: voice1,
+  },
+  {
+    label: "Spanish Voice Options",
+    disabled: true, // prevents clicking
+  },
+  {
+    label: "es-MX-JorgeNeural",
+    value: "es-MX-JorgeNeural",
+    s3_url: voice6,
+  },
+  {
+    label: "es-MX-DaliaNeural",
+    value: "es-MX-DaliaNeural",
+    s3_url: voice7,
+  },
+  {
+    label: "es-ES-ElviraNeural",
+    value: "es-ES-ElviraNeural",
+    s3_url: voice8,
+  },
+  {
+    label: "es-ES-ArnauNeural",
+    value: "es-ES-ArnauNeural",
+    s3_url: voice9,
+  },
+  {
+    label: "es-ES-AlvaroNeural",
+    value: "es-ES-AlvaroNeural",
+    s3_url: voice10,
+  },
+  {
+    label: "es-ES-AbrilNeural",
+    value: "es-ES-AbrilNeural",
+    s3_url: voice11,
+  },
+];
+
+// const voiceOptions: VoiceOption[] = [
+//   { label: "EN-US Jenny Neural", value: "en-US-JennyNeural", s3_url: voice1 },
+//   { label: "EN-US Aria Neural", value: "en-US-AriaNeural", s3_url: voice2 },
+//   { label: "EN-US Sara Neural", value: "en-US-SaraNeural", s3_url: voice3 },
+//   { label: "EN-US Guy Neural", value: "en-US-GuyNeural", s3_url: voice4 },
+//   { label: "EN-US Davis Neural", value: "en-US-DavisNeural", s3_url: voice5 },
+// ];
 
 const AudioAnimationPage: React.FC = () => {
   const [narrationSelections, setNarrationSelections] =
@@ -118,8 +308,17 @@ const AudioAnimationPage: React.FC = () => {
     }));
   };
 
-  const getPreviewUrl = (voiceName: string): string => {
-    return voiceOptions.find((v) => v.value === voiceName)?.s3_url || "";
+  // const getPreviewUrl = (voiceName: string): string => {
+  //   return voiceOptions.find((v) => v.value === voiceName)?.s3_url || "";
+  // };
+
+    const getPreviewUrl = (voiceName : string) => {
+    // const opt = voiceOptions.find((v) => v.value === voiceName);
+    // return opt?.s3_url || "";
+
+    const all = Object.values(allVoiceOptions).flat();
+    const opt = all.find((v) => v.value === voiceName);
+    return opt?.s3_url || "";
   };
 
   const handleSubmit = () => {
@@ -212,31 +411,29 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          <SelectWithAudio
+                           <SelectWithAudio
+                            // options={
+                            //   audioAnimationData?.scenes === null
+                            //     ? voiceOptions
+                            //     : voiceOptions.map((opt) => ({
+                            //         ...opt,
+                            //         disabled:
+                            //           voiceSelections[charName] !== opt.value,
+                            //       }))
+                            // }
                             options={
                               audioAnimationData?.scenes === null
-                                ? voiceOptions
-                                : voiceOptions.map((opt) => ({
+                                ? allVoiceOptions?.[
+                                    narrationSelections[charName]
+                                  ]
+                                : allVoiceOptions?.[
+                                    narrationSelections[charName]
+                                  ].map((opt : any) => ({
                                     ...opt,
                                     disabled:
                                       voiceSelections[charName] !== opt.value,
                                   }))
                             }
-                            // options={
-                            //   audioAnimationData?.scenes === null
-                            //     ? voiceOptions
-                            //     : voiceOptions.map((opt) => {
-                            //         const selectedVoice =
-                            //           voiceSelections[charName];
-
-                            //         return {
-                            //           ...opt,
-                            //           disabled: selectedVoice
-                            //             ? selectedVoice !== opt.value
-                            //             : false,
-                            //         };
-                            //       })
-                            // }
                             placeholder="Select Voice"
                             value={voiceSelections[charName] || ""}
                             onChange={(value) =>

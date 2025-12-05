@@ -28,6 +28,7 @@ import DataFilters from "../../components/Data Filters/DataFilters";
 import Input from "../../components/common/Input";
 import type { RootState } from "../../redux/store"; // import your store type
 import { showToast } from "../../utils/toast";
+import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -141,6 +142,15 @@ const GenerateScript: React.FC = () => {
   useEffect(() => {
     dispatch(getPromptsList());
   }, [dispatch]);
+
+    useEffect(() => {
+    if (datasource === "openai") {
+      setTopn("");
+    }
+    else if(datasource === "metlife"){
+      setTopn("5");
+    }
+  }, [datasource]);
 
   // ---------- Handlers ----------
   const handleInputChange = (
@@ -309,6 +319,9 @@ const GenerateScript: React.FC = () => {
                     />
                   </Grid>
                 </Grid>
+                 {(videoType == "conversational" || videoType == "mixed") && (
+                  <CharacterParent />
+                )}
               </AccordionDetails>
             </Accordion>
             <Accordion

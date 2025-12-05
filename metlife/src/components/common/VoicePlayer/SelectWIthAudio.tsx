@@ -11,18 +11,18 @@ import type {SelectChangeEvent} from "@mui/material"
 import { PlayArrow, Pause } from "@mui/icons-material";
 
 interface VoiceOption {
-  label: string;
-  value: string;
+  label: any;
+  value: any;
   disabled?: boolean;
-  s3_url?: string;
+  s3_url?: any;
 }
 
 interface SelectWithAudioProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: any;
+  onChange: (value: any) => void;
   options: VoiceOption[];
   placeholder?: string;
-  getPreviewUrl: (voice: string) => string;
+  getPreviewUrl: (voice: any) => any;
   style?: boolean;
   customOption?: boolean;
 }

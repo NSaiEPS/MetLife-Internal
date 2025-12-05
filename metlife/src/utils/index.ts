@@ -112,35 +112,29 @@ const styles = StyleSheet.create({
 // ==========================
 // PDF DOWNLOAD
 // ==========================
-export const downloadScriptPdf = async (
-  data: any | PDFData,
-  uploadDownload: boolean = false
-): Promise<void> => {
-  // const blob = await pdf(
-  //   React.createElement(PdfDocument, { data, uploadDownload })
-    
-  // ).toBlob();
+export const downloadScriptPdf = async (data :any, uploadDownload = false) => {
+  
+  const fileName = localStorage.getItem("file_name") || "Script";
 
   const blob = await pdf(
-  React.createElement(PdfDocument, { data, uploadDownload })
-).toBlob();
+    React.createElement(PdfDocument, { data, uploadDownload })
+  ).toBlob();
 
   saveAs(
     blob,
-    data?.source === "file"
+    data?.source == "file"
       ? `${data?.filename}.pdf`
-      : `${data?.language?.slice(0, 2)}_${data?.title}.pdf`
+      : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`
   );
 };
 
 // ==========================
 // WORD DOWNLOAD
 // ==========================
-export const downloadScriptWord = (
-  data: PDFData,
-  uploadDownload: boolean = false
-): void => {
+export const downloadScriptWord = (data : any, uploadDownload = false) => {
+  const fileName = localStorage.getItem("file_name");
   if (!data) return;
+  console.log(data, "data_checK_word");
 
   const {
     title,
@@ -150,53 +144,42 @@ export const downloadScriptWord = (
     scenes = [],
   } = data;
 
+  // ✅ Define fixed column widths in DXA (1 inch = 1440 DXA)
   const columnWidths = {
-    sceneNo: 1000,
-    script: 4000,
-    ost: 2500,
-    type: 1500,
+    sceneNo: 1000, // ~0.7"
+    script: 4000, // ~2.8"
+    ost: 2500, // ~1.7"
+    type: 1500, // ~1.0"
   };
 
-const makeCell = (
-  text: string,
-  width: number,
-  options: {
-    align?: keyof typeof AlignmentType; // ✅ FIXED
-    bold?: boolean;
-    color?: string;
-    size?: number;
-  } = {}
-) =>
-  new TableCell({
-    width: { size: width, type: WidthType.DXA },
-    verticalAlign: VerticalAlign.CENTER,
-    margins: { top: 100, bottom: 100, left: 100, right: 100 },
-    children: [
-      new Paragraph({
-        alignment: options.align
-          ? AlignmentType[options.align] // convert key → enum value
-          : AlignmentType.LEFT,
+  const makeCell = (text, width, options = {}) =>
+    new TableCell({
+      width: { size: width, type: WidthType.DXA },
+      verticalAlign: VerticalAlign.CENTER,
+      margins: { top: 100, bottom: 100, left: 100, right: 100 }, // adds padding
+      children: [
+        new Paragraph({
+          alignment: options.align || AlignmentType.LEFT,
+          spacing: { after: 100 },
+          children: [
+            new TextRun({
+              text,
+              bold: options.bold || false,
+              color: options.color || "000000",
+              size: options.size || 20,
+            }),
+          ],
+        }),
+      ],
+    });
 
-        spacing: { after: 100 },
-
-        children: [
-          new TextRun({
-            text,
-            bold: options.bold ?? false,
-            color: options.color ?? "000000",
-            size: options.size ?? 20,
-          }),
-        ],
-      }),
-    ],
-  });
-
+  // ✅ Header Row
 
   const tableHeader = new TableRow({
     tableHeader: true,
     children: [
       new TableCell({
-        shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" },
+        shading: { type: ShadingType.CLEAR, color: "000000", fill: "1a1a1a" }, // dark background
         children: [new Paragraph({ text: "Scene No.", style: "tableHeader" })],
       }),
       new TableCell({
@@ -214,33 +197,35 @@ const makeCell = (
     ],
   });
 
-  const tableRows = scenes.map((scene, index) =>
-    new TableRow({
-      children: [
-        makeCell(String(scene["Scene No."] ?? index + 1), columnWidths.sceneNo, {
-          align: "CENTER",
-        }),
-        makeCell(
-          uploadDownload
-            ? scene.description || scene.header || "-"
-            : scene.Script || scene.header || "-",
-          columnWidths.script
-        ),
-        makeCell(
-          scene.on_screen_text || scene.OST || "-",
-          columnWidths.ost
-        ),
-        makeCell(
-          uploadDownload
-            ? scene.scene_type || scene.Type || "-"
-            : scene.Type || scene.scene_type || "-",
-          columnWidths.type,
-          { align: "CENTER" }
-        ),
-      ],
-    })
-  );
+  // ✅ Table Body Rows
+  const tableRows = scenes.map((scene: any, index : number) => {
+    // const sceneNumber = scene["Scene No."] ?? index + 1;
+    const sceneNumber = String(scene["Scene No."] ?? index + 1);
 
+    const scriptText = uploadDownload
+      ? scene?.description || scene?.header || "-"
+      : scene?.Script || scene?.header || "-";
+
+    const ostText = scene?.on_screen_text || scene?.OST || "-";
+    const typeText = uploadDownload
+      ? scene?.scene_type || scene?.Type || "-"
+      : scene?.Type || scene?.scene_type || "-";
+
+    return new TableRow({
+      children: [
+        makeCell(sceneNumber, columnWidths.sceneNo, {
+          align: AlignmentType.CENTER,
+        }),
+        makeCell(scriptText, columnWidths.script),
+        makeCell(ostText, columnWidths.ost),
+        makeCell(typeText, columnWidths.type, {
+          align: AlignmentType.CENTER,
+        }),
+      ],
+    });
+  });
+
+  // ✅ Build Document
   const doc = new Document({
     sections: [
       {
@@ -248,7 +233,10 @@ const makeCell = (
           new Paragraph({
             children: [
               new TextRun({
-                text: title ?? data.provider ?? filename ?? "Script",
+                // text: title ?? data?.provider ?? filename ?? "Script",
+                text:
+                  // fileName ?? title ?? data?.provider ?? filename ?? "Script",
+                  title ?? data?.provider ?? filename ?? "Script",
                 bold: true,
                 size: 32,
               }),
@@ -294,15 +282,17 @@ const makeCell = (
     ],
   });
 
+  // ✅ Download Word file
   Packer.toBlob(doc).then((blob) => {
     saveAs(
       blob,
-      data?.source === "file"
+      data?.source == "file"
         ? `${data?.filename}.docx`
-        : `${data?.language?.slice(0, 2)}_${data?.title}.docx`
+        : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`
     );
   });
 };
+
 
 export const getToken = (): string | undefined => {
   const data = JSON.parse(localStorage.getItem("authDetails") || "null");

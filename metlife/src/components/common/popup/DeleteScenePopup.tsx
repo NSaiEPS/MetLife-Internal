@@ -7,20 +7,42 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { postDeleteScene } from "../../../redux/features/scriptSlice";
-import api from "../../../api/axios";
+import { useSelector } from "react-redux";
 import FullScreenGradientLoader from "../GradientLoader";
 
-const DeleteScenePopup = ({
+// ---------- Types ----------
+interface RowData {
+  Script?: string;
+  [key: string]: any;
+}
+
+interface DeleteScenePopupProps {
+  open: boolean;
+  onClose: () => void;
+  rowData?: RowData | null;
+  id?: string | number;
+  onConfirm: (rowData: RowData | null | undefined) => void;
+  loader?: boolean;
+}
+
+interface RootState {
+  Script: {
+    scriptLoader: boolean;
+  };
+}
+
+// ---------- Component ----------
+const DeleteScenePopup: React.FC<DeleteScenePopupProps> = ({
   open,
   onClose,
   rowData,
   id,
   onConfirm,
-  loader,
+  loader = false,
 }) => {
-  const { scriptLoader } = useSelector((store) => store.Script);
+  const { scriptLoader } = useSelector(
+    (store: RootState) => store.Script
+  );
 
   return (
     <Dialog
@@ -35,15 +57,13 @@ const DeleteScenePopup = ({
       <DialogTitle sx={{ fontWeight: 600, textAlign: "center" }}>
         Confirm Delete
       </DialogTitle>
-      {loader ? (
-        <>
-          <Typography textAlign="center">
-            <FullScreenGradientLoader text="loading" />
-          </Typography>
-        </>
-      ) : (
-        <></>
+
+      {loader && (
+        <Typography textAlign="center">
+          <FullScreenGradientLoader text="loading" />
+        </Typography>
       )}
+
       <DialogContent>
         <Typography
           variant="body1"
@@ -71,6 +91,7 @@ const DeleteScenePopup = ({
         >
           No
         </Button>
+
         <Button
           onClick={() => onConfirm(rowData)}
           variant="contained"

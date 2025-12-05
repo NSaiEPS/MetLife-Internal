@@ -26,7 +26,7 @@ interface SceneData {
 const ScriptPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [columns] = useState<string[]>(["Scene No.", "Script", "OST", "Type"]);
-  const [sceneData, setSceneData] = useState<SceneData>({});
+  const [sceneData, setSceneData] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [makeChanges, setMakeChanges] = useState<boolean>(false);
 
@@ -58,12 +58,12 @@ const ScriptPage: React.FC = () => {
   const getSceneDetails = async () => {
     setLoading(true);
     try {
-      const result = await api.get<SceneData>(`scripts/${id}`);
+      const result = await api.get(`scripts/${id}`);
       if (result?.status === 200 )  {
         setSceneData(result?.data);
       }
     } catch (e: any) {
-      showToast.error(e?.detail || "Something went wrong!");
+        showToast.error(e?.detail);
     } finally {
       setLoading(false);
     }

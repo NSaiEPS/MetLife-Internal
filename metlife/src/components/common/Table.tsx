@@ -31,7 +31,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useLocation , useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
-import deleteIcon from "../../assets/delete.svg";
+import deleteIcon from "../../assets/Group_Delete.svg";
 
 import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
 import DownloadPopup from "./popup/DownloadPopup";
@@ -155,7 +155,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   }, [extraDetails]);
 
   useEffect(() => {
-    if (tableExtraData?.scenes) {
+    if (tableExtraData?.scenes &&tableExtraData.scenes[0].scenes) {
+      settingDataInRows(tableExtraData.scenes[0].scenes);
+    }
+    else{
       settingDataInRows(tableExtraData.scenes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -280,6 +283,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     showToast.success("Updated Successfully!");
   };
 
+ 
   const handleDownloadType = (type : string) => {
     try {
       if (type === "pdf") {
