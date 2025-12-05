@@ -113,6 +113,8 @@ const GenerateScript = () => {
   useEffect(() => {
     if (datasource === "openai") {
       setTopn("");
+    } else if (datasource === "metlife") {
+      setTopn("5");
     }
   }, [datasource]);
 
