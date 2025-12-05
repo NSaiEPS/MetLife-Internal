@@ -9,7 +9,7 @@ import { setRouter } from "./utils/navigate";
 function App() {
   
   setRouter(router);
-  console.log("v1.0.2");
+  console.log("v1.0.3");
   return (
     <>
       {/* <ToastBox /> */}
