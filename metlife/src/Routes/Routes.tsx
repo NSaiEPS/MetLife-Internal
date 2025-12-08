@@ -1,6 +1,6 @@
 // src/router/router.jsx
 import React from "react";
-import type {ReactElement} from "react"
+import type { ReactElement } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // Pages
@@ -21,6 +21,7 @@ import CreateVisualContentPage from "../Pages/VisualContent/CreateVisualContentP
 import GenerateVisualContentPage from "../Pages/VisualContent/GenerateVisualContentPage";
 import AudioAnimationPage from "../Pages/AudioAnimation/AudioAnimationPage";
 import AnimationPage from "../Pages/Animation/AnimationPage";
+import UploadConversationalClipsPage from "../Pages/UploadConversation/UploadConversationClipsPage";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -28,7 +29,10 @@ interface ProtectedRouteProps {
   allowedRoles?: string[];
 }
 
-const ProtectedRoute = ({ element, allowedRoles = [] }: ProtectedRouteProps) => {
+const ProtectedRoute = ({
+  element,
+  allowedRoles = [],
+}: ProtectedRouteProps) => {
   const token = getToken();
   const userType = getLoggedInUserType();
 
@@ -113,6 +117,10 @@ export const router = createBrowserRouter([
       {
         path: "video-upload",
         element: <VideoProgressPage />,
+      },
+      {
+        path: "upload-conversational-clips",
+        element: <UploadConversationalClipsPage />,
       },
       {
         path: "upload-generated-clips",

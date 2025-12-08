@@ -49,6 +49,11 @@ import { postCreateVisualContent } from "../../redux/features/createVisualSlice"
 import { languages } from "../../utils/languageOptions";
 import SinglePromptModal from "./SinglePromptModal";
 import { postSavePrompt } from "../../redux/features/promptSlice";
+import {
+  getExtractCharacters,
+  postExtractCharacters,
+} from "../../redux/features/scriptSlice";
+import { CharacterCarousel } from "./carousel/CharacterCarousel";
 
 export interface SceneRow {
   id: string | number;
@@ -112,8 +117,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData
   );
-  const scriptIdForTranslatedPage = saveTranslatedData?.script_id;
+
+  const { characterData } = useSelector((store) => store.Script);
+
+  // console.log(characterData, "from__Store")
+
   const { pathname } = useLocation();
+  console.log(tableExtraData?.char_image_exist, "chek__datA__");
 
   // Redux Selectors
 
@@ -139,10 +149,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const [showSourceLoader, setShowSourceLoader] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
-
   const [open, setOpen] = useState(false);
-
-  console.log("hii", tableExtraData);
+  const [openCharacterModal, setOpenCharacterModal] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
@@ -162,6 +171,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       setRegenerateDisabled(false);
     }
   }, [saveTranslatedData, saveLoader]);
+
+  useEffect(() => {
+    if (extraDetails?.char_image_exist === true) {
+      dispatch(getExtractCharacters(id));
+    }
+  }, [id, dispatch, extraDetails?.char_image_exist]);
 
   const handleSavePrompt = (prompt: string) => {
     const payload = { prompt };
@@ -283,7 +298,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     try {
       if (type === "pdf") {
         downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
-        
       } else if (type === "word") {
         downloadScriptWord({ ...tableExtraData, scenes: rows });
       }
@@ -488,6 +502,22 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
   console.log("abc", tableExtraData);
+
+  const handleCharacterGenerateImages = () => {
+    if (!tableExtraData?.char_image_exist) {
+      dispatch(postExtractCharacters(id));
+    }
+  };
+
+  const handleOpenCharacterModal = (index = 0) => {
+    setCurrentIndex(index);
+    setOpenCharacterModal(true);
+  };
+
+  const handleCloseCharacterModal = () => {
+    setOpenCharacterModal(false);
+  };
+
   return (
     <>
       <div className={styles1.header}>
@@ -739,6 +769,35 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         >
           {features && (
             <>
+              {extraDetails?.char_image_exist === true && characterData ? (
+                <Button
+                  variant="outlined"
+                  className={styles.largeOutline}
+                  onClick={() => handleOpenCharacterModal()}
+                >
+                  View Image
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  className={styles.largeOutline}
+                  onClick={() => {
+                    handleCharacterGenerateImages();
+                  }}
+                  disabled={saveTranslatedData === null || scriptLoader}
+                >
+                  Character Images
+                </Button>
+              )}
+
+              <CharacterCarousel
+                open={openCharacterModal}
+                onClose={handleCloseCharacterModal}
+                characterData={characterData}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+              />
+
               <ButtonComp
                 label={loader ? "Translating" : "Translate Script"}
                 variant="contained"

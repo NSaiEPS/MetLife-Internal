@@ -1,5 +1,5 @@
-import React, { useEffect, useState,  } from "react";
-import type {ChangeEvent} from "react"
+import React, { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import styles from "./GenerateScript.module.css";
 import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select";
@@ -97,12 +97,32 @@ interface VideoPrompt {
   title: string;
   script: string;
 }
+export type InputType = "prompt" | "image";
 
+export interface CharacterType {
+  name: string;
+  role: string;
+  prompt: string;
+  img: string;
+  inputType: InputType;
+}
+
+// ---------- Empty Character ----------
+const emptyCharacter: CharacterType = {
+  name: "",
+  role: "",
+  prompt: "",
+  img: "",
+  inputType: "prompt",
+};
 // ---------- Component ----------
 const GenerateScript: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
-
+  const [characters, setCharacters] = useState<CharacterType[]>([
+    emptyCharacter,
+  ]);
+  console.log(characters, "characters");
   // States
   const [scriptText, setScriptText] = useState<string>("");
   const [data_filters, setDataFilters] = useState<DataFiltersType>({
@@ -123,7 +143,7 @@ const GenerateScript: React.FC = () => {
   const [videoType, setVideoType] = useState<string | number>("narrator");
   const [audience, setAudience] = useState<string>("");
   const [title, setTitle] = useState<string>("");
- const [language, setLanguage] = useState<string | number>("English");
+  const [language, setLanguage] = useState<string | number>("English");
   const [duration, setDuration] = useState<string | number>("2 minutes");
   const [topn, setTopn] = useState<string | null>("5");
   const [model, setModel] = useState<string | number>("gpt-4o-mini");
@@ -143,11 +163,10 @@ const GenerateScript: React.FC = () => {
     dispatch(getPromptsList());
   }, [dispatch]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (datasource === "openai") {
       setTopn("");
-    }
-    else if(datasource === "metlife"){
+    } else if (datasource === "metlife") {
       setTopn("5");
     }
   }, [datasource]);
@@ -174,17 +193,33 @@ const GenerateScript: React.FC = () => {
 
   const handleGenerate = () => {
     if (!language) showToast.error("Please select Language in Video Filters");
-    else if (!videoType) showToast.error("Please select Video Type in Video Filters");
-    else if (!audience) showToast.error("Please enter Target Audience in Video Filters");
-    else if (!duration) showToast.error("Please select Duration in Video Filters");
+    else if (!videoType)
+      showToast.error("Please select Video Type in Video Filters");
+    else if (!audience)
+      showToast.error("Please enter Target Audience in Video Filters");
+    else if (!duration)
+      showToast.error("Please select Duration in Video Filters");
     else if (!model) showToast.error("Please select Model in Model Filters");
-    else if (!datasource) showToast.error("Please select Data Source in Model Filters");
+    else if (!datasource)
+      showToast.error("Please select Data Source in Model Filters");
     else if (!title) showToast.error("Please give title!");
     else apiCall();
   };
 
+  const buildCharacterPayload = (characters) => {
+    console.log(characters, "check_characters");
+    return {
+      character_names: characters.map((c) => c.name || ""),
+      roles: characters.map((c) => c.role || ""),
+      character_descriptions: characters.map((c) => c.prompt || ""),
+      image_upload: characters.map((_) => false),
+    };
+  };
+  console.log(characters, "characters");
+
   const apiCall = async () => {
     setLoader(true);
+    const characterPayload = buildCharacterPayload(characters);
 
     const new_payload: any = {
       title,
@@ -197,7 +232,10 @@ const GenerateScript: React.FC = () => {
       top_n: Number(topn),
       data_source: datasource,
       filters: data_filters,
+      ...characterPayload,
     };
+
+    console.log(new_payload, "check_payload");
 
     if (datasource === "openai") delete new_payload.top_n;
 
@@ -208,7 +246,9 @@ const GenerateScript: React.FC = () => {
           toast.success("Script generated successfully!");
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
-          toast.error(result?.data?.detail || "Something went wrong while generating!");
+          toast.error(
+            result?.data?.detail || "Something went wrong while generating!"
+          );
         }
       } else {
         showToast.error("Some Issue In Generating");
@@ -222,12 +262,22 @@ const GenerateScript: React.FC = () => {
   };
 
   return (
-       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <OneFrameHeader />
       {loader && <FullScreenGradientLoader />}
       <main className={styles.cardWrap}>
         <div className={styles.card}>
-         <div className={styles.headerRow}> <h1 className={styles.title}>Generate Script</h1> <Button className={styles.icon} onClick={() => navigate("/video-frame")}> <IoArrowBackCircleOutline size={30} /> Back </Button> </div>
+          <div className={styles.headerRow}>
+            {" "}
+            <h1 className={styles.title}>Generate Script</h1>{" "}
+            <Button
+              className={styles.icon}
+              onClick={() => navigate("/video-frame")}
+            >
+              {" "}
+              <IoArrowBackCircleOutline size={30} /> Back{" "}
+            </Button>{" "}
+          </div>
           <div>
             <Input
               label="Title:"
@@ -319,8 +369,11 @@ const GenerateScript: React.FC = () => {
                     />
                   </Grid>
                 </Grid>
-                 {(videoType == "conversational" || videoType == "mixed") && (
-                  <CharacterParent />
+                {(videoType == "conversational" || videoType == "mixed") && (
+                  <CharacterParent
+                    setCharacters={setCharacters}
+                    characters={characters}
+                  />
                 )}
               </AccordionDetails>
             </Accordion>
@@ -441,7 +494,7 @@ const GenerateScript: React.FC = () => {
 
       <SavedPromptsModal
         open={open}
-        onClose={(text : string) => {
+        onClose={(text: string) => {
           setOpen(false);
           setScriptText(text);
         }}

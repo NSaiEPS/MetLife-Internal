@@ -22,10 +22,10 @@ const emptyCharacter: CharacterType = {
   inputType: "prompt",
 };
 
-const CharacterParent: React.FC = () => {
-  const [characters, setCharacters] = useState<CharacterType[]>([
-    emptyCharacter,
-  ]);
+const CharacterParent: React.FC = ({
+  setCharacters,characters
+}) => {
+
 
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showSubmit, setShowSubmit] = useState<boolean>(false);
