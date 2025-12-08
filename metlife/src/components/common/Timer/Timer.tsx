@@ -11,7 +11,6 @@ interface TimerProps {
 }
 
 const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
-  const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
   // Convert time to seconds

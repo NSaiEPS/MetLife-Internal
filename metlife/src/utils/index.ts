@@ -67,9 +67,13 @@ Font.register({ family: "NotoArabic", src: arabic });
 
 // Detect font
 export const detectFont = (text: string = ""): string => {
-  if (/[\u0600-\u06FF]/.test(text)) return "NotoArabic";
-  if (/[\u0900-\u097F]/.test(text)) return "NotoHindiNepali";
-  if (/[\u0980-\u09FF]/.test(text)) return "NotoBangla";
+  // if (/[\u0600-\u06FF]/.test(text)) return "NotoArabic";
+  // if (/[\u0900-\u097F]/.test(text)) return "NotoHindiNepali";
+  // if (/[\u0980-\u09FF]/.test(text)) return "NotoBangla";
+
+  if (text === "Arabic") return "NotoArabic"; // Arabic
+  if (text === "Hindi" || text === "Nepali") return "NotoHindiNepali"; // Hindi, Nepali
+  if (text === "Bangla") return "NotoBangla"; // Bangla
   return "NotoEnglish";
 };
 
@@ -112,17 +116,19 @@ const styles = StyleSheet.create({
 // ==========================
 // PDF DOWNLOAD
 // ==========================
-export const downloadScriptPdf = async (data :any, uploadDownload = false) => {
-  console.log(data,'datadatadata')
+export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
+  console.log(data, "datadatadata");
   const fileName = localStorage.getItem("file_name") || "Script";
-
+  let updatedData = data?.upload_info ? data?.scenes : data;
   const blob = await pdf(
     React.createElement(PdfDocument, { data, uploadDownload })
   ).toBlob();
 
   saveAs(
     blob,
-    data?.source == "file"
+    data?.upload_info
+      ? `${data?.upload_info?.filename}.pdf`
+      : data?.source == "file"
       ? `${data?.filename}.pdf`
       : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`
   );
@@ -131,7 +137,7 @@ export const downloadScriptPdf = async (data :any, uploadDownload = false) => {
 // ==========================
 // WORD DOWNLOAD
 // ==========================
-export const downloadScriptWord = (data : any, uploadDownload = false) => {
+export const downloadScriptWord = (data: any, uploadDownload = false) => {
   const fileName = localStorage.getItem("file_name");
   if (!data) return;
   console.log(data, "data_checK_word");
@@ -198,7 +204,7 @@ export const downloadScriptWord = (data : any, uploadDownload = false) => {
   });
 
   // ✅ Table Body Rows
-  const tableRows = scenes.map((scene: any, index : number) => {
+  const tableRows = scenes.map((scene: any, index: number) => {
     // const sceneNumber = scene["Scene No."] ?? index + 1;
     const sceneNumber = String(scene["Scene No."] ?? index + 1);
 
@@ -286,13 +292,14 @@ export const downloadScriptWord = (data : any, uploadDownload = false) => {
   Packer.toBlob(doc).then((blob) => {
     saveAs(
       blob,
-      data?.source == "file"
+      data?.upload_info
+        ? `${data?.upload_info?.filename}.docx`
+        : data?.source == "file"
         ? `${data?.filename}.docx`
         : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`
     );
   });
 };
-
 
 export const getToken = (): string | undefined => {
   const data = JSON.parse(localStorage.getItem("authDetails") || "null");
@@ -342,6 +349,19 @@ export const formatRelativeTime = (
   if (!date) return "-";
   return dayjs.utc(date).tz("Asia/Kolkata").format(format);
 };
+
+// export const convertToISTParts = (isoString: string): number => {
+//   if (!isoString) return 0;
+//   const backendDate = new Date(isoString);
+//   const now = new Date();
+
+//   const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+
+//   const backendIST = new Date(backendDate.getTime() + IST_OFFSET);
+//   const nowIST = new Date(now.getTime());
+
+//   return Math.floor((backendIST.getTime() - nowIST.getTime()) / 1000) + 60;
+// };
 
 export const convertToISTParts = (isoString: string): number => {
   if (!isoString) return 0;

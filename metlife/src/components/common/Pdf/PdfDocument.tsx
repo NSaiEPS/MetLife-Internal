@@ -10,7 +10,6 @@ import {
 
 import type { DocumentProps } from "@react-pdf/renderer";
 
-
 import regular from "../../../assets/NotoSans-Regular.ttf";
 import arabic from "../../../assets/NotoSansArabic-Regular.ttf";
 import devnagri from "../../../assets/NotoSansDevanagari-Regular.ttf";
@@ -40,7 +39,6 @@ interface PdfDocumentProps extends DocumentProps {
   uploadDownload?: boolean;
 }
 
-
 // ---------- Register Fonts ----------
 Font.register({ family: "NotoEnglish", src: regular });
 Font.register({ family: "NotoHindiNepali", src: devnagri });
@@ -49,9 +47,12 @@ Font.register({ family: "NotoArabic", src: arabic });
 
 // Detect font based on character language
 const detectFont = (text = ""): string => {
-  if (/[\u0600-\u06FF]/.test(text)) return "NotoArabic";
-  if (/[\u0900-\u097F]/.test(text)) return "NotoHindiNepali";
-  if (/[\u0980-\u09FF]/.test(text)) return "NotoBangla";
+  // if (/[\u0600-\u06FF]/.test(text)) return "NotoArabic";
+  // if (/[\u0900-\u097F]/.test(text)) return "NotoHindiNepali";
+  // if (/[\u0980-\u09FF]/.test(text)) return "NotoBangla";
+  if (text === "Arabic") return "NotoArabic"; // Arabic
+  if (text === "Hindi" || text === "Nepali") return "NotoHindiNepali"; // Hindi, Nepali
+  if (text === "Bangla") return "NotoBangla"; // Bangla
   return "NotoEnglish";
 };
 
@@ -61,14 +62,14 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ data, uploadDownload }) => {
     page: { padding: 25, backgroundColor: "#fff" },
     title: { fontSize: 22, marginBottom: 10, fontWeight: "bold" },
     infoText: { fontSize: 14, marginBottom: 4 },
-  table: {
-  display: "flex",
-  flexDirection: "column",
-  width: "100%",
-  borderWidth: 1,
-  borderColor: "#ccc",
-  marginTop: 20,
-},
+    table: {
+      display: "flex",
+      flexDirection: "column",
+      width: "100%",
+      borderWidth: 1,
+      borderColor: "#ccc",
+      marginTop: 20,
+    },
 
     row: {
       flexDirection: "row",
@@ -115,6 +116,8 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ data, uploadDownload }) => {
 
         <Text
           style={[styles.infoText, { fontFamily: detectFont(data.logline) }]}
+          // style={[styles.infoText, { fontFamily: detectFont(data.language) }]}
+
         >
           Logline: {data.logline ?? data.language}
         </Text>
@@ -138,7 +141,9 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ data, uploadDownload }) => {
               <Text
                 style={[
                   styles.cell,
-                  { flex: 5, fontFamily: detectFont(row.script) },
+                  // { flex: 5, fontFamily: detectFont(row.script) },
+                  { flex: 5, fontFamily: detectFont(data.language) },
+
                 ]}
               >
                 {row.script}
@@ -147,7 +152,9 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ data, uploadDownload }) => {
               <Text
                 style={[
                   styles.cell,
-                  { flex: 2, fontFamily: detectFont(row.ost) },
+                  // { flex: 2, fontFamily: detectFont(row.ost) },
+                  { flex: 2, fontFamily: detectFont(data.language) },
+
                 ]}
               >
                 {row.ost}
@@ -156,7 +163,9 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ data, uploadDownload }) => {
               <Text
                 style={[
                   styles.lastCell,
-                  { flex: 2, fontFamily: detectFont(row.type) },
+                  { flex: 2, fontFamily: detectFont(data.language) },
+                  // { flex: 2, fontFamily: detectFont(row.type) },
+
                 ]}
               >
                 {row.type}

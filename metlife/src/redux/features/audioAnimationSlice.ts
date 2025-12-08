@@ -1,5 +1,5 @@
-import { createSlice,  } from "@reduxjs/toolkit";
-import type{PayloadAction} from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import { navigateTo } from "../../utils/navigate";
@@ -82,10 +82,7 @@ const AudioAnimationSlice = createSlice({
     ) => {
       state.animationLabels = action.payload as any;
     },
-    setVideoAnimationData: (
-      state,
-      action: PayloadAction<any[] | null>
-    ) => {
+    setVideoAnimationData: (state, action: PayloadAction<any[] | null>) => {
       state.videoAnimationData = action.payload;
     },
     setGeneratedVideoData: (
@@ -215,7 +212,10 @@ export const postGenerateVideoBatch =
   (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
     dispatch(setVideoAnimationLoader(true));
     try {
-      const res: ApiResponse = await api.post("media/generate-video-batch", data);
+      const res: ApiResponse = await api.post(
+        "media/generate-video-batch",
+        data
+      );
       if (res.status) {
         dispatch(setVideoAnimationData(res.data));
         const seconds = convertToISTParts(res.data.estimated_completion_at);
@@ -228,21 +228,20 @@ export const postGenerateVideoBatch =
     }
   };
 
-export const getVideosList =
-  (id: string) => async (dispatch: AppDispatch) => {
-    dispatch(setVideoAnimationLoader(true));
-    try {
-      const res: ApiResponse = await api.get(`media/${id}`);
-      if (res.status) {
-        dispatch(setVideoAnimationData(res.data?.results || []));
-        dispatch(setGeneratedVideoData(res.data?.final_video || null));
-      }
-    } catch {
-      toast.error("Failed to fetch videos list!");
-    } finally {
-      dispatch(setVideoAnimationLoader(false));
+export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
+  dispatch(setVideoAnimationLoader(true));
+  try {
+    const res: ApiResponse = await api.get(`media/${id}`);
+    if (res.status) {
+      dispatch(setVideoAnimationData(res.data?.results || []));
+      dispatch(setGeneratedVideoData(res.data?.final_video || null));
     }
-  };
+  } catch {
+    toast.error("Failed to fetch videos list!");
+  } finally {
+    dispatch(setVideoAnimationLoader(false));
+  }
+};
 
 export const postGenerateFullVideo =
   (id: string) => async (dispatch: AppDispatch) => {
@@ -263,6 +262,7 @@ export const postGenerateFullVideo =
 
 export const getSceneDetails =
   (id: string) => async (dispatch: AppDispatch) => {
+    dispatch(setVideoAnimationLoader(true));
     try {
       const res: ApiResponse = await api.get(`scripts/${id}`);
       if (res.status) {
@@ -270,5 +270,7 @@ export const getSceneDetails =
       }
     } catch (error: any) {
       toast.error(error?.detail || "Failed to fetch scene details!");
+    } finally {
+      dispatch(setVideoAnimationLoader(false));
     }
   };

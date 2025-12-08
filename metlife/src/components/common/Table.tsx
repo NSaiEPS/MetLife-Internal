@@ -283,6 +283,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     try {
       if (type === "pdf") {
         downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
+        
       } else if (type === "word") {
         downloadScriptWord({ ...tableExtraData, scenes: rows });
       }
