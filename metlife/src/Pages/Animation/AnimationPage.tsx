@@ -82,12 +82,10 @@ const AnimationPage: React.FC = () => {
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
-
-  // const waitingTime = convertToISTParts(
-  //   videoAnimationData?.[0]?.final_video?.url ? "" : ""
-  // );
-   const waitingTime = convertToISTParts(
-    videoAnimationData?.estimated_completion_at
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(0);
+  const waitingTime = convertToISTParts(
+    videoAnimationData?.estimated_completion_at ||
+      sceneData?.estimated_completion_at
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
@@ -289,12 +287,14 @@ const AnimationPage: React.FC = () => {
                   </Grid>
                   {/* Available videos */}
                   {!timerDone && finalTime > 0 && (
+                    // {/* { finalTime > 0 && ( */}
                     <Timer
                       time={finalTime}
                       // minutes={finalTime}
                       onComplete={() => setTimerDone(true)}
                     />
                   )}
+
                   {
                     videoAnimationData?.length > 0 &&
                       sceneData?.video_exists === true && (
