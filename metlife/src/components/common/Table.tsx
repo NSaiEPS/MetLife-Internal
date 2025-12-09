@@ -101,15 +101,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [openPopUp, setOpenPopup] = useState<boolean>(false);
   const [popUpData, setPopUpdata] = useState<any>(null);
   const [popupTitle, setPopupTitle] = useState("Add New Script");
-
   const [loaderText, setLoaderText] = useState("");
   const [loader, setLoader] = useState(false);
-
   const [selectedLang, setSelectedLang] = useState<string>("");
   const [showSourceData, setShowSourceData] = useState<any[]>([]);
   const [sceneData, setSceneData] = useState<any>({});
-
-  // typed dispatch
   const dispatch = useDispatch<any>();
   const params = useParams<{ id?: string }>();
   const id: any = params?.id;
@@ -117,41 +113,28 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData
   );
-
   const { characterData } = useSelector((store) => store.Script);
-
-  // console.log(characterData, "from__Store")
-
   const { pathname } = useLocation();
-  console.log(tableExtraData?.char_image_exist, "chek__datA__");
-
-  // Redux Selectors
-
-  console.log("saveTranslatedData", saveTranslatedData);
-
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent
   );
-
   const { scriptLoader } = useSelector((store: RootState) => store.Script);
-
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const [openShowPopup, setOpenShowPopup] = useState(false);
   const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
-
   const [selectedScene, setSelectedScene] = useState<SceneRow | null>(null);
   const [regenerateDisabled, setRegenerateDisabled] = useState(false);
   const [operations, setOperations] = useState(false);
-
   const [openSavePrompt, setOpenSavePrompt] = useState(false);
   const latestPrompt = tableExtraData?.latest_prompt;
-
   const [showSourceLoader, setShowSourceLoader] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
   const [open, setOpen] = useState(false);
   const [openCharacterModal, setOpenCharacterModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [charImageExist, setCharImageExist] = useState(extraDetails?.char_image_exist);
+
 
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
@@ -340,23 +323,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setOpenPopup(false);
   };
 
-  // const handleShowSource = async () => {
-  //   setOpenShowPopup(true);
-  //   setShowSourceLoader(true);
-
-  //   try {
-  //     const response = await fetch(`${BASE_URL}show-source/${id}`);
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setShowSourceData(data);
-  //     }
-  //   } catch {
-  //     toast.error("Something went wrong!");
-  //   } finally {
-  //     setShowSourceLoader(false);
-  //   }
-  // };
-
   const handleShowSource = async () => {
     setOpenShowPopup(true);
     setShowSourceLoader(true);
@@ -501,11 +467,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       setLoader(false);
     }
   };
-  console.log("abc", tableExtraData);
 
   const handleCharacterGenerateImages = () => {
     if (!tableExtraData?.char_image_exist) {
-      dispatch(postExtractCharacters(id));
+      dispatch(postExtractCharacters(id, () => {
+         setCharImageExist(true); 
+      }));
     }
   };
 
@@ -637,7 +604,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       )}
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
       {loader && <FullScreenGradientLoader text={loaderText} />}
-      {scriptLoader && <FullScreenGradientLoader text="Deleting..." />}
+      {scriptLoader && <FullScreenGradientLoader text="Loading..." />}
 
       {/* ---------------- TABLE ---------------- */}
       <TableContainer component={Paper} className={styles.tablePaper}>
@@ -769,7 +736,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         >
           {features && (
             <>
-              {extraDetails?.char_image_exist === true && characterData ? (
+              {charImageExist ? (
                 <Button
                   variant="outlined"
                   className={styles.largeOutline}

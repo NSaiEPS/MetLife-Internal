@@ -1,4 +1,4 @@
-import { createSlice  } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
@@ -75,19 +75,20 @@ export const postGenerateVisualContentImage =
     }
   };
 
-export const getGenerateVisualContentImage = (id: any) => async (dispatch: any) => {
-  dispatch(setGenerateVisualLoader(true));
-  try {
-    const response = await api.get(`images/${id}`);
-    if (response?.status) {
-      dispatch(setGenerateVisualContentData(response?.data));
+export const getGenerateVisualContentImage =
+  (id: any) => async (dispatch: any) => {
+    dispatch(setGenerateVisualLoader(true));
+    try {
+      const response = await api.get(`images/${id}`);
+      if (response?.status) {
+        dispatch(setGenerateVisualContentData(response?.data));
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dispatch(setGenerateVisualLoader(false));
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    dispatch(setGenerateVisualLoader(false));
-  }
-};
+  };
 
 export const postImageUpload =
   (data: any, onClose: CallbackFn) => async (dispatch: any) => {
@@ -111,7 +112,9 @@ export const postEditGenerateVisualContent =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/edit-visual", data);
-      toast.success(response?.data?.message || "Description updated successfully");
+      toast.success(
+        response?.data?.message || "Description updated successfully"
+      );
       onClose(false);
     } catch (error: any) {
       console.error(error);
@@ -141,7 +144,9 @@ export const postRegenerateImage =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/regenerate-visual", data);
-      toast.success(response?.data?.message || "Prompt regenerated successfully");
+      toast.success(
+        response?.data?.message || "Prompt regenerated successfully"
+      );
       dispatch(updateGenerateVisual({ visuals: response?.data?.visuals }));
       onCloseTempData(false);
     } catch (error) {
@@ -151,3 +156,51 @@ export const postRegenerateImage =
       dispatch(setGenerateVisualLoader(false));
     }
   };
+
+
+export const getDownloadAsset = (id: any, title) => async (dispatch: any) => {
+  dispatch(setGenerateVisualLoader(true));
+  try {
+    const response = await api.get(`download/${id}`, {
+      responseType: "blob",
+    });
+
+    let fileName = title;
+
+    // Try multiple header patterns
+    const disposition = response.headers["content-disposition"];
+
+    if (disposition) {
+      // filename="abc.zip"
+      const fileNameMatch = disposition.match(/filename="(.+?)"/);
+      if (fileNameMatch) {
+        fileName = fileNameMatch[1];
+      }
+
+      // filename=abc.zip
+      const simpleFileName = disposition.match(/filename=(.+)/);
+      if (!fileNameMatch && simpleFileName) {
+        fileName = simpleFileName[1];
+      }
+
+      // RFC 5987 format → filename*=UTF-8''abc.zip
+      const utfMatch = disposition.match(/filename\*\=UTF-8''(.+)/);
+      if (utfMatch) {
+        fileName = decodeURIComponent(utfMatch[1]);
+      }
+    }
+
+    const blobUrl = window.URL.createObjectURL(response.data);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = title;
+    a.click();
+
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("Download error:", error);
+  } finally {
+    dispatch(setGenerateVisualLoader(false));
+  }
+};

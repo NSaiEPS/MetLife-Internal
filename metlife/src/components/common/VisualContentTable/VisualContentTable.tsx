@@ -77,6 +77,7 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
   actions = [],
   updateImagesInRow,
   updatePromptInRow,
+  conversational,
 }) => {
   const { generateVisualContentData, generateVisualLoader } = useSelector(
     (store: any) => store.GenerateVisualContent
@@ -202,7 +203,7 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
 
   return (
     <>
-      {generateVisualLoader && <FullScreenGradientLoader text="loading..." />}
+      {generateVisualLoader && <FullScreenGradientLoader text={conversational ? "Downloading..." : "loading..."} />}
       {audioAnimationLoader && <FullScreenGradientLoader text="extracting..." />}
 
       <TableContainer className={styles.tablePaper}>

@@ -1,4 +1,4 @@
-import   Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid";
 import React, { useEffect } from "react";
 import {
   Box,
@@ -22,7 +22,7 @@ import type { AppDispatch, RootState } from "../../redux/store";
 import { getDashboardInfo } from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-
+import OneFrameHeader from "../../components/common/OneFrameHeader";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -54,7 +54,7 @@ const MyVideosDashboard: React.FC = () => {
     (store: RootState) => store.DashBoard
   );
 
-    const completed_result = dashBoardInfo.filter((item) => {
+  const completed_result = dashBoardInfo.filter((item) => {
     if (item.videos) {
       return item;
     }
@@ -72,13 +72,13 @@ const MyVideosDashboard: React.FC = () => {
     }
   });
 
-   const inprogress_script = dashBoardInfo.filter((item) => {
+  const inprogress_script = dashBoardInfo.filter((item) => {
     if (!item.visuals && !item.videos && !item.audio) {
       return item;
     }
   });
 
-   const total_progress =
+  const total_progress =
     inprogress_video?.length +
     inprogress_visuals?.length +
     inprogress_script?.length;
@@ -93,14 +93,14 @@ const MyVideosDashboard: React.FC = () => {
     },
     {
       title: "In Progress",
-       value: completed_result?.length,
+      value: completed_result?.length,
       color: "#E8F5E9",
       icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
     },
     {
       title: "Completed Scripts",
       value: total_progress,
-         color: "#FFEBEE",
+      color: "#FFEBEE",
       icon: <PlayCircle fontSize="large" color="error" />,
     },
     {
@@ -124,25 +124,39 @@ const MyVideosDashboard: React.FC = () => {
 
     if (status.audio && !status.videos)
       return (
-        <Chip label="Audio Progress" sx={{ bgcolor: "#2196F3", color: "#fff" }} />
+        <Chip
+          label="Audio Progress"
+          sx={{ bgcolor: "#2196F3", color: "#fff" }}
+        />
       );
 
     if (status.visuals)
       return (
-        <Chip label="Visuals Progress" sx={{ bgcolor: "#9C27B0", color: "#fff" }} />
+        <Chip
+          label="Visuals Progress"
+          sx={{ bgcolor: "#9C27B0", color: "#fff" }}
+        />
       );
 
     if (status.script_id)
       return (
-        <Chip label="Script Completed" sx={{ bgcolor: "#FF9800", color: "#fff" }} />
+        <Chip
+          label="Script Completed"
+          sx={{ bgcolor: "#FF9800", color: "#fff" }}
+        />
       );
 
     if (status.prompt_batch_id)
       return (
-        <Chip label="Visuals Progress" sx={{ bgcolor: "#009688", color: "#fff" }} />
+        <Chip
+          label="Visuals Progress"
+          sx={{ bgcolor: "#009688", color: "#fff" }}
+        />
       );
 
-    return <Chip label="In Progress" sx={{ bgcolor: "#9E9E9E", color: "#fff" }} />;
+    return (
+      <Chip label="In Progress" sx={{ bgcolor: "#9E9E9E", color: "#fff" }} />
+    );
   };
 
   const handleClick = () => {
@@ -176,6 +190,7 @@ const MyVideosDashboard: React.FC = () => {
 
   return (
     <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
+      <OneFrameHeader />
       {dashboardLoader && <FullScreenGradientLoader text="Loading..." />}
 
       <Box sx={{ p: 4 }}>
@@ -199,7 +214,7 @@ const MyVideosDashboard: React.FC = () => {
           </Typography>
 
           <Grid
-          container
+            container
             spacing={3}
             sx={{
               width: "100%",
@@ -210,10 +225,9 @@ const MyVideosDashboard: React.FC = () => {
               "&::-webkit-scrollbar": { display: "none" },
             }}
           >
-            
             {stats.map((s, idx) => (
               <Grid
-               item
+                item
                 xs={12}
                 sm={6}
                 md={3}
@@ -297,7 +311,7 @@ const MyVideosDashboard: React.FC = () => {
             </TableHead>
 
             <TableBody>
-              {dashBoardInfo.map((video : any, i : number) => (
+              {dashBoardInfo.map((video: any, i: number) => (
                 <TableRow key={i}>
                   <TableCell>
                     <Avatar
@@ -306,11 +320,10 @@ const MyVideosDashboard: React.FC = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell>
-                        <TableCell>{`${
+                  <TableCell>{`${
                     video.language === null
                       ? ""
                       : video.language.slice(0, 2) + "_"
-
                   }${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
@@ -329,6 +342,3 @@ const MyVideosDashboard: React.FC = () => {
 };
 
 export default MyVideosDashboard;
-
-
-

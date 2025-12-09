@@ -53,15 +53,29 @@ export const postTranslatedDataSave =
     dispatch(setSaveLoader(true));
     try {
       const response = await api.post("mongo/write", data);
-
       if (response?.status) {
         dispatch(setSaveTranslatedData(response.data));
-
         if (successfully) {
           successfully(response.data?.script_id);
         }
-
         toast.success("Data Saved Successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    } finally {
+      dispatch(setSaveLoader(false));
+    }
+  };
+
+  export const postEditSceneForScript =
+  (data) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setSaveLoader(true));
+    try {
+      const response = await api.post("mongo/edit", data);
+      if (response?.status) {
+        // dispatch(setSaveTranslatedData(response.data));
       }
     } catch (error) {
       console.error(error);

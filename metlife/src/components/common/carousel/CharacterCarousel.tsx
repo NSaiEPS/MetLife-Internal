@@ -1,5 +1,6 @@
-import React from "react";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import React, { useState } from "react";
+import { Modal, Box, Typography, Button, Skeleton, IconButton } from "@mui/material";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 export const CharacterCarousel = ({
   open,
@@ -8,7 +9,9 @@ export const CharacterCarousel = ({
   currentIndex,
   setCurrentIndex,
 }) => {
+  const [imgLoaded, setImgLoaded] = useState(false);
   if (!characterData || characterData.length === 0) return null;
+  const current = characterData[currentIndex];
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -16,7 +19,8 @@ export const CharacterCarousel = ({
         sx={{
           width: "80%",
           maxWidth: 600,
-          height: "80%",
+          // height: "60%",
+          maxHeight: "60vh",
           margin: "auto",
           marginTop: "5%",
           background: "white",
@@ -27,30 +31,67 @@ export const CharacterCarousel = ({
           flexDirection: "column",
           alignItems: "center",
           gap: 2,
+          position: "relative",
         }}
       >
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            color:'#000',
+            background: "#e0e0e0",
+            "&:hover": { background: "#e0e0e0" },
+          }}
+        >
+          <IoCloseCircleOutline />
+        </IconButton>
+        {!imgLoaded && (
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={350}
+            animation="wave"
+            sx={{ borderRadius: "10px" }}
+          />
+        )}
         {/* IMAGE */}
         <img
-          src={characterData[currentIndex]?.image_url}
+          // src={characterData[currentIndex]?.image_url}
+          src={current?.image_url}
+          onLoad={() => setImgLoaded(true)}
           alt="character"
           style={{
             width: "100%",
             height: "auto",
+            // maxHeight: "60vh",
+            height: imgLoaded ? "auto" : 0,
             borderRadius: "10px",
             objectFit: "contain",
+            transition: "opacity 0.3s ease",
+            opacity: imgLoaded ? 1 : 0,
           }}
         />
 
         {/* NAME */}
-        <Typography variant="h6">
+        <Typography
+          variant="h6"
+          sx={{ textTransform: "capitalize", textAlign: "center" }}
+        >
           {characterData[currentIndex]?.character_name}
-           {/* DESCRIPTION */}
-        <Typography sx={{ color: "gray", fontSize: "14px" }}>
-          {characterData[currentIndex]?.description}
+          {/* DESCRIPTION */}
+          <Typography
+            sx={{
+              color: "gray",
+              fontSize: "14px",
+              textTransform: "lowercase",
+              textAlign: "center",
+            }}
+          >
+            {characterData[currentIndex]?.description}
+          </Typography>
         </Typography>
-        </Typography>
-
-       
 
         {/* BUTTON CONTROLS */}
         <Box
@@ -64,7 +105,11 @@ export const CharacterCarousel = ({
           <Button
             variant="contained"
             disabled={currentIndex === 0}
-            onClick={() => setCurrentIndex((i) => i - 1)}
+            // onClick={() => setCurrentIndex((i) => i - 1)}
+            onClick={() => {
+              setImgLoaded(false);
+              setCurrentIndex((i) => i - 1);
+            }}
           >
             Previous
           </Button>
@@ -72,7 +117,11 @@ export const CharacterCarousel = ({
           <Button
             variant="contained"
             disabled={currentIndex === characterData.length - 1}
-            onClick={() => setCurrentIndex((i) => i + 1)}
+            // onClick={() => setCurrentIndex((i) => i + 1)}
+            onClick={() => {
+              setImgLoaded(false);
+              setCurrentIndex((i) => i + 1);
+            }}
           >
             Next
           </Button>

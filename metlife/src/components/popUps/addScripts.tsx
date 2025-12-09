@@ -59,6 +59,12 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   }, [fieldData, open]);
 
   const handleSave = () => {
+    console.log(script, ost, "check__both")
+    const payload = {
+      script,
+      ost,
+
+    }
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };

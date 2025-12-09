@@ -1,4 +1,4 @@
-import { Box, Button , Tooltip} from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import styles from "./generateVisualContent.module.css";
@@ -14,7 +14,7 @@ import RegenerateImagePopup from "../../components/common/popup/RegenerateImageP
 import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useDispatch, useSelector } from "react-redux";
-import { getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
+import { getDownloadAsset, getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
@@ -60,8 +60,7 @@ const GenerateVisualContentPage: React.FC = () => {
   const [rows, setRows] = useState<VisualRow[]>([]);
   const [popup, setPopup] = useState<PopupState>({ type: null, data: null });
 
-  const dummyImage =
-    "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
+  const dummyImage = "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
 
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
@@ -70,6 +69,8 @@ const GenerateVisualContentPage: React.FC = () => {
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store: RootState) => store.GenerateVisualContent
   );
+  const conversational =
+    generateVisualContentData?.video_style === "conversational";
 
   const { audioAnimationLoader } = useSelector(
     (store: RootState) => store.AudioAnimation
@@ -128,7 +129,15 @@ const GenerateVisualContentPage: React.FC = () => {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <rect x="3" y="5" width="18" height="14" rx="2" ry="2" fill="#bdbdbd" />
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                  ry="2"
+                  fill="#bdbdbd"
+                />
                 <polygon points="10,9 16,12 10,15" fill="#757575" />
               </svg>
             </div>
@@ -139,7 +148,12 @@ const GenerateVisualContentPage: React.FC = () => {
               onError={(e) => {
                 (e.target as HTMLImageElement).src = dummyImage;
               }}
-              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 5 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 5,
+              }}
             />
           )}
         </div>
@@ -147,13 +161,17 @@ const GenerateVisualContentPage: React.FC = () => {
     },
   ];
 
-    const handleImageUpload = (data: VisualRow) => setPopup({ type: "upload", data });
-  const handleVideoUpload = (data: VisualRow) => setPopup({ type: "video_upload", data });
-  const handleVisualEdit = (data: VisualRow) => setPopup({ type: "edit", data });
-  const handleImageRegenerate = (data: VisualRow) => setPopup({ type: "regenerate", data });
+  const handleImageUpload = (data: VisualRow) =>
+    setPopup({ type: "upload", data });
+  const handleVideoUpload = (data: VisualRow) =>
+    setPopup({ type: "video_upload", data });
+  const handleVisualEdit = (data: VisualRow) =>
+    setPopup({ type: "edit", data });
+  const handleImageRegenerate = (data: VisualRow) =>
+    setPopup({ type: "regenerate", data });
   const closePopup = () => setPopup({ type: null, data: null });
 
- const actions = [
+  const actions = [
     {
       icon: (
         <Tooltip title="Edit" placement="top" arrow>
@@ -162,7 +180,7 @@ const GenerateVisualContentPage: React.FC = () => {
           </span>
         </Tooltip>
       ),
-      onClick: (row : any) => {
+      onClick: (row: any) => {
         handleVisualEdit(row);
       },
     },
@@ -174,7 +192,7 @@ const GenerateVisualContentPage: React.FC = () => {
           </span>
         </Tooltip>
       ),
-      onClick: (row :any) => {
+      onClick: (row: any) => {
         handleImageRegenerate(row);
       },
     },
@@ -186,7 +204,7 @@ const GenerateVisualContentPage: React.FC = () => {
           </span>
         </Tooltip>
       ),
-      onClick: (row : any) => {
+      onClick: (row: any) => {
         console.log(row, "check_row");
         if (row.Visual_Type === "image") {
           handleImageUpload(row);
@@ -210,11 +228,17 @@ const GenerateVisualContentPage: React.FC = () => {
   // ---------- Handlers ----------
   const settingDataInRows = (data: any[]) => {
     const newData: VisualRow[] = data.map((item, index) => {
-      const firstImageUrl = item?.images?.[0]?.url || item?.images || item?.image_url || item?.url || "";
+      const firstImageUrl =
+        item?.images?.[0]?.url ||
+        item?.images ||
+        item?.image_url ||
+        item?.url ||
+        "";
       const videoPreviewUrl = item?.videos?.[0]?.url;
       return {
         "Scene_No.": index + 1,
-        Visual_Type: item?.visual_type === "clip" ? "Footage" : item?.visual_type,
+        Visual_Type:
+          item?.visual_type === "clip" ? "Footage" : item?.visual_type,
         Visual_Description: item?.description,
         Visual_Image:
           item?.images?.length > 0
@@ -225,88 +249,116 @@ const GenerateVisualContentPage: React.FC = () => {
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
         new_prompt: item?.prompt,
-        image_uploaded_urls: item?.images?.length > 0 ? item.images : [{ url: firstImageUrl }],
-        video_uploaded_urls: item?.videos?.length > 0 ? item.videos : [{ url: videoPreviewUrl }],
+        image_uploaded_urls:
+          item?.images?.length > 0 ? item.images : [{ url: firstImageUrl }],
+        video_uploaded_urls:
+          item?.videos?.length > 0 ? item.videos : [{ url: videoPreviewUrl }],
       };
     });
     setRows(newData);
   };
 
-
-
-  const handleImageUpdate = ({ fieldData, new_images }: { fieldData: VisualRow; new_images: { url: string }[] }) => {
+  const handleImageUpdate = ({
+    fieldData,
+    new_images,
+  }: {
+    fieldData: VisualRow;
+    new_images: { url: string }[];
+  }) => {
     setRows((prev) =>
       prev.map((item) =>
         item.scene_id === fieldData.scene_id
-          ? { ...item, Visual_Image: new_images?.[new_images.length - 1]?.url || item.Visual_Image }
+          ? {
+              ...item,
+              Visual_Image:
+                new_images?.[new_images.length - 1]?.url || item.Visual_Image,
+            }
           : item
       )
     );
   };
 
-  const handleUpdate = (data: { fieldData: VisualRow; new_prompt?: string }) => {
+  const handleUpdate = (data: {
+    fieldData: VisualRow;
+    new_prompt?: string;
+  }) => {
     setRows((prev) =>
       prev.map((item) =>
         item.scene_id === data.fieldData.scene_id
-          ? { ...item, Visual_Description: data.new_prompt || item.Visual_Description }
+          ? {
+              ...item,
+              Visual_Description: data.new_prompt || item.Visual_Description,
+            }
           : item
       )
     );
   };
 
   const updateImagesInRow = (
-  sceneId: string | number,
-  newFiles: { url: string }[],
-  type: "image" | "video"
-) => {
-  setRows((prev) =>
-    prev.map((row) =>
-      row.scene_id === sceneId
-        ? type === "image"
-          ? {
-              ...row,
-              image_uploaded_urls: newFiles,
-              Visual_Image: newFiles[newFiles.length - 1]?.url || "",
-            }
-          : {
-              ...row,
-              video_uploaded_urls: newFiles,
-              Visual_Image: newFiles[newFiles.length - 1]?.url || "",
-            }
-        : row
-    )
-  );
-};
+    sceneId: string | number,
+    newFiles: { url: string }[],
+    type: "image" | "video"
+  ) => {
+    setRows((prev) =>
+      prev.map((row) =>
+        row.scene_id === sceneId
+          ? type === "image"
+            ? {
+                ...row,
+                image_uploaded_urls: newFiles,
+                Visual_Image: newFiles[newFiles.length - 1]?.url || "",
+              }
+            : {
+                ...row,
+                video_uploaded_urls: newFiles,
+                Visual_Image: newFiles[newFiles.length - 1]?.url || "",
+              }
+          : row
+      )
+    );
+  };
 
-
- const updatePromptInRow = (data: { scene_id: string | number; new_prompt: string }) => {
-  setRows((prev) =>
-    prev.map((row) =>
-      row.scene_id === data.scene_id
-        ? { ...row, new_prompt: data.new_prompt }
-        : row
-    )
-  );
-};
-
+  const updatePromptInRow = (data: {
+    scene_id: string | number;
+    new_prompt: string;
+  }) => {
+    setRows((prev) =>
+      prev.map((row) =>
+        row.scene_id === data.scene_id
+          ? { ...row, new_prompt: data.new_prompt }
+          : row
+      )
+    );
+  };
 
   const handleAudioAndAnimation = () => {
     if (!id) return;
     dispatch(postAudioAnimationData({ script_id: id }));
   };
 
+  const handleDownloadAssets = () => {
+    dispatch(getDownloadAsset(id, title));
+  }
+
   // ---------- Render ----------
   return (
     <div className={styles.container}>
       <OneFrameHeader />
-
       <div className={styles.tableContainer}>
-        { generateVisualContentData?.visuals?.length &&generateVisualContentData?.visuals?.length > 0 ? (
+        {generateVisualContentData?.visuals?.length &&
+        generateVisualContentData?.visuals?.length > 0 ? (
           <>
             <div className={styles.innerContainer}>
               <div className={styles.header}>
-                <h2 className={styles.title}>{generateVisualContentData?.title || "Visual Content"}</h2>
-                <Button className={styles.icon} onClick={() => navigate(`/create-visual-content/${prompt_batch_id}`)}>
+                <h2 className={styles.title}>
+                  {generateVisualContentData?.title || "Visual Content"}
+                </h2>
+                <Button
+                  className={styles.icon}
+                  onClick={() =>
+                    navigate(`/create-visual-content/${prompt_batch_id}`)
+                  }
+                >
                   <IoArrowBackCircleOutline size={30} /> Back
                 </Button>
               </div>
@@ -318,6 +370,7 @@ const GenerateVisualContentPage: React.FC = () => {
               actions={actions}
               updateImagesInRow={updateImagesInRow}
               updatePromptInRow={updatePromptInRow}
+              conversational={conversational}
             />
 
             {popup.type === "upload" && (
@@ -333,7 +386,14 @@ const GenerateVisualContentPage: React.FC = () => {
             )}
 
             {popup.type === "video_upload" && (
-              <VideoUploadPopup open onClose={closePopup} fieldData={popup.data} script_id={id!} prompt_batch_id={prompt_batch_id} title={title} />
+              <VideoUploadPopup
+                open
+                onClose={closePopup}
+                fieldData={popup.data}
+                script_id={id!}
+                prompt_batch_id={prompt_batch_id}
+                title={title}
+              />
             )}
 
             {popup.type === "edit" && (
@@ -348,13 +408,33 @@ const GenerateVisualContentPage: React.FC = () => {
             )}
 
             {popup.type === "regenerate" && (
-              <RegenerateImagePopup open onClose={closePopup} fieldData={popup.data} prompt_batch_id={prompt_batch_id} />
+              <RegenerateImagePopup
+                open
+                onClose={closePopup}
+                fieldData={popup.data}
+                prompt_batch_id={prompt_batch_id}
+              />
             )}
-
             <div className={styles.footerButtons}>
-              <Button variant="contained" className={styles.primaryBtn} onClick={handleAudioAndAnimation}>
-                Audio & Animation Toolkit
-              </Button>
+              {conversational ? (
+                <Button
+                  variant="contained"
+                  className={styles.primaryBtn}
+                  onClick={handleDownloadAssets}
+                  disabled={generateVisualLoader}
+                >
+                  Download Assets
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  className={styles.primaryBtn}
+                  onClick={handleAudioAndAnimation}
+                  disabled={generateVisualLoader}
+                >
+                  Audio & Animation Toolkit
+                </Button>
+              )}
             </div>
           </>
         ) : (
