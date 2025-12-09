@@ -12,6 +12,18 @@ interface VisualContent {
   [key: string]: any;
 }
 
+interface SceneData {
+  scene_id: string;
+  scene_number: number;
+  upload_url: string | null;
+}
+
+interface GenerateVisualContentState {
+  generateVisualLoader: boolean;
+  generateVisualContentData: VisualContent;
+  scenesData: [];
+}
+
 interface GenerateVisualContentState {
   generateVisualLoader: boolean;
   generateVisualContentData: VisualContent;
@@ -24,6 +36,7 @@ type CallbackFn = (value: boolean) => void;
 const initialState: GenerateVisualContentState = {
   generateVisualLoader: false,
   generateVisualContentData: {},
+  scenesData: [],
 };
 
 // ---------- Slice ----------
@@ -42,6 +55,10 @@ const GenerateVisualContentSlice = createSlice({
       actualVisualData.visuals = action.payload.visuals;
       state.generateVisualContentData = actualVisualData;
     },
+
+    setScenesData(state, action: PayloadAction<SceneData[]>) {
+      state.scenesData = action.payload;
+    },
     // Optionally, you can implement removeDeletedImage if needed
     // removeDeletedImage(state, action: PayloadAction<{ id: string }>) {}
   },
@@ -52,6 +69,7 @@ export const {
   setGenerateVisualContentData,
   updateGenerateVisual,
   // removeDeletedImage,
+  setScenesData,
 } = GenerateVisualContentSlice.actions;
 
 export default GenerateVisualContentSlice.reducer;
@@ -157,7 +175,6 @@ export const postRegenerateImage =
     }
   };
 
-
 export const getDownloadAsset = (id: any, title) => async (dispatch: any) => {
   dispatch(setGenerateVisualLoader(true));
   try {
@@ -171,7 +188,6 @@ export const getDownloadAsset = (id: any, title) => async (dispatch: any) => {
     const disposition = response.headers["content-disposition"];
 
     if (disposition) {
-      // filename="abc.zip"
       const fileNameMatch = disposition.match(/filename="(.+?)"/);
       if (fileNameMatch) {
         fileName = fileNameMatch[1];
@@ -200,6 +216,22 @@ export const getDownloadAsset = (id: any, title) => async (dispatch: any) => {
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error("Download error:", error);
+  } finally {
+    dispatch(setGenerateVisualLoader(false));
+  }
+};
+
+export const getClipsData = (id) => async (dispatch: any) => {
+  dispatch(setGenerateVisualLoader(true));
+  try {
+    const response = await api.get(
+      `upload-clip/get-script-scenes?script_id=${id}`
+    );
+    console.log(response, "response__check");
+
+    dispatch(setScenesData(response?.data?.scenes));
+  } catch (error) {
+    console.error(error);
   } finally {
     dispatch(setGenerateVisualLoader(false));
   }

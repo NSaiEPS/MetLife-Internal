@@ -81,7 +81,7 @@ export const CharacterCarousel = ({
         >
           {characterData[currentIndex]?.character_name}
           {/* DESCRIPTION */}
-          <Typography
+          {/* <Typography
             sx={{
               color: "gray",
               fontSize: "14px",
@@ -90,7 +90,7 @@ export const CharacterCarousel = ({
             }}
           >
             {characterData[currentIndex]?.description}
-          </Typography>
+          </Typography> */}
         </Typography>
 
         {/* BUTTON CONTROLS */}

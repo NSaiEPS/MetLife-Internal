@@ -119,7 +119,7 @@ export const router = createBrowserRouter([
         element: <VideoProgressPage />,
       },
       {
-        path: "upload-conversational-clips",
+        path: "/upload-conversational-clips/:id",
         element: <UploadConversationalClipsPage />,
       },
       {

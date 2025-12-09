@@ -1,8 +1,17 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { Box, Typography, Button, Paper, Stack } from "@mui/material";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import styles from "./uploadConversationClips.module.css";
+import {
+  getClipsData,
+  getDownloadAsset,
+} from "../../redux/features/generateVisualSlice";
+import { useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
+import FullScreenGradientLoader from "../../components/common/GradientLoader";
+import api from "../../api/axios";
 
 interface Scene {
   id: number;
@@ -20,25 +29,109 @@ const scenesData: Scene[] = [
 ];
 
 const UploadConversationalClipsPage: React.FC = () => {
+  const dispatch = useDispatch<any>();
   const [clips, setClips] = useState<Record<number, ClipData>>({});
+  const { id } = useParams<{ id: string }>();
+  const { generateVisualLoader, generateVisualContentData, scenesData } =
+    useSelector((store: RootState) => store.GenerateVisualContent);
+  const title = generateVisualContentData?.title;
 
-  const handleUpload = (id: number, e: ChangeEvent<HTMLInputElement>) => {
+  console.log(scenesData, "scenesData");
+
+  // const handleUpload = (id: number, e: ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setClips((prev) => ({
+  //       ...prev,
+  //       [id]: {
+  //         file,
+  //         preview: URL.createObjectURL(file),
+  //       },
+  //     }));
+  //   }
+  // };
+
+  // const handleUpload = async (
+  //   scene: { id: string; scene_number: number },
+  //   e: ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+
+  //   // Set preview
+  //   setClips((prev) => ({
+  //     ...prev,
+  //     [scene.scene_id]: {
+  //       file,
+  //       preview: URL.createObjectURL(file),
+  //     },
+  //   }));
+
+  //   const formData = new FormData();
+  //   formData.append("script_id", id);
+  //   formData.append("scene_id", scene.scene_id);
+  //   formData.append("scene_number", String(scene.scene_number));
+  //   formData.append("file", file);
+
+  //   try {
+  //     const res = await uploadSceneClip(formData);
+  //     console.log("Upload success:", res.data);
+
+  //     // Optional: update redux/out UI with returned upload_url
+  //     // dispatch(updateSceneUploadUrl({ scene_id: scene.id, url: res.data.upload_url }));
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //   }
+  // };
+
+  const handleUpload = async (
+    scene: { scene_id: string; scene_number: number },
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setClips((prev) => ({
-        ...prev,
-        [id]: {
-          file,
-          preview: URL.createObjectURL(file),
-        },
-      }));
-    }
+    if (!file) return;
+
+    // Correct key!
+    setClips((prev) => ({
+      ...prev,
+      [scene.scene_id]: {
+        file,
+        preview: URL.createObjectURL(file),
+      },
+    }));
+
+    const formData = new FormData();
+    formData.append("script_id", id);
+    formData.append("scene_id", scene.scene_id);
+    formData.append("scene_number", String(scene.scene_number));
+    formData.append("file", file);
+
+    await uploadSceneClip(formData);
   };
 
-  const allUploaded = scenesData.every((scene) => clips[scene.id]);
+  const uploadSceneClip = async (data: FormData) => {
+    return api.post("/upload-clip/upload-scene-clip", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+
+  // const allUploaded = scenesData.every((scene) => clips[scene.id]);
+  const allUploaded = scenesData.every((scene) => clips[scene.scene_id]);
+
+  const handleDownloadAssets = () => {
+    dispatch(getDownloadAsset(id, title));
+  };
+
+  useEffect(() => {
+    dispatch(getClipsData(id));
+  }, [dispatch]);
 
   return (
     <>
+      {generateVisualLoader && <FullScreenGradientLoader text={"Loading..."} />}
+
       <div className={styles.container}>
         <OneFrameHeader />
         <div className={styles.innerContainer}>
@@ -57,7 +150,7 @@ const UploadConversationalClipsPage: React.FC = () => {
             </Typography>
 
             <Stack spacing={3}>
-              {scenesData.map((scene) => (
+              {scenesData.map((scene, index) => (
                 <Paper
                   key={scene.id}
                   elevation={0}
@@ -81,8 +174,13 @@ const UploadConversationalClipsPage: React.FC = () => {
                   >
                     <Box>
                       <Typography fontWeight="600">{scene.title}</Typography>
-                      <Typography fontSize="14px" color="gray">
-                        {clips[scene.id]?.file?.name || "Awaiting Upload"}
+                      <Typography
+                        fontSize="16px"
+                        fontWeight={600}
+                        color="black"
+                      >
+                        {/* {clips[scene.id]?.file?.name || "Awaiting Upload"} */}
+                        {`Scene ${index + 1}`}
                       </Typography>
                     </Box>
 
@@ -100,13 +198,14 @@ const UploadConversationalClipsPage: React.FC = () => {
                         hidden
                         accept="video/*"
                         type="file"
-                        onChange={(e) => handleUpload(scene.id, e)}
+                        // onChange={(e) => handleUpload(scene.id, e)}
+                        onChange={(e) => handleUpload(scene, e)}
                       />
                     </Button>
                   </Box>
 
                   {/* Preview section */}
-                  {clips[scene.id]?.preview && (
+                  {clips[scene.scene_id]?.preview && (
                     <Box
                       sx={{
                         borderRadius: "10px",
@@ -115,15 +214,39 @@ const UploadConversationalClipsPage: React.FC = () => {
                         mt: 1,
                       }}
                     >
-                      <video
-                        src={clips[scene.id].preview}
+                      {/* <video
+                        src={clips[scene.scene_id].preview}
                         controls
                         style={{
                           width: "100%",
                           height: "40vh",
                           borderRadius: "10px",
                         }}
-                      />
+                      /> */}
+
+                      {clips[scene.scene_id]?.uploadedUrl ? (
+                        <video
+                          src={clips[scene.scene_id].uploadedUrl}
+                          controls
+                          style={{
+                            width: "100%",
+                            height: "40vh",
+                            borderRadius: "10px",
+                          }}
+                        />
+                      ) : clips[scene.scene_id]?.preview ? (
+                        <video
+                          src={clips[scene.scene_id].preview}
+                          controls
+                          style={{
+                            width: "100%",
+                            height: "40vh",
+                            borderRadius: "10px",
+                          }}
+                        />
+                      ) : (
+                        <Typography color="gray">No clip uploaded</Typography>
+                      )}
                     </Box>
                   )}
                 </Paper>
@@ -137,6 +260,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                 justifyContent: "flex-end",
                 alignItems: "center",
                 mt: 5,
+                gap: "10px",
               }}
             >
               <Typography
@@ -146,6 +270,15 @@ const UploadConversationalClipsPage: React.FC = () => {
               >
                 Upload all clips to enable stitching.
               </Typography>
+
+              <Button
+                variant="contained"
+                className={styles.primaryBtn}
+                onClick={handleDownloadAssets}
+                disabled={generateVisualLoader}
+              >
+                Download Assets
+              </Button>
 
               <Button
                 variant="contained"

@@ -14,12 +14,16 @@ import RegenerateImagePopup from "../../components/common/popup/RegenerateImageP
 import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { useDispatch, useSelector } from "react-redux";
-import { getDownloadAsset, getGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
+import {
+  getDownloadAsset,
+  getGenerateVisualContentImage,
+} from "../../redux/features/generateVisualSlice";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import type { RootState } from "../../redux/store"; // adjust path if needed
+import { navigateTo } from "../../utils/navigate";
 
 // ---------- Types ----------
 interface VisualRow {
@@ -338,6 +342,11 @@ const GenerateVisualContentPage: React.FC = () => {
 
   const handleDownloadAssets = () => {
     dispatch(getDownloadAsset(id, title));
+  };
+
+  const handleNext = () => {
+    console.log("clicked")
+    navigateTo(`/upload-conversational-clips/${id}`)
   }
 
   // ---------- Render ----------
@@ -417,14 +426,23 @@ const GenerateVisualContentPage: React.FC = () => {
             )}
             <div className={styles.footerButtons}>
               {conversational ? (
-                <Button
-                  variant="contained"
-                  className={styles.primaryBtn}
-                  onClick={handleDownloadAssets}
-                  disabled={generateVisualLoader}
-                >
-                  Download Assets
-                </Button>
+                <>
+                  <Button
+                    variant="contained"
+                    className={styles.primaryBtn}
+                    onClick={handleNext}
+                  >
+                    Next
+                  </Button>
+                  <Button
+                    variant="contained"
+                    className={styles.primaryBtn}
+                    onClick={handleDownloadAssets}
+                    disabled={generateVisualLoader}
+                  >
+                    Download Assets
+                  </Button>
+                </>
               ) : (
                 <Button
                   variant="contained"
