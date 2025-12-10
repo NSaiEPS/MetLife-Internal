@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Box, Grid } from "@mui/material";
+import { Typography, Box, Grid, Button } from "@mui/material";
 import UploadIcon from "../../assets/UploadCloudIcon.svg";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -7,6 +7,7 @@ import styles from "./OneFrame.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 // If needed for importing SVGs
 // declare module "*.svg" {
