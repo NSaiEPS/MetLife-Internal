@@ -714,6 +714,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         fieldData={popUpData}
         title={popupTitle}
         handleUpdate={handleUpdate}
+        tableData={extraDetails}
       />
 
       <DeleteScenePopup

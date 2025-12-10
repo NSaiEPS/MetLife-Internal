@@ -1,5 +1,5 @@
 // src/pages/UploadScript/UploadScript.jsx
-import  { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./UploadScript.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -16,6 +16,8 @@ import { showToast } from "../../utils/toast";
 import DownloadPopup from "../../components/common/popup/DownloadPopup";
 
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { Button } from "@mui/material";
 
 // import { IoMdDownload } from "react-icons/io";
 
@@ -25,16 +27,15 @@ const UploadScript = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scriptData, setScriptData] = useState(null);
   const [loader, setLoader] = useState(false);
-    const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
+  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const navigate = useNavigate();
-  const fileInputRef = useRef<any>(null)
+  const fileInputRef = useRef<any>(null);
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef?.current?.click();
   };
 
-
-  const handleFileChange = async (e : any) => {
+  const handleFileChange = async (e: any) => {
     const files = e.target.files;
     const doc = new jsPDF();
     if (!files || files.length === 0) {
@@ -100,175 +101,196 @@ const UploadScript = () => {
 
   type DownloadType = "pdf" | "word";
 
-  
-
   const handleDownloadType = async (type: DownloadType) => {
-  try {
-    if (type === "pdf") {
-      const doc = new jsPDF();
+    try {
+      if (type === "pdf") {
+        const doc = new jsPDF();
 
-      // Title
-      doc.setFontSize(18);
-      doc.text("Sample Script", 14, 20);
+        // Title
+        doc.setFontSize(18);
+        doc.text("Sample Script", 14, 20);
 
-      // Table data
-      const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-      const tableRows: string[][] = [
-        ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-        [
-          "02",
-          "Create a 90-second explainer video script about photosynthesis",
-          "Dummy text",
-          "Monologue",
-        ],
-        ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-        [
-          "04",
-          "Create a 90-second explainer video script about photosynthesis",
-          "Dummy text",
-          "Monologue",
-        ],
-        ["05", "Create a 90-second video", "Dummy text", "Narration"],
-      ];
+        // Table data
+        const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+        const tableRows: string[][] = [
+          ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
+          [
+            "02",
+            "Create a 90-second explainer video script about photosynthesis",
+            "Dummy text",
+            "Monologue",
+          ],
+          ["03", "Create a 90-second video", "Dummy text", "Conversation"],
+          [
+            "04",
+            "Create a 90-second explainer video script about photosynthesis",
+            "Dummy text",
+            "Monologue",
+          ],
+          ["05", "Create a 90-second video", "Dummy text", "Narration"],
+        ];
 
-      // Add table
-      (doc as any).autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 30,
-        theme: "grid",
-        headStyles: { fillColor: [100, 149, 237] },
-      });
+        // Add table
+        (doc as any).autoTable({
+          head: [tableColumn],
+          body: tableRows,
+          startY: 30,
+          theme: "grid",
+          headStyles: { fillColor: [100, 149, 237] },
+        });
 
-      // Save PDF
-      doc.save("Sample_Script.pdf");
+        // Save PDF
+        doc.save("Sample_Script.pdf");
+      } else if (type === "word") {
+        // Lazy import docx (TypeScript supported)
+        const {
+          Document,
+          Packer,
+          Paragraph,
+          Table,
+          TableCell,
+          TableRow,
+          TextRun,
+        } = await import("docx");
+
+        const doc = new Document({
+          sections: [
+            {
+              children: [
+                // Title
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: "Sample Script",
+                      bold: true,
+                      size: 32,
+                    }),
+                  ],
+                  spacing: { after: 300 },
+                }),
+
+                // Table
+                new Table({
+                  rows: [
+                    // Header Row
+                    new TableRow({
+                      children: [
+                        new TableCell({
+                          children: [new Paragraph("Scene No.")],
+                        }),
+                        new TableCell({ children: [new Paragraph("Script")] }),
+                        new TableCell({ children: [new Paragraph("OST")] }),
+                        new TableCell({ children: [new Paragraph("Type")] }),
+                      ],
+                    }),
+
+                    // Data rows
+                    ...[
+                      [
+                        "01",
+                        "Create a 90-second explainer",
+                        "Dummy text",
+                        "Narration",
+                      ],
+                      [
+                        "02",
+                        "Create a 90-second explainer video script about photosynthesis",
+                        "Dummy text",
+                        "Monologue",
+                      ],
+                      [
+                        "03",
+                        "Create a 90-second video",
+                        "Dummy text",
+                        "Conversation",
+                      ],
+                      [
+                        "04",
+                        "Create a 90-second explainer video script about photosynthesis",
+                        "Dummy text",
+                        "Monologue",
+                      ],
+                      [
+                        "05",
+                        "Create a 90-second video",
+                        "Dummy text",
+                        "Narration",
+                      ],
+                    ].map(
+                      (row) =>
+                        new TableRow({
+                          children: row.map(
+                            (cell) =>
+                              new TableCell({ children: [new Paragraph(cell)] })
+                          ),
+                        })
+                    ),
+                  ],
+                }),
+              ],
+            },
+          ],
+        });
+
+        // Download Word File
+        const blob = await Packer.toBlob(doc);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Sample_Script.docx";
+        a.click();
+      }
+
+      setOpenDownloadPopup(false);
+    } catch (err) {
+      console.error("Error generating file:", err);
     }
+  };
 
-    else if (type === "word") {
-      // Lazy import docx (TypeScript supported)
-      const { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } =
-        await import("docx");
+  //   const handleDownload = () => {
+  //     const doc = new jsPDF();
 
-      const doc = new Document({
-        sections: [
-          {
-            children: [
-              // Title
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "Sample Script",
-                    bold: true,
-                    size: 32,
-                  }),
-                ],
-                spacing: { after: 300 },
-              }),
+  //     // Title
+  //     doc.setFontSize(18);
+  //     doc.text("Sample Script", 14, 20);
 
-              // Table
-              new Table({
-                rows: [
-                  // Header Row
-                  new TableRow({
-                    children: [
-                      new TableCell({ children: [new Paragraph("Scene No.")] }),
-                      new TableCell({ children: [new Paragraph("Script")] }),
-                      new TableCell({ children: [new Paragraph("OST")] }),
-                      new TableCell({ children: [new Paragraph("Type")] }),
-                    ],
-                  }),
+  //     // Table data
+  //     const tableColumn = ["Scene No.", "Script", "OST", "Type"];
+  //     const tableRows = [
+  //       ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
+  //       [
+  //         "02",
+  //         "Create a 90-second explainer video script about photosynthesis",
+  //         "Dummy text",
+  //         "Monologue",
+  //       ],
+  //       ["03", "Create a 90-second video", "Dummy text", "Conversation"],
+  //       [
+  //         "04",
+  //         "Create a 90-second explainer video script about photosynthesis",
+  //         "Dummy text",
+  //         "Monologue",
+  //       ],
+  //       ["05", "Create a 90-second video", "Dummy text", "Narration"],
+  //     ];
 
-                  // Data rows
-                  ...[
-                    ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-                    [
-                      "02",
-                      "Create a 90-second explainer video script about photosynthesis",
-                      "Dummy text",
-                      "Monologue",
-                    ],
-                    ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-                    [
-                      "04",
-                      "Create a 90-second explainer video script about photosynthesis",
-                      "Dummy text",
-                      "Monologue",
-                    ],
-                    ["05", "Create a 90-second video", "Dummy text", "Narration"],
-                  ].map(
-                    (row) =>
-                      new TableRow({
-                        children: row.map(
-                          (cell) => new TableCell({ children: [new Paragraph(cell)] })
-                        ),
-                      })
-                  ),
-                ],
-              }),
-            ],
-          },
-        ],
-      });
+  //     // Add table
+  //   (doc as any).autoTable({
+  //   head: [tableColumn],
+  //   body: tableRows,
+  //   startY: 30,
+  //   theme: "grid",
+  //   headStyles: { fillColor: [100, 149, 237] },
+  // });
 
-      // Download Word File
-      const blob = await Packer.toBlob(doc);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Sample_Script.docx";
-      a.click();
-    }
-
-    setOpenDownloadPopup(false);
-  } catch (err) {
-    console.error("Error generating file:", err);
-  }
-};
-
-//   const handleDownload = () => {
-//     const doc = new jsPDF();
-
-//     // Title
-//     doc.setFontSize(18);
-//     doc.text("Sample Script", 14, 20);
-
-//     // Table data
-//     const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-//     const tableRows = [
-//       ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-//       [
-//         "02",
-//         "Create a 90-second explainer video script about photosynthesis",
-//         "Dummy text",
-//         "Monologue",
-//       ],
-//       ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-//       [
-//         "04",
-//         "Create a 90-second explainer video script about photosynthesis",
-//         "Dummy text",
-//         "Monologue",
-//       ],
-//       ["05", "Create a 90-second video", "Dummy text", "Narration"],
-//     ];
-
-//     // Add table
-//   (doc as any).autoTable({
-//   head: [tableColumn],
-//   body: tableRows,
-//   startY: 30,
-//   theme: "grid",
-//   headStyles: { fillColor: [100, 149, 237] },
-// });
-
-//     // Save PDF
-//     doc.save("Sample_Script.pdf");
-//   };
+  //     // Save PDF
+  //     doc.save("Sample_Script.pdf");
+  //   };
   const handleDownloadScript = () => {
     setOpenDownloadPopup(true);
     // setMakeChanges(true);
   };
-  const handleInputChange = (e : any) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     if (name == "title") {
       setTitle(value);
@@ -281,7 +303,31 @@ const UploadScript = () => {
       {loader && <FullScreenGradientLoader text="Uploading Script..." />}
       <div className={styles.uploadPageContainer}>
         <div className={styles.uploadCard}>
-          <h2 className={styles.uploadTitle}>Upload Script</h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "24px",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "0",
+              }}
+              className={styles.uploadTitle}
+            >
+              Upload Script
+            </h2>
+            <Button
+              className={styles.icon}
+              onClick={() => navigate("/video-frame")}
+            >
+              {" "}
+              <IoArrowBackCircleOutline size={30} /> Back{" "}
+            </Button>
+          </div>
+
           <div>
             <Input
               label="Title:"
@@ -327,9 +373,9 @@ const UploadScript = () => {
               }
             />
             <ButtonComp
-             label="Sample Download"
+              label="Sample Download"
               variant="contained"
-               action={handleDownloadScript}
+              action={handleDownloadScript}
               sx={{
                 backgroundColor: "#239DE0",
                 "&:hover": { backgroundColor: "#7fbcddff" },
@@ -337,7 +383,7 @@ const UploadScript = () => {
             />
           </div>
         </div>
-          <DownloadPopup
+        <DownloadPopup
           open={openDownloadPopup}
           onClose={() => setOpenDownloadPopup(false)}
           onSelect={handleDownloadType}

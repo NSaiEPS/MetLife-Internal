@@ -25,7 +25,12 @@ interface AddNewScriptPopupProps {
   onClose: () => void;
   fieldData?: ScriptData | null;
   title: string;
-  handleUpdate: (data: { script: string; ost: string; type: string; fieldData?: ScriptData | null }) => void;
+  handleUpdate: (data: {
+    script: string;
+    ost: string;
+    type: string;
+    fieldData?: ScriptData | null;
+  }) => void;
 }
 
 const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
@@ -34,18 +39,19 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   fieldData,
   title,
   handleUpdate,
+  tableExtraData,
 }) => {
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
   const [type, setType] = useState("");
 
-    useEffect(() => {
+  console.log(tableExtraData, "check___")
+
+  useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
       const cleanOST = (fieldData.OST || "").replace(/\r?\n|\r/g, " ");
       setOst(cleanOST);
-      // setOst(fieldData.OST || "");
-
       if (fieldData.Type == "narrator") {
         setType("narrator");
       } else {
@@ -59,12 +65,12 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   }, [fieldData, open]);
 
   const handleSave = () => {
-    console.log(script, ost, "check__both")
+    console.log(script, ost, "check__both");
     const payload = {
       script,
       ost,
-
-    }
+    };
+    console.log(payload, "check__payload")
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };
@@ -107,7 +113,7 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
         <FormControl fullWidth margin="normal">
           <InputLabel>Type</InputLabel>
           <Select
-          disabled
+            disabled
             value={type}
             label="Type"
             sx={{ "& .MuiSelect-select": { textAlign: "justify" } }}

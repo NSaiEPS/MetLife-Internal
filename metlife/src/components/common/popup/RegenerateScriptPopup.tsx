@@ -49,6 +49,8 @@ const RegenerateScriptPopup = ({
   const [feedback, setFeedback] = useState("");
   const [loader, setLoader] = useState(false);
 
+  console.log(tableData, "check__table__Data")
+
   const handleRegenerate = () => {
     if (!feedback) {
       showToast.error("Please give feedback");
@@ -68,6 +70,7 @@ const RegenerateScriptPopup = ({
       feedback,
       top_n: topn,
       model: model,
+      version: tableData?.version,
     };
     if (!topn) {
       delete new_payload.top_n;

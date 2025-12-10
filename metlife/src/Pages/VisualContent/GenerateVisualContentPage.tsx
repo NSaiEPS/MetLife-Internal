@@ -262,25 +262,25 @@ const GenerateVisualContentPage: React.FC = () => {
     setRows(newData);
   };
 
-  const handleImageUpdate = ({
-    fieldData,
-    new_images,
-  }: {
-    fieldData: VisualRow;
-    new_images: { url: string }[];
-  }) => {
-    setRows((prev) =>
-      prev.map((item) =>
-        item.scene_id === fieldData.scene_id
-          ? {
-              ...item,
-              Visual_Image:
-                new_images?.[new_images.length - 1]?.url || item.Visual_Image,
-            }
-          : item
-      )
-    );
-  };
+  // const handleImageUpdate = ({
+  //   fieldData,
+  //   new_images,
+  // }: {
+  //   fieldData: VisualRow;
+  //   new_images: { url: string }[];
+  // }) => {
+  //   setRows((prev) =>
+  //     prev.map((item) =>
+  //       item.scene_id === fieldData.scene_id
+  //         ? {
+  //             ...item,
+  //             Visual_Image:
+  //               new_images?.[new_images.length - 1]?.url || item.Visual_Image,
+  //           }
+  //         : item
+  //     )
+  //   );
+  // };
 
   const handleUpdate = (data: {
     fieldData: VisualRow;
@@ -345,7 +345,6 @@ const GenerateVisualContentPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    console.log("clicked")
     navigateTo(`/upload-conversational-clips/${id}`)
   }
 

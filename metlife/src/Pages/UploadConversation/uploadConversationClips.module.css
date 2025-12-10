@@ -3,6 +3,8 @@
 
   .innerContainer {
     max-width: 1220px;
-    margin: auto;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+
   }
 }

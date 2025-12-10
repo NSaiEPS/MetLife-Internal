@@ -215,7 +215,6 @@ const GenerateScript: React.FC = () => {
       image_upload: characters.map((_) => false),
     };
   };
-  console.log(characters, "characters");
 
   const apiCall = async () => {
     setLoader(true);
@@ -234,8 +233,6 @@ const GenerateScript: React.FC = () => {
       filters: data_filters,
       ...characterPayload,
     };
-
-    console.log(new_payload, "check_payload");
 
     if (datasource === "openai") delete new_payload.top_n;
 
