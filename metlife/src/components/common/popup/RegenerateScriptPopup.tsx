@@ -68,7 +68,7 @@ const RegenerateScriptPopup = ({
       feedback,
       top_n: topn,
       model: model,
-      version: tableData?.version,
+      source_version: tableData?.version,
     };
     if (!topn) {
       delete new_payload.top_n;
