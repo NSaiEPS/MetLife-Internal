@@ -45,8 +45,6 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   const [ost, setOst] = useState("");
   const [type, setType] = useState("");
 
-  console.log(tableExtraData, "check___")
-
   useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
@@ -65,12 +63,10 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   }, [fieldData, open]);
 
   const handleSave = () => {
-    console.log(script, ost, "check__both");
     const payload = {
       script,
       ost,
     };
-    console.log(payload, "check__payload")
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };

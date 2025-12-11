@@ -133,8 +133,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [open, setOpen] = useState(false);
   const [openCharacterModal, setOpenCharacterModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [charImageExist, setCharImageExist] = useState(extraDetails?.char_image_exist);
-
+  const [charImageExist, setCharImageExist] = useState(
+    extraDetails?.char_image_exist
+  );
 
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
@@ -239,7 +240,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   ];
 
   const settingDataInRows = (data: any[]) => {
-    console.log("item", data);
     const mapped: SceneRow[] = (data ?? []).map((item: any, idx: number) => ({
       "Scene No.": idx + 1,
       Script: item?.description ?? item?.Script ?? "",
@@ -346,7 +346,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
     // setMakeChanges(true);
   };
-console.log(tableExtraData?.version, "check__version")
+  console.log(tableExtraData?.version, "check__version");
   const handleTranslateScript = async () => {
     if (!pdfId && !id) return;
 
@@ -359,7 +359,7 @@ console.log(tableExtraData?.version, "check__version")
     formData.append(id ? "script_id" : "file_id", String(file_id));
     formData.append("language", selectedLang);
     formData.append("provider", "azure");
-    formData.append("source_version", tableExtraData?.version)
+    formData.append("source_version", tableExtraData?.version);
 
     try {
       const response = await fetch(`${BASE_URL}translate-script-json`, {
@@ -471,9 +471,11 @@ console.log(tableExtraData?.version, "check__version")
 
   const handleCharacterGenerateImages = () => {
     if (!tableExtraData?.char_image_exist) {
-      dispatch(postExtractCharacters(id, () => {
-         setCharImageExist(true); 
-      }));
+      dispatch(
+        postExtractCharacters(id, () => {
+          setCharImageExist(true);
+        })
+      );
     }
   };
 
@@ -490,7 +492,10 @@ console.log(tableExtraData?.version, "check__version")
     <>
       <div className={styles1.header}>
         <h2 className={styles1.title}>
-          {tableExtraData?.title || visualContentTitle || "Your Script"}
+          {tableExtraData?.title ||
+            visualContentTitle ||
+            tableExtraData?.upload_info?.title ||
+            "Your Script"}
         </h2>
 
         {showDragAndActions && features && (

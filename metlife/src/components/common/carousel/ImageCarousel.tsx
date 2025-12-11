@@ -59,7 +59,6 @@ const ImageCarousel = ({ images = [], caroselIndex, previewImage }) => {
   const handleError = (e) => {
     e.target.src = dummy;
   };
-  // console.log(images[index].url);
 
   return (
     <Box sx={{ textAlign: "center", mt: 1, position: "relative" }}>

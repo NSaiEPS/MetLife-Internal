@@ -16,7 +16,6 @@ const PopupModal: React.FC<PopupModalProps> = ({
   title,
   children,
 }) => {
-  console.log(children,"children")
   return (
     <Dialog
       open={open}

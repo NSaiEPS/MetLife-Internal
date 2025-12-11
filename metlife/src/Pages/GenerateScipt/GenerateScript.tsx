@@ -122,7 +122,6 @@ const GenerateScript: React.FC = () => {
   const [characters, setCharacters] = useState<CharacterType[]>([
     emptyCharacter,
   ]);
-  console.log(characters, "characters");
   // States
   const [scriptText, setScriptText] = useState<string>("");
   const [data_filters, setDataFilters] = useState<DataFiltersType>({
@@ -207,7 +206,6 @@ const GenerateScript: React.FC = () => {
   };
 
   const buildCharacterPayload = (characters) => {
-    console.log(characters, "check_characters");
     return {
       character_names: characters.map((c) => c.name || ""),
       roles: characters.map((c) => c.role || ""),

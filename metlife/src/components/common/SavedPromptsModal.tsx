@@ -20,7 +20,6 @@ export default function SavedPromptsModal({
   size = "md", // "md" or "lg"
 }) {
   const { promtLoader } = useSelector((store) => store.Prompts);
-  console.log(promtLoader, "promtLoader")
 
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");

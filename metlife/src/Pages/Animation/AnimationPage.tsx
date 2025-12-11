@@ -163,8 +163,6 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
-  console.log(videoAnimationLoader, "check__video_animaiton__loader");
-
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>

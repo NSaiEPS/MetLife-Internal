@@ -227,7 +227,7 @@ export const getClipsData = (id) => async (dispatch: any) => {
     const response = await api.get(
       `upload-clip/get-script-scenes?script_id=${id}`
     );
-    console.log(response, "response__check");
+    // console.log(response, "response__check");
     // dispatch(setScenesData(response?.data?.scenes));
     dispatch(setScenesData(response?.data));
 

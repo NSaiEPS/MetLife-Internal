@@ -94,7 +94,7 @@ export const postExtractCharacters =
     dispatch(setScriptLoader(true));
     try {
       const res = await api.post(`characters/generate-images?script_id=${id}`);
-      console.log(res, "check_character_res");
+      // console.log(res, "check_character_res");
       if (res.status) {
         dispatch(setCharacterData(res?.data?.characters));
 
@@ -115,7 +115,7 @@ export const getExtractCharacters = (id: any) => async (dispatch) => {
   dispatch(setScriptLoader(true));
   try {
     const res = await api.get(`characters/images/${id}`);
-    console.log(res, "get_check_character_res");
+    // console.log(res, "get_check_character_res");
     if (res.status) {
       dispatch(setCharacterData(res?.data?.characters));
     }

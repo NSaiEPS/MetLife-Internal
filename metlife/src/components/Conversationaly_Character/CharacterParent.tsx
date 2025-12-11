@@ -29,7 +29,6 @@ const CharacterParent: React.FC = ({
 
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showSubmit, setShowSubmit] = useState<boolean>(false);
-  console.log(editingIndex, "editingIndex");
   // ---------- Validate Characters ----------
   useEffect(() => {
     const hasValidCharacter = characters.some((char) => {
@@ -84,8 +83,6 @@ const CharacterParent: React.FC = ({
 
       return Boolean(hasBasicInfo && hasValidInput);
     });
-
-    console.log("Final character list:", validCharacters);
   };
 
   return (

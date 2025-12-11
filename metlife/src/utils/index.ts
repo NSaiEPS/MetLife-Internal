@@ -117,9 +117,8 @@ const styles = StyleSheet.create({
 // PDF DOWNLOAD
 // ==========================
 export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
-  console.log(data, "datadatadata");
-  const fileName = localStorage.getItem("file_name") || "Script";
-  let updatedData = data?.upload_info ? data?.scenes : data;
+  // const fileName = localStorage.getItem("file_name") || "Script";
+  // let updatedData = data?.upload_info ? data?.scenes : data;
   const blob = await pdf(
     React.createElement(PdfDocument, { data, uploadDownload })
   ).toBlob();
@@ -138,9 +137,8 @@ export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
 // WORD DOWNLOAD
 // ==========================
 export const downloadScriptWord = (data: any, uploadDownload = false) => {
-  const fileName = localStorage.getItem("file_name");
+  // const fileName = localStorage.getItem("file_name");
   if (!data) return;
-  console.log(data, "data_checK_word");
 
   const {
     title,

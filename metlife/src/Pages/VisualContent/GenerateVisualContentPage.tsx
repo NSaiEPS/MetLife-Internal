@@ -209,7 +209,6 @@ const GenerateVisualContentPage: React.FC = () => {
         </Tooltip>
       ),
       onClick: (row: any) => {
-        console.log(row, "check_row");
         if (row.Visual_Type === "image") {
           handleImageUpload(row);
         } else if (row.Visual_Type === "Footage") {

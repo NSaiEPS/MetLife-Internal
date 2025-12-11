@@ -133,7 +133,7 @@ const MyVideosDashboard: React.FC = () => {
     if (status.visuals)
       return (
         <Chip
-          label="Visuals Progress"
+          label="Visuals in Progress"
           sx={{ bgcolor: "#9C27B0", color: "#fff" }}
         />
       );
