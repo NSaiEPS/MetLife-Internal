@@ -346,7 +346,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
     // setMakeChanges(true);
   };
-  console.log(tableExtraData?.version, "check__version");
+  console.log(tableExtraData, "check__version");
   const handleTranslateScript = async () => {
     if (!pdfId && !id) return;
 
@@ -359,7 +359,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     formData.append(id ? "script_id" : "file_id", String(file_id));
     formData.append("language", selectedLang);
     formData.append("provider", "azure");
-    formData.append("source_version", tableExtraData?.version);
+    formData.append("source_version", tableExtraData?.version ?? "");
 
     try {
       const response = await fetch(`${BASE_URL}translate-script-json`, {
@@ -403,11 +403,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleSave = () => {
     setOperations(false);
+    const { script_status, saved_version, ...rest } = tableExtraData; 
     const data = {
       data: {
-        ...tableExtraData,
+        // ...tableExtraData,
+        ...rest,
+        script_id:id,
+        title: tableExtraData?.title,
+        version: tableExtraData?.version,
       },
+      is_save_action:true,
     };
+
+    // console.log(data, "check__payload")
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {
@@ -487,6 +495,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleCloseCharacterModal = () => {
     setOpenCharacterModal(false);
   };
+
+  console.log(tableExtraData, "tableExtraData__")
 
   return (
     <>
