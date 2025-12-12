@@ -1,5 +1,12 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
-import { Box, Typography, Button, Paper, Stack, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import styles from "./uploadConversationClips.module.css";
@@ -13,6 +20,8 @@ import type { RootState } from "../../redux/store";
 // import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import api from "../../api/axios";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
+import { showToast } from "../../utils/toast";
+import FullScreenGradientLoader from "../../components/common/GradientLoader";
 
 interface ClipData {
   file: File;
@@ -23,9 +32,12 @@ const UploadConversationalClipsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
   const [clips, setClips] = useState<Record<number, ClipData>>({});
   const { id } = useParams<{ id: string }>();
-  const { generateVisualLoader, generateVisualContentData, scenesData } =
-    useSelector((store: RootState) => store.GenerateVisualContent);
+  const { generateVisualLoader, scenesData } = useSelector(
+    (store: RootState) => store.GenerateVisualContent
+  );
   const title = scenesData?.title;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [stitchedVideo, setStitchedVideo] = useState();
 
   const handleUpload = async (
     scene: { scene_id: string; scene_number: number },
@@ -61,25 +73,17 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
+  console.log(clips, "check__clips");
+
   const uploadSceneClip = async (formData: FormData) => {
     try {
       const res = await api.post("/upload-clip/upload-scene-clip", formData);
-
-      // return only what you need
       return res.data;
     } catch (error) {
       console.error("Upload Error:", error);
       throw error;
     }
   };
-
-  // const uploadSceneClip = async (data: FormData) => {
-  //   return api.post("/upload-clip/upload-scene-clip", data, {
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //   });
-  // };
 
   const allUploaded = scenesData?.scenes?.every(
     (scene) => clips[scene.scene_id]
@@ -109,10 +113,50 @@ const UploadConversationalClipsPage: React.FC = () => {
     setClips(mapped);
   }, [scenesData?.scenes]);
 
+  console.log(scenesData, "check");
+
+  
+
+  const handleStichVideo = async () => {
+    // check if at least one scene has no upload_url
+    const hasMissingVideos = scenesData?.scenes?.some(
+      (scene) => !clips[scene.scene_id]?.upload_url
+    );
+
+    if (!hasMissingVideos) {
+      showToast.error("Please upload all clips before stitching the video.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // prepare backend-required URL encoded body
+      const body = new URLSearchParams();
+      body.append("script_id", id);
+
+      const result = await api.post("/upload-clip/stitch-script-ffmpeg", body, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      if (result?.status) {
+        setStitchedVideo(result?.data?.stitched_video_url);
+        showToast.success("Video stitching started!");
+      }
+    } catch (e: any) {
+      showToast.error(e?.detail || "Failed to stitch video!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
+        {loading && <FullScreenGradientLoader text="loading..." />}
         {scenesData?.scenes?.length && scenesData?.scenes?.length > 0 ? (
           <>
             <div className={styles.innerContainer}>
@@ -266,6 +310,7 @@ const UploadConversationalClipsPage: React.FC = () => {
 
                   <Button
                     variant="contained"
+                    onClick={handleStichVideo}
                     disabled={!allUploaded}
                     sx={{
                       borderRadius: "10px",
@@ -277,13 +322,38 @@ const UploadConversationalClipsPage: React.FC = () => {
                     Stitch My Video
                   </Button>
                 </Box>
+
+                {stitchedVideo && (
+                  <Box
+                    sx={{
+                      marginTop: "2rem",
+                      padding: "20px",
+                      borderRadius: "12px",
+                      border: "1px solid #d3e6f9",
+                      background: "white",
+                    }}
+                  >
+                    <Typography fontSize="20px" fontWeight={600} mb={2}>
+                      Final Stitched Video
+                    </Typography>
+
+                    <video
+                      src={stitchedVideo}
+                      controls
+                      style={{
+                        width: "100%",
+                        height: "50vh",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  </Box>
+                )}
               </Box>
             </div>
           </>
         ) : (
           <NoDataMessage filter={false} loading={generateVisualLoader} />
         )}
-
         <Footer />
       </div>
     </>

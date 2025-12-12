@@ -208,8 +208,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               src={reuse}
               alt="regenerate"
               style={{
-                opacity: regenerateDisabled ? 0.5 : 1,
-                cursor: regenerateDisabled ? "not-allowed" : "pointer",
+                // opacity: regenerateDisabled ? 0.5 : 1,
+                // cursor: regenerateDisabled ? "not-allowed" : "pointer",
+                opacity:
+                  regenerateDisabled || pathname?.startsWith("SCRIPT-")
+                    ? 0.5
+                    : 1,
+                cursor:
+                  regenerateDisabled || pathname?.startsWith("SCRIPT-")
+                    ? "not-allowed"
+                    : "pointer",
               }}
             />
           </span>
@@ -359,7 +367,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     formData.append(id ? "script_id" : "file_id", String(file_id));
     formData.append("language", selectedLang);
     formData.append("provider", "azure");
-    formData.append("source_version", tableExtraData?.version ?? "");
+    if (
+      tableExtraData?.version !== undefined &&
+      tableExtraData?.version !== null
+    ) {
+      formData.append("source_version", String(tableExtraData.version));
+    }
 
     try {
       const response = await fetch(`${BASE_URL}translate-script-json`, {
@@ -403,16 +416,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleSave = () => {
     setOperations(false);
-    const { script_status, saved_version, ...rest } = tableExtraData; 
+    const { script_status, saved_version, ...rest } = tableExtraData;
     const data = {
       data: {
         // ...tableExtraData,
         ...rest,
-        script_id:id,
+        script_id: id,
         title: tableExtraData?.title,
         version: tableExtraData?.version,
       },
-      is_save_action:true,
+      is_save_action: true,
     };
 
     // console.log(data, "check__payload")
@@ -469,7 +482,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (!versionId) return;
     setLoader(true);
     try {
-      await api.get(`scripts/${versionId}`);
+      const result = await api.get(`scripts/${id}?version=${versionId}`);
+      setTableExtraData(result?.data);
     } catch (e: any) {
       showToast.error(e?.detail);
     } finally {
@@ -495,8 +509,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleCloseCharacterModal = () => {
     setOpenCharacterModal(false);
   };
-
-  console.log(tableExtraData, "tableExtraData__")
 
   return (
     <>
@@ -753,7 +765,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         >
           {features && (
             <>
-              {charImageExist ? (
+              {charImageExist &&
+              extraDetails?.video_style === "conversational" ? (
                 <Button
                   variant="outlined"
                   className={styles.largeOutline}
@@ -762,16 +775,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   View Image
                 </Button>
               ) : (
-                <Button
-                  variant="outlined"
-                  className={styles.largeOutline}
-                  onClick={() => {
-                    handleCharacterGenerateImages();
-                  }}
-                  disabled={saveTranslatedData === null || scriptLoader}
-                >
-                  Character Images
-                </Button>
+                extraDetails?.video_style === "conversational" && (
+                  <Button
+                    variant="outlined"
+                    className={styles.largeOutline}
+                    onClick={() => {
+                      handleCharacterGenerateImages();
+                    }}
+                    disabled={saveTranslatedData === null || scriptLoader}
+                  >
+                    Character Images
+                  </Button>
+                )
               )}
 
               <CharacterCarousel
@@ -834,6 +849,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             <Button
               variant="outlined"
               className={styles.largeOutline}
+              disabled={pathname.startsWith("SCRIPT-")}
               onClick={() => {
                 setMakeChanges(true);
                 setSceneData({});
