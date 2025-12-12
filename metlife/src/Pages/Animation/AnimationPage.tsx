@@ -441,7 +441,7 @@ const AnimationPage: React.FC = () => {
                     >
                       Video Timeline
                     </Typography>
-                    <VideoTimeline videos={videos} />
+                    <VideoTimeline videos={videoAnimationData} />
                   </Grid>
 
                   {/* Full Video */}

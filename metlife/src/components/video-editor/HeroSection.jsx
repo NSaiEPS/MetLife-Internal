@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { Box } from "@mui/material";
 import CenterDiv from "./CenterDiv";
 
@@ -23,47 +23,53 @@ export default function HeroSection({
   next,
   prev,
   onTogglePlay,
+  isGloballyPlaying,
+  onFirstInteraction,
+  hasUserInteracted,
+  onVideoLoadStatus,
 }) {
-  const total = homeData.length;
+  const total = homeData?.length;
   const startX = useRef(null);
+  const far = Math.floor(total / 2);
 
   /* pointer handlers */
-  const down = (e) => (startX.current = e.clientX || e.touches?.[0]?.clientX);
+  const handleDown = (e) => {
+    startX.current = e.clientX || e.touches?.[0]?.clientX;
+  };
 
-  const up = (e) => {
+  const handleUp = (e) => {
     if (startX.current == null) return;
 
     const endX = e.clientX || e.changedTouches?.[0]?.clientX;
     const dx = endX - startX.current;
     const TH = 50;
 
-    if (dx > TH) prev(); // swipe → right
-    if (dx < -TH) next(); // swipe → left
+    if (dx > TH) prev();
+    if (dx < -TH) next();
 
     startX.current = null;
   };
 
-  const far = Math.floor(homeData.length / 2);
-
   return (
     <Box
-      component="section"
-      onPointerDown={down}
-      onPointerUp={up}
-      onTouchStart={down}
-      onTouchEnd={up}
+      onPointerDown={handleDown}
+      onPointerUp={handleUp}
+      onTouchStart={handleDown}
+      onTouchEnd={handleUp}
       sx={{
         position: "relative",
         width: "100%",
-        height: { xs: "50vh", md: "45vh" },
+        height: "70vh",
+
+        // height: { xs: "50vh", md: "45vh" },
       }}
     >
-      {homeData.map((item, i) => {
+      {homeData?.map((item, i) => {
         const off = offset(i, active, total);
         const xvw = off * STEP;
         const isActive = i === active;
 
-        const opa = isActive ? 1 : Math.abs(off) === far ? 0 : 0.9;
+        const opacity = isActive ? 1 : Math.abs(off) === far ? 0 : 0.9;
 
         return (
           <Box
@@ -71,20 +77,27 @@ export default function HeroSection({
             sx={{
               position: "absolute",
               inset: 0,
+              // width: "100%",
+              height: "fit-content",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               transform: `translateX(${xvw}vw)`,
-              opacity: opa,
+              opacity: opacity,
               transition: "transform .7s ease, opacity .5s ease",
+              pointerEvents: isActive ? "auto" : "none",
             }}
           >
             <CenterDiv
               isActive={isActive}
               data={item}
-              duration={item.duration ? item.duration : 10}
+              duration={item.duration || 10}
               progress={progress}
               onTogglePlay={onTogglePlay}
+              isGloballyPlaying={isGloballyPlaying}
+              onFirstInteraction={onFirstInteraction}
+              hasUserInteracted={hasUserInteracted}
+              onVideoLoadStatus={isActive ? onVideoLoadStatus : undefined}
             />
           </Box>
         );

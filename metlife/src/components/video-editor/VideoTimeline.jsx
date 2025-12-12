@@ -1,14 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import HeroSection from "./HeroSection";
 import Bottom from "./Bottom";
-import Cursor from "./Cursor";
 
 const TICK = 100;
 
@@ -18,7 +11,11 @@ const normalizeDuration = (duration) => {
 };
 
 const VideoTimeline = ({ videos }) => {
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
+  const [activeVideoLoaded, setActiveVideoLoaded] = useState(false);
+  const [activeVideoHasError, setActiveVideoHasError] = useState(false);
 
   const timer = useRef(null);
   const timerEnd = useRef(null);
@@ -30,44 +27,40 @@ const VideoTimeline = ({ videos }) => {
 
   const rawDuration = videos?.[active]?.duration;
   const slideTime = normalizeDuration(rawDuration);
+
   const total = videos?.length;
 
-  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
-  const [cursorInHero, setCursorInHero] = useState(false);
-
-  console.log(playing);
-
-  const moveCursor = useCallback((e) => {
-    const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    const clientX = e.clientX ?? e.touches?.[0]?.clientX;
-    const clientY = e.clientY ?? e.touches?.[0]?.clientY;
-
-    if (clientX == null) return;
-
-    setCursorPos({
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    });
-  }, []);
-
-  /* helpers */
   const goto = useCallback(
     (idx) => {
-      setProg(0);
-      setActive((idx + total) % total);
+      const newIdx = (idx + total) % total;
+
+      if (newIdx !== active) {
+        setProg(0);
+        setActive(newIdx);
+
+        setActiveVideoLoaded(false);
+        setActiveVideoHasError(false);
+
+        setPlaying(false);
+      }
     },
-    [total]
+    [total, active]
   );
 
   const next = useCallback(() => goto(active + 1), [goto, active]);
   const prev = useCallback(() => goto(active - 1), [goto, active]);
 
-  /* timeline play/pause logic */
+  // ------------------ TIMELINE EFFECT ------------------
   useEffect(() => {
-    if (!slideTime || slideTime <= 0) {
+    if (
+      !slideTime ||
+      slideTime <= 0 ||
+      !activeVideoLoaded ||
+      activeVideoHasError
+    ) {
       setProg(0);
+      clearInterval(timer.current);
+      clearTimeout(timerEnd.current);
       return;
     }
 
@@ -98,57 +91,94 @@ const VideoTimeline = ({ videos }) => {
       clearInterval(timer.current);
       clearTimeout(timerEnd.current);
     };
-  }, [active, next, slideTime, playing]);
+  }, [
+    active,
+    next,
+    slideTime,
+    playing,
+    progress,
+    activeVideoLoaded,
+    activeVideoHasError,
+  ]);
+
+  // ------------------ AUTO-PLAY ON VIDEO CHANGE ------------------
+  useEffect(() => {
+    if (
+      hasUserInteracted &&
+      !playing &&
+      activeVideoLoaded &&
+      !activeVideoHasError
+    ) {
+      setPlaying(true);
+    } else if (activeVideoHasError) {
+      setPlaying(false);
+    }
+  }, [active, hasUserInteracted, activeVideoLoaded, activeVideoHasError]);
+
+  // ------------------ VIDEO LOAD STATUS HANDLER ------------------
+  const handleVideoLoadStatus = useCallback((loaded, hasError) => {
+    setActiveVideoLoaded(loaded);
+    setActiveVideoHasError(hasError);
+
+    if (hasError) {
+      setPlaying(false);
+    }
+  }, []);
 
   return (
     <Box
       sx={{
-        position: "relative",
-        height: "100vh",
+        height: "100%",
+        // height: "fit-content",
         width: "100%",
-        color: "white",
+        paddingTop: 8,
         backgroundColor: "#1f3039",
-        display: "flex",
-        justifyContent: "center",
+        color: "white",
+
+        // alignItems: "center",
+        // justifyContent: { xs: "center" },
         overflow: "hidden",
+        gap: 2,
       }}
     >
-      <Box
+      {/* LEFT SECTION */}
+      {/* <Box
         ref={heroRef}
-        onMouseEnter={() => setCursorInHero(true)}
-        onMouseLeave={() => setCursorInHero(false)}
-        onMouseMove={moveCursor}
-        onTouchStart={(e) => {
-          setCursorInHero(true);
-          moveCursor(e);
-        }}
-        onTouchMove={moveCursor}
-        onTouchEnd={() => setCursorInHero(false)}
         sx={{
           position: "relative",
-          width: "90%",
-          height: "fit-content",
+          // height: "fit-content",
+          height: "100%",
           mt: "10vh",
         }}
       >
-        <HeroSection
+        <Bottom
+          active={active}
           homeData={videos}
           progress={progress}
-          active={active}
-          next={next}
-          prev={prev}
-          onTogglePlay={setPlaying}
+          onSelect={goto}
+          videoHasError={activeVideoHasError}
         />
-
-        <Cursor pos={cursorPos} isActive={cursorInHero} />
-      </Box>
-
+      </Box> */}
+      <HeroSection
+        homeData={videos}
+        progress={progress}
+        active={active}
+        next={next}
+        prev={prev}
+        onTogglePlay={setPlaying}
+        isGloballyPlaying={playing}
+        onFirstInteraction={() => setHasUserInteracted(true)}
+        hasUserInteracted={hasUserInteracted}
+        onVideoLoadStatus={handleVideoLoadStatus}
+      />
       <Bottom
         active={active}
         homeData={videos}
         progress={progress}
         onSelect={goto}
+        videoHasError={activeVideoHasError}
       />
+      {/* BOTTOM BAR */}
     </Box>
   );
 };
