@@ -482,7 +482,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (!versionId) return;
     setLoader(true);
     try {
-      await api.get(`scripts/${versionId}`);
+      const result = await api.get(`scripts/${id}?version=${versionId}`);
+      setTableExtraData(result?.data);
     } catch (e: any) {
       showToast.error(e?.detail);
     } finally {
@@ -508,8 +509,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleCloseCharacterModal = () => {
     setOpenCharacterModal(false);
   };
-
-  console.log(tableExtraData, "tableExtraData__");
 
   return (
     <>
