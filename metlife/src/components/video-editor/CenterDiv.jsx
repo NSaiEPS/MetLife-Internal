@@ -33,7 +33,7 @@ const CenterDiv = ({
   const hasStartedRef = useRef(false);
   const iconTimeoutRef = useRef(null);
   const retryCountRef = useRef(0);
-  const MAX_RETRIES = 2;
+  const MAX_RETRIES = 1;
 
   const toggleVideoPlay = () => {
     const v = videoRef.current;
@@ -75,6 +75,51 @@ const CenterDiv = ({
     // Toggle the global state
     onTogglePlay(!isGloballyPlaying);
   };
+
+  // Reset video state when video source changes
+  // useEffect(() => {
+  //   if (isActive && videoRef.current) {
+  //     setIsVideoLoaded(false);
+  //     setIsVideoLoading(true);
+  //     setVideoLoadError(false);
+  //     retryCountRef.current = 0;
+
+  //     const v = videoRef.current;
+  //     if (v.readyState >= 1) {
+  //       setIsVideoLoaded(true);
+  //       setIsVideoLoading(false);
+  //     }
+  //   }
+  // }, [isActive, data.final_video.url]);
+
+  // Clean up timeout on unmount
+  // useEffect(() => {
+  //   return () => {
+  //     if (iconTimeoutRef.current) {
+  //       clearTimeout(iconTimeoutRef.current);
+  //     }
+  //   };
+  // }, []);
+
+  // Animate triangles only when item becomes active
+  // useEffect(() => {
+  //   triAnim.start(
+  //     isActive
+  //       ? { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+  //       : { opacity: 0, scale: 0.8, transition: { duration: 0.3 } }
+  //   );
+  // }, [isActive, triAnim]);
+
+  // CRITICAL: Additional check to pause inactive videos
+  // useEffect(() => {
+  //   const v = videoRef.current;
+  //   if (!v) return;
+
+  //   // If this video is not active, ensure it's paused
+  //   if (!isActive) {
+  //     v.pause();
+  //   }
+  // }, [isActive]);
 
   const handleRetryLoad = (e) => {
     e.stopPropagation();
@@ -252,17 +297,29 @@ const CenterDiv = ({
   }, [duration]);
 
   return (
-    <Box sx={{ width: "80%", height: "100%", position: "relative" }}>
+    <Box
+      sx={{
+        // width: "60vw",
+        width: "auto",
+        height: "fit-content",
+        // background: "red",
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       {/* VIDEO BOX */}
       <Box
         onClick={toggleVideoPlay}
         sx={{
           position: "relative",
           width: "100%",
-          height: "fit-content",
           border: "2px solid rgba(255,255,255,0.2)",
           backgroundColor: "#1f3039",
           cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <video
@@ -271,9 +328,7 @@ const CenterDiv = ({
           preload="metadata"
           playsInline
           style={{
-            width: "100%",
-            // height: "100%",
-            objectFit: "cover",
+            height: "60vh",
             opacity: 0.75,
             transition: "opacity 0.3s",
           }}
@@ -359,6 +414,8 @@ const CenterDiv = ({
               position: "absolute",
               inset: 0,
               bgcolor: "rgba(0,0,0,0.5)",
+              height: "100%",
+              width: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -397,15 +454,25 @@ const CenterDiv = ({
         )}
 
         {/* Top Time Display */}
-        <Box sx={{ position: "absolute", top: 0, left: 0, p: 2 }}>
-          <Typography sx={{ color: "#61B2E9" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 5,
+            left: 5,
+            px: 3,
+            py: 1,
+            background: "#00000080",
+            borderRadius: 5,
+          }}
+        >
+          <Typography sx={{ color: "#34aeff" }}>
             {isActive
               ? String(Math.floor((progress / 100) * videoDuration)).padStart(
                   2,
                   "0"
                 )
               : "00"}
-            /{String(videoDuration).padStart(2, "0")}
+            /{String(Math.floor(videoDuration)).padStart(2, "0")}
           </Typography>
         </Box>
       </Box>
@@ -417,7 +484,7 @@ const CenterDiv = ({
           position: "absolute",
           top: "-24px",
           left: "-24px",
-          width: "60%",
+          width: "37%",
           zIndex: -1,
         }}
         animate={triAnim}
@@ -429,7 +496,7 @@ const CenterDiv = ({
           position: "absolute",
           bottom: "-24px",
           right: "-24px",
-          width: "60%",
+          width: "37%",
           zIndex: -1,
         }}
         animate={triAnim}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
@@ -9,16 +9,37 @@ export default function Bottom({
   onSelect,
   videoHasError = false,
 }) {
+  const containerRef = useRef(null);
+  const itemRefs = useRef([]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const activeItem = itemRefs.current[active];
+
+    if (!container || !activeItem) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+
+    const containerCenter = containerRect.width / 2;
+    const itemCenter = itemRect.left - containerRect.left + itemRect.width / 2;
+
+    const scrollLeft = container.scrollLeft + (itemCenter - containerCenter);
+
+    container.scrollTo({
+      left: scrollLeft,
+      behavior: "smooth",
+    });
+  }, [active]);
+
   return (
     <Box
       sx={{
         width: "100%",
-        height: "100%",
-        // position: "absolute",
-        bottom: 16,
-        left: 0,
         display: "flex",
         flexDirection: "column",
+        justifyContent: "start",
+        borderTop: "1px solid rgba(255,255,255,0.2)",
       }}
     >
       {/* Error Message */}
@@ -30,14 +51,19 @@ export default function Bottom({
         </Box>
       )}
 
-      <motion.div
-        style={{
+      <Box
+        ref={containerRef}
+        sx={{
+          padding: "4vw",
           display: "flex",
-          flexDirection: "column",
+          gap: "5vw",
           width: "100%",
-          overflow: "auto",
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollBehavior: "smooth",
+          "&::-webkit-scrollbar": { display: "none" },
+          overscrollBehavior: "contain", // ⬅️ prevents parent scroll chaining
         }}
-        transition={{ ease: "easeOut", duration: 0.35 }}
       >
         {homeData?.map((row, i) => {
           const isActive = i === active;
@@ -45,16 +71,16 @@ export default function Bottom({
           return (
             <Box
               key={i}
+              ref={(el) => (itemRefs.current[i] = el)}
               sx={{
-                width: "100%",
+                flex: "0 0 auto",
                 borderTop: "1px solid rgba(255,255,255,0.2)",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: "start",
                 background: isActive
                   ? "linear-gradient(to bottom, #284f68d5, transparent)"
                   : "transparent",
-                pl: `${i === 0 ? 4 : i * 19 + 4}vw`,
               }}
             >
               <Box
@@ -70,16 +96,20 @@ export default function Bottom({
                 <Box
                   sx={{
                     width: "100%",
+                    height: "8px",
                     background: isActive
                       ? videoHasError
                         ? "rgba(255,0,0,0.5)"
                         : "#fff"
                       : "linear-gradient(to right, #203D4F, #4A8BB5)",
+                    // position: "relative",
+                    // top: "-14px",
+                    // left: "50%",
                   }}
                 >
                   <img
                     src="/imgs/strip.png"
-                    style={{ height: "10px" }}
+                    style={{ height: "100%" }}
                     alt=""
                   />
                 </Box>
@@ -134,19 +164,17 @@ export default function Bottom({
                   />
                 </Box>
 
-                {/* Timer Icon */}
+                {/* Timer */}
                 {isActive && !videoHasError && (
                   <motion.img
                     src="/imgs/timer.png"
-                    alt=""
                     initial={{ left: 0 }}
                     animate={{ left: `${progress}%` }}
                     transition={{ ease: "linear", duration: 0.1 }}
                     style={{
                       position: "absolute",
-                      top: "-24px",
-                      width: "20px",
-                      left: 0,
+                      top: "-50px",
+                      width: 20,
                       transform: "translateX(-50%)",
                     }}
                   />
@@ -171,7 +199,7 @@ export default function Bottom({
             </Box>
           );
         })}
-      </motion.div>
+      </Box>
     </Box>
   );
 }

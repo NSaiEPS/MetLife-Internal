@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CenterDiv from "./CenterDiv";
 
 /* helper: shortest circular offset */
@@ -58,10 +60,11 @@ export default function HeroSection({
       onTouchEnd={handleUp}
       sx={{
         position: "relative",
-        width: "100%",
-        height: "70vh",
+        width: "80vw",
 
-        // height: { xs: "50vh", md: "45vh" },
+        // height: "fit-content",
+        // background: "red",
+        height: "70vh",
       }}
     >
       {homeData?.map((item, i) => {
@@ -77,8 +80,6 @@ export default function HeroSection({
             sx={{
               position: "absolute",
               inset: 0,
-              // width: "100%",
-              height: "fit-content",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -102,6 +103,28 @@ export default function HeroSection({
           </Box>
         );
       })}
+      <Button
+        onClick={() => prev()}
+        sx={{
+          position: "absolute",
+          left: "0",
+          top: "50%",
+          transform: "translate(0,-50%)",
+        }}
+      >
+        <ArrowBackIosNewIcon fontSize="large" />
+      </Button>
+      <Button
+        onClick={() => next()}
+        sx={{
+          position: "absolute",
+          right: "0",
+          top: "50%",
+          transform: "translate(0,-50%)",
+        }}
+      >
+        <ArrowForwardIosIcon fontSize="large" />
+      </Button>
     </Box>
   );
 }

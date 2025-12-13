@@ -128,49 +128,42 @@ const VideoTimeline = ({ videos }) => {
   return (
     <Box
       sx={{
-        height: "100%",
-        // height: "fit-content",
+        position: "relative",
         width: "100%",
-        paddingTop: 8,
         backgroundColor: "#1f3039",
         color: "white",
-
-        // alignItems: "center",
-        // justifyContent: { xs: "center" },
+        display: "flex",
+        gap: "2vh",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: { xs: "center" },
         overflow: "hidden",
-        gap: 2,
       }}
     >
-      {/* LEFT SECTION */}
-      {/* <Box
+      {/* TOP SECTION */}
+      <Box
         ref={heroRef}
         sx={{
           position: "relative",
-          // height: "fit-content",
-          height: "100%",
-          mt: "10vh",
+          height: "fit-content",
+          // mt: "10vh",
         }}
       >
-        <Bottom
-          active={active}
+        <HeroSection
           homeData={videos}
           progress={progress}
-          onSelect={goto}
-          videoHasError={activeVideoHasError}
+          active={active}
+          next={next}
+          prev={prev}
+          onTogglePlay={setPlaying}
+          isGloballyPlaying={playing}
+          onFirstInteraction={() => setHasUserInteracted(true)}
+          hasUserInteracted={hasUserInteracted}
+          onVideoLoadStatus={handleVideoLoadStatus}
         />
-      </Box> */}
-      <HeroSection
-        homeData={videos}
-        progress={progress}
-        active={active}
-        next={next}
-        prev={prev}
-        onTogglePlay={setPlaying}
-        isGloballyPlaying={playing}
-        onFirstInteraction={() => setHasUserInteracted(true)}
-        hasUserInteracted={hasUserInteracted}
-        onVideoLoadStatus={handleVideoLoadStatus}
-      />
+      </Box>
+
+      {/* BOTTOM BAR */}
       <Bottom
         active={active}
         homeData={videos}
@@ -178,7 +171,6 @@ const VideoTimeline = ({ videos }) => {
         onSelect={goto}
         videoHasError={activeVideoHasError}
       />
-      {/* BOTTOM BAR */}
     </Box>
   );
 };
