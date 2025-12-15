@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
 import { motion } from "framer-motion";
 
 export default function Bottom({
@@ -11,6 +12,28 @@ export default function Bottom({
 }) {
   const containerRef = useRef(null);
   const itemRefs = useRef([]);
+
+  // const downloadVideo = async (url, filename = "video.mp4") => {
+  //   try {
+  //     const res = await fetch(url);
+  //     if (!res.ok) throw new Error("Failed to fetch video");
+
+  //     const blob = await res.blob();
+  //     const blobUrl = window.URL.createObjectURL(blob);
+
+  //     const a = document.createElement("a");
+  //     a.href = blobUrl;
+  //     a.download = filename;
+  //     document.body.appendChild(a);
+  //     a.click();
+
+  //     document.body.removeChild(a);
+  //     window.URL.revokeObjectURL(blobUrl);
+  //   } catch (err) {
+  //     console.error("Video download failed:", err);
+  //     alert("Unable to download video");
+  //   }
+  // };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -54,7 +77,7 @@ export default function Bottom({
       <Box
         ref={containerRef}
         sx={{
-          padding: "4vw",
+          padding: "2vw 4vw",
           display: "flex",
           gap: "5vw",
           width: "100%",
@@ -65,31 +88,77 @@ export default function Bottom({
           overscrollBehavior: "contain", // ⬅️ prevents parent scroll chaining
         }}
       >
-        {homeData?.map((row, i) => {
+        {homeData.map((row, i) => {
           const isActive = i === active;
 
           return (
             <Box
               key={i}
+              onClick={() => !isActive && onSelect(i)}
               ref={(el) => (itemRefs.current[i] = el)}
               sx={{
+                position: "relative",
                 flex: "0 0 auto",
-                borderTop: "1px solid rgba(255,255,255,0.2)",
                 display: "flex",
+                width: "20vw",
+                gap: 1,
                 flexDirection: "column",
                 justifyContent: "start",
-                background: isActive
-                  ? "linear-gradient(to bottom, #284f68d5, transparent)"
-                  : "transparent",
+                cursor: isActive ? "default" : "pointer",
               }}
             >
               <Box
-                onClick={() => !isActive && onSelect(i)}
+                sx={{
+                  width: "100%",
+                  position: "relative",
+                  overflow: "hidden",
+                  opacity: isActive ? 1 : 0.6,
+                }}
+              >
+                <Box
+                  component="img"
+                  src={row.image_urls[0]}
+                  alt=""
+                  sx={{
+                    height: "17vh",
+                    width: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    transition: "opacity 0.3s ease",
+                    display: "block",
+                  }}
+                />
+
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation(); // 🔥 parent click se bachao
+                    downloadVideo(row?.final_video?.url, `${row?.ost}.mp4`);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    minWidth: "auto",
+                    p: "2px",
+                    backgroundColor: "rgba(0,0,0,0.4)",
+                    "&:hover": {
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                    },
+                  }}
+                >
+                  <DownloadIcon sx={{ color: "#fff", fontSize: 18 }} />
+                </Button>
+              </Box>
+
+              <Box
                 sx={{
                   position: "relative",
-                  width: { xs: "50vw", md: "17vw" },
+                  width: "100%",
                   userSelect: "none",
-                  cursor: isActive ? "default" : "pointer",
+                  borderTop: "1px solid rgba(255,255,255,0.2)",
+                  background: isActive
+                    ? "linear-gradient(to bottom, #284f68d5, transparent)"
+                    : "transparent",
                 }}
               >
                 {/* Bar */}
@@ -97,14 +166,13 @@ export default function Bottom({
                   sx={{
                     width: "100%",
                     height: "8px",
+                    display: "flex",
+                    position: "relative",
                     background: isActive
                       ? videoHasError
                         ? "rgba(255,0,0,0.5)"
                         : "#fff"
                       : "linear-gradient(to right, #203D4F, #4A8BB5)",
-                    // position: "relative",
-                    // top: "-14px",
-                    // left: "50%",
                   }}
                 >
                   <img
@@ -164,22 +232,6 @@ export default function Bottom({
                   />
                 </Box>
 
-                {/* Timer */}
-                {isActive && !videoHasError && (
-                  <motion.img
-                    src="/imgs/timer.png"
-                    initial={{ left: 0 }}
-                    animate={{ left: `${progress}%` }}
-                    transition={{ ease: "linear", duration: 0.1 }}
-                    style={{
-                      position: "absolute",
-                      top: "-50px",
-                      width: 20,
-                      transform: "translateX(-50%)",
-                    }}
-                  />
-                )}
-
                 {/* Error Icon */}
                 {isActive && videoHasError && (
                   <Box
@@ -196,6 +248,22 @@ export default function Bottom({
                   </Box>
                 )}
               </Box>
+
+              {/* Timer */}
+              {isActive && !videoHasError && (
+                <motion.img
+                  src="/imgs/timer.png"
+                  initial={{ left: 0 }}
+                  animate={{ left: `${progress}%` }}
+                  transition={{ ease: "linear", duration: 0.1 }}
+                  style={{
+                    position: "absolute",
+                    top: "-18px",
+                    width: 21,
+                    transform: "translateX(-50%)",
+                  }}
+                />
+              )}
             </Box>
           );
         })}
