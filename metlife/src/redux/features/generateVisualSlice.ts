@@ -21,7 +21,7 @@ interface SceneData {
 interface GenerateVisualContentState {
   generateVisualLoader: boolean;
   generateVisualContentData: VisualContent;
-  scenesData: [];
+  scenesData: {};
 }
 
 interface GenerateVisualContentState {

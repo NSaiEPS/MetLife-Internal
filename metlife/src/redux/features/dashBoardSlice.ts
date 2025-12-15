@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import type { AppDispatch,  } from "../store";
+import type { AppDispatch,} from "../store";
 import { toast } from "react-toastify";
 import api from "../../api/axios.ts";
 import { apiErrorHandling } from "../../utils/index.ts";

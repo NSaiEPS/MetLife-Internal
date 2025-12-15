@@ -7,6 +7,8 @@ import scriptSlice from "./features/scriptSlice";
 import generateVisualSlice from "./features/generateVisualSlice";
 import audioAnimationSlice from "./features/audioAnimationSlice";
 import promptSlice from "./features/promptSlice";
+import conversationalSlice from "./features/conversationalSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +19,7 @@ export const store = configureStore({
     AudioAnimation: audioAnimationSlice,
     Prompts: promptSlice,
     Script: scriptSlice,
+    Conversational: conversationalSlice,
   },
 });
 

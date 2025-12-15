@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, type ChangeEvent, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -6,6 +6,11 @@ import {
   Paper,
   Stack,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Chip,
 } from "@mui/material";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
@@ -22,6 +27,7 @@ import api from "../../api/axios";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { showToast } from "../../utils/toast";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
+import { postStitchAllVideos } from "../../redux/features/conversationalSlice";
 
 interface ClipData {
   file: File;
@@ -36,8 +42,20 @@ const UploadConversationalClipsPage: React.FC = () => {
     (store: RootState) => store.GenerateVisualContent
   );
   const title = scenesData?.title;
-  const [loading, setLoading] = useState<boolean>(false);
-  const [stitchedVideo, setStitchedVideo] = useState();
+  const { stitchedVideoUrl, conversationalLoader } = useSelector(
+    (state) => state.Conversational
+  );
+  const [uploadLoading, setUploadLoading] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const uploadedCount =
+    scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
+      ?.length || 0;
+  const remainingScenes =
+    scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
+    [];
+  const maxFileSize = 1 * 1024 * 1024; // 1 MB
 
   const handleUpload = async (
     scene: { scene_id: string; scene_number: number },
@@ -46,34 +64,50 @@ const UploadConversationalClipsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Correct key!
-    setClips((prev) => ({
+    if (file.size > maxFileSize) {
+      showToast.error("File size must be less than or equal to 1 MB");
+      e.target.value = ""; // reset input
+      return;
+    }
+
+    setUploadLoading((prev) => ({
       ...prev,
-      [scene.scene_id]: {
-        file,
-        preview: URL.createObjectURL(file),
-      },
+      [scene.scene_id]: true,
     }));
-
-    const formData = new FormData();
-    formData.append("script_id", id);
-    formData.append("scene_id", scene.scene_id);
-    formData.append("scene_number", String(scene.scene_number));
-    formData.append("file", file);
-
-    const res = await uploadSceneClip(formData);
-    if (res?.data?.upload_url) {
+    try {
       setClips((prev) => ({
         ...prev,
         [scene.scene_id]: {
-          ...prev[scene.scene_id],
-          upload_url: res.data.upload_url,
+          file,
+          preview: URL.createObjectURL(file),
         },
+      }));
+
+      const formData = new FormData();
+      formData.append("script_id", id);
+      formData.append("scene_id", scene.scene_id);
+      formData.append("scene_number", String(scene.scene_number));
+      formData.append("file", file);
+
+      const res = await uploadSceneClip(formData);
+      if (res?.url) {
+        setClips((prev) => ({
+          ...prev,
+          [scene.scene_id]: {
+            ...prev[scene.scene_id],
+            upload_url: res.url,
+          },
+        }));
+      }
+    } catch (error) {
+      showToast.error("Upload failed");
+    } finally {
+      setUploadLoading((prev) => ({
+        ...prev,
+        [scene.scene_id]: false,
       }));
     }
   };
-
-  console.log(clips, "check__clips");
 
   const uploadSceneClip = async (formData: FormData) => {
     try {
@@ -98,65 +132,43 @@ const UploadConversationalClipsPage: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!scenesData?.scenes) return;
-
-    const mapped: any = {};
-
-    scenesData?.scenes.forEach((scene: any) => {
-      mapped[scene.scene_id] = {
-        upload_url: scene.upload_url || null,
-        preview: null,
-        file: null,
-      };
-    });
-
-    setClips(mapped);
-  }, [scenesData?.scenes]);
-
-  console.log(scenesData, "check");
-
-  
-
-  const handleStichVideo = async () => {
-    // check if at least one scene has no upload_url
-    const hasMissingVideos = scenesData?.scenes?.some(
-      (scene) => !clips[scene.scene_id]?.upload_url
-    );
-
-    if (!hasMissingVideos) {
-      showToast.error("Please upload all clips before stitching the video.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // prepare backend-required URL encoded body
-      const body = new URLSearchParams();
-      body.append("script_id", id);
-
-      const result = await api.post("/upload-clip/stitch-script-ffmpeg", body, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+    if (scenesData?.scenes) {
+      const mapped: any = {};
+      scenesData?.scenes.forEach((scene: any) => {
+        mapped[scene.scene_id] = {
+          upload_url: scene.upload_url || null,
+          preview: null,
+          file: null,
+        };
       });
 
-      if (result?.status) {
-        setStitchedVideo(result?.data?.stitched_video_url);
-        showToast.success("Video stitching started!");
-      }
-    } catch (e: any) {
-      showToast.error(e?.detail || "Failed to stitch video!");
-    } finally {
-      setLoading(false);
+      setClips(mapped);
     }
+  }, [scenesData?.scenes]);
+
+  const handleStitchClick = () => {
+    if (uploadedCount) {
+      setOpenConfirm(true);
+      return;
+    }
+    if (uploadedCount === 0) {
+      showToast.error(
+        "No uploaded video found. Please upload at least one clip."
+      );
+      return;
+    }
+    handleStichVideo();
+  };
+
+  const handleStichVideo = () => {
+    dispatch(postStitchAllVideos(id, setOpenConfirm));
   };
 
   return (
     <>
       <div className={styles.container}>
         <OneFrameHeader />
-        {loading && <FullScreenGradientLoader text="loading..." />}
+        {conversationalLoader && <FullScreenGradientLoader text="loading..." />}
         {scenesData?.scenes?.length && scenesData?.scenes?.length > 0 ? (
           <>
             <div className={styles.innerContainer}>
@@ -208,7 +220,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                           </Typography>
                         </Box>
 
-                        <Button
+                        {/* <Button
                           variant="contained"
                           component="label"
                           sx={{
@@ -222,7 +234,35 @@ const UploadConversationalClipsPage: React.FC = () => {
                             hidden
                             accept="video/*"
                             type="file"
-                            // onChange={(e) => handleUpload(scene.id, e)}
+                            onChange={(e) => handleUpload(scene, e)}
+                          />
+                        </Button> */}
+
+                        <Button
+                          variant="contained"
+                          component="label"
+                          disabled={uploadLoading[scene.scene_id] || clips[scene.scene_id]?.upload_url}
+                          sx={{
+                            borderRadius: "10px",
+                            textTransform: "none",
+                            padding: "10px 25px",
+                            minWidth: "140px",
+                          }}
+                        >
+                          {uploadLoading[scene.scene_id] ? (
+                            <CircularProgress
+                              size={20}
+                              sx={{ color: "white" }}
+                            />
+                          ) : (
+                            "Upload Clip"
+                          )}
+
+                          <input
+                            hidden
+                            accept="video/*"
+                            type="file"
+                            disabled={clips[scene.scene_id]?.upload_url}
                             onChange={(e) => handleUpload(scene, e)}
                           />
                         </Button>
@@ -246,7 +286,8 @@ const UploadConversationalClipsPage: React.FC = () => {
                               borderRadius: "10px",
                             }}
                           />
-                        ) : clips[scene.scene_id]?.preview ? (
+                        )
+                         : clips[scene.scene_id]?.preview ? (
                           <video
                             src={clips[scene.scene_id].preview}
                             controls
@@ -256,7 +297,8 @@ const UploadConversationalClipsPage: React.FC = () => {
                               borderRadius: "10px",
                             }}
                           />
-                        ) : (
+                        )
+                         : (
                           <Typography color="gray" sx={{ p: 2 }}>
                             No clip uploaded
                           </Typography>
@@ -266,7 +308,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                   ))}
                 </Stack>
 
-                {/* Bottom stitching section */}
                 <Box
                   sx={{
                     display: "flex",
@@ -310,8 +351,13 @@ const UploadConversationalClipsPage: React.FC = () => {
 
                   <Button
                     variant="contained"
-                    onClick={handleStichVideo}
-                    disabled={!allUploaded}
+                    // onClick={handleStichVideo}
+                    onClick={handleStitchClick}
+                    disabled={
+                      !allUploaded ||
+                      stitchedVideoUrl ||
+                      scenesData?.stitched_video?.url
+                    }
                     sx={{
                       borderRadius: "10px",
                       padding: "10px 25px",
@@ -323,31 +369,115 @@ const UploadConversationalClipsPage: React.FC = () => {
                   </Button>
                 </Box>
 
-                {stitchedVideo && (
-                  <Box
-                    sx={{
-                      marginTop: "2rem",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #d3e6f9",
-                      background: "white",
-                    }}
-                  >
-                    <Typography fontSize="20px" fontWeight={600} mb={2}>
-                      Final Stitched Video
+                <Dialog
+                  open={openConfirm}
+                  onClose={() => setOpenConfirm(false)}
+                  maxWidth="sm"
+                  fullWidth
+                >
+                  <DialogTitle sx={{ fontWeight: 600 }}>
+                    Confirm Stitching
+                  </DialogTitle>
+
+                  <DialogContent>
+                    <Typography sx={{ mb: 2 }}>
+                      You’ve uploaded only <b>one clip</b>. The following scenes
+                      are missing:
                     </Typography>
 
-                    <video
-                      src={stitchedVideo}
-                      controls
-                      style={{
-                        width: "100%",
-                        height: "50vh",
-                        borderRadius: "10px",
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 1,
+                        mb: 2,
                       }}
-                    />
-                  </Box>
-                )}
+                    >
+                      {remainingScenes.map((scene) => (
+                        <Chip
+                          key={scene.scene_id}
+                          label={`Scene ${scene?.scene_number}`}
+                          variant="outlined"
+                          color="info"
+                        />
+                      ))}
+                    </Box>
+
+                    <Typography variant="body2" color="text.secondary">
+                      You can still proceed, but the final video will include
+                      only the uploaded clip.
+                    </Typography>
+                  </DialogContent>
+
+                  {/* {remainingScenes.length > 0 && (
+                    <>
+                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                        Clips not uploaded:
+                      </Typography>
+
+                      <ul
+                        style={{
+                          marginTop: 8,
+                          paddingLeft: 18,
+                          width: "200px",
+                        }}
+                      >
+                        {remainingScenes.map((scene) => (
+                          <li key={scene.scene_id}>
+                            Scene {scene.scene_number}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )} */}
+
+                  <DialogActions>
+                    <Button
+                      onClick={() => setOpenConfirm(false)}
+                      color="inherit"
+                    >
+                      No
+                    </Button>
+
+                    <Button
+                      onClick={handleStichVideo}
+                      variant="contained"
+                      color="primary"
+                      disabled={conversationalLoader}
+                    >
+                      Yes
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
+                {stitchedVideoUrl ||
+                  (scenesData?.stitched_video?.url && (
+                    <Box
+                      sx={{
+                        marginTop: "2rem",
+                        padding: "20px",
+                        borderRadius: "12px",
+                        border: "1px solid #d3e6f9",
+                        background: "white",
+                      }}
+                    >
+                      <Typography fontSize="20px" fontWeight={600} mb={2}>
+                        Final Stitched Video
+                      </Typography>
+
+                      <video
+                        src={
+                          stitchedVideoUrl || scenesData?.stitched_video?.url
+                        }
+                        controls
+                        style={{
+                          width: "100%",
+                          height: "50vh",
+                          borderRadius: "10px",
+                        }}
+                      />
+                    </Box>
+                  ))}
               </Box>
             </div>
           </>

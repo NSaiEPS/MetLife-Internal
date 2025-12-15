@@ -219,7 +219,7 @@ export const postGenerateVideoBatch =
       if (res.status) {
         dispatch(setVideoAnimationData(res.data));
         const seconds = convertToISTParts(res.data.estimated_completion_at);
-        toast.success(`Video Generated in ${Math.ceil(seconds / 60)} mins`);
+        toast.success(`Please wait your videos are generating in ${Math.ceil(seconds / 60)} mins`);
       }
     } catch {
       toast.error("Failed to generate video batch!");
