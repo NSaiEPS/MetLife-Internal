@@ -89,7 +89,6 @@ const ScriptPage: React.FC = () => {
           <NoDataMessage filter={false} loading={loading} />
         )}
       </div>
-
       <Footer />
     </div>
   );

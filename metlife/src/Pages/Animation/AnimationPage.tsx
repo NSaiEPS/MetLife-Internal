@@ -82,7 +82,6 @@ const AnimationPage: React.FC = () => {
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(0);
   const waitingTime = convertToISTParts(
     videoAnimationData?.estimated_completion_at ||
       sceneData?.estimated_completion_at
