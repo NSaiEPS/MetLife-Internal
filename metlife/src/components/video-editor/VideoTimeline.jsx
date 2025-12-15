@@ -6,7 +6,7 @@ import Bottom from "./Bottom";
 const TICK = 100;
 
 const normalizeDuration = (duration) => {
-  if (!duration) return 10_000;
+  if (!duration) return 6000;
   return duration * 1000;
 };
 
