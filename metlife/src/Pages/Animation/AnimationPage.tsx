@@ -294,7 +294,7 @@ const AnimationPage: React.FC = () => {
                     />
                   )}
 
-                  {
+                  {/* {
                     videoAnimationData?.length > 0 &&
                       sceneData?.video_exists === true && (
                         <>
@@ -336,7 +336,7 @@ const AnimationPage: React.FC = () => {
 
                     //   </>
                     // )
-                  }
+                  } */}
                   {videoAnimationData?.length > 0 && (
                     <Grid container sx={{ mt: 4 }}>
                       <Typography

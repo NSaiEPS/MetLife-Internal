@@ -1,7 +1,30 @@
-import React, { useEffect, useRef } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Modal,
+  Radio,
+  RadioGroup,
+  Typography,
+} from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { motion } from "framer-motion";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  color: "#ffffff",
+  bgcolor: "#000000",
+  border: "2px solid #000",
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
 
 export default function Bottom({
   homeData,
@@ -12,28 +35,46 @@ export default function Bottom({
 }) {
   const containerRef = useRef(null);
   const itemRefs = useRef([]);
+  const [modalIndex, setModalIndex] = useState(null);
+  const [modalOST, setModalOST] = useState("");
+  const [entryAnimation, setEntryAnimation] = useState("fade_in");
+  const [exitAnimation, setExitAnimation] = useState("fade_out");
 
-  // const downloadVideo = async (url, filename = "video.mp4") => {
-  //   try {
-  //     const res = await fetch(url);
-  //     if (!res.ok) throw new Error("Failed to fetch video");
+  const buttonClickHandler = (i) => {
+    const elem = homeData[i];
+    setModalIndex(i);
+    setModalOST(elem?.ost);
+    setEntryAnimation(elem?.applied_animation?.entry || "fade_in");
+    setExitAnimation(elem?.applied_animation?.exit || "fade_out");
+  };
 
-  //     const blob = await res.blob();
-  //     const blobUrl = window.URL.createObjectURL(blob);
+  const handleModalSubmit = async () => {
+    const row = homeData[modalIndex];
 
-  //     const a = document.createElement("a");
-  //     a.href = blobUrl;
-  //     a.download = filename;
-  //     document.body.appendChild(a);
-  //     a.click();
+    const payload = {
+      scene_id: row.scene_id,
+      entry_animation: entryAnimation,
+      exit_animation: exitAnimation,
+    };
 
-  //     document.body.removeChild(a);
-  //     window.URL.revokeObjectURL(blobUrl);
-  //   } catch (err) {
-  //     console.error("Video download failed:", err);
-  //     alert("Unable to download video");
-  //   }
-  // };
+    try {
+      console.log("API Payload", payload);
+
+      // 🔗 API CALL
+      // await fetch("/api/scene/apply-animation", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
+
+      // // ✅ Modal close
+      setModalIndex(null);
+    } catch (err) {
+      console.error("Animation apply failed", err);
+    }
+  };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -55,6 +96,16 @@ export default function Bottom({
     });
   }, [active]);
 
+  const downloadVideo = (s3_url, name) => {
+    const link = document.createElement("a");
+    link.href = s3_url;
+    link.setAttribute("download", `${name}`);
+    link.setAttribute("target", "_blank");
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
   return (
     <Box
       sx={{
@@ -85,7 +136,7 @@ export default function Bottom({
           overflowY: "hidden",
           scrollBehavior: "smooth",
           "&::-webkit-scrollbar": { display: "none" },
-          overscrollBehavior: "contain", // ⬅️ prevents parent scroll chaining
+          // overscrollBehavior: "contain", // ⬅️ prevents parent scroll chaining
         }}
       >
         {homeData.map((row, i) => {
@@ -149,7 +200,6 @@ export default function Bottom({
                   <DownloadIcon sx={{ color: "#fff", fontSize: 18 }} />
                 </Button>
               </Box>
-
               <Box
                 sx={{
                   position: "relative",
@@ -248,7 +298,6 @@ export default function Bottom({
                   </Box>
                 )}
               </Box>
-
               {/* Timer */}
               {isActive && !videoHasError && (
                 <motion.img
@@ -264,9 +313,145 @@ export default function Bottom({
                   }}
                 />
               )}
+              {isActive && (
+                <Button onClick={() => buttonClickHandler(i)}>
+                  Add Animation
+                </Button>
+              )}
             </Box>
           );
         })}
+
+        {modalIndex !== null && (
+          <Modal open onClose={() => setModalIndex(null)}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 700,
+                bgcolor: "#f5fbff",
+                borderRadius: 3,
+                boxShadow: 24,
+                p: 3,
+              }}
+            >
+              {/* Title */}
+              <Typography variant="h5" fontWeight={600} mb={2}>
+                Animation Toolkit
+              </Typography>
+
+              {/* Card */}
+              <Box
+                sx={{
+                  bgcolor: "#fff",
+                  borderRadius: 2,
+                  p: 3,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography fontWeight={600} mb={2}>
+                    OST :
+                  </Typography>
+                  <Typography fontWeight={600} mb={2}>
+                    {modalOST}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" gap={3}>
+                  {/* Entry */}
+                  <Box
+                    sx={{
+                      flex: 1,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: 2,
+                      p: 2,
+                    }}
+                  >
+                    <Typography fontWeight={500} mb={1}>
+                      Entry
+                    </Typography>
+
+                    <RadioGroup
+                      value={entryAnimation}
+                      onChange={(e) => setEntryAnimation(e.target.value)}
+                    >
+                      <FormControlLabel
+                        value="none"
+                        control={<Radio />}
+                        label="none"
+                      />
+                      <FormControlLabel
+                        value="fade_in"
+                        control={<Radio />}
+                        label="fade_in"
+                      />
+                      <FormControlLabel
+                        value="zoom_in"
+                        control={<Radio />}
+                        label="zoom_in"
+                      />
+                      <FormControlLabel
+                        value="pan_in"
+                        control={<Radio />}
+                        label="pan_in"
+                      />
+                    </RadioGroup>
+                  </Box>
+
+                  {/* Exit */}
+                  <Box
+                    sx={{
+                      flex: 1,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: 2,
+                      p: 2,
+                    }}
+                  >
+                    <Typography fontWeight={500} mb={1}>
+                      Exit
+                    </Typography>
+
+                    <RadioGroup
+                      value={exitAnimation}
+                      onChange={(e) => setExitAnimation(e.target.value)}
+                    >
+                      <FormControlLabel
+                        value="none"
+                        control={<Radio />}
+                        label="none"
+                      />
+                      <FormControlLabel
+                        value="fade_out"
+                        control={<Radio />}
+                        label="fade_out"
+                      />
+                      <FormControlLabel
+                        value="zoom_out"
+                        control={<Radio />}
+                        label="zoom_out"
+                      />
+                      <FormControlLabel
+                        value="pan_out"
+                        control={<Radio />}
+                        label="pan_out"
+                      />
+                    </RadioGroup>
+                  </Box>
+                </Box>
+
+                {/* Actions */}
+                <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
+                  <Button onClick={() => setModalIndex(null)}>Cancel</Button>
+                  <Button onClick={handleModalSubmit} variant="contained">
+                    Apply
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Modal>
+        )}
       </Box>
     </Box>
   );
