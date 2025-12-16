@@ -33,6 +33,28 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 interface ClipData {
   file: File;
   preview: string;
+  upload_url: string | null;
+}
+
+export interface Scene {
+  scene_id: string;
+  scene_number: number;
+  upload_url: string | null;
+  uploaded_at?: string;
+  ost?: string;
+}
+
+export interface StitchedVideo {
+  url: string;
+  updated_at: string;
+}
+
+export interface ScenesData {
+  script_id: string;
+  title: string;
+  video_style: string;
+  stitched_video?: StitchedVideo;
+  scenes: Scene[];
 }
 
 const UploadConversationalClipsPage: React.FC = () => {
@@ -42,23 +64,23 @@ const UploadConversationalClipsPage: React.FC = () => {
   const { generateVisualLoader, scenesData } = useSelector(
     (store: RootState) => store.GenerateVisualContent
   );
+  console.log(scenesData, "scenesData");
+
   const title = scenesData?.title;
   const {
     stitchedVideoUrl,
     conversationalLoader,
     uploadSceneClipLoader,
     uploadSceneClipResponse,
-  } = useSelector((state) => state.Conversational);
+  } = useSelector((state: RootState) => state.Conversational);
   const [openConfirm, setOpenConfirm] = useState(false);
   const uploadedCount =
     scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
       ?.length || 0;
-  console.log(uploadedCount, "count");
   const remainingScenes =
     scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
     [];
   const hasMissingScenes = remainingScenes.length > 0;
-
   const maxFileSize = 1 * 1024 * 1024;
 
   useEffect(() => {
