@@ -7,14 +7,17 @@ export interface ConversationalState {
   stitchedVideoUrl: string | null;
   conversationalLoader: boolean;
   uploadSceneClipLoader: Record<string, boolean>;
-  uploadSceneClipResponse: Record<string, string>;
+  uploadSceneClipResponse: {
+    scene_id: string;
+    url: string;
+  } | null;
 }
 
 const initialState: ConversationalState = {
   stitchedVideoUrl: null,
   conversationalLoader: false,
   uploadSceneClipLoader: {},
-  uploadSceneClipResponse: {},
+  uploadSceneClipResponse: null,
 };
 
 const ConversationalClipsSlice = createSlice({
@@ -27,9 +30,18 @@ const ConversationalClipsSlice = createSlice({
     setConversationalLoader(state, action: PayloadAction<boolean>) {
       state.conversationalLoader = action.payload;
     },
-    setUploadSceneClipLoader(state, action: PayloadAction<any>) {
-      state.uploadSceneClipLoader = action.payload;
+    // setUploadSceneClipLoader(state, action: PayloadAction<any>) {
+    //   state.uploadSceneClipLoader = action.payload;
+    // },
+
+    setUploadSceneClipLoader(
+      state,
+      action: PayloadAction<{ scene_id: string; loading: boolean }>
+    ) {
+      state.uploadSceneClipLoader[action.payload.scene_id] =
+        action.payload.loading;
     },
+
     setUploadSceneClipResponse(state, action: PayloadAction<any>) {
       state.uploadSceneClipResponse = action.payload;
     },
@@ -69,17 +81,36 @@ export const postStitchAllVideos =
   };
 
 export const uploadSceneClip = (data: any) => async (dispatch: AppDispatch) => {
-  dispatch(setUploadSceneClipLoader(true));
+  // dispatch(setUploadSceneClipLoader(true));
+  dispatch(
+    setUploadSceneClipLoader({
+      scene_id: data.get("scene_id"),
+      loading: true,
+    })
+  );
   try {
     const result = await api.post("upload-clip/upload-scene-clip", data);
     if (result?.status) {
-      dispatch(setUploadSceneClipResponse(result?.data));
-      toast.success("Video scene uploaded successfully!");
+      // dispatch(setUploadSceneClipResponse(result?.data));
+      dispatch(
+        setUploadSceneClipResponse({
+          scene_id: data.get("scene_id"),
+          url: result.data.url,
+        })
+      );
+
+      // toast.success("Video scene uploaded successfully!");
     }
   } catch (error) {
     console.error(error);
     toast.error("Upload Failed!");
   } finally {
-    dispatch(setUploadSceneClipLoader(false));
+    // dispatch(setUploadSceneClipLoader(false));
+    dispatch(
+      setUploadSceneClipLoader({
+        scene_id: data.get("scene_id"),
+        loading: false,
+      })
+    );
   }
 };

@@ -22,7 +22,6 @@ import {
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
-import api from "../../api/axios";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { showToast } from "../../utils/toast";
 import {
@@ -40,19 +39,16 @@ const UploadConversationalClipsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
   const [clips, setClips] = useState<Record<number, ClipData>>({});
   const { id } = useParams<{ id: string }>();
+  const { generateVisualLoader, scenesData } = useSelector(
+    (store: RootState) => store.GenerateVisualContent
+  );
+  const title = scenesData?.title;
   const {
-    generateVisualLoader,
-    scenesData,
+    stitchedVideoUrl,
+    conversationalLoader,
     uploadSceneClipLoader,
     uploadSceneClipResponse,
-  } = useSelector((store: RootState) => store.GenerateVisualContent);
-  const title = scenesData?.title;
-  const { stitchedVideoUrl, conversationalLoader } = useSelector(
-    (state) => state.Conversational
-  );
-  // const [uploadLoading, setUploadLoading] = useState<Record<string, boolean>>(
-  //   {}
-  // );
+  } = useSelector((state) => state.Conversational);
   const [openConfirm, setOpenConfirm] = useState(false);
   const uploadedCount =
     scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
@@ -60,9 +56,23 @@ const UploadConversationalClipsPage: React.FC = () => {
   const remainingScenes =
     scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
     [];
-  const maxFileSize = 1 * 1024 * 1024; // 1 MB
+  const maxFileSize = 1 * 1024 * 1024;
 
-  const handleUpload = async (
+  useEffect(() => {
+    if (!uploadSceneClipResponse) return;
+
+    const { scene_id, url } = uploadSceneClipResponse;
+
+    setClips((prev) => ({
+      ...prev,
+      [scene_id]: {
+        ...prev[scene_id],
+        upload_url: url,
+      },
+    }));
+  }, [uploadSceneClipResponse]);
+
+  const handleUpload = (
     scene: { scene_id: string; scene_number: number },
     e: ChangeEvent<HTMLInputElement>
   ) => {
@@ -74,11 +84,6 @@ const UploadConversationalClipsPage: React.FC = () => {
       e.target.value = "";
       return;
     }
-
-    // setUploadLoading((prev) => ({
-    //   ...prev,
-    //   [scene.scene_id]: true,
-    // }));
 
     setClips((prev) => ({
       ...prev,
@@ -93,49 +98,24 @@ const UploadConversationalClipsPage: React.FC = () => {
     formData.append("scene_id", scene.scene_id);
     formData.append("scene_number", String(scene.scene_number));
     formData.append("file", file);
-
     dispatch(uploadSceneClip(formData));
-
-    // const res = await uploadSceneClip(formData);
-    if (uploadSceneClipResponse?.url) {
-      setClips((prev) => ({
-        ...prev,
-        [scene.scene_id]: {
-          ...prev[scene.scene_id],
-          upload_url: uploadSceneClipResponse.url,
-        },
-      }));
-    }
-
-    // finally {
-    //   setUploadLoading((prev) => ({
-    //     ...prev,
-    //     [scene.scene_id]: false,
-    //   }));
-    // }
   };
-
-  // const uploadSceneClip = async (formData: FormData) => {
-  //   try {
-  //     const res = await api.post("/upload-clip/upload-scene-clip", formData);
-  //     return res.data;
-  //   } catch (error) {
-  //     console.error("Upload Error:", error);
-  //     throw error;
-  //   }
-  // };
 
   const allUploaded = scenesData?.scenes?.every(
     (scene) => clips[scene.scene_id]
   );
 
   const handleDownloadAssets = () => {
-    dispatch(getDownloadAsset(id, title));
+    if (id && title) {
+      dispatch(getDownloadAsset(id, title));
+    }
   };
 
   useEffect(() => {
-    dispatch(getClipsData(id));
-  }, [dispatch]);
+    if (id) {
+      dispatch(getClipsData(id));
+    }
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (scenesData?.scenes) {
@@ -167,6 +147,7 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   const handleStichVideo = () => {
+    if (!id) return;
     dispatch(postStitchAllVideos(id, setOpenConfirm));
   };
 
@@ -193,7 +174,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                 </Typography>
 
                 <Stack spacing={3}>
-                  {scenesData?.scenes.map((scene, index) => (
+                  {scenesData?.scenes?.map((scene, index) => (
                     <Paper
                       key={scene.scene_id}
                       elevation={0}
@@ -226,29 +207,11 @@ const UploadConversationalClipsPage: React.FC = () => {
                           </Typography>
                         </Box>
 
-                        {/* <Button
-                          variant="contained"
-                          component="label"
-                          sx={{
-                            borderRadius: "10px",
-                            textTransform: "none",
-                            padding: "10px 25px",
-                          }}
-                        >
-                          Upload Clip
-                          <input
-                            hidden
-                            accept="video/*"
-                            type="file"
-                            onChange={(e) => handleUpload(scene, e)}
-                          />
-                        </Button> */}
-
                         <Button
                           variant="contained"
                           component="label"
                           disabled={
-                            uploadSceneClipLoader ||
+                            uploadSceneClipLoader?.[scene?.scene_id] ||
                             // uploadLoading[scene.scene_id] ||
                             clips[scene.scene_id]?.upload_url
                           }
@@ -259,8 +222,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                             minWidth: "140px",
                           }}
                         >
-                          {uploadSceneClipLoader ? (
-                            // uploadLoading[scene.scene_id]
+                          {uploadSceneClipLoader?.[scene?.scene_id] ? (
                             <CircularProgress
                               size={20}
                               sx={{ color: "white" }}
@@ -273,7 +235,10 @@ const UploadConversationalClipsPage: React.FC = () => {
                             hidden
                             accept="video/*"
                             type="file"
-                            disabled={clips[scene.scene_id]?.upload_url}
+                            disabled={
+                              uploadSceneClipLoader?.[scene?.scene_id] ||
+                              clips[scene?.scene_id]?.upload_url
+                            }
                             onChange={(e) => handleUpload(scene, e)}
                           />
                         </Button>
@@ -360,7 +325,6 @@ const UploadConversationalClipsPage: React.FC = () => {
 
                   <Button
                     variant="contained"
-                    // onClick={handleStichVideo}
                     onClick={handleStitchClick}
                     disabled={
                       !allUploaded ||
@@ -417,28 +381,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                       only the uploaded clip.
                     </Typography>
                   </DialogContent>
-
-                  {/* {remainingScenes.length > 0 && (
-                    <>
-                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                        Clips not uploaded:
-                      </Typography>
-
-                      <ul
-                        style={{
-                          marginTop: 8,
-                          paddingLeft: 18,
-                          width: "200px",
-                        }}
-                      >
-                        {remainingScenes.map((scene) => (
-                          <li key={scene.scene_id}>
-                            Scene {scene.scene_number}
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )} */}
 
                   <DialogActions>
                     <Button
