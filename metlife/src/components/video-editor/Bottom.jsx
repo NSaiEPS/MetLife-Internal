@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { motion } from "framer-motion";
-
+import { useDispatch } from "react-redux";
+import { downloadVideoWithUrl } from "../../../src/redux/features/audioAnimationSlice.ts";
 const style = {
   position: "absolute",
   top: "50%",
@@ -39,7 +40,7 @@ export default function Bottom({
   const [modalOST, setModalOST] = useState("");
   const [entryAnimation, setEntryAnimation] = useState("fade_in");
   const [exitAnimation, setExitAnimation] = useState("fade_out");
-
+  const dispatch = useDispatch();
   const buttonClickHandler = (i) => {
     const elem = homeData[i];
     setModalIndex(i);
@@ -96,15 +97,17 @@ export default function Bottom({
     });
   }, [active]);
 
-  const downloadVideo = (s3_url, name) => {
-    const link = document.createElement("a");
-    link.href = s3_url;
-    link.setAttribute("download", `${name}`);
-    link.setAttribute("target", "_blank");
+  const downloadVideo = (s3_url, name, index) => {
+    // const link = document.createElement("a");
+    // link.href = s3_url;
+    // link.setAttribute("download", `${name}`);
+    // link.setAttribute("target", "_blank");
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    // document.body.appendChild(link);
+    // link.click();
+    // link.remove();
+
+    dispatch(downloadVideoWithUrl(s3_url, name));
   };
   return (
     <Box
@@ -183,7 +186,10 @@ export default function Bottom({
                 <Button
                   onClick={(e) => {
                     e.stopPropagation(); // 🔥 parent click se bachao
-                    downloadVideo(row?.final_video?.url, `${row?.ost}.mp4`);
+                    downloadVideo(
+                      row?.final_video?.url,
+                      `${row?.ost}_Scene${i + 1}.mp4`
+                    );
                   }}
                   sx={{
                     position: "absolute",

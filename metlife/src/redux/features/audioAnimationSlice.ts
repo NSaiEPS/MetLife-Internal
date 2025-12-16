@@ -219,7 +219,11 @@ export const postGenerateVideoBatch =
       if (res.status) {
         dispatch(setVideoAnimationData(res.data));
         const seconds = convertToISTParts(res.data.estimated_completion_at);
-        toast.success(`Please wait your videos are generating in ${Math.ceil(seconds / 60)} mins`);
+        toast.success(
+          `Please wait your videos are generating in ${Math.ceil(
+            seconds / 60
+          )} mins`
+        );
       }
     } catch {
       toast.error("Failed to generate video batch!");
@@ -270,6 +274,104 @@ export const getSceneDetails =
       }
     } catch (error: any) {
       toast.error(error?.detail || "Failed to fetch scene details!");
+    } finally {
+      dispatch(setVideoAnimationLoader(false));
+    }
+  };
+
+// export const downloadVideoWithUrl =
+//   (url: string, title: string) => async (dispatch: any) => {
+//     try {
+//       const response = await api.get(`download/download-file?file_url=${url}`, {
+//         responseType: "blob",
+//         headers: {
+//           Accept: "application/octet-stream",
+//         },
+//       });
+
+//       let fileName = title;
+
+//       // // Try multiple header patterns
+//       // const disposition = response.headers["content-disposition"];
+
+//       // if (disposition) {
+//       //   const fileNameMatch = disposition.match(/filename="(.+?)"/);
+//       //   if (fileNameMatch) {
+//       //     fileName = fileNameMatch[1];
+//       //   }
+
+//       //   // filename=abc.zip
+//       //   const simpleFileName = disposition.match(/filename=(.+)/);
+//       //   if (!fileNameMatch && simpleFileName) {
+//       //     fileName = simpleFileName[1];
+//       //   }
+
+//       //   // RFC 5987 format → filename*=UTF-8''abc.zip
+//       //   const utfMatch = disposition.match(/filename\*\=UTF-8''(.+)/);
+//       //   if (utfMatch) {
+//       //     fileName = decodeURIComponent(utfMatch[1]);
+//       //   }
+//       // }
+
+//       const blobUrl = window.URL.createObjectURL(response.data);
+
+//       const a = document.createElement("a");
+//       a.href = blobUrl;
+//       a.download = title;
+//       a.click();
+
+//       window.URL.revokeObjectURL(blobUrl);
+//     } catch (error) {
+//       console.error("Download error:", error);
+//     } finally {
+//     }
+//   };
+
+export const downloadVideoWithUrl =
+  (fileUrl: string, title: string) => async (dispatch: any) => {
+    try {
+      dispatch(setVideoAnimationLoader(true));
+
+      const response = await api.get(
+        `download/download-file?file_url=${encodeURIComponent(fileUrl)}`,
+        {
+          responseType: "blob",
+          headers: {
+            Accept: "application/octet-stream", // IMPORTANT for mp4
+          },
+        }
+      );
+
+      // Read filename from header if provided
+      let fileName = title || "video.mp4";
+
+      const disposition = response.headers["content-disposition"];
+      if (disposition) {
+        const match1 = disposition.match(/filename="(.+?)"/);
+        if (match1) fileName = match1[1];
+
+        const match2 = disposition.match(/filename=(.+)/);
+        if (!match1 && match2) fileName = match2[1];
+
+        const utf = disposition.match(/filename\*=UTF-8''(.+)/);
+        if (utf) fileName = decodeURIComponent(utf[1]);
+      }
+
+      // Convert blob
+      const blob = new Blob([response.data], { type: "video/mp4" });
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Trigger download
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = fileName; // 👈 use resolved filename
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download error:", error);
     } finally {
       dispatch(setVideoAnimationLoader(false));
     }
