@@ -8,7 +8,7 @@ export interface ConversationalState {
   conversationalLoader: boolean;
   uploadSceneClipLoader: Record<string, boolean>;
   uploadSceneClipResponse: {
-    scene_id: string;
+    scene_id: number;
     url: string;
   } | null;
 }

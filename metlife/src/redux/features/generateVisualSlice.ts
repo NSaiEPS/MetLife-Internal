@@ -3,31 +3,24 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import { navigateTo } from "../../utils/navigate";
+import type {
+  SceneDataType,
+  SceneType,
+  VisualContentType,
+} from "../../utils/types";
 
 // ---------- Types ----------
-interface VisualContent {
-  id?: string;
-  prompt?: string;
-  visuals?: any[];
-  [key: string]: any;
-}
-
-interface SceneData {
-  scene_id: string;
-  scene_number: number;
-  upload_url: string | null;
-}
 
 interface GenerateVisualContentState {
   generateVisualLoader: boolean;
-  generateVisualContentData: VisualContent;
-  scenesData: {};
+  generateVisualContentData: VisualContentType;
+  scenesData: SceneDataType;
 }
 
-interface GenerateVisualContentState {
-  generateVisualLoader: boolean;
-  generateVisualContentData: VisualContent;
-}
+// interface GenerateVisualContentState {
+//   generateVisualLoader: boolean;
+//   generateVisualContentData: VisualContentType;
+// }
 
 // Async callback type
 type CallbackFn = (value: boolean) => void;
@@ -36,7 +29,13 @@ type CallbackFn = (value: boolean) => void;
 const initialState: GenerateVisualContentState = {
   generateVisualLoader: false,
   generateVisualContentData: {},
-  scenesData: [],
+  scenesData: {
+    scene_id: "",
+    scene_number: 0,
+    upload_url: "",
+    title: "",
+    scenes: [],
+  },
 };
 
 // ---------- Slice ----------
@@ -47,7 +46,10 @@ const GenerateVisualContentSlice = createSlice({
     setGenerateVisualLoader(state, action: PayloadAction<boolean>) {
       state.generateVisualLoader = action.payload;
     },
-    setGenerateVisualContentData(state, action: PayloadAction<VisualContent>) {
+    setGenerateVisualContentData(
+      state,
+      action: PayloadAction<VisualContentType>
+    ) {
       state.generateVisualContentData = action.payload;
     },
     updateGenerateVisual(state, action: PayloadAction<{ visuals?: any[] }>) {
@@ -56,11 +58,9 @@ const GenerateVisualContentSlice = createSlice({
       state.generateVisualContentData = actualVisualData;
     },
 
-    setScenesData(state, action: PayloadAction<SceneData[]>) {
+    setScenesData(state, action: PayloadAction<SceneDataType>) {
       state.scenesData = action.payload;
     },
-    // Optionally, you can implement removeDeletedImage if needed
-    // removeDeletedImage(state, action: PayloadAction<{ id: string }>) {}
   },
 });
 
@@ -175,53 +175,54 @@ export const postRegenerateImage =
     }
   };
 
-export const getDownloadAsset = (id: any, title) => async (dispatch: any) => {
-  dispatch(setGenerateVisualLoader(true));
-  try {
-    const response = await api.get(`download/${id}`, {
-      responseType: "blob",
-    });
+export const getDownloadAsset =
+  (id: any, title: string) => async (dispatch: any) => {
+    dispatch(setGenerateVisualLoader(true));
+    try {
+      const response = await api.get(`download/${id}`, {
+        responseType: "blob",
+      });
 
-    let fileName = title;
+      let fileName = title;
 
-    // Try multiple header patterns
-    const disposition = response.headers["content-disposition"];
+      // Try multiple header patterns
+      const disposition = response.headers["content-disposition"];
 
-    if (disposition) {
-      const fileNameMatch = disposition.match(/filename="(.+?)"/);
-      if (fileNameMatch) {
-        fileName = fileNameMatch[1];
+      if (disposition) {
+        const fileNameMatch = disposition.match(/filename="(.+?)"/);
+        if (fileNameMatch) {
+          fileName = fileNameMatch[1];
+        }
+
+        // filename=abc.zip
+        const simpleFileName = disposition.match(/filename=(.+)/);
+        if (!fileNameMatch && simpleFileName) {
+          fileName = simpleFileName[1];
+        }
+
+        // RFC 5987 format → filename*=UTF-8''abc.zip
+        const utfMatch = disposition.match(/filename\*\=UTF-8''(.+)/);
+        if (utfMatch) {
+          fileName = decodeURIComponent(utfMatch[1]);
+        }
       }
 
-      // filename=abc.zip
-      const simpleFileName = disposition.match(/filename=(.+)/);
-      if (!fileNameMatch && simpleFileName) {
-        fileName = simpleFileName[1];
-      }
+      const blobUrl = window.URL.createObjectURL(response.data);
 
-      // RFC 5987 format → filename*=UTF-8''abc.zip
-      const utfMatch = disposition.match(/filename\*\=UTF-8''(.+)/);
-      if (utfMatch) {
-        fileName = decodeURIComponent(utfMatch[1]);
-      }
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = title;
+      a.click();
+
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download error:", error);
+    } finally {
+      dispatch(setGenerateVisualLoader(false));
     }
+  };
 
-    const blobUrl = window.URL.createObjectURL(response.data);
-
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = title;
-    a.click();
-
-    window.URL.revokeObjectURL(blobUrl);
-  } catch (error) {
-    console.error("Download error:", error);
-  } finally {
-    dispatch(setGenerateVisualLoader(false));
-  }
-};
-
-export const getClipsData = (id) => async (dispatch: any) => {
+export const getClipsData = (id: string) => async (dispatch: any) => {
   dispatch(setGenerateVisualLoader(true));
   try {
     const response = await api.get(
@@ -230,7 +231,6 @@ export const getClipsData = (id) => async (dispatch: any) => {
     // console.log(response, "response__check");
     // dispatch(setScenesData(response?.data?.scenes));
     dispatch(setScenesData(response?.data));
-
   } catch (error) {
     console.error(error);
   } finally {

@@ -29,33 +29,34 @@ import {
   uploadSceneClip,
 } from "../../redux/features/conversationalSlice";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
+import type { SceneDataType, SceneType } from "../../utils/types";
 
 interface ClipData {
   file: File;
   preview: string;
-  upload_url: string | null;
+  upload_url?: string | undefined;
 }
 
-export interface Scene {
-  scene_id: string;
-  scene_number: number;
-  upload_url: string | null;
-  uploaded_at?: string;
-  ost?: string;
-}
+// export interface Scene {
+//   scene_id: string;
+//   scene_number: number;
+//   upload_url: string | null;
+//   uploaded_at?: string;
+//   ost?: string;
+// }
 
-export interface StitchedVideo {
-  url: string;
-  updated_at: string;
-}
+// export interface StitchedVideo {
+//   url: string;
+//   updated_at: string;
+// }
 
-export interface ScenesData {
-  script_id: string;
-  title: string;
-  video_style: string;
-  stitched_video?: StitchedVideo;
-  scenes: Scene[];
-}
+// export interface ScenesData {
+//   script_id: string;
+//   title: string;
+//   video_style: string;
+//   stitched_video?: StitchedVideo;
+//   scenes: Scene[];
+// }
 
 const UploadConversationalClipsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
@@ -98,7 +99,7 @@ const UploadConversationalClipsPage: React.FC = () => {
   }, [uploadSceneClipResponse]);
 
   const handleUpload = (
-    scene: { scene_id: string; scene_number: number },
+    scene: SceneType,
     e: ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
@@ -119,8 +120,10 @@ const UploadConversationalClipsPage: React.FC = () => {
     }));
 
     const formData = new FormData();
+    if(id){
     formData.append("script_id", id);
-    formData.append("scene_id", scene.scene_id);
+    }
+    formData.append("scene_id", String(scene.scene_id));
     formData.append("scene_number", String(scene.scene_number));
     formData.append("file", file);
     dispatch(uploadSceneClip(formData));
@@ -172,7 +175,10 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   const handleStichVideo = () => {
+    if(id){
     dispatch(postStitchAllVideos(id, setOpenConfirm));
+
+    }
   };
 
   console.log(remainingScenes, "remainingScenes");
@@ -237,7 +243,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                           component="label"
                           disabled={
                             uploadSceneClipLoader?.[scene?.scene_id] ||
-                            // uploadLoading[scene.scene_id] ||
                             clips[scene.scene_id]?.upload_url
                           }
                           sx={{
@@ -412,7 +417,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                       </>
                     ) : (
                       <>
-                        <Typography variant="contained" color="text.primary">
+                        <Typography variant="body2" color="text.primary">
                           Proceed to generate your final video. This may take a
                           moment.
                         </Typography>
