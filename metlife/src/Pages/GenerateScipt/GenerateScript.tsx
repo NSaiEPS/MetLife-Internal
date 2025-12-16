@@ -102,18 +102,37 @@ export type InputType = "prompt" | "image";
 export interface CharacterType {
   name: string;
   role: string;
-  prompt: string;
   img: string;
   inputType: InputType;
+  age: number;
+  gender: string;
+  skin_tone: string;
+  hair: string;
+  face: string;
+  build: string;
+  wardrobe: string;
+  accessories: string;
+  personality: string;
+  origin: string;
 }
 
-// ---------- Empty Character ----------
-const emptyCharacter: CharacterType = {
+/* ================= CONSTANT ================= */
+
+export const emptyCharacter: CharacterType = {
   name: "",
   role: "",
-  prompt: "",
   img: "",
   inputType: "prompt",
+  age: 0,
+  gender: "",
+  skin_tone: "",
+  hair: "",
+  face: "",
+  build: "",
+  wardrobe: "",
+  accessories: "",
+  personality: "",
+  origin: "",
 };
 // ---------- Component ----------
 const GenerateScript: React.FC = () => {
@@ -122,6 +141,7 @@ const GenerateScript: React.FC = () => {
   const [characters, setCharacters] = useState<CharacterType[]>([
     emptyCharacter,
   ]);
+  console.log("Characters:", characters);
   // States
   const [scriptText, setScriptText] = useState<string>("");
   const [data_filters, setDataFilters] = useState<DataFiltersType>({
@@ -189,35 +209,10 @@ const GenerateScript: React.FC = () => {
         break;
     }
   };
-
-  const handleGenerate = () => {
-    if (!language) showToast.error("Please select Language in Video Filters");
-    else if (!videoType)
-      showToast.error("Please select Video Type in Video Filters");
-    else if (!audience)
-      showToast.error("Please enter Target Audience in Video Filters");
-    else if (!duration)
-      showToast.error("Please select Duration in Video Filters");
-    else if (!model) showToast.error("Please select Model in Model Filters");
-    else if (!datasource)
-      showToast.error("Please select Data Source in Model Filters");
-    else if (!title) showToast.error("Please give title!");
-    else apiCall();
-  };
-
-  const buildCharacterPayload = (characters) => {
-    return {
-      character_names: characters.map((c) => c.name || ""),
-      roles: characters.map((c) => c.role || ""),
-      character_descriptions: characters.map((c) => c.prompt || ""),
-      image_upload: characters.map((_) => false),
-    };
-  };
-
   const apiCall = async () => {
     setLoader(true);
     const characterPayload = buildCharacterPayload(characters);
-
+    console.log("Character Payload:", characterPayload);
     const new_payload: any = {
       title,
       brief: scriptText,
@@ -229,7 +224,7 @@ const GenerateScript: React.FC = () => {
       top_n: Number(topn),
       data_source: datasource,
       filters: data_filters,
-      ...characterPayload,
+      characters: characterPayload.characters,
     };
 
     if (datasource === "openai") delete new_payload.top_n;
@@ -254,6 +249,66 @@ const GenerateScript: React.FC = () => {
     } finally {
       setLoader(false);
     }
+  };
+  const handleGenerate = () => {
+    if (!language) showToast.error("Please select Language in Video Filters");
+    else if (!videoType)
+      showToast.error("Please select Video Type in Video Filters");
+    else if (!audience)
+      showToast.error("Please enter Target Audience in Video Filters");
+    else if (!duration)
+      showToast.error("Please select Duration in Video Filters");
+    else if (!model) showToast.error("Please select Model in Model Filters");
+    else if (!datasource)
+      showToast.error("Please select Data Source in Model Filters");
+    else if (!title) showToast.error("Please give title!");
+    else if (videoType === "conversational" || videoType === "mixed") {
+      const validCharacters = characters.filter((char) => {
+        const hasBasicInfo = char.name.trim() && char.role.trim();
+        const hasValidInput =
+          char.inputType === "image"
+            ? !!char.img
+            : Boolean(
+                char.age ||
+                  char.gender ||
+                  char.skin_tone ||
+                  char.hair ||
+                  char.face ||
+                  char.build ||
+                  char.wardrobe ||
+                  char.accessories ||
+                  char.personality ||
+                  char.origin
+              );
+
+        return Boolean(hasBasicInfo && hasValidInput);
+      });
+      if (validCharacters.length === 0) {
+        showToast.error("Please add at least one valid character!");
+        return;
+      } else {
+        apiCall();
+      }
+    } else apiCall();
+  };
+  const buildCharacterPayload = (characters) => {
+    return {
+      characters: characters.map((c) => ({
+        name: c.name || "",
+        role: c.role || "",
+        gender: c.gender || "",
+        age: String(c.age || ""),
+        skin_tone: c.skin_tone || "",
+        hair: c.hair || "",
+        face: c.face || "",
+        build: c.build || "",
+        wardrobe: c.wardrobe || "",
+        accessories: c.accessories || "",
+        personality: c.personality || "",
+        origin: c.origin || "",
+        image_upload: c.img ? true : false,
+      })),
+    };
   };
 
   return (

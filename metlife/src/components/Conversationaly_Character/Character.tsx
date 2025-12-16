@@ -86,7 +86,6 @@ export const Character: React.FC<CharacterProps> = ({
     </Box>
   );
 };
-
 import { useState, useRef } from "react";
 import {
   TextField,
@@ -95,37 +94,41 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Modal,
+  Paper,
 } from "@mui/material";
 
-// =========================
-// Types
-// =========================
+/* ================= TYPES ================= */
 
-export interface CharacterData {
+export interface CharacterType {
   name: string;
   role: string;
-  prompt?: string;
-  img?: string;
+  age: number;
+  gender: string;
+  skin_tone: string;
+  hair: string;
+  face: string;
+  build: string;
+  wardrobe: string;
+  accessories: string;
+  personality: string;
+  origin: string;
+  img: string;
   inputType: InputType;
 }
 
+type ErrorState = Partial<Record<keyof CharacterType, boolean>>;
+
 interface CharacterPromptProps {
   index: number;
-  data: CharacterData;
-  updateCharacter: (index: number, updated: CharacterData) => void;
+  data: CharacterType;
+  updateCharacter: (index: number, data: CharacterType) => void;
   closePrompt: () => void;
 }
 
-interface ErrorState {
-  name?: boolean;
-  role?: boolean;
-  prompt?: boolean;
-  img?: boolean;
-}
+const GENDER_OPTIONS = ["Male", "Female", "Other"] as const;
 
-// =========================
-// Component
-// =========================
+/* ================= COMPONENT ================= */
 
 export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   index,
@@ -133,14 +136,12 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   updateCharacter,
   closePrompt,
 }) => {
-  const [form, setForm] = useState<CharacterData>(data);
+  const [form, setForm] = useState<CharacterType>(data);
   const [preview, setPreview] = useState<string>(data.img || "");
   const [errors, setErrors] = useState<ErrorState>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // -------------------------
-  // Validation
-  // -------------------------
+  /* ================= VALIDATION ================= */
 
   const validate = (): boolean => {
     const err: ErrorState = {
@@ -149,7 +150,18 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     };
 
     if (form.inputType === "prompt") {
-      err.prompt = !form.prompt?.trim();
+      Object.assign(err, {
+        age: !Number(form.age),
+        gender: !form.gender.trim(),
+        skin_tone: !form.skin_tone.trim(),
+        hair: !form.hair.trim(),
+        face: !form.face.trim(),
+        build: !form.build.trim(),
+        wardrobe: !form.wardrobe.trim(),
+        accessories: !form.accessories.trim(),
+        personality: !form.personality.trim(),
+        origin: !form.origin.trim(),
+      });
     } else {
       err.img = !form.img;
     }
@@ -158,15 +170,13 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     return !Object.values(err).some(Boolean);
   };
 
+  /* ================= HANDLERS ================= */
+
   const handleSave = () => {
     if (!validate()) return;
     updateCharacter(index, form);
     closePrompt();
   };
-
-  // -------------------------
-  // Image Upload
-  // -------------------------
 
   const handleImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -177,160 +187,200 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     setForm({ ...form, img: url });
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
-  // -------------------------
-  // Input Type Change
-  // -------------------------
-
-  const handleInputTypeChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const newInputType = e.target.value as InputType;
-
-    setForm({
-      ...form,
-      inputType: newInputType,
-      ...(newInputType === "prompt" ? { img: "" } : { prompt: "" }),
-    });
-
-    setPreview("");
-  };
-
-  // -------------------------
-  // JSX
-  // -------------------------
+  /* ================= RENDER ================= */
 
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "#00000050",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 99,
-      }}
-    >
+    <Modal open>
       <Box
         sx={{
-          padding: 4,
-          width: 460,
-          background: "white",
-          borderRadius: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "60%",
         }}
       >
-        <TextField
-          label="Character Name"
-          value={form.name}
-          error={!!errors.name}
-          helperText={errors.name && "Required"}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+        <Paper sx={{ p: 3, borderRadius: 2 }}>
+          <Typography variant="h6" mb={2}>
+            Character Details
+          </Typography>
 
-        <TextField
-          label="Character Role"
-          value={form.role}
-          error={!!errors.role}
-          helperText={errors.role && "Required"}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-        />
+          {/* INPUT TYPE */}
+          <Box my={2}>
+            <FormControl fullWidth>
+              <InputLabel>Input Type</InputLabel>
+              <Select
+                value={form.inputType}
+                label="Input Type"
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    inputType: e.target.value as InputType,
+                    img: "",
+                  })
+                }
+              >
+                <MenuItem value="prompt">Prompt</MenuItem>
+                <MenuItem value="image">Image</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
 
-        {/* INPUT TYPE DROPDOWN */}
-        <FormControl fullWidth>
-          <InputLabel>Input Type</InputLabel>
-          <Select
-            value={form.inputType}
-            label="Input Type"
-            onChange={handleInputTypeChange}
+          {/* Name & Role */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2,
+              mt: 2,
+            }}
           >
-            <MenuItem value="prompt">Prompt</MenuItem>
-            <MenuItem value="image">Image</MenuItem>
-          </Select>
-        </FormControl>
+            {(
+              [
+                ["Name", "name"],
+                ["Role", "role"],
+              ] as Array<[string, keyof CharacterType]>
+            ).map(([label, key]) => (
+              <TextField
+                key={key}
+                fullWidth
+                label={label}
+                value={form[key]}
+                error={!!errors[key]}
+                helperText={errors[key] && "Required"}
+                onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+              />
+            ))}
+          </Box>
 
-        {/* CONDITIONAL INPUT */}
-        {form.inputType === "prompt" ? (
-          <TextField
-            label="Character Prompt"
-            multiline
-            rows={3}
-            value={form.prompt}
-            error={!!errors.prompt}
-            helperText={errors.prompt && "Required"}
-            onChange={(e) => setForm({ ...form, prompt: e.target.value })}
-          />
-        ) : (
-          <>
+          {/* INPUT TYPE: Prompt */}
+          {form.inputType === "prompt" && (
             <Box
-              sx={{ position: "relative", width: "fit-content", mx: "auto" }}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 2,
+                mt: 2,
+              }}
             >
-              <Avatar
-                src={preview}
-                sx={{
-                  width: 80,
-                  height: 80,
-                  border: errors.img ? "2px solid #d32f2f" : "none",
+              {/* Age */}
+              <TextField
+                fullWidth
+                label="Age"
+                type="number"
+                value={form.age}
+                error={!!errors.age}
+                helperText={errors.age && "Required"}
+                inputProps={{
+                  min: 0,
+                  max: 120,
                 }}
+                onChange={(e) =>
+                  setForm({ ...form, age: Number(e.target.value) })
+                }
               />
 
-              <IconButton
-                onClick={triggerFileInput}
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: "white",
-                  border: "1px solid #ccc",
-                  width: 28,
-                  height: 28,
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                  },
-                }}
-              >
-                <EditIcon sx={{ fontSize: 16 }} />
-              </IconButton>
+              {/* Gender */}
+              <FormControl fullWidth error={!!errors.gender}>
+                <InputLabel>Gender</InputLabel>
+                <Select
+                  label="Gender"
+                  value={form.gender}
+                  onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                >
+                  {GENDER_OPTIONS.map((g) => (
+                    <MenuItem key={g} value={g}>
+                      {g}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.gender && (
+                  <Typography fontSize={12} color="error">
+                    Required
+                  </Typography>
+                )}
+              </FormControl>
+
+              {(
+                [
+                  ["Skin Tone", "skin_tone"],
+                  ["Hair", "hair"],
+                  ["Face", "face"],
+                  ["Build", "build"],
+                  ["Wardrobe", "wardrobe"],
+                  ["Accessories", "accessories"],
+                  ["Personality", "personality"],
+                  ["Origin / Ethnicity", "origin"],
+                ] as Array<[string, keyof CharacterType]>
+              ).map(([label, key]) => (
+                <TextField
+                  key={key}
+                  fullWidth
+                  label={label}
+                  value={form[key]}
+                  error={!!errors[key]}
+                  helperText={errors[key] && "Required"}
+                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                />
+              ))}
+            </Box>
+          )}
+
+          {/* INPUT TYPE: Image */}
+          {form.inputType === "image" && (
+            <Box textAlign="center" mt={3}>
+              <Box position="relative" display="inline-block">
+                <Avatar
+                  src={preview}
+                  sx={{
+                    width: 90,
+                    height: 90,
+                    border: errors.img ? "2px solid red" : "none",
+                  }}
+                />
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    bottom: -4,
+                    right: -4,
+                    bgcolor: "white",
+                    border: "1px solid #ccc",
+                  }}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Box>
 
               <input
-                type="file"
-                ref={fileInputRef}
                 hidden
+                ref={fileInputRef}
+                type="file"
                 accept="image/*"
                 onChange={handleImgSelect}
               />
+
+              {errors.img && (
+                <Typography color="error" fontSize={12} mt={1}>
+                  Image required
+                </Typography>
+              )}
             </Box>
+          )}
 
-            {errors.img && (
-              <Box
-                sx={{
-                  color: "#d32f2f",
-                  fontSize: "0.75rem",
-                  textAlign: "center",
-                  mt: -2,
-                }}
-              >
-                Image is required
-              </Box>
-            )}
-          </>
-        )}
-
-        {/* ACTION BUTTONS */}
-        <Box display="flex" justifyContent="space-between" mt={1}>
-          <Button variant="outlined" color="error" onClick={closePrompt}>
-            Cancel
-          </Button>
-
-          <Button variant="contained" color="success" onClick={handleSave}>
-            Save
-          </Button>
-        </Box>
+          {/* ACTIONS */}
+          <Box display="flex" justifyContent="space-between" mt={3}>
+            <Button color="error" variant="outlined" onClick={closePrompt}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={handleSave}>
+              Save
+            </Button>
+          </Box>
+        </Paper>
       </Box>
-    </Box>
+    </Modal>
   );
 };
+
+export default CharacterPrompt;
