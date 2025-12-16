@@ -10,6 +10,9 @@ import {
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
+import { downloadVideoWithUrl } from "../../../redux/features/audioAnimationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store";
 
 // ------------------ TYPES ------------------
 
@@ -36,12 +39,19 @@ const modalStyle = {
 
 const FullVideoPlayer: React.FC<FullVideoPlayerProps> = ({ video_url }) => {
   const [open, setOpen] = useState<boolean>(false);
-
+  const dispatch = useDispatch();
+  const { sceneData } = useSelector((store: RootState) => store.AudioAnimation);
   const downloadVideo = () => {
-    const link = document.createElement("a");
-    link.href = video_url;
-    link.download = "final_video.mp4";
-    link.click();
+    // const link = document.createElement("a");
+    // link.href = video_url;
+    // link.download = "final_video.mp4";
+    // link.click();
+    dispatch(
+      downloadVideoWithUrl(
+        video_url,
+        `${sceneData?.title || "final_video"}.mp4`
+      )
+    );
   };
 
   return (
