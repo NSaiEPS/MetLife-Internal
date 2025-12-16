@@ -339,7 +339,7 @@ export default function Bottom({
             >
               {/* Title */}
               <Typography variant="h5" fontWeight={600} mb={2}>
-                Animation Toolkit
+                Animation For Scene {modalIndex + 1} ({modalOST})
               </Typography>
 
               {/* Card */}
@@ -350,14 +350,12 @@ export default function Bottom({
                   p: 3,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography fontWeight={600} mb={2}>
                     OST :
                   </Typography>
-                  <Typography fontWeight={600} mb={2}>
-                    {modalOST}
-                  </Typography>
-                </Box>
+                  <Typography fontWeight={600} mb={2}></Typography>
+                </Box> */}
 
                 <Box display="flex" gap={3}>
                   {/* Entry */}
