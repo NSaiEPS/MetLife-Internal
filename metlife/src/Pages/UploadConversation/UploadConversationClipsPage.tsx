@@ -22,12 +22,14 @@ import {
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
-// import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import api from "../../api/axios";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { showToast } from "../../utils/toast";
+import {
+  postStitchAllVideos,
+  uploadSceneClip,
+} from "../../redux/features/conversationalSlice";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import { postStitchAllVideos } from "../../redux/features/conversationalSlice";
 
 interface ClipData {
   file: File;
@@ -38,16 +40,19 @@ const UploadConversationalClipsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
   const [clips, setClips] = useState<Record<number, ClipData>>({});
   const { id } = useParams<{ id: string }>();
-  const { generateVisualLoader, scenesData } = useSelector(
-    (store: RootState) => store.GenerateVisualContent
-  );
+  const {
+    generateVisualLoader,
+    scenesData,
+    uploadSceneClipLoader,
+    uploadSceneClipResponse,
+  } = useSelector((store: RootState) => store.GenerateVisualContent);
   const title = scenesData?.title;
   const { stitchedVideoUrl, conversationalLoader } = useSelector(
     (state) => state.Conversational
   );
-  const [uploadLoading, setUploadLoading] = useState<Record<string, boolean>>(
-    {}
-  );
+  // const [uploadLoading, setUploadLoading] = useState<Record<string, boolean>>(
+  //   {}
+  // );
   const [openConfirm, setOpenConfirm] = useState(false);
   const uploadedCount =
     scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
@@ -66,58 +71,59 @@ const UploadConversationalClipsPage: React.FC = () => {
 
     if (file.size > maxFileSize) {
       showToast.error("File size must be less than or equal to 1 MB");
-      e.target.value = ""; // reset input
+      e.target.value = "";
       return;
     }
 
-    setUploadLoading((prev) => ({
+    // setUploadLoading((prev) => ({
+    //   ...prev,
+    //   [scene.scene_id]: true,
+    // }));
+
+    setClips((prev) => ({
       ...prev,
-      [scene.scene_id]: true,
+      [scene.scene_id]: {
+        file,
+        preview: URL.createObjectURL(file),
+      },
     }));
-    try {
+
+    const formData = new FormData();
+    formData.append("script_id", id);
+    formData.append("scene_id", scene.scene_id);
+    formData.append("scene_number", String(scene.scene_number));
+    formData.append("file", file);
+
+    dispatch(uploadSceneClip(formData));
+
+    // const res = await uploadSceneClip(formData);
+    if (uploadSceneClipResponse?.url) {
       setClips((prev) => ({
         ...prev,
         [scene.scene_id]: {
-          file,
-          preview: URL.createObjectURL(file),
+          ...prev[scene.scene_id],
+          upload_url: uploadSceneClipResponse.url,
         },
       }));
-
-      const formData = new FormData();
-      formData.append("script_id", id);
-      formData.append("scene_id", scene.scene_id);
-      formData.append("scene_number", String(scene.scene_number));
-      formData.append("file", file);
-
-      const res = await uploadSceneClip(formData);
-      if (res?.url) {
-        setClips((prev) => ({
-          ...prev,
-          [scene.scene_id]: {
-            ...prev[scene.scene_id],
-            upload_url: res.url,
-          },
-        }));
-      }
-    } catch (error) {
-      showToast.error("Upload failed");
-    } finally {
-      setUploadLoading((prev) => ({
-        ...prev,
-        [scene.scene_id]: false,
-      }));
     }
+
+    // finally {
+    //   setUploadLoading((prev) => ({
+    //     ...prev,
+    //     [scene.scene_id]: false,
+    //   }));
+    // }
   };
 
-  const uploadSceneClip = async (formData: FormData) => {
-    try {
-      const res = await api.post("/upload-clip/upload-scene-clip", formData);
-      return res.data;
-    } catch (error) {
-      console.error("Upload Error:", error);
-      throw error;
-    }
-  };
+  // const uploadSceneClip = async (formData: FormData) => {
+  //   try {
+  //     const res = await api.post("/upload-clip/upload-scene-clip", formData);
+  //     return res.data;
+  //   } catch (error) {
+  //     console.error("Upload Error:", error);
+  //     throw error;
+  //   }
+  // };
 
   const allUploaded = scenesData?.scenes?.every(
     (scene) => clips[scene.scene_id]
@@ -241,7 +247,11 @@ const UploadConversationalClipsPage: React.FC = () => {
                         <Button
                           variant="contained"
                           component="label"
-                          disabled={uploadLoading[scene.scene_id] || clips[scene.scene_id]?.upload_url}
+                          disabled={
+                            uploadSceneClipLoader ||
+                            // uploadLoading[scene.scene_id] ||
+                            clips[scene.scene_id]?.upload_url
+                          }
                           sx={{
                             borderRadius: "10px",
                             textTransform: "none",
@@ -249,7 +259,8 @@ const UploadConversationalClipsPage: React.FC = () => {
                             minWidth: "140px",
                           }}
                         >
-                          {uploadLoading[scene.scene_id] ? (
+                          {uploadSceneClipLoader ? (
+                            // uploadLoading[scene.scene_id]
                             <CircularProgress
                               size={20}
                               sx={{ color: "white" }}
@@ -286,8 +297,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                               borderRadius: "10px",
                             }}
                           />
-                        )
-                         : clips[scene.scene_id]?.preview ? (
+                        ) : clips[scene.scene_id]?.preview ? (
                           <video
                             src={clips[scene.scene_id].preview}
                             controls
@@ -297,8 +307,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                               borderRadius: "10px",
                             }}
                           />
-                        )
-                         : (
+                        ) : (
                           <Typography color="gray" sx={{ p: 2 }}>
                             No clip uploaded
                           </Typography>
