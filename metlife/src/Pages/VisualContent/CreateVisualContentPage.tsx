@@ -110,8 +110,9 @@ const CreateVisualContentPage: React.FC = () => {
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
 
   useEffect(() => {
-    if (!id) return;
-    dispatch(getVisualContent(id));
+    if (id) {
+      dispatch(getVisualContent(id));
+    }
   }, [id, dispatch]);
 
   useEffect(() => {

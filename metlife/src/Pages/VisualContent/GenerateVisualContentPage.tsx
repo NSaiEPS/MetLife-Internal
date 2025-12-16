@@ -335,8 +335,9 @@ const GenerateVisualContentPage: React.FC = () => {
   };
 
   const handleAudioAndAnimation = () => {
-    if (!id) return;
-    dispatch(postAudioAnimationData({ script_id: id }));
+    if (id) {
+      dispatch(postAudioAnimationData({ script_id: id }));
+    }
   };
 
   const handleDownloadAssets = () => {

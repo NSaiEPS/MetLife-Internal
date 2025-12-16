@@ -157,7 +157,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   }, [saveTranslatedData, saveLoader]);
 
   useEffect(() => {
-    if (extraDetails?.char_image_exist === true) {
+    if (extraDetails?.char_image_exist === true && id) {
       dispatch(getExtractCharacters(id));
     }
   }, [id, dispatch, extraDetails?.char_image_exist]);

@@ -62,17 +62,17 @@ const UploadConversationalClipsPage: React.FC = () => {
   const maxFileSize = 1 * 1024 * 1024;
 
   useEffect(() => {
-    if (!uploadSceneClipResponse) return;
+    if (uploadSceneClipResponse) {
+      const { scene_id, url } = uploadSceneClipResponse;
 
-    const { scene_id, url } = uploadSceneClipResponse;
-
-    setClips((prev) => ({
-      ...prev,
-      [scene_id]: {
-        ...prev[scene_id],
-        upload_url: url,
-      },
-    }));
+      setClips((prev) => ({
+        ...prev,
+        [scene_id]: {
+          ...prev[scene_id],
+          upload_url: url,
+        },
+      }));
+    }
   }, [uploadSceneClipResponse]);
 
   const handleUpload = (

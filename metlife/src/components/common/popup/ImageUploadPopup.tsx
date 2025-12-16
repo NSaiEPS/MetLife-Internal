@@ -46,9 +46,7 @@ const ImageUploadPopup: React.FC<ImageUploadPopupProps> = ({
 
   useEffect(() => {
     if (open && existingImages.length > 0) {
-      setCurrentIndex(existingImages.length - 1); // show latest by default
-      // Optionally, show last image preview
-      // setPreviewUrl(existingImages[existingImages.length - 1].url);
+      setCurrentIndex(existingImages.length - 1); 
     }
   }, [open, existingImages]);
 

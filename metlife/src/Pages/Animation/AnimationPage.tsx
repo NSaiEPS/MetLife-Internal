@@ -1,37 +1,34 @@
-import React, { useEffect, useState } from "react";
-import styles from "./animation.module.css";
-import OneFrameHeader from "../../components/common/OneFrameHeader";
 import {
   Box,
-  Typography,
+  FormControl,
+  FormControlLabel,
   Grid,
   Paper,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
   Radio,
+  RadioGroup,
+  Typography,
 } from "@mui/material";
-import Footer from "../../components/common/mainFooter";
-import ButtonComp from "../../components/common/Buton/Button";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ButtonComp from "../../components/common/Buton/Button";
+import { useParams } from "react-router";
+import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
+import FullScreenGradientLoader from "../../components/common/GradientLoader";
+import Footer from "../../components/common/mainFooter";
+import { NoDataMessage } from "../../components/common/NoDataMessage";
+import OneFrameHeader from "../../components/common/OneFrameHeader";
+import Timer from "../../components/common/Timer/Timer";
+import VideoTimeline from "../../components/video-editor/VideoTimeline.jsx";
 import {
-  getAudioDetails,
   getMediaTransitions,
   getSceneDetails,
   getVideosList,
   postGenerateFullVideo,
-  postGenerateVideoBatch,
+  postGenerateVideoBatch
 } from "../../redux/features/audioAnimationSlice";
-import { NoDataMessage } from "../../components/common/NoDataMessage";
-import { useParams } from "react-router";
-import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import GeneratedVideoPlayer from "../../components/common/GeneratedVideo/GeneratedVideoPlayer";
-import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
+import styles from "./animation.module.css";
 import { convertToISTParts } from "../../utils";
-import Timer from "../../components/common/Timer/Timer";
-import VideoTimeline from "../../components/video-editor/VideoTimeline.jsx";
 /* ---------- TYPES ---------- */
-
 interface SceneItem {
   scene_id: string;
   alternative_scene_id?: string;
@@ -92,23 +89,25 @@ const AnimationPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(getMediaTransitions());
-    dispatch(getSceneDetails(id));
+    if (id) {
+      dispatch(getSceneDetails(id));
+    }
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (sceneData?.video_exists == true) {
+    if (sceneData?.video_exists == true && id) {
       dispatch(getVideosList(id));
     }
   }, [sceneData?.video_exists, dispatch, id]);
 
   useEffect(() => {
-    if (timerDone) {
+    if (timerDone && id) {
       dispatch(getSceneDetails(id));
     }
   }, [timerDone, dispatch, id]);
 
   useEffect(() => {
-    if (timerDone && sceneData?.video_exists === true) {
+    if (timerDone && sceneData?.video_exists === true && id) {
       dispatch(getVideosList(id));
     }
   }, [timerDone, sceneData?.video_exists, dispatch, id]);
@@ -161,8 +160,6 @@ const AnimationPage: React.FC = () => {
   const generateVideo = () => {
     dispatch(postGenerateFullVideo(id));
   };
-
-  console.log(videoAnimationLoader, "check__video_animaiton__loader");
 
   return (
     <>

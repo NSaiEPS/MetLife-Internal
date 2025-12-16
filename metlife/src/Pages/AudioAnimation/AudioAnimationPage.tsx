@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./audioAnimation.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import { Box, Typography, Grid } from "@mui/material";
-import { useNavigate, useParams } from "react-router";
-import Input from "../../components/common/Input";
+import { useParams } from "react-router";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
@@ -11,7 +10,6 @@ import ButtonComp from "../../components/common/Buton/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
-  getLabels,
   postGenerateVoiceAndAudio,
   setSceneData,
   setVideoAnimationData,
