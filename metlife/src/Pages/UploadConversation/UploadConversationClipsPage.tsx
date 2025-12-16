@@ -53,9 +53,12 @@ const UploadConversationalClipsPage: React.FC = () => {
   const uploadedCount =
     scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
       ?.length || 0;
+  console.log(uploadedCount, "count");
   const remainingScenes =
     scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
     [];
+  const hasMissingScenes = remainingScenes.length > 0;
+
   const maxFileSize = 1 * 1024 * 1024;
 
   useEffect(() => {
@@ -147,10 +150,10 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   const handleStichVideo = () => {
-    if (!id) return;
     dispatch(postStitchAllVideos(id, setOpenConfirm));
   };
 
+  console.log(remainingScenes, "remainingScenes");
   return (
     <>
       <div className={styles.container}>
@@ -353,10 +356,13 @@ const UploadConversationalClipsPage: React.FC = () => {
                   </DialogTitle>
 
                   <DialogContent>
-                    <Typography sx={{ mb: 2 }}>
-                      You’ve uploaded only <b>one clip</b>. The following scenes
-                      are missing:
-                    </Typography>
+                    {hasMissingScenes && (
+                      <>
+                        <Typography sx={{ mb: 2 }}>
+                          The following scenes are missing:
+                        </Typography>
+                      </>
+                    )}
 
                     <Box
                       sx={{
@@ -375,11 +381,21 @@ const UploadConversationalClipsPage: React.FC = () => {
                         />
                       ))}
                     </Box>
-
-                    <Typography variant="body2" color="text.secondary">
-                      You can still proceed, but the final video will include
-                      only the uploaded clip.
-                    </Typography>
+                    {hasMissingScenes ? (
+                      <>
+                        <Typography variant="body2" color="text.secondary">
+                          You can still proceed, but the final video will
+                          include only the uploaded clip.
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography variant="contained" color="text.primary">
+                          Proceed to generate your final video. This may take a
+                          moment.
+                        </Typography>
+                      </>
+                    )}
                   </DialogContent>
 
                   <DialogActions>
@@ -401,34 +417,31 @@ const UploadConversationalClipsPage: React.FC = () => {
                   </DialogActions>
                 </Dialog>
 
-                {stitchedVideoUrl ||
-                  (scenesData?.stitched_video?.url && (
-                    <Box
-                      sx={{
-                        marginTop: "2rem",
-                        padding: "20px",
-                        borderRadius: "12px",
-                        border: "1px solid #d3e6f9",
-                        background: "white",
-                      }}
-                    >
-                      <Typography fontSize="20px" fontWeight={600} mb={2}>
-                        Final Stitched Video
-                      </Typography>
+                {(stitchedVideoUrl || scenesData?.stitched_video?.url) && (
+                  <Box
+                    sx={{
+                      marginTop: "2rem",
+                      padding: "20px",
+                      borderRadius: "12px",
+                      border: "1px solid #d3e6f9",
+                      background: "white",
+                    }}
+                  >
+                    <Typography fontSize="20px" fontWeight={600} mb={2}>
+                      Final Stitched Video
+                    </Typography>
 
-                      <video
-                        src={
-                          stitchedVideoUrl || scenesData?.stitched_video?.url
-                        }
-                        controls
-                        style={{
-                          width: "100%",
-                          height: "50vh",
-                          borderRadius: "10px",
-                        }}
-                      />
-                    </Box>
-                  ))}
+                    <video
+                      src={stitchedVideoUrl ?? scenesData?.stitched_video?.url}
+                      controls
+                      style={{
+                        width: "100%",
+                        height: "50vh",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  </Box>
+                )}
               </Box>
             </div>
           </>
