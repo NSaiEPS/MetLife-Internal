@@ -9,11 +9,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-
-const pdfIcon = "https://cdn-icons-png.flaticon.com/512/337/337946.png";
-// const wordIcon = "https://cdn-icons-png.flaticon.com/512/888/888870.png";
-const wordIcon = "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/microsoft-word-icon.png";
-
+import pdfIcon from "../../../assets/pdfIcon.png";
+import wordIcon from "../../../assets/microsoft-word-icon.webp";
 
 const DownloadPopup = ({ open, onClose, onSelect }) => {
   return (

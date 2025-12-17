@@ -29,6 +29,7 @@ import Input from "../../components/common/Input";
 import type { RootState } from "../../redux/store"; // import your store type
 import { showToast } from "../../utils/toast";
 import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
+import type { CharacterType } from "../../utils/types";
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -99,23 +100,6 @@ interface VideoPrompt {
 }
 export type InputType = "prompt" | "image";
 
-export interface CharacterType {
-  name: string;
-  role: string;
-  img: string;
-  inputType: InputType;
-  age: number;
-  gender: string;
-  skin_tone: string;
-  hair: string;
-  face: string;
-  build: string;
-  wardrobe: string;
-  accessories: string;
-  personality: string;
-  origin: string;
-}
-
 /* ================= CONSTANT ================= */
 
 export const emptyCharacter: CharacterType = {
@@ -123,16 +107,16 @@ export const emptyCharacter: CharacterType = {
   role: "",
   img: "",
   inputType: "prompt",
-  age: 0,
+  age: 30,
   gender: "",
-  skin_tone: "",
-  hair: "",
-  face: "",
-  build: "",
-  wardrobe: "",
-  accessories: "",
-  personality: "",
-  origin: "",
+  skin_tone: "Light-medium",
+  hair: "Short, neatly combed black hair",
+  face: "Clean-shaven, calm professional expression",
+  build: "Average",
+  wardrobe: "Light blue dress shirt, navy blazer, no tie",
+  accessories: "Simple watch, no flashy items",
+  personality: "Curious, thoughtful, professional",
+  origin: "Spanish / Latin America",
 };
 // ---------- Component ----------
 const GenerateScript: React.FC = () => {
