@@ -96,7 +96,7 @@ const VideoTimeline = ({ videos }) => {
     next,
     slideTime,
     playing,
-    progress,
+    // progress,
     activeVideoLoaded,
     activeVideoHasError,
   ]);
