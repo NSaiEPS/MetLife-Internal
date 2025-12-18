@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import DownloadIcon from "@mui/icons-material/Download";
 import {
   Box,
   Button,
@@ -8,10 +8,12 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import type { VideoData } from "../../utils/types";
+import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 import { useDispatch } from "react-redux";
-import { downloadVideoWithUrl } from "../../../src/redux/features/audioAnimationSlice.ts";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -27,29 +29,51 @@ const style = {
   pb: 3,
 };
 
+interface BottomProps {
+  homeData: VideoData[];
+  active: number;
+  progress: number;
+  onSelect: (index: number) => void;
+  videoHasError?: boolean;
+}
+
 export default function Bottom({
   homeData,
   active,
   progress,
   onSelect,
   videoHasError = false,
-}) {
-  const containerRef = useRef(null);
-  const itemRefs = useRef([]);
-  const [modalIndex, setModalIndex] = useState(null);
-  const [modalOST, setModalOST] = useState("");
-  const [entryAnimation, setEntryAnimation] = useState("fade_in");
-  const [exitAnimation, setExitAnimation] = useState("fade_out");
+}: BottomProps) {
   const dispatch = useDispatch();
-  const buttonClickHandler = (i) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [modalIndex, setModalIndex] = useState<number | null>(null);
+  const [modalOST, setModalOST] = useState<string>("");
+  const [entryAnimation, setEntryAnimation] = useState<string>("fade_in");
+  const [exitAnimation, setExitAnimation] = useState<string>("fade_out");
+
+  const downloadVideo = (s3_url: string, name: string) => {
+    // const link = document.createElement("a");
+    // link.href = s3_url;
+    // link.setAttribute("download", ${name});
+    // link.setAttribute("target", "_blank");
+    // document.body.appendChild(link);
+    // link.click();
+    // link.remove();
+    dispatch(downloadVideoWithUrl(s3_url, name));
+  };
+  console.log("fdfdf");
+
+  const buttonClickHandler = (i: number) => {
     const elem = homeData[i];
     setModalIndex(i);
-    setModalOST(elem?.ost);
+    setModalOST(elem?.ost || "");
     setEntryAnimation(elem?.applied_animation?.entry || "fade_in");
     setExitAnimation(elem?.applied_animation?.exit || "fade_out");
   };
 
   const handleModalSubmit = async () => {
+    if (modalIndex === null) return;
     const row = homeData[modalIndex];
 
     const payload = {
@@ -60,15 +84,6 @@ export default function Bottom({
 
     try {
       console.log("API Payload", payload);
-
-      // 🔗 API CALL
-      // await fetch("/api/scene/apply-animation", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
 
       // // ✅ Modal close
       setModalIndex(null);
@@ -97,18 +112,6 @@ export default function Bottom({
     });
   }, [active]);
 
-  const downloadVideo = (s3_url, name, index) => {
-    // const link = document.createElement("a");
-    // link.href = s3_url;
-    // link.setAttribute("download", `${name}`);
-    // link.setAttribute("target", "_blank");
-
-    // document.body.appendChild(link);
-    // link.click();
-    // link.remove();
-
-    dispatch(downloadVideoWithUrl(s3_url, name));
-  };
   return (
     <Box
       sx={{
@@ -149,7 +152,9 @@ export default function Bottom({
             <Box
               key={i}
               onClick={() => !isActive && onSelect(i)}
-              ref={(el) => (itemRefs.current[i] = el)}
+              ref={(el: HTMLDivElement | null) => {
+                itemRefs.current[i] = el;
+              }}
               sx={{
                 position: "relative",
                 flex: "0 0 auto",
@@ -185,11 +190,13 @@ export default function Bottom({
 
                 <Button
                   onClick={(e) => {
-                    e.stopPropagation(); // 🔥 parent click se bachao
-                    downloadVideo(
-                      row?.final_video?.url,
-                      `${row?.ost}_Scene${i + 1}.mp4`
-                    );
+                    e.stopPropagation();
+                    if (row?.final_video?.url) {
+                      downloadVideo(
+                        row.final_video.url,
+                        `${row?.ost || "video"}.mp4`
+                      );
+                    }
                   }}
                   sx={{
                     position: "absolute",
@@ -345,7 +352,7 @@ export default function Bottom({
             >
               {/* Title */}
               <Typography variant="h5" fontWeight={600} mb={2}>
-                Animation For Scene {modalIndex + 1} ({modalOST})
+                Animation Toolkit
               </Typography>
 
               {/* Card */}
@@ -356,12 +363,14 @@ export default function Bottom({
                   p: 3,
                 }}
               >
-                {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography fontWeight={600} mb={2}>
                     OST :
                   </Typography>
-                  <Typography fontWeight={600} mb={2}></Typography>
-                </Box> */}
+                  <Typography fontWeight={600} mb={2}>
+                    {modalOST}
+                  </Typography>
+                </Box>
 
                 <Box display="flex" gap={3}>
                   {/* Entry */}

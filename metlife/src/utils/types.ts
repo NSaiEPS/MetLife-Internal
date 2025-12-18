@@ -41,3 +41,21 @@ export interface CharacterType {
   img: string;
   inputType: InputType;
 }
+
+export interface AppliedAnimation {
+  entry?: string;
+  exit?: string;
+}
+
+export interface VideoData {
+  scene_id: string;
+  ost: string;
+  applied_animation?: AppliedAnimation;
+  image_urls: string[];
+  final_video: {
+    url: string;
+    [key: string]: any;
+  };
+  duration?: number;
+  [key: string]: any;
+}

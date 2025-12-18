@@ -7,8 +7,21 @@ import {
   SvgIcon,
 } from "@mui/material";
 import { motion, useAnimation } from "framer-motion";
+import type { VideoData } from "../../utils/types";
 
-const CenterDiv = ({
+interface CenterDivProps {
+  progress: number;
+  isActive: boolean;
+  data: VideoData;
+  duration: number;
+  onTogglePlay: (val: boolean) => void;
+  isGloballyPlaying: boolean;
+  onFirstInteraction?: () => void;
+  hasUserInteracted: boolean;
+  onVideoLoadStatus?: (loaded: boolean, hasError: boolean) => void;
+}
+
+const CenterDiv: React.FC<CenterDivProps> = ({
   progress,
   isActive,
   data,
@@ -19,21 +32,21 @@ const CenterDiv = ({
   hasUserInteracted,
   onVideoLoadStatus,
 }) => {
-  const videoRef = useRef(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const triAnim = useAnimation();
   const iconAnim = useAnimation();
 
   // Video loading states
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [isVideoLoading, setIsVideoLoading] = useState(false);
-  const [videoLoadError, setVideoLoadError] = useState(false);
-  const [videoDuration, setVideoDuration] = useState(duration);
+  const [isVideoLoaded, setIsVideoLoaded] = useState<boolean>(false);
+  const [isVideoLoading, setIsVideoLoading] = useState<boolean>(false);
+  const [videoLoadError, setVideoLoadError] = useState<boolean>(false);
+  const [videoDuration, setVideoDuration] = useState<number>(duration);
 
   // Track if this specific video has started
-  const hasStartedRef = useRef(false);
-  const iconTimeoutRef = useRef(null);
-  const retryCountRef = useRef(0);
-  const MAX_RETRIES = 1;
+  const hasStartedRef = useRef<boolean>(false);
+  const iconTimeoutRef = useRef<number | null>(null);
+  const retryCountRef = useRef<number>(0);
+  const MAX_RETRIES = 2;
 
   const toggleVideoPlay = () => {
     const v = videoRef.current;
@@ -67,8 +80,10 @@ const CenterDiv = ({
     });
 
     // Hide icon after animation
-    clearTimeout(iconTimeoutRef.current);
-    iconTimeoutRef.current = setTimeout(() => {
+    if (iconTimeoutRef.current !== null) {
+      clearTimeout(iconTimeoutRef.current);
+    }
+    iconTimeoutRef.current = window.setTimeout(() => {
       iconAnim.start({ opacity: 0 });
     }, 1200);
 
@@ -76,52 +91,7 @@ const CenterDiv = ({
     onTogglePlay(!isGloballyPlaying);
   };
 
-  // Reset video state when video source changes
-  // useEffect(() => {
-  //   if (isActive && videoRef.current) {
-  //     setIsVideoLoaded(false);
-  //     setIsVideoLoading(true);
-  //     setVideoLoadError(false);
-  //     retryCountRef.current = 0;
-
-  //     const v = videoRef.current;
-  //     if (v.readyState >= 1) {
-  //       setIsVideoLoaded(true);
-  //       setIsVideoLoading(false);
-  //     }
-  //   }
-  // }, [isActive, data.final_video.url]);
-
-  // Clean up timeout on unmount
-  // useEffect(() => {
-  //   return () => {
-  //     if (iconTimeoutRef.current) {
-  //       clearTimeout(iconTimeoutRef.current);
-  //     }
-  //   };
-  // }, []);
-
-  // Animate triangles only when item becomes active
-  // useEffect(() => {
-  //   triAnim.start(
-  //     isActive
-  //       ? { opacity: 1, scale: 1, transition: { duration: 0.5 } }
-  //       : { opacity: 0, scale: 0.8, transition: { duration: 0.3 } }
-  //   );
-  // }, [isActive, triAnim]);
-
-  // CRITICAL: Additional check to pause inactive videos
-  // useEffect(() => {
-  //   const v = videoRef.current;
-  //   if (!v) return;
-
-  //   // If this video is not active, ensure it's paused
-  //   if (!isActive) {
-  //     v.pause();
-  //   }
-  // }, [isActive]);
-
-  const handleRetryLoad = (e) => {
+  const handleRetryLoad = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const v = videoRef.current;
     if (v) {
@@ -132,13 +102,11 @@ const CenterDiv = ({
     }
   };
 
-  // Reset icon when switching videos
   useEffect(() => {
     if (isActive) {
       iconAnim.set({ opacity: 0 });
       hasStartedRef.current = false;
     } else {
-      // Ensure inactive videos are paused
       const v = videoRef.current;
       if (v) {
         v.pause();
@@ -151,24 +119,18 @@ const CenterDiv = ({
     );
   }, [isActive, data, iconAnim]);
 
-  // Video playback effect - CRITICAL FIX: Only play if active
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
 
-    // CRITICAL: Always pause if not active
     if (!isActive) {
       v.pause();
       return;
     }
 
-    // Only proceed if this is the active video
     if (!isActive) return;
-
-    // Auto-play logic for subsequent videos after first interaction
     const shouldAutoPlay = hasUserInteracted && !hasStartedRef.current;
 
-    // IMPORTANT: Only attempt playback if video is loaded and no error
     if (
       (isGloballyPlaying || shouldAutoPlay) &&
       isVideoLoaded &&
@@ -181,7 +143,6 @@ const CenterDiv = ({
         return;
       }
 
-      // Set current time based on progress
       if (progress === 0) {
         v.currentTime = 0;
       }
@@ -198,7 +159,6 @@ const CenterDiv = ({
         });
       }
     } else {
-      // Pause if not playing OR if video has error OR if video not loaded
       v.pause();
     }
   }, [
@@ -211,14 +171,12 @@ const CenterDiv = ({
     progress,
   ]);
 
-  // Report video loading status to parent - ONLY if active
   useEffect(() => {
     if (isActive && onVideoLoadStatus) {
       onVideoLoadStatus(isVideoLoaded, videoLoadError);
     }
   }, [isActive, isVideoLoaded, videoLoadError, onVideoLoadStatus]);
 
-  // Handle video loading events
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -242,7 +200,7 @@ const CenterDiv = ({
       setVideoLoadError(false);
     };
 
-    const handleError = (e) => {
+    const handleError = (e: Event) => {
       console.error("Video error:", e);
 
       if (retryCountRef.current < MAX_RETRIES) {

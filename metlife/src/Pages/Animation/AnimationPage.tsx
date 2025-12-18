@@ -18,16 +18,17 @@ import Footer from "../../components/common/mainFooter";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Timer from "../../components/common/Timer/Timer";
-import VideoTimeline from "../../components/video-editor/VideoTimeline.jsx";
+// import VideoTimeline from "../../components/video-editor/VideoTimeline";
 import {
   getMediaTransitions,
   getSceneDetails,
   getVideosList,
   postGenerateFullVideo,
-  postGenerateVideoBatch
+  postGenerateVideoBatch,
 } from "../../redux/features/audioAnimationSlice";
 import styles from "./animation.module.css";
 import { convertToISTParts } from "../../utils";
+import VideoTimeline from "../../components/video-editor/VideoTimeline";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;

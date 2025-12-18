@@ -2,28 +2,34 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import HeroSection from "./HeroSection";
 import Bottom from "./Bottom";
+import type { VideoData } from "../../utils/types";
 
 const TICK = 100;
 
-const normalizeDuration = (duration) => {
+const normalizeDuration = (duration?: number) => {
   if (!duration) return 6000;
   return duration * 1000;
 };
 
-const VideoTimeline = ({ videos }) => {
-  const [playing, setPlaying] = useState(false);
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+interface VideoTimelineProps {
+  videos: VideoData[];
+}
 
-  const [activeVideoLoaded, setActiveVideoLoaded] = useState(false);
-  const [activeVideoHasError, setActiveVideoHasError] = useState(false);
+const VideoTimeline: React.FC<VideoTimelineProps> = ({ videos }) => {
+  const [playing, setPlaying] = useState<boolean>(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
 
-  const timer = useRef(null);
-  const timerEnd = useRef(null);
+  const [activeVideoLoaded, setActiveVideoLoaded] = useState<boolean>(false);
+  const [activeVideoHasError, setActiveVideoHasError] =
+    useState<boolean>(false);
 
-  const [active, setActive] = useState(0);
-  const [progress, setProg] = useState(0);
+  const timer = useRef<number | null>(null);
+  const timerEnd = useRef<number | null>(null);
 
-  const heroRef = useRef(null);
+  const [active, setActive] = useState<number>(0);
+  const [progress, setProg] = useState<number>(0);
+
+  const heroRef = useRef<HTMLDivElement | null>(null);
 
   const rawDuration = videos?.[active]?.duration;
   const slideTime = normalizeDuration(rawDuration);
@@ -31,7 +37,7 @@ const VideoTimeline = ({ videos }) => {
   const total = videos?.length;
 
   const goto = useCallback(
-    (idx) => {
+    (idx: number) => {
       const newIdx = (idx + total) % total;
 
       if (newIdx !== active) {
@@ -59,37 +65,37 @@ const VideoTimeline = ({ videos }) => {
       activeVideoHasError
     ) {
       setProg(0);
-      clearInterval(timer.current);
-      clearTimeout(timerEnd.current);
+      if (timer.current) clearInterval(timer.current);
+      if (timerEnd.current) clearTimeout(timerEnd.current);
       return;
     }
 
     if (!playing) {
-      clearInterval(timer.current);
-      clearTimeout(timerEnd.current);
+      if (timer.current) clearInterval(timer.current);
+      if (timerEnd.current) clearTimeout(timerEnd.current);
       return;
     }
 
     const start = Date.now() - (progress / 100) * slideTime;
 
-    clearInterval(timer.current);
-    clearTimeout(timerEnd.current);
+    if (timer.current) clearInterval(timer.current);
+    if (timerEnd.current) clearTimeout(timerEnd.current);
 
-    timer.current = setInterval(() => {
+    timer.current = window.setInterval(() => {
       const pct = ((Date.now() - start) / slideTime) * 100;
       setProg(pct > 100 ? 100 : pct);
     }, TICK);
 
     const remaining = Math.max(0, slideTime * (1 - progress / 100));
 
-    timerEnd.current = setTimeout(() => {
+    timerEnd.current = window.setTimeout(() => {
       setProg(100);
       next();
     }, remaining);
 
     return () => {
-      clearInterval(timer.current);
-      clearTimeout(timerEnd.current);
+      if (timer.current) clearInterval(timer.current);
+      if (timerEnd.current) clearTimeout(timerEnd.current);
     };
   }, [
     active,
@@ -116,14 +122,17 @@ const VideoTimeline = ({ videos }) => {
   }, [active, hasUserInteracted, activeVideoLoaded, activeVideoHasError]);
 
   // ------------------ VIDEO LOAD STATUS HANDLER ------------------
-  const handleVideoLoadStatus = useCallback((loaded, hasError) => {
-    setActiveVideoLoaded(loaded);
-    setActiveVideoHasError(hasError);
+  const handleVideoLoadStatus = useCallback(
+    (loaded: boolean, hasError: boolean) => {
+      setActiveVideoLoaded(loaded);
+      setActiveVideoHasError(hasError);
 
-    if (hasError) {
-      setPlaying(false);
-    }
-  }, []);
+      if (hasError) {
+        setPlaying(false);
+      }
+    },
+    []
+  );
 
   return (
     <Box

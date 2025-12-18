@@ -3,9 +3,10 @@ import { Box, Button } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CenterDiv from "./CenterDiv";
+import type { VideoData } from "../../utils/types";
 
 /* helper: shortest circular offset */
-const offset = (i, active, total) => {
+const offset = (i: number, active: number, total: number) => {
   let diff = i - active;
   const half = Math.floor(total / 2);
   if (diff > half) diff -= total;
@@ -18,6 +19,19 @@ const SLIDE_W = 75;
 const PEEK = 8;
 const STEP = SLIDE_W - (1 - PEEK);
 
+interface HeroSectionProps {
+  homeData: VideoData[];
+  active: number;
+  progress: number;
+  next: () => void;
+  prev: () => void;
+  onTogglePlay: (val: boolean) => void;
+  isGloballyPlaying: boolean;
+  onFirstInteraction?: () => void;
+  hasUserInteracted: boolean;
+  onVideoLoadStatus?: (loaded: boolean, hasError: boolean) => void;
+}
+
 export default function HeroSection({
   homeData,
   active,
@@ -29,20 +43,34 @@ export default function HeroSection({
   onFirstInteraction,
   hasUserInteracted,
   onVideoLoadStatus,
-}) {
-  const total = homeData?.length;
-  const startX = useRef(null);
+}: HeroSectionProps) {
+  const total = homeData.length;
+  const startX = useRef<number | null>(null);
   const far = Math.floor(total / 2);
 
   /* pointer handlers */
-  const handleDown = (e) => {
-    startX.current = e.clientX || e.touches?.[0]?.clientX;
+  const handleDown = (
+    e: React.PointerEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    if ("touches" in e) {
+      startX.current = e.touches[0].clientX;
+    } else {
+      startX.current = e.clientX;
+    }
   };
 
-  const handleUp = (e) => {
+  const handleUp = (
+    e: React.PointerEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     if (startX.current == null) return;
 
-    const endX = e.clientX || e.changedTouches?.[0]?.clientX;
+    let endX: number;
+    if ("changedTouches" in e) {
+      endX = e.changedTouches[0].clientX;
+    } else {
+      endX = e.clientX;
+    }
+
     const dx = endX - startX.current;
     const TH = 50;
 
@@ -67,7 +95,7 @@ export default function HeroSection({
         height: "70vh",
       }}
     >
-      {homeData?.map((item, i) => {
+      {homeData.map((item, i) => {
         const off = offset(i, active, total);
         const xvw = off * STEP;
         const isActive = i === active;
