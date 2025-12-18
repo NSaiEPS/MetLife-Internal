@@ -3,18 +3,19 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import type { AppDispatch,  } from "../store";
 import { toast } from "react-toastify";
+import type { PromptItem } from "../../utils/types";
 
 // ======================
 // TYPES
 // ======================
 
-export interface PromptItem {
-  id?: number;
-  prompt?: string;
-  is_saved?: boolean;
-  message?: string;
-  [key: string]: any;
-}
+// export interface PromptItem {
+//   id?: number;
+//   prompt?: string;
+//   is_saved?: boolean;
+//   message?: string;
+//   [key: string]: any;
+// }
 
 export interface PromptState {
   promtLoader: boolean;
@@ -37,7 +38,7 @@ const PromptSlice = createSlice({
     setPromptLoader(state, action: PayloadAction<boolean>) {
       state.promtLoader = action.payload;
     },
-    setPromptData(state, action: PayloadAction<PromptItem[] | any>) {
+    setPromptData(state, action: PayloadAction<PromptItem[]>) {
       state.promptData = action.payload;
     },
   },

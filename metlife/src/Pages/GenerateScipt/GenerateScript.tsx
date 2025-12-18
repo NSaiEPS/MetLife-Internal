@@ -29,7 +29,7 @@ import Input from "../../components/common/Input";
 import type { RootState } from "../../redux/store"; // import your store type
 import { showToast } from "../../utils/toast";
 import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
-import type { CharacterType } from "../../utils/types";
+import type { CharacterType, PromptItem } from "../../utils/types";
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -125,7 +125,6 @@ const GenerateScript: React.FC = () => {
   const [characters, setCharacters] = useState<CharacterType[]>([
     emptyCharacter,
   ]);
-  console.log("Characters:", characters);
   // States
   const [scriptText, setScriptText] = useState<string>("");
   const [data_filters, setDataFilters] = useState<DataFiltersType>({
@@ -160,6 +159,7 @@ const GenerateScript: React.FC = () => {
   const { promptData, promtLoader } = useSelector(
     (store: RootState) => store.Prompts
   );
+
 
   // Fetch prompts list
   useEffect(() => {
@@ -275,9 +275,9 @@ const GenerateScript: React.FC = () => {
       }
     } else apiCall();
   };
-  const buildCharacterPayload = (characters) => {
+  const buildCharacterPayload = (characters: CharacterType[] = []) => {
     return {
-      characters: characters.map((c) => ({
+      characters: characters?.map((c: CharacterType) => ({
         name: c.name || "",
         role: c.role || "",
         gender: c.gender || "",
@@ -464,7 +464,8 @@ const GenerateScript: React.FC = () => {
                           label="Top N"
                           options={topNOptions}
                           value={topn}
-                          onChange={setTopn}
+                          // onChange={setTopn}
+                          onChange={(value) => setTopn(value.toString())}
                           placeholder="Select Top N"
                           disabled={disableTopN}
                         />

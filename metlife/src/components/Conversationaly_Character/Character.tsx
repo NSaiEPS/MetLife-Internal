@@ -139,6 +139,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const [preview, setPreview] = useState<string>(data.img || "");
   const [errors, setErrors] = useState<ErrorState>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [expanded, setExpanded] = React.useState<string | false>(false);
 
   /* ================= VALIDATION ================= */
 
@@ -185,6 +186,11 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     setPreview(url);
     setForm({ ...form, img: url });
   };
+
+  const handleChange =
+    (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   /* ================= RENDER ================= */
 
@@ -259,7 +265,11 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
             {form.inputType === "prompt" && (
               <Box mt={4}>
                 {/* BASIC INFO */}
-                <Accordion sx={{ mb: 2 }}>
+                <Accordion
+                  sx={{ mb: 2, boxShadow: "none", background: "aliceblue" }}
+                  expanded={expanded === "basic"}
+                  onChange={handleChange("basic")}
+                >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant="subtitle2" sx={{ fontSize: "16px" }}>
                       Basic Info
@@ -272,6 +282,8 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         gridTemplateColumns: "repeat(2, 1fr)",
                         gap: 2,
                         mb: 3,
+                        background: "#fff",
+                        padding: "16px",
                       }}
                     >
                       <TextField
@@ -313,7 +325,19 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 </Accordion>
 
                 {/* APPEARANCE */}
-                <Accordion sx={{ mb: 2 }}>
+                <Accordion
+                  sx={{
+                    mb: 2,
+                    boxShadow: "none",
+                    border: "none",
+                    background: "aliceblue",
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                  expanded={expanded === "appearance"}
+                  onChange={handleChange("appearance")}
+                >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography
                       sx={{
@@ -331,6 +355,8 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         gridTemplateColumns: "repeat(2, 1fr)",
                         gap: 2,
                         mb: 3,
+                        background: "#fff",
+                        padding: "16px",
                       }}
                     >
                       {(
@@ -358,11 +384,22 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 </Accordion>
 
                 {/* STYLE & PERSONALITY */}
-                <Accordion>
+                <Accordion
+                  sx={{
+                    boxShadow: "none",
+                    background: "aliceblue",
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                  expanded={expanded === "style"}
+                  onChange={handleChange("style")}
+                >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography
                       sx={{
                         fontSize: "16px",
+                        fontWeight: 500,
                       }}
                       variant="subtitle2"
                     >
@@ -375,6 +412,8 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         display: "grid",
                         gridTemplateColumns: "repeat(2, 1fr)",
                         gap: 2,
+                        background: "#fff",
+                        padding: "16px",
                       }}
                     >
                       {(
@@ -449,7 +488,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 
             {/* ACTIONS */}
             <Box display="flex" justifyContent="space-between" mt={4}>
-              <Button color="error" variant="outlined" onClick={closePrompt}>
+              <Button color="inherit" variant="outlined" onClick={closePrompt}>
                 Cancel
               </Button>
               <Button variant="contained" onClick={handleSave}>

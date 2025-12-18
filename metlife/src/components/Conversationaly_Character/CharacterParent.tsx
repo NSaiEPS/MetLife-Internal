@@ -11,9 +11,14 @@ import {
 
 export type InputType = "prompt" | "image";
 
+// interface CharacterParentProps {
+//   characters: CharacterType[];
+//   setCharacters: React.Dispatch<React.SetStateAction<CharacterType[]>>;
+// }
+
 /* ================= COMPONENT ================= */
 
-const CharacterParent: React.FC = ({ setCharacters, characters }) => {
+const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters }) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showSubmit, setShowSubmit] = useState<boolean>(false);
 

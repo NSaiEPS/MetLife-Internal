@@ -59,3 +59,11 @@ export interface VideoData {
   duration?: number;
   [key: string]: any;
 }
+
+export interface PromptItem {
+  id?: number;
+  prompt?: string;
+  is_saved?: boolean;
+  message?: string;
+  [key: string]: any;
+}

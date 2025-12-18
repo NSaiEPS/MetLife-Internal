@@ -12,13 +12,20 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { showToast } from "../../utils/toast";
 import { NoDataMessage } from "./NoDataMessage";
 import { useSelector } from "react-redux";
+import type { PromptItem } from "../../utils/types";
+
+interface SavedPromptsModalProps {
+  open: boolean;
+  prompts: PromptItem[];
+  onClose: (text: string) => void;
+}
 
 export default function SavedPromptsModal({
   open,
   onClose,
   prompts = [],
   size = "md", // "md" or "lg"
-}) {
+}:SavedPromptsModalProps) {
   const { promtLoader } = useSelector((store) => store.Prompts);
 
   const handleCopy = async (text) => {
