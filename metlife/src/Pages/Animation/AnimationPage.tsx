@@ -372,14 +372,14 @@ const AnimationPage: React.FC = () => {
                           Generated Video
                         </Typography>
 
-                        <VideoTimeline
+                        {/* <VideoTimeline
                           videosData={videoAnimationData}
                           // videosData={videosData}
                           // setVideosData={setVideosData}
                           // handleAllSubmit={handleAllSubmit}
-                        />
+                        /> */}
 
-                        {/* <FullVideoPlayer video_url={generatedVideoData?.url} /> */}
+                        <FullVideoPlayer video_url={generatedVideoData?.url} />
                       </>
                     )
                     //  : (
