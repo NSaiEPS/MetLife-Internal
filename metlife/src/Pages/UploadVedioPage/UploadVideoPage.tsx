@@ -1,33 +1,26 @@
 import React, { useState } from "react";
 import VideoPlayer from "../../components/common/vedioPlayer";
 import styles from "./UploadVideoPage.module.css";
-import ButtonComp from "../../components/common/Buton/Button";   // ✅ Use ButtonComp
+import ButtonComp from "../../components/common/Buton/Button"; // ✅ Use ButtonComp
 import video from "../../assets/dummy.mp4";
 
 const UploadClipsPage = () => {
-  const [clips, setClips] = useState([
-    { id: 1, src: video },
-  ]);
+  const [clips, setClips] = useState([{ id: 1, src: video }]);
 
   // ✅ Add new dummy clip
   const addDummyClip = () => {
-    setClips((prev) => [
-      ...prev,
-      { id: Date.now(), src: video },
-    ]);
+    setClips((prev) => [...prev, { id: Date.now(), src: video }]);
   };
 
   // ✅ Delete a clip
-  const deleteClip = (id : number) => {
+  const deleteClip = (id: number) => {
     setClips((prev) => prev.filter((clip) => clip.id !== id));
   };
 
   // ✅ Replace clip with dummy again
-  const replaceClip = (id : number) => {
+  const replaceClip = (id: number) => {
     setClips((prev) =>
-      prev.map((clip) =>
-        clip.id === id ? { ...clip, src: video } : clip
-      )
+      prev.map((clip) => (clip.id === id ? { ...clip, src: video } : clip))
     );
   };
 
