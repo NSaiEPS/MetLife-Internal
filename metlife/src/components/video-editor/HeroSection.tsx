@@ -44,7 +44,7 @@ export default function HeroSection({
   hasUserInteracted,
   onVideoLoadStatus,
 }: HeroSectionProps) {
-  const total = homeData.length;
+  const total = homeData?.length;
   const startX = useRef<number | null>(null);
   const far = Math.floor(total / 2);
 
@@ -95,7 +95,7 @@ export default function HeroSection({
         height: "70vh",
       }}
     >
-      {homeData.map((item, i) => {
+      {homeData?.map((item, i) => {
         const off = offset(i, active, total);
         const xvw = off * STEP;
         const isActive = i === active;

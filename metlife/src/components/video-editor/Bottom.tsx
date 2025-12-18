@@ -65,7 +65,7 @@ export default function Bottom({
   console.log("fdfdf");
 
   const buttonClickHandler = (i: number) => {
-    const elem = homeData[i];
+    const elem = homeData?.[i];
     setModalIndex(i);
     setModalOST(elem?.ost || "");
     setEntryAnimation(elem?.applied_animation?.entry || "fade_in");
@@ -74,7 +74,7 @@ export default function Bottom({
 
   const handleModalSubmit = async () => {
     if (modalIndex === null) return;
-    const row = homeData[modalIndex];
+    const row = homeData?.[modalIndex];
 
     const payload = {
       scene_id: row.scene_id,
@@ -145,7 +145,7 @@ export default function Bottom({
           // overscrollBehavior: "contain", // ⬅️ prevents parent scroll chaining
         }}
       >
-        {homeData.map((row, i) => {
+        {homeData?.map((row, i) => {
           const isActive = i === active;
 
           return (
