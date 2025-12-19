@@ -13,6 +13,7 @@ import { showToast } from "../../utils/toast";
 import { NoDataMessage } from "./NoDataMessage";
 import { useSelector } from "react-redux";
 import type { PromptItem } from "../../utils/types";
+import type { RootState } from "../../redux/store";
 
 interface SavedPromptsModalProps {
   open: boolean;
@@ -26,7 +27,7 @@ export default function SavedPromptsModal({
   prompts = [],
   size = "md", // "md" or "lg"
 }:SavedPromptsModalProps) {
-  const { promtLoader } = useSelector((store) => store.Prompts);
+  const { promtLoader } = useSelector((store:RootState) => store.Prompts);
 
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");
