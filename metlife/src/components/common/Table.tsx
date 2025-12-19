@@ -52,6 +52,7 @@ import { postSavePrompt } from "../../redux/features/promptSlice";
 import {
   getExtractCharacters,
   postExtractCharacters,
+  postPromptSetupCharacters,
 } from "../../redux/features/scriptSlice";
 import { CharacterCarousel } from "./carousel/CharacterCarousel";
 
@@ -113,12 +114,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData
   );
-  const { characterData } = useSelector((store) => store.Script);
+  const { characterData, promptData, scriptLoader } = useSelector(
+    (store) => store.Script
+  );
   const { pathname } = useLocation();
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent
   );
-  const { scriptLoader } = useSelector((store: RootState) => store.Script);
+  // const { scriptLoader } = useSelector((store: RootState) => store.Script);
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const [openShowPopup, setOpenShowPopup] = useState(false);
   const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
@@ -427,8 +430,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       },
       is_save_action: true,
     };
-
-    // console.log(data, "check__payload")
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {
@@ -491,14 +492,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  const handleCharacterGenerateImages = () => {
-    if (!tableExtraData?.char_image_exist) {
-      dispatch(
-        postExtractCharacters(id, () => {
-          setCharImageExist(true);
-        })
-      );
-    }
+  const handleCharacterGenerateImages = (prompts: Record<string, string>) => {
+    // if (!tableExtraData?.char_image_exist) {
+
+    // }
+
+    dispatch(
+      postExtractCharacters(id, () => {
+        setCharImageExist(true);
+      })
+    );
   };
 
   const handleOpenCharacterModal = (index = 0) => {
@@ -509,6 +512,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleCloseCharacterModal = () => {
     setOpenCharacterModal(false);
   };
+
+  const handleSetupPrompt = () => {
+    dispatch(postPromptSetupCharacters(id));
+  };
+
+  console.log(promptData, "chekc__promtpt_P_data")
 
   return (
     <>
@@ -765,26 +774,28 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         >
           {features && (
             <>
-              {charImageExist &&
+              {promptData?.length &&
               extraDetails?.video_style === "conversational" ? (
                 <Button
                   variant="outlined"
                   className={styles.largeOutline}
                   onClick={() => handleOpenCharacterModal()}
                 >
-                  View Image
+                  View Prompt
                 </Button>
               ) : (
                 extraDetails?.video_style === "conversational" && (
                   <Button
                     variant="outlined"
                     className={styles.largeOutline}
-                    onClick={() => {
-                      handleCharacterGenerateImages();
-                    }}
+                    onClick={handleSetupPrompt}
+                    // onClick={() => {
+                    //   handleCharacterGenerateImages();
+                    // }}
+                    // onClick={() => setOpenCharacterModal(true)}
                     disabled={saveTranslatedData === null || scriptLoader}
                   >
-                    Character Images
+                    Generate Images
                   </Button>
                 )
               )}
@@ -793,8 +804,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 open={openCharacterModal}
                 onClose={handleCloseCharacterModal}
                 characterData={characterData}
+                promptData={promptData}
                 currentIndex={currentIndex}
                 setCurrentIndex={setCurrentIndex}
+                onGenerateImages={handleCharacterGenerateImages}
               />
 
               <ButtonComp

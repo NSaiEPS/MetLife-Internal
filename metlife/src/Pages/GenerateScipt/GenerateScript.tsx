@@ -160,7 +160,6 @@ const GenerateScript: React.FC = () => {
     (store: RootState) => store.Prompts
   );
 
-
   // Fetch prompts list
   useEffect(() => {
     dispatch(getPromptsList());
