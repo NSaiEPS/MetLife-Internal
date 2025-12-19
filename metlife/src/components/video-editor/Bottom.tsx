@@ -31,18 +31,28 @@ const style = {
 
 interface BottomProps {
   videosData: VideoData[];
-  // setVideosData: (data: VideoData[]) => void;
-  // handleAllSubmit: () => void;
+  animationData: ModalState[];
+  setAnimationData: (data: ModalState[]) => void;
+  handleAllSubmit: () => void;
   active: number;
   progress: number;
   onSelect: (index: number) => void;
   videoHasError?: boolean;
 }
 
+interface ModalState {
+  scene_number: number;
+  scene_id: string;
+  ost: string;
+  start_transition: string;
+  end_transition: string;
+}
+
 export default function Bottom({
   videosData,
-  // setVideosData,
-  // handleAllSubmit,
+  animationData,
+  setAnimationData,
+  handleAllSubmit,
   active,
   progress,
   onSelect,
@@ -53,9 +63,13 @@ export default function Bottom({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [modalIndex, setModalIndex] = useState<number | null>(null);
-  const [modalOST, setModalOST] = useState<string>("");
-  const [entryAnimation, setEntryAnimation] = useState<string>("fade_in");
-  const [exitAnimation, setExitAnimation] = useState<string>("fade_out");
+  const [modalState, setModalState] = useState<ModalState>({
+    scene_number: 0,
+    scene_id: "",
+    start_transition: "",
+    end_transition: "",
+    ost: "",
+  });
 
   const downloadVideo = (s3_url: string, name: string) => {
     // const link = document.createElement("a");
@@ -70,10 +84,16 @@ export default function Bottom({
 
   const buttonClickHandler = (i: number) => {
     const elem = videosData?.[i];
+    if (!elem) return;
+
     setModalIndex(i);
-    setModalOST(elem?.ost || "");
-    setEntryAnimation(elem?.applied_animation?.entry || "fade_in");
-    setExitAnimation(elem?.applied_animation?.exit || "fade_out");
+    setModalState({
+      scene_number: elem.scene_number,
+      scene_id: elem.scene_id,
+      start_transition: elem.start_transition,
+      end_transition: elem.end_transition,
+      ost: elem.ost,
+    });
   };
 
   // const handleFinalSubmit = () => {
@@ -108,28 +128,8 @@ export default function Bottom({
   const handleModalSubmit = async () => {
     if (modalIndex === null) return;
 
-    const row = videosData[modalIndex];
-
-    const payload = {
-      scene_id: row.scene_id,
-      start_transition: entryAnimation,
-      end_transition: exitAnimation,
-    };
-
     try {
-      // console.log("API Payload", payload);
-      // await api.applyAnimation(payload);
-
-      // ✅ LOCAL UPDATE
-      const updated = [...videosData];
-      updated[modalIndex] = {
-        ...row,
-
-        start_transition: entryAnimation,
-        end_transition: exitAnimation,
-      };
-
-      setVideosData(updated);
+      setAnimationData((prev: ModalState[]) => [...prev, modalState]);
       setModalIndex(null);
     } catch (err) {
       console.error("Animation apply failed", err);
@@ -276,6 +276,25 @@ export default function Bottom({
                 >
                   <DownloadIcon sx={{ color: "#fff", fontSize: 18 }} />
                 </Button>
+
+                {videosData?.length > 1 && (
+                  <Button
+                    sx={{
+                      position: "absolute",
+                      top: 4,
+                      left: 4,
+                      minWidth: "auto",
+                      p: "1px 8px",
+                      color: "#fff",
+                      backgroundColor: "#38a4ecff",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      cursor: "auto",
+                    }}
+                  >
+                    {row?.scene_number}
+                  </Button>
+                )}
               </Box>
               <Box
                 sx={{
@@ -341,7 +360,7 @@ export default function Bottom({
                           : "#fff",
                       }}
                     >
-                      {row.ost}
+                      {row?.ost}
                     </Typography>
                   </Box>
 
@@ -390,7 +409,7 @@ export default function Bottom({
                   }}
                 />
               )}
-              {isActive && (
+              {isActive && videosData?.length > 1 && (
                 <Button onClick={() => buttonClickHandler(i)}>
                   Add Animation
                 </Button>
@@ -438,7 +457,7 @@ export default function Bottom({
                     OST :
                   </Typography>
                   <Typography fontWeight={600} mb={2}>
-                    {modalOST}
+                    {modalState?.ost}
                   </Typography>
                 </Box>
 
@@ -457,8 +476,13 @@ export default function Bottom({
                     </Typography>
 
                     <RadioGroup
-                      value={entryAnimation}
-                      onChange={(e) => setEntryAnimation(e.target.value)}
+                      value={modalState?.start_transition}
+                      onChange={(e) =>
+                        setModalState({
+                          ...modalState,
+                          start_transition: e.target.value,
+                        })
+                      }
                     >
                       <FormControlLabel
                         value="none"
@@ -497,8 +521,13 @@ export default function Bottom({
                     </Typography>
 
                     <RadioGroup
-                      value={exitAnimation}
-                      onChange={(e) => setExitAnimation(e.target.value)}
+                      value={modalState?.end_transition}
+                      onChange={(e) =>
+                        setModalState({
+                          ...modalState,
+                          end_transition: e.target.value,
+                        })
+                      }
                     >
                       <FormControlLabel
                         value="none"
@@ -537,14 +566,16 @@ export default function Bottom({
         )}
       </Box>
 
-      {/* <Button
-        variant="contained"
-        color="primary"
-        sx={{ textTransform: "none" }}
-        onClick={handleAllSubmit}
-      >
-        Submit Animation Changes
-      </Button> */}
+      {videosData?.length > 1 && (
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ textTransform: "none" }}
+          onClick={handleAllSubmit}
+        >
+          Submit Animation Changes
+        </Button>
+      )}
     </Box>
   );
 }

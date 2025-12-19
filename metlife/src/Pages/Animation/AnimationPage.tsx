@@ -30,6 +30,7 @@ import styles from "./animation.module.css";
 import { convertToISTParts } from "../../utils";
 import VideoTimeline from "../../components/video-editor/VideoTimeline";
 import type { VideoData } from "../../utils/types";
+import MissingAnimationPopup from "../../components/common/popup/MissingAnimationPopup";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;
@@ -52,6 +53,14 @@ interface VideoItem {
   ost?: string;
 }
 
+interface AnimationData {
+  scene_number: number;
+  scene_id: string;
+  start_transition: string;
+  end_transition: string;
+  ost: string;
+}
+
 interface RootState {
   AudioAnimation: {
     audioAnimationLoader: boolean;
@@ -69,6 +78,9 @@ const AnimationPage: React.FC = () => {
   const [entryAnimation, setEntryAnimation] = useState<string>("fade_in");
   const [exitAnimation, setExitAnimation] = useState<string>("fade_out");
   const [timerDone, setTimerDone] = useState<boolean>(false);
+  const [animationData, setAnimationData] = useState<AnimationData[]>([]);
+  const [openMissingPopup, setOpenMissingPopup] = useState(false);
+  const [missingScenes, setMissingScenes] = useState<number[]>([]);
 
   const {
     audioAnimationLoader,
@@ -87,9 +99,10 @@ const AnimationPage: React.FC = () => {
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
-  // const [videosData, setVideosData] = useState<VideoItem[]>(videoAnimationData);
+  // console.log(sceneData, "sceneData");
+  // console.log(generatedVideoData, "generatedVideoData");
 
-  // console.log(generatedVideoData);
+  // console.log(videoAnimationData, "videoAnimationData");
 
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
@@ -106,8 +119,6 @@ const AnimationPage: React.FC = () => {
         },
       ]
     : [];
-
-  // console.log(finalVideoAsTimeline);
 
   /* ---------- FETCH DATA ---------- */
 
@@ -140,18 +151,45 @@ const AnimationPage: React.FC = () => {
 
   const handleAllSubmit = () => {
     // const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
-    const sceneIds = sceneData?.scenes?.map((item) => item?.scene_id);
-    const scenesPayload = sceneIds?.map((id) => ({
-      scene_id: id,
-      start_transition: entryAnimation,
-      end_transition: exitAnimation,
-      // ost: "",
-    }));
-    const payload = {
-      script_id: id,
-      scenes: scenesPayload,
-    };
-    dispatch(postGenerateVideoBatch(payload));
+    // const sceneIds = sceneData?.scenes?.map((item) => item?.scene_id);
+    // const scenesPayload = sceneIds?.map((id) => ({
+    //   scene_id: id,
+    //   start_transition: entryAnimation,
+    //   end_transition: exitAnimation,
+    //   // ost: "",
+    // }));
+    // const payload = {
+    //   script_id: id,
+    //   scenes: scenesPayload,
+    // };
+    // dispatch(postGenerateVideoBatch(payload));
+
+    const appliedSceneNumbers = new Set(
+      animationData.map((item) => item.scene_number)
+    );
+
+    const missingScenes = videoAnimationData
+      .filter((video) => !appliedSceneNumbers.has(video.scene_number))
+      .map((video) => video.scene_number);
+
+    if (missingScenes.length > 0) {
+      // console.log("Missing animation on scenes:", missingScenes);
+      setMissingScenes(missingScenes);
+      setOpenMissingPopup(true);
+      return;
+    }
+
+    submitAllAnimations();
+  };
+
+  const handleMissingAnimationConfirm = () => {
+    setOpenMissingPopup(false);
+    submitAllAnimations();
+  };
+
+  const submitAllAnimations = () => {
+    // console.log("Submitting all animations", animationData);
+    // dispatch(postGenerateFullVideo(animationData));
   };
 
   const handleAlternateSubmit = () => {
@@ -185,8 +223,6 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
-  console.log(videoAnimationLoader, "videoAnimationLoader");
-
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -197,7 +233,7 @@ const AnimationPage: React.FC = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {(audioAnimationLoader || !generatedVideoData?.final_video) && (
+            {(audioAnimationLoader || !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
             )}
 
@@ -271,13 +307,19 @@ const AnimationPage: React.FC = () => {
                       </Typography>
                       <VideoTimeline
                         videosData={videoAnimationData}
-                        // videosData={videosData}
-                        // setVideosData={setVideosData}
-                        // handleAllSubmit={handleAllSubmit}
+                        animationData={animationData}
+                        setAnimationData={setAnimationData}
+                        handleAllSubmit={handleAllSubmit}
                       />
                     </Grid>
                   )}
 
+                  <MissingAnimationPopup
+                    open={openMissingPopup}
+                    onClose={() => setOpenMissingPopup(false)}
+                    onConfirm={handleMissingAnimationConfirm}
+                    missingScenes={missingScenes}
+                  />
                   <Typography
                     className={styles.audioSelectionTitle}
                     sx={{
@@ -378,41 +420,6 @@ const AnimationPage: React.FC = () => {
                     </Grid>
                   </Grid>
 
-                  {/* Full Video */}
-                  {
-                    generatedVideoData && sceneData?.video_exists === true && (
-                      <>
-                        <Typography
-                          sx={{
-                            fontSize: "20px",
-                            fontWeight: 500,
-                            mt: 4,
-                            mb: 2,
-                          }}
-                        >
-                          Generated Video
-                        </Typography>
-
-                        <VideoTimeline
-                          videosData={finalVideoAsTimeline}
-                          // videosData={videosData}
-                          // setVideosData={setVideosData}
-                          // handleAllSubmit={handleAllSubmit}
-                        />
-
-                        {/* <FullVideoPlayer video_url={generatedVideoData?.url} /> */}
-                      </>
-                    )
-                    //  : (
-                    //   <>
-                    //     <NoDataMessage
-                    //       filter={false}
-                    //       // loading={audioAnimationLoader}
-                    //     />
-                    //   </>
-                    // )
-                  }
-
                   <div className={styles.actions}>
                     <ButtonComp
                       label={"Alternative Scenes"}
@@ -440,19 +447,57 @@ const AnimationPage: React.FC = () => {
                       }
                     />
                   </div>
-                </div>
-                <div className={styles.actions_second}>
-                  <ButtonComp
-                    sx={{ textTransform: "none", width: "200px" }}
-                    label={"Generate Video"}
-                    action={generateVideo}
-                    disabled={
-                      audioAnimationLoader ||
-                      videoAnimationLoader ||
-                      !videoAnimationData ||
-                      generatedVideoData
-                    }
-                  />
+                  <div className={styles.actions_second}>
+                    <ButtonComp
+                      sx={{ textTransform: "none", width: "200px" }}
+                      label={"Generate Video"}
+                      action={generateVideo}
+                      disabled={
+                        audioAnimationLoader ||
+                        videoAnimationLoader ||
+                        !videoAnimationData ||
+                        generatedVideoData?.final_video
+                      }
+                    />
+                  </div>
+
+                  {/* Full Video */}
+                  {
+                    generatedVideoData?.final_video !== null &&
+                      sceneData?.video_exists === true && (
+                        <>
+                          <Typography
+                            sx={{
+                              fontSize: "20px",
+                              fontWeight: 500,
+                              // mt: 4,
+                              mb: 2,
+                            }}
+                          >
+                            Generated Video
+                          </Typography>
+
+                          <VideoTimeline
+                            videosData={finalVideoAsTimeline}
+                            animationData={animationData}
+                            setAnimationData={setAnimationData}
+                            handleAllSubmit={handleAllSubmit}
+                          />
+
+                          {/* <FullVideoPlayer
+                            video_url={generatedVideoData?.url}
+                          /> */}
+                        </>
+                      )
+                    //  : (
+                    //   <>
+                    //     <NoDataMessage
+                    //       filter={false}
+                    //       // loading={audioAnimationLoader}
+                    //     />
+                    //   </>
+                    // )
+                  }
                 </div>
               </div>
             </main>
