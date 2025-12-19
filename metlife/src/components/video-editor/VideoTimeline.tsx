@@ -12,12 +12,20 @@ const normalizeDuration = (duration?: number) => {
 };
 
 interface VideoTimelineProps {
-  videos: VideoData[];
+  videosData: VideoData[];
+  setVideosData: (data: VideoData[]) => void;
+  handleAllSubmit: () => void;
 }
 
-const VideoTimeline: React.FC<VideoTimelineProps> = ({ videos }) => {
+const VideoTimeline: React.FC<VideoTimelineProps> = ({
+  videosData,
+  // setVideosData,
+  // handleAllSubmit,
+}) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
+
+  // console.log(videosData);
 
   const [activeVideoLoaded, setActiveVideoLoaded] = useState<boolean>(false);
   const [activeVideoHasError, setActiveVideoHasError] =
@@ -31,10 +39,10 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({ videos }) => {
 
   const heroRef = useRef<HTMLDivElement | null>(null);
 
-  const rawDuration = videos?.[active]?.duration;
+  const rawDuration = videosData?.[active]?.duration;
   const slideTime = normalizeDuration(rawDuration);
 
-  const total = videos?.length;
+  const total = videosData?.length;
 
   const goto = useCallback(
     (idx: number) => {
@@ -159,7 +167,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({ videos }) => {
         }}
       >
         <HeroSection
-          homeData={videos}
+          videosData={videosData}
           progress={progress}
           active={active}
           next={next}
@@ -175,7 +183,9 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({ videos }) => {
       {/* BOTTOM BAR */}
       <Bottom
         active={active}
-        homeData={videos}
+        videosData={videosData}
+        // setVideosData={setVideosData}
+        // handleAllSubmit={handleAllSubmit}
         progress={progress}
         onSelect={goto}
         videoHasError={activeVideoHasError}

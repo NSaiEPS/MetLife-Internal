@@ -29,6 +29,7 @@ import {
 import styles from "./animation.module.css";
 import { convertToISTParts } from "../../utils";
 import VideoTimeline from "../../components/video-editor/VideoTimeline";
+import type { VideoData } from "../../utils/types";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;
@@ -85,6 +86,28 @@ const AnimationPage: React.FC = () => {
       sceneData?.estimated_completion_at
   );
   const finalTime = Math.ceil(waitingTime / 60);
+
+  // const [videosData, setVideosData] = useState<VideoItem[]>(videoAnimationData);
+
+  // console.log(generatedVideoData);
+
+  const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
+    ? [
+        {
+          scene_id: "final_video",
+          scene_number: 1,
+          ost: "Final Video",
+          image_urls: ["/imgs/final-thumbnail.png"], // fallback
+          audio_url: "",
+          final_video: generatedVideoData?.final_video,
+          duration: generatedVideoData?.duration_seconds ?? 0,
+          start_transition: "none",
+          end_transition: "none",
+        },
+      ]
+    : [];
+
+  // console.log(finalVideoAsTimeline);
 
   /* ---------- FETCH DATA ---------- */
 
@@ -162,6 +185,8 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
+  console.log(videoAnimationLoader, "videoAnimationLoader");
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -172,7 +197,7 @@ const AnimationPage: React.FC = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {(audioAnimationLoader || videoAnimationLoader) && (
+            {(audioAnimationLoader || !generatedVideoData?.final_video) && (
               <FullScreenGradientLoader text="loading..." />
             )}
 
@@ -184,12 +209,82 @@ const AnimationPage: React.FC = () => {
 
                 {/* animation part */}
                 <div className={styles.insideContainer}>
+                  {/* Available videos */}
+                  {!timerDone && finalTime > 0 && (
+                    // {/* { finalTime > 0 && ( */}
+                    <Timer
+                      time={finalTime}
+                      // minutes={finalTime}
+                      onComplete={() => setTimerDone(true)}
+                    />
+                  )}
+
+                  {/* {
+                    videoAnimationData?.length > 0 &&
+                      sceneData?.video_exists === true && (
+                        <>
+                          <Typography
+                            sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                          >
+                            Available Videos
+                          </Typography>
+                          <Grid container spacing={2} sx={{ mt: 1 }}>
+                            {videoAnimationData?.map((scene, idx) => (
+                              <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                key={idx}
+                                sx={{ width: "100%" }}
+                              >
+                                <GeneratedVideoPlayer
+                                  data={scene}
+                                  image_url={scene?.image_urls[0]}
+                                  index={idx}
+                                  description={scene?.ost}
+                                  s3_url={scene?.final_video?.url}
+                                />
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </>
+                      )
+                    //  : (
+                    //   <>
+                    //     {
+                    //       <NoDataMessage
+                    //         filter={false}
+                    //         loading={!videoAnimationData}
+                    //       />
+                    //     }
+
+                    //   </>
+                    // )
+                  } */}
+                  {videoAnimationData?.length > 0 && (
+                    <Grid container>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mb: 2 }}
+                      >
+                        Video Timeline
+                      </Typography>
+                      <VideoTimeline
+                        videosData={videoAnimationData}
+                        // videosData={videosData}
+                        // setVideosData={setVideosData}
+                        // handleAllSubmit={handleAllSubmit}
+                      />
+                    </Grid>
+                  )}
+
                   <Typography
                     className={styles.audioSelectionTitle}
                     sx={{
                       fontSize: "22px",
                       fontWeight: "500",
                       marginBottom: "10px",
+                      mt: 2,
                     }}
                   >
                     Animation Selection
@@ -282,81 +377,30 @@ const AnimationPage: React.FC = () => {
                       </Paper>
                     </Grid>
                   </Grid>
-                  {/* Available videos */}
-                  {!timerDone && finalTime > 0 && (
-                    // {/* { finalTime > 0 && ( */}
-                    <Timer
-                      time={finalTime}
-                      // minutes={finalTime}
-                      onComplete={() => setTimerDone(true)}
-                    />
-                  )}
-
-                  {/* {
-                    videoAnimationData?.length > 0 &&
-                      sceneData?.video_exists === true && (
-                        <>
-                          <Typography
-                            sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
-                          >
-                            Available Videos
-                          </Typography>
-                          <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {videoAnimationData?.map((scene, idx) => (
-                              <Grid
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                                key={idx}
-                                sx={{ width: "100%" }}
-                              >
-                                <GeneratedVideoPlayer
-                                  data={scene}
-                                  image_url={scene?.image_urls[0]}
-                                  index={idx}
-                                  description={scene?.ost}
-                                  s3_url={scene?.final_video?.url}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        </>
-                      )
-                    //  : (
-                    //   <>
-                    //     {
-                    //       <NoDataMessage
-                    //         filter={false}
-                    //         loading={!videoAnimationData}
-                    //       />
-                    //     }
-
-                    //   </>
-                    // )
-                  } */}
-                  {videoAnimationData?.length > 0 && (
-                    <Grid container sx={{ mt: 4 }}>
-                      <Typography
-                        sx={{ fontSize: "20px", fontWeight: 500, mt: 2, mb: 2 }}
-                      >
-                        Video Timeline
-                      </Typography>
-                      <VideoTimeline videos={videoAnimationData} />
-                    </Grid>
-                  )}
 
                   {/* Full Video */}
                   {
                     generatedVideoData && sceneData?.video_exists === true && (
                       <>
                         <Typography
-                          sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                          sx={{
+                            fontSize: "20px",
+                            fontWeight: 500,
+                            mt: 4,
+                            mb: 2,
+                          }}
                         >
                           Generated Video
                         </Typography>
 
-                        <FullVideoPlayer video_url={generatedVideoData?.url} />
+                        <VideoTimeline
+                          videosData={finalVideoAsTimeline}
+                          // videosData={videosData}
+                          // setVideosData={setVideosData}
+                          // handleAllSubmit={handleAllSubmit}
+                        />
+
+                        {/* <FullVideoPlayer video_url={generatedVideoData?.url} /> */}
                       </>
                     )
                     //  : (

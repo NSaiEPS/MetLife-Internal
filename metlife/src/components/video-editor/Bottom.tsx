@@ -30,7 +30,9 @@ const style = {
 };
 
 interface BottomProps {
-  homeData: VideoData[];
+  videosData: VideoData[];
+  // setVideosData: (data: VideoData[]) => void;
+  // handleAllSubmit: () => void;
   active: number;
   progress: number;
   onSelect: (index: number) => void;
@@ -38,13 +40,16 @@ interface BottomProps {
 }
 
 export default function Bottom({
-  homeData,
+  videosData,
+  // setVideosData,
+  // handleAllSubmit,
   active,
   progress,
   onSelect,
   videoHasError = false,
 }: BottomProps) {
   const dispatch = useDispatch();
+  // const [sceneData, setSceneData] = useState<VideoData[]>(videosData);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [modalIndex, setModalIndex] = useState<number | null>(null);
@@ -62,35 +67,94 @@ export default function Bottom({
     // link.remove();
     dispatch(downloadVideoWithUrl(s3_url, name));
   };
-  console.log("fdfdf");
 
   const buttonClickHandler = (i: number) => {
-    const elem = homeData?.[i];
+    const elem = videosData?.[i];
     setModalIndex(i);
     setModalOST(elem?.ost || "");
     setEntryAnimation(elem?.applied_animation?.entry || "fade_in");
     setExitAnimation(elem?.applied_animation?.exit || "fade_out");
   };
 
+  // const handleFinalSubmit = () => {
+  //   const missingIndexes = videosData
+  //     .map((v, i) => (!v.applied_animation ? i + 1 : null))
+  //     .filter(Boolean);
+
+  //   if (missingIndexes.length > 0) {
+  //     toast.error(
+  //       `Index-${missingIndexes.join(
+  //         ","
+  //       )} videosData are not having any animation applied`
+  //     );
+  //     return;
+  //   }
+
+  //   // ✅ ALL GOOD → FINAL API
+  //   const payload = videosData.map((v) => ({
+  //     scene_id: v.scene_id,
+  //     entry: v.applied_animation?.entry,
+  //     exit: v.applied_animation?.exit,
+  //   }));
+
+  //   console.log("FINAL SUBMIT PAYLOAD", payload);
+  //   // await api.finalSubmit(payload);
+
+  //   toast.success("All animations submitted successfully");
+  // };
+
+  // console.log(videosData);
+
   const handleModalSubmit = async () => {
     if (modalIndex === null) return;
-    const row = homeData?.[modalIndex];
+
+    const row = videosData[modalIndex];
 
     const payload = {
       scene_id: row.scene_id,
-      entry_animation: entryAnimation,
-      exit_animation: exitAnimation,
+      start_transition: entryAnimation,
+      end_transition: exitAnimation,
     };
 
     try {
-      console.log("API Payload", payload);
+      // console.log("API Payload", payload);
+      // await api.applyAnimation(payload);
 
-      // // ✅ Modal close
+      // ✅ LOCAL UPDATE
+      const updated = [...videosData];
+      updated[modalIndex] = {
+        ...row,
+
+        start_transition: entryAnimation,
+        end_transition: exitAnimation,
+      };
+
+      setVideosData(updated);
       setModalIndex(null);
     } catch (err) {
       console.error("Animation apply failed", err);
     }
   };
+
+  // const handleModalSubmit = async () => {
+  //   if (modalIndex === null) return;
+  //   const row = videosData?.[modalIndex];
+
+  //   const payload = {
+  //     scene_id: row.scene_id,
+  //     entry_animation: entryAnimation,
+  //     exit_animation: exitAnimation,
+  //   };
+
+  //   try {
+  //     console.log("API Payload", payload);
+
+  //     // // ✅ Modal close
+  //     setModalIndex(null);
+  //   } catch (err) {
+  //     console.error("Animation apply failed", err);
+  //   }
+  // };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -145,7 +209,7 @@ export default function Bottom({
           // overscrollBehavior: "contain", // ⬅️ prevents parent scroll chaining
         }}
       >
-        {homeData?.map((row, i) => {
+        {videosData?.map((row, i) => {
           const isActive = i === active;
 
           return (
@@ -331,6 +395,12 @@ export default function Bottom({
                   Add Animation
                 </Button>
               )}
+              {/* 
+              {row.start_transition !== "none" && (
+                <Typography fontSize={10} color="green">
+                  Animation Applied
+                </Typography>
+              )} */}
             </Box>
           );
         })}
@@ -466,6 +536,15 @@ export default function Bottom({
           </Modal>
         )}
       </Box>
+
+      {/* <Button
+        variant="contained"
+        color="primary"
+        sx={{ textTransform: "none" }}
+        onClick={handleAllSubmit}
+      >
+        Submit Animation Changes
+      </Button> */}
     </Box>
   );
 }

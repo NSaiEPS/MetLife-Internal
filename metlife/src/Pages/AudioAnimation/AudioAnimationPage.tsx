@@ -14,6 +14,7 @@ import {
   setSceneData,
   setVideoAnimationData,
   setGeneratedVideoData,
+  postGenerateVideoBatch,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
@@ -376,6 +377,19 @@ const AudioAnimationPage: React.FC = () => {
     dispatch(setSceneData({}));
     dispatch(setVideoAnimationData(null));
     dispatch(setGeneratedVideoData(null));
+    const scenesPayload = audioAnimationData?.scenes.map((scene, index) => ({
+      scene_id: scene.scene_id,
+      start_transition: "none",
+      end_transition: "none",
+    }));
+
+    const payload = {
+      script_id: id,
+      scenes: scenesPayload,
+    };
+    dispatch(postGenerateVideoBatch(payload, successCallBack));
+  };
+  const successCallBack = () => {
     navigateTo(`/animation-page/${id}`);
   };
 

@@ -20,7 +20,7 @@ const PEEK = 8;
 const STEP = SLIDE_W - (1 - PEEK);
 
 interface HeroSectionProps {
-  homeData: VideoData[];
+  videosData: VideoData[];
   active: number;
   progress: number;
   next: () => void;
@@ -33,7 +33,7 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({
-  homeData,
+  videosData,
   active,
   progress,
   next,
@@ -44,7 +44,7 @@ export default function HeroSection({
   hasUserInteracted,
   onVideoLoadStatus,
 }: HeroSectionProps) {
-  const total = homeData?.length;
+  const total = videosData?.length;
   const startX = useRef<number | null>(null);
   const far = Math.floor(total / 2);
 
@@ -95,7 +95,7 @@ export default function HeroSection({
         height: "70vh",
       }}
     >
-      {homeData?.map((item, i) => {
+      {videosData?.map((item, i) => {
         const off = offset(i, active, total);
         const xvw = off * STEP;
         const isActive = i === active;
@@ -131,28 +131,32 @@ export default function HeroSection({
           </Box>
         );
       })}
-      <Button
-        onClick={() => prev()}
-        sx={{
-          position: "absolute",
-          left: "0",
-          top: "50%",
-          transform: "translate(0,-50%)",
-        }}
-      >
-        <ArrowBackIosNewIcon fontSize="large" />
-      </Button>
-      <Button
-        onClick={() => next()}
-        sx={{
-          position: "absolute",
-          right: "0",
-          top: "50%",
-          transform: "translate(0,-50%)",
-        }}
-      >
-        <ArrowForwardIosIcon fontSize="large" />
-      </Button>
+      {total > 1 && (
+        <>
+          <Button
+            onClick={() => prev()}
+            sx={{
+              position: "absolute",
+              left: "0",
+              top: "50%",
+              transform: "translate(0,-50%)",
+            }}
+          >
+            <ArrowBackIosNewIcon fontSize="large" />
+          </Button>
+          <Button
+            onClick={() => next()}
+            sx={{
+              position: "absolute",
+              right: "0",
+              top: "50%",
+              transform: "translate(0,-50%)",
+            }}
+          >
+            <ArrowForwardIosIcon fontSize="large" />
+          </Button>
+        </>
+      )}
     </Box>
   );
 }
