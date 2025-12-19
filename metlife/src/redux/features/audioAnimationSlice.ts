@@ -209,7 +209,8 @@ export const getMediaTransitions = () => async (dispatch: AppDispatch) => {
 };
 
 export const postGenerateVideoBatch =
-  (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
+  (data: Record<string, unknown>, successCallBack) =>
+  async (dispatch: AppDispatch) => {
     dispatch(setVideoAnimationLoader(true));
     try {
       const res: ApiResponse = await api.post(
@@ -224,6 +225,9 @@ export const postGenerateVideoBatch =
             seconds / 60
           )} mins`
         );
+        if (successCallBack) {
+          successCallBack();
+        }
       }
     } catch {
       toast.error("Failed to generate video batch!");
@@ -238,7 +242,7 @@ export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
     const res: ApiResponse = await api.get(`media/${id}`);
     if (res.status) {
       dispatch(setVideoAnimationData(res.data?.results || []));
-      dispatch(setGeneratedVideoData(res.data?.final_video || null));
+      dispatch(setGeneratedVideoData(res.data || null));
     }
   } catch {
     toast.error("Failed to fetch videos list!");
