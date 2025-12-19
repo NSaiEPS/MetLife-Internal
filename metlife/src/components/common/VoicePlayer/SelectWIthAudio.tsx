@@ -7,7 +7,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import type {SelectChangeEvent} from "@mui/material"
+import type { SelectChangeEvent } from "@mui/material";
 import { PlayArrow, Pause } from "@mui/icons-material";
 
 interface VoiceOption {
@@ -69,7 +69,7 @@ const SelectWithAudio: React.FC<SelectWithAudioProps> = ({
             );
           }
 
-          const selectedOption = options.find((o) => o.value === selected);
+          const selectedOption = options?.find((o) => o.value === selected);
           return selectedOption?.label || "";
         }}
         sx={{
@@ -84,7 +84,7 @@ const SelectWithAudio: React.FC<SelectWithAudioProps> = ({
           },
         }}
       >
-        {options.map((opt, idx) => {
+        {options?.map((opt, idx) => {
           const url = getPreviewUrl(opt.value);
 
           return (
