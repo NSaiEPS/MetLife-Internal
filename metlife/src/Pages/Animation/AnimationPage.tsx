@@ -29,6 +29,7 @@ import {
 import styles from "./animation.module.css";
 import { convertToISTParts } from "../../utils";
 import VideoTimeline from "../../components/video-editor/VideoTimeline";
+import type { VideoData } from "../../utils/types";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;
@@ -88,7 +89,25 @@ const AnimationPage: React.FC = () => {
 
   // const [videosData, setVideosData] = useState<VideoItem[]>(videoAnimationData);
 
-  // console.log(videosData);
+  // console.log(generatedVideoData);
+
+  const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
+    ? [
+        {
+          scene_id: "final_video",
+          scene_number: 1,
+          ost: "Final Video",
+          image_urls: ["/imgs/final-thumbnail.png"], // fallback
+          audio_url: "",
+          final_video: generatedVideoData?.final_video,
+          duration: generatedVideoData?.duration_seconds ?? 0,
+          start_transition: "none",
+          end_transition: "none",
+        },
+      ]
+    : [];
+
+  // console.log(finalVideoAsTimeline);
 
   /* ---------- FETCH DATA ---------- */
 
@@ -166,6 +185,8 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
+  console.log(videoAnimationLoader, "videoAnimationLoader");
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -176,7 +197,7 @@ const AnimationPage: React.FC = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {(audioAnimationLoader || videoAnimationLoader) && (
+            {(audioAnimationLoader || !generatedVideoData?.final_video) && (
               <FullScreenGradientLoader text="loading..." />
             )}
 
@@ -372,14 +393,14 @@ const AnimationPage: React.FC = () => {
                           Generated Video
                         </Typography>
 
-                        {/* <VideoTimeline
-                          videosData={videoAnimationData}
+                        <VideoTimeline
+                          videosData={finalVideoAsTimeline}
                           // videosData={videosData}
                           // setVideosData={setVideosData}
                           // handleAllSubmit={handleAllSubmit}
-                        /> */}
+                        />
 
-                        <FullVideoPlayer video_url={generatedVideoData?.url} />
+                        {/* <FullVideoPlayer video_url={generatedVideoData?.url} /> */}
                       </>
                     )
                     //  : (

@@ -242,7 +242,7 @@ export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
     const res: ApiResponse = await api.get(`media/${id}`);
     if (res.status) {
       dispatch(setVideoAnimationData(res.data?.results || []));
-      dispatch(setGeneratedVideoData(res.data?.final_video || null));
+      dispatch(setGeneratedVideoData(res.data || null));
     }
   } catch {
     toast.error("Failed to fetch videos list!");

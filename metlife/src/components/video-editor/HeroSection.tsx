@@ -131,28 +131,32 @@ export default function HeroSection({
           </Box>
         );
       })}
-      <Button
-        onClick={() => prev()}
-        sx={{
-          position: "absolute",
-          left: "0",
-          top: "50%",
-          transform: "translate(0,-50%)",
-        }}
-      >
-        <ArrowBackIosNewIcon fontSize="large" />
-      </Button>
-      <Button
-        onClick={() => next()}
-        sx={{
-          position: "absolute",
-          right: "0",
-          top: "50%",
-          transform: "translate(0,-50%)",
-        }}
-      >
-        <ArrowForwardIosIcon fontSize="large" />
-      </Button>
+      {total > 1 && (
+        <>
+          <Button
+            onClick={() => prev()}
+            sx={{
+              position: "absolute",
+              left: "0",
+              top: "50%",
+              transform: "translate(0,-50%)",
+            }}
+          >
+            <ArrowBackIosNewIcon fontSize="large" />
+          </Button>
+          <Button
+            onClick={() => next()}
+            sx={{
+              position: "absolute",
+              right: "0",
+              top: "50%",
+              transform: "translate(0,-50%)",
+            }}
+          >
+            <ArrowForwardIosIcon fontSize="large" />
+          </Button>
+        </>
+      )}
     </Box>
   );
 }
