@@ -132,13 +132,13 @@ export const getExtractCharacters =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
-      const res = await api.get(`characters/images?script_id=${id}`);
+      const res = await api.get(`characters/images/${id}`);
       // console.log(res, "get_check_character_res");
       if (res.status) {
         dispatch(setCharacterData(res?.data?.characters));
       }
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       // toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
