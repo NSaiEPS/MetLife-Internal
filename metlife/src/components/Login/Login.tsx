@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 import rightImg from "../../assets/login-right.png";
 import oneFrame from "../../assets/OneFrame.png";
-import unnamed from "../../assets/unnamed.webp";
+import unnamed from "../../assets/updatedLogo.png";
 import serfAilogo from "../../assets/serfAi-logo.jpg";
 import mailIcon from "../../assets/mail-account.svg";
 
