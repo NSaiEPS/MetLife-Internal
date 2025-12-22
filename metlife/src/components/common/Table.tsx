@@ -12,6 +12,11 @@ import {
   Stack,
   Button,
   Tooltip,
+  Menu,
+  MenuItem,
+  Dialog,
+  Typography,
+  Box,
 } from "@mui/material";
 
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
@@ -139,6 +144,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [charImageExist, setCharImageExist] = useState(
     extraDetails?.char_image_exist
   );
+  // const [flowChange, setFlowChange] = useState<null | HTMLElement>(null);
+  // const openFlow = Boolean(flowChange);
+  const [openFlowDialog, setOpenFlowDialog] = useState(false);
 
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
@@ -357,7 +365,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
     // setMakeChanges(true);
   };
-  console.log(tableExtraData, "check__version");
+
   const handleTranslateScript = async () => {
     if (!pdfId && !id) return;
 
@@ -475,7 +483,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setRows(updated);
   };
 
+  const handleOpenFlowDialog = () => {
+    setOpenFlowDialog(true);
+  };
+
+  const handleCloseFlowDialog = () => {
+    setOpenFlowDialog(false);
+  };
+
   const handleCreateVisualContent = () => {
+    setOpenFlowDialog(false);
     dispatch(postCreateVisualContent(tableExtraData));
   };
 
@@ -517,7 +534,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     dispatch(postPromptSetupCharacters(id));
   };
 
-  console.log(promptData, "chekc__promtpt_P_data")
+  const handleGenerateImagesFlow = () => {
+    setOpenFlowDialog(false);
+
+    if (promptData?.length) {
+      handleOpenCharacterModal();
+    } else {
+      handleSetupPrompt();
+    }
+  };
 
   return (
     <>
@@ -774,7 +799,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         >
           {features && (
             <>
-              {promptData?.length &&
+              {/* {promptData?.length &&
               extraDetails?.video_style === "conversational" ? (
                 <Button
                   variant="outlined"
@@ -789,16 +814,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     variant="outlined"
                     className={styles.largeOutline}
                     onClick={handleSetupPrompt}
-                    // onClick={() => {
-                    //   handleCharacterGenerateImages();
-                    // }}
-                    // onClick={() => setOpenCharacterModal(true)}
                     disabled={saveTranslatedData === null || scriptLoader}
                   >
                     Generate Images
                   </Button>
                 )
-              )}
+              )} */}
 
               <CharacterCarousel
                 open={openCharacterModal}
@@ -908,26 +929,122 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           )}
 
           {showDragAndActions && features && (
-            <Tooltip
-              title={
-                !saveTranslatedData
-                  ? "Please save before creating visual content."
-                  : ""
-              }
-              placement="top"
-              arrow
-            >
-              <span>
+            <>
+              <Tooltip
+                title={
+                  !saveTranslatedData
+                    ? "Please save before creating visual content."
+                    : ""
+                }
+                placement="top"
+                arrow
+              >
+                <span>
+                  <Button
+                    onClick={handleOpenFlowDialog}
+                    // onClick={handleCreateVisualContent}
+                    variant="contained"
+                    className={styles.primaryBtn}
+                    disabled={saveTranslatedData === null || operations}
+                  >
+                    Create Visual Content
+                  </Button>
+                </span>
+              </Tooltip>
+              <Dialog
+                open={openFlowDialog}
+                onClose={handleCloseFlowDialog}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                  sx: {
+                    borderRadius: 3,
+                    p: 3,
+                    textAlign: "center",
+                  },
+                }}
+              >
+                <Typography variant="h5" fontWeight={600} mb={1}>
+                  Select Flow
+                </Typography>
+
+                <Typography color="text.secondary" mb={4}>
+                  Choose how you want to proceed:
+                </Typography>
+
+                <Box display="flex" justifyContent="center" gap={4} mb={4}>
+                  {/* Create Visual Content */}
+                  <Box
+                    onClick={handleCreateVisualContent}
+                    sx={{
+                      cursor: "pointer",
+                      width: 140,
+                      p: 2,
+                      borderRadius: 2,
+                      border: "1px solid #e0e0e0",
+                      transition: "0.2s",
+                      "&:hover": {
+                        boxShadow: 3,
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    {/* <img
+                      src="/icons/video.svg" // replace with your asset
+                      alt="Visual Content"
+                      width={60}
+                    /> */}
+                    <Typography fontWeight={500}>
+                      Create Visual Content
+                    </Typography>
+                  </Box>
+
+                  {/* Generate Images flow */}
+                  <Box
+                    onClick={handleGenerateImagesFlow}
+                    sx={{
+                      cursor: "pointer",
+                      width: 160,
+                      p: 2,
+                      borderRadius: 2,
+                      border: "1px solid #e0e0e0",
+                      transition: "0.2s",
+                      "&:hover": {
+                        boxShadow: 3,
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    {/* <img
+                      src="/icons/image.svg"
+                      alt="Generate Images"
+                      width={60}
+                    /> */}
+                    {promptData?.length < 0 && (
+                      <Typography mt={2} fontWeight={500}>
+                        Generate Images
+                      </Typography>
+                    )}
+
+                    <Typography
+                    //  variant="body2" color="text.secondary" 
+                     fontWeight={500}>
+                      {promptData?.length
+                        ? "View existing prompts"
+                        : "Create prompts & images"}
+                    </Typography>
+                  </Box>
+                </Box>
+
                 <Button
-                  onClick={handleCreateVisualContent}
-                  variant="contained"
-                  className={styles.primaryBtn}
-                  disabled={saveTranslatedData === null || operations}
+                  onClick={handleCloseFlowDialog}
+                  variant="outlined"
+                  sx={{ px: 4 }}
                 >
-                  Create Visual Content
+                  Cancel
                 </Button>
-              </span>
-            </Tooltip>
+              </Dialog>
+            </>
           )}
         </Stack>
 

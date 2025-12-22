@@ -28,12 +28,8 @@ export const CharacterCarousel = ({
   const [prompts, setPrompts] = useState<Record<string, string>>({});
   const [imgLoaded, setImgLoaded] = useState(false);
   const { scriptLoader } = useSelector((store) => store.Script);
-  const dispatch = useDispatch();
   const { id } = useParams();
-  const promptList = promptData?.length ? promptData : characterData;
-
-
-  console.log(characterData, promptData, "promptData");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (open && promptData?.length) {
@@ -52,9 +48,10 @@ export const CharacterCarousel = ({
     setStage("images");
   };
 
-  const handleEditPrompt = (characterName: string) => {
+  const handleEditPrompt = (characterName: string, character_id:string) => {
     const updatedPrompt = prompts[characterName];
-    dispatch(patchEditPromp(id, characterName, updatedPrompt));
+    // console.log(updatedPrompt, "chekc_prompt")
+    dispatch(patchEditPromp( id, character_id, characterName, updatedPrompt ));
   };
 
   return (
@@ -133,7 +130,7 @@ export const CharacterCarousel = ({
                           scriptLoader ||
                           prompts[char.character_name] === char.prompt
                         }
-                        onClick={() => handleEditPrompt(char.character_name)}
+                        onClick={() => handleEditPrompt(char.character_name, char.character_id,)}
                       >
                         Edit
                       </Button>
