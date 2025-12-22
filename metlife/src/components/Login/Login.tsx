@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 
 import rightImg from "../../assets/login-right.png";
 import oneFrame from "../../assets/OneFrame.png";
+import unnamed from "../../assets/unnamed.webp";
+import serfAilogo from "../../assets/serfAi-logo.jpg";
 import mailIcon from "../../assets/mail-account.svg";
 
 /* ---------------- Types ---------------- */
@@ -238,7 +240,7 @@ const Login: React.FC = () => {
         sx={{ width: "50%" }}
       >
         <img
-          src={rightImg}
+          src={unnamed}
           alt="login"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
