@@ -65,6 +65,22 @@ const ScriptDataSlice = createSlice({
       state.promptData = action.payload;
     },
 
+    updateCharacterPrompt(
+      state,
+      action: PayloadAction<{
+        character_id: string;
+        prompt: string;
+      }>
+    ) {
+      const item = state.promptData.find(
+        (p) => p.character_id === action.payload.character_id
+      );
+
+      if (item) {
+        item.prompt = action.payload.prompt;
+      }
+    },
+
     setCharacterData(state, action: PayloadAction<CharacterData[]>) {
       state.characterData = action.payload;
     },
@@ -76,6 +92,7 @@ export const {
   setScriptLoader,
   setCharacterData,
   setPromptData,
+  updateCharacterPrompt,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
@@ -110,8 +127,7 @@ export const postExtractCharacters =
   (id: string, callback) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
-      const res = await api.post(
-        `characters/generate-images?script_id=${id}`);
+      const res = await api.post(`characters/generate-images?script_id=${id}`);
       // console.log(res, "check_character_res");
       if (res.status) {
         dispatch(setCharacterData(res?.data?.characters));
@@ -166,17 +182,23 @@ export const postPromptSetupCharacters =
 
 // Edit Prompt character s
 export const patchEditPromp =
-  (id: string, name: string, new_prompt: string) =>
+  (id: string, character_id:string, name: string, new_prompt: string) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
       const res = await api.patch(
         `characters/edit-prompt?script_id=${id}&character_name=${name}`,
-        {new_prompt}
+        { new_prompt }
       );
       console.log(res, "check_edit_characters");
       if (res.status) {
-        dispatch(setPromptData(res?.data?.prompts));
+        // dispatch(setPromptData(res?.data?.prompts));
+        dispatch(
+          updateCharacterPrompt({
+            character_id,
+            prompt: new_prompt,
+          })
+        );
       }
     } catch (error: any) {
       console.error(error);
