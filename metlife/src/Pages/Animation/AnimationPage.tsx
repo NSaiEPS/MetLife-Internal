@@ -320,7 +320,7 @@ const AnimationPage: React.FC = () => {
                     onConfirm={handleMissingAnimationConfirm}
                     missingScenes={missingScenes}
                   />
-                  <Typography
+                  {/* <Typography
                     className={styles.audioSelectionTitle}
                     sx={{
                       fontSize: "22px",
@@ -459,7 +459,7 @@ const AnimationPage: React.FC = () => {
                         generatedVideoData?.final_video
                       }
                     />
-                  </div>
+                  </div> */}
 
                   {/* Full Video */}
                   {
@@ -470,7 +470,7 @@ const AnimationPage: React.FC = () => {
                             sx={{
                               fontSize: "20px",
                               fontWeight: 500,
-                              // mt: 4,
+                              mt: 4,
                               mb: 2,
                             }}
                           >
