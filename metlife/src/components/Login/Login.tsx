@@ -92,7 +92,7 @@ const Login: React.FC = () => {
     try {
       setLoading(true);
       // API CALL HERE
-      navigate("/video-frame");
+      navigate("/dashboard");
     } finally {
       setLoading(false);
     }
