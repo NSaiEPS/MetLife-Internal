@@ -11,16 +11,26 @@ const normalizeDuration = (duration?: number) => {
   return duration * 1000;
 };
 
+interface AnimationData {
+  scene_number: number;
+  scene_id: string;
+  start_transition: string;
+  end_transition: string;
+  ost: string;
+}
+
 interface VideoTimelineProps {
   videosData: VideoData[];
-  setVideosData: (data: VideoData[]) => void;
+  animationData: AnimationData[];
+  setAnimationData: (data: AnimationData[]) => void;
   handleAllSubmit: () => void;
 }
 
 const VideoTimeline: React.FC<VideoTimelineProps> = ({
   videosData,
-  // setVideosData,
-  // handleAllSubmit,
+  animationData,
+  setAnimationData,
+  handleAllSubmit,
 }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
@@ -184,8 +194,9 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
       <Bottom
         active={active}
         videosData={videosData}
-        // setVideosData={setVideosData}
-        // handleAllSubmit={handleAllSubmit}
+        animationData={animationData}
+        setAnimationData={setAnimationData}
+        handleAllSubmit={handleAllSubmit}
         progress={progress}
         onSelect={goto}
         videoHasError={activeVideoHasError}
