@@ -67,7 +67,7 @@ interface RootState {
     videoAnimationLoader: boolean;
     animationLabels: AnimationLabels;
     videoAnimationData: VideoItem[];
-    generatedVideoData?: { url: string };
+    generatedVideoData?: { final_video: { url: string } };
     sceneData: SceneData;
   };
 }
@@ -103,6 +103,7 @@ const AnimationPage: React.FC = () => {
   // console.log(generatedVideoData, "generatedVideoData");
 
   // console.log(videoAnimationData, "videoAnimationData");
+  // console.log(generatedVideoData?.final_video !== null, "isFinalVideo");
 
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
@@ -307,6 +308,7 @@ const AnimationPage: React.FC = () => {
                       </Typography>
                       <VideoTimeline
                         videosData={videoAnimationData}
+                        isFinalVideo={generatedVideoData?.final_video !== null}
                         animationData={animationData}
                         setAnimationData={setAnimationData}
                         handleAllSubmit={handleAllSubmit}
@@ -320,146 +322,158 @@ const AnimationPage: React.FC = () => {
                     onConfirm={handleMissingAnimationConfirm}
                     missingScenes={missingScenes}
                   />
-                  {/* <Typography
-                    className={styles.audioSelectionTitle}
-                    sx={{
-                      fontSize: "22px",
-                      fontWeight: "500",
-                      marginBottom: "10px",
-                      mt: 2,
-                    }}
-                  >
-                    Animation Selection
-                  </Typography>
-                  <Grid container spacing={3}>
-                    <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+
+                  {generatedVideoData?.final_video === null && (
+                    <>
                       <Typography
-                        variant="h6"
-                        fontWeight="500"
-                        fontSize="16px"
-                        mb={1}
-                      >
-                        Entry
-                      </Typography>
-                      <Paper
-                        elevation={0}
+                        className={styles.audioSelectionTitle}
                         sx={{
-                          p: 3,
-                          border: "1px solid #e0e0e0",
-                          borderRadius: 3,
+                          fontSize: "22px",
+                          fontWeight: "500",
+                          marginBottom: "10px",
+                          mt: 2,
                         }}
                       >
-                        <FormControl disabled={videoAnimationData}>
-                          <RadioGroup
-                            value={entryAnimation}
-                            onChange={(e) => setEntryAnimation(e.target.value)}
-                          >
-                            {animationLabels?.entry_transitions?.map(
-                              (opt, index) => (
-                                <FormControlLabel
-                                  key={index}
-                                  value={opt}
-                                  control={<Radio color="primary" />}
-                                  label={opt}
-                                  sx={{
-                                    "& .MuiFormControlLabel-label": {
-                                      color: "#555",
-                                      fontSize: "0.95rem",
-                                    },
-                                  }}
-                                />
-                              )
-                            )}
-                          </RadioGroup>
-                        </FormControl>
-                      </Paper>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                      <Typography
-                        variant="h6"
-                        fontWeight="500"
-                        fontSize="16px"
-                        mb={1}
-                      >
-                        Exit
+                        Animation Selection
                       </Typography>
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 3,
-                          border: "1px solid #e0e0e0",
-                          borderRadius: 3,
-                        }}
-                      >
-                        <FormControl disabled={videoAnimationData}>
-                          <RadioGroup
-                            value={exitAnimation}
-                            onChange={(e) => setExitAnimation(e.target.value)}
+                      <Grid container spacing={3}>
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                          <Typography
+                            variant="h6"
+                            fontWeight="500"
+                            fontSize="16px"
+                            mb={1}
                           >
-                            {animationLabels?.exit_transitions?.map(
-                              (opt, index) => (
-                                <FormControlLabel
-                                  key={index}
-                                  value={opt}
-                                  label={opt}
-                                  control={<Radio color="primary" />}
-                                  // label={opt.label}
-                                  sx={{
-                                    "& .MuiFormControlLabel-label": {
-                                      color: "#555",
-                                      fontSize: "0.95rem",
-                                    },
-                                  }}
-                                />
-                              )
-                            )}
-                          </RadioGroup>
-                        </FormControl>
-                      </Paper>
-                    </Grid>
-                  </Grid>
+                            Entry
+                          </Typography>
+                          <Paper
+                            elevation={0}
+                            sx={{
+                              p: 3,
+                              border: "1px solid #e0e0e0",
+                              borderRadius: 3,
+                            }}
+                          >
+                            <FormControl disabled={videoAnimationData}>
+                              <RadioGroup
+                                value={entryAnimation}
+                                onChange={(e) =>
+                                  setEntryAnimation(e.target.value)
+                                }
+                              >
+                                {animationLabels?.entry_transitions?.map(
+                                  (opt, index) => (
+                                    <FormControlLabel
+                                      key={index}
+                                      value={opt}
+                                      control={<Radio color="primary" />}
+                                      label={opt}
+                                      sx={{
+                                        "& .MuiFormControlLabel-label": {
+                                          color: "#555",
+                                          fontSize: "0.95rem",
+                                        },
+                                      }}
+                                    />
+                                  )
+                                )}
+                              </RadioGroup>
+                            </FormControl>
+                          </Paper>
+                        </Grid>
 
-                  <div className={styles.actions}>
-                    <ButtonComp
-                      label={"Alternative Scenes"}
-                      sx={{ backgroundColor: "#99d539", textTransform: "none" }}
-                      action={handleAlternateSubmit}
-                      disabled={
-                        audioAnimationLoader ||
-                        videoAnimationLoader ||
-                        generatedVideoData ||
-                        videoAnimationData ||
-                        sceneData?.video_exists === true
-                      }
-                    />
-                    <ButtonComp
-                      label={"Apply To All"}
-                      sx={{ textTransform: "none" }}
-                      action={handleAllSubmit}
-                      disabled={
-                        audioAnimationLoader ||
-                        videoAnimationLoader ||
-                        generatedVideoData ||
-                        videoAnimationData ||
-                        sceneData?.video_exists === true
-                        // false
-                      }
-                    />
-                  </div>
-                  <div className={styles.actions_second}>
-                    <ButtonComp
-                      sx={{ textTransform: "none", width: "200px" }}
-                      label={"Generate Video"}
-                      action={generateVideo}
-                      disabled={
-                        audioAnimationLoader ||
-                        videoAnimationLoader ||
-                        !videoAnimationData ||
-                        generatedVideoData?.final_video
-                      }
-                    />
-                  </div> */}
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                          <Typography
+                            variant="h6"
+                            fontWeight="500"
+                            fontSize="16px"
+                            mb={1}
+                          >
+                            Exit
+                          </Typography>
+                          <Paper
+                            elevation={0}
+                            sx={{
+                              p: 3,
+                              border: "1px solid #e0e0e0",
+                              borderRadius: 3,
+                            }}
+                          >
+                            <FormControl disabled={videoAnimationData}>
+                              <RadioGroup
+                                value={exitAnimation}
+                                onChange={(e) =>
+                                  setExitAnimation(e.target.value)
+                                }
+                              >
+                                {animationLabels?.exit_transitions?.map(
+                                  (opt, index) => (
+                                    <FormControlLabel
+                                      key={index}
+                                      value={opt}
+                                      label={opt}
+                                      control={<Radio color="primary" />}
+                                      // label={opt.label}
+                                      sx={{
+                                        "& .MuiFormControlLabel-label": {
+                                          color: "#555",
+                                          fontSize: "0.95rem",
+                                        },
+                                      }}
+                                    />
+                                  )
+                                )}
+                              </RadioGroup>
+                            </FormControl>
+                          </Paper>
+                        </Grid>
+                      </Grid>
+
+                      <div className={styles.actions}>
+                        <ButtonComp
+                          label={"Alternative Scenes"}
+                          sx={{
+                            backgroundColor: "#99d539",
+                            textTransform: "none",
+                          }}
+                          action={handleAlternateSubmit}
+                          disabled={
+                            audioAnimationLoader ||
+                            videoAnimationLoader ||
+                            generatedVideoData ||
+                            videoAnimationData ||
+                            sceneData?.video_exists === true
+                          }
+                        />
+                        <ButtonComp
+                          label={"Apply To All"}
+                          sx={{ textTransform: "none" }}
+                          action={handleAllSubmit}
+                          disabled={
+                            audioAnimationLoader ||
+                            videoAnimationLoader ||
+                            generatedVideoData ||
+                            videoAnimationData ||
+                            sceneData?.video_exists === true
+                            // false
+                          }
+                        />
+                      </div>
+                      <div className={styles.actions_second}>
+                        <ButtonComp
+                          sx={{ textTransform: "none", width: "200px" }}
+                          label={"Generate Video"}
+                          action={generateVideo}
+                          disabled={
+                            audioAnimationLoader ||
+                            videoAnimationLoader ||
+                            !videoAnimationData ||
+                            generatedVideoData?.final_video
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
 
                   {/* Full Video */}
                   {
@@ -479,13 +493,16 @@ const AnimationPage: React.FC = () => {
 
                           <VideoTimeline
                             videosData={finalVideoAsTimeline}
+                            isFinalVideo={
+                              generatedVideoData?.final_video !== null
+                            }
                             animationData={animationData}
                             setAnimationData={setAnimationData}
                             handleAllSubmit={handleAllSubmit}
                           />
 
                           {/* <FullVideoPlayer
-                            video_url={generatedVideoData?.url}
+                            video_url={generatedVideoData?.final_video?.url}
                           /> */}
                         </>
                       )

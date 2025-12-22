@@ -21,6 +21,7 @@ interface AnimationData {
 
 interface VideoTimelineProps {
   videosData: VideoData[];
+  isFinalVideo: boolean;
   animationData: AnimationData[];
   setAnimationData: (data: AnimationData[]) => void;
   handleAllSubmit: () => void;
@@ -28,6 +29,7 @@ interface VideoTimelineProps {
 
 const VideoTimeline: React.FC<VideoTimelineProps> = ({
   videosData,
+  isFinalVideo,
   animationData,
   setAnimationData,
   handleAllSubmit,
@@ -193,6 +195,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
       {/* BOTTOM BAR */}
       <Bottom
         active={active}
+        isFinalVideo={isFinalVideo}
         videosData={videosData}
         animationData={animationData}
         setAnimationData={setAnimationData}

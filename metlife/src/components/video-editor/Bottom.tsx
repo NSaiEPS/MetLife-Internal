@@ -31,6 +31,7 @@ const style = {
 
 interface BottomProps {
   videosData: VideoData[];
+  isFinalVideo: boolean;
   animationData: ModalState[];
   setAnimationData: (data: ModalState[]) => void;
   handleAllSubmit: () => void;
@@ -50,6 +51,7 @@ interface ModalState {
 
 export default function Bottom({
   videosData,
+  isFinalVideo,
   animationData,
   setAnimationData,
   handleAllSubmit,
@@ -70,6 +72,8 @@ export default function Bottom({
     end_transition: "",
     ost: "",
   });
+
+  // console.log(videosData, "videosData");
 
   const downloadVideo = (s3_url: string, name: string) => {
     // const link = document.createElement("a");
@@ -409,7 +413,7 @@ export default function Bottom({
                   }}
                 />
               )}
-              {isActive && videosData?.length > 1 && (
+              {!isFinalVideo && (
                 <Button onClick={() => buttonClickHandler(i)}>
                   Add Animation
                 </Button>
@@ -566,7 +570,7 @@ export default function Bottom({
         )}
       </Box>
 
-      {videosData?.length > 1 && (
+      {!isFinalVideo && (
         <Button
           variant="contained"
           color="primary"

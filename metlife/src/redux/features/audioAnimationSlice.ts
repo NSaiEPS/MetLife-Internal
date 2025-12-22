@@ -258,8 +258,13 @@ export const postGenerateFullVideo =
       const res: ApiResponse = await api.post(
         `media/generate-video-full/${id}`
       );
+
       if (res.status) {
-        dispatch(setGeneratedVideoData(res.data?.full_video || null));
+        let data = {
+          final_video: res.data?.final_video_with_intro || null,
+          duration_seconds: res.data?.duration_seconds || null,
+        };
+        dispatch(setGeneratedVideoData(data));
       }
     } catch {
       toast.error("Something went wrong while generating full video!");
