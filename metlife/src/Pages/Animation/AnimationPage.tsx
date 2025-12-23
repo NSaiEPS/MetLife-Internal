@@ -99,6 +99,8 @@ const AnimationPage: React.FC = () => {
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
+  // console.log(videoAnimationData, "videoAnimationData");
+
   // console.log(sceneData, "sceneData");
   // console.log(generatedVideoData, "generatedVideoData");
 
@@ -224,6 +226,8 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
+  // console.log(timerDone);
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -299,6 +303,7 @@ const AnimationPage: React.FC = () => {
                     //   </>
                     // )
                   } */}
+                  {/* {!timerDone && videoAnimationData?.length > 0 && ( */}
                   {videoAnimationData?.length > 0 && (
                     <Grid container>
                       <Typography
@@ -468,7 +473,8 @@ const AnimationPage: React.FC = () => {
                             audioAnimationLoader ||
                             videoAnimationLoader ||
                             !videoAnimationData ||
-                            generatedVideoData?.final_video
+                            generatedVideoData?.final_video ||
+                            !timerDone
                           }
                         />
                       </div>
