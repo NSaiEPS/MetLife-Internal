@@ -12,6 +12,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { patchEditPromp } from "../../../redux/features/scriptSlice";
+import { postCreateVisualContent } from "../../../redux/features/createVisualSlice";
 
 export const CharacterCarousel = ({
   open,
@@ -21,7 +22,9 @@ export const CharacterCarousel = ({
   currentIndex,
   setCurrentIndex,
   onGenerateImages,
+  tableExtraData,
 }) => {
+  console.log(tableExtraData, "Carousel")
   // if (!characterData || characterData.length === 0) return null;
   const current = characterData[currentIndex];
   const [stage, setStage] = useState<"prompt" | "images">("prompt");
@@ -48,11 +51,16 @@ export const CharacterCarousel = ({
     setStage("images");
   };
 
-  const handleEditPrompt = (characterName: string, character_id:string) => {
+  const handleEditPrompt = (characterName: string, character_id: string) => {
     const updatedPrompt = prompts[characterName];
     // console.log(updatedPrompt, "chekc_prompt")
-    dispatch(patchEditPromp( id, character_id, characterName, updatedPrompt ));
+    dispatch(patchEditPromp(id, character_id, characterName, updatedPrompt));
   };
+
+   const handleCreateVisualContent = () => {
+      // setOpenFlowDialog(false);
+      dispatch(postCreateVisualContent(tableExtraData));
+    };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -130,7 +138,12 @@ export const CharacterCarousel = ({
                           scriptLoader ||
                           prompts[char.character_name] === char.prompt
                         }
-                        onClick={() => handleEditPrompt(char.character_name, char.character_id,)}
+                        onClick={() =>
+                          handleEditPrompt(
+                            char.character_name,
+                            char.character_id
+                          )
+                        }
                       >
                         Edit
                       </Button>
@@ -235,6 +248,24 @@ export const CharacterCarousel = ({
               >
                 Next
               </Button>
+            </Box>
+            <Box
+              onClick={handleCreateVisualContent}
+              sx={{
+                cursor: "pointer",
+                width: '100%',
+                textAlign:'center',
+                p: 2,
+                borderRadius: 2,
+                border: "1px solid #e0e0e0",
+                transition: "0.2s",
+                "&:hover": {
+                  boxShadow: 3,
+                  transform: "translateY(-2px)",
+                },
+              }}
+            >
+              <Typography fontWeight={500}>Create Visual Content</Typography>
             </Box>
           </>
         )}
