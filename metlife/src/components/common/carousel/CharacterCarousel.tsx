@@ -210,7 +210,6 @@ export const CharacterCarousel = ({
                 display: "flex",
                 justifyContent: "space-between",
                 width: "100%",
-                marginTop: 2,
               }}
             >
               <Button
