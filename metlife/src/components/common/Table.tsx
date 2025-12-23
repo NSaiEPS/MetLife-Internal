@@ -144,10 +144,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [charImageExist, setCharImageExist] = useState(
     extraDetails?.char_image_exist
   );
-  // const [flowChange, setFlowChange] = useState<null | HTMLElement>(null);
-  // const openFlow = Boolean(flowChange);
   const [openFlowDialog, setOpenFlowDialog] = useState(false);
-
+  console.log(extraDetails, "tableExtraData");
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
   }, [extraDetails]);
@@ -168,10 +166,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   }, [saveTranslatedData, saveLoader]);
 
   useEffect(() => {
-    if (extraDetails?.char_image_exist === true && id) {
+    if (tableExtraData?.char_image_exist === true && id) {
       dispatch(getExtractCharacters(id));
     }
-  }, [id, dispatch, extraDetails?.char_image_exist]);
+  }, [id, dispatch, tableExtraData?.char_image_exist]);
 
   const handleSavePrompt = (prompt: string) => {
     const payload = { prompt };
@@ -535,7 +533,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleGenerateImagesFlow = () => {
-    setOpenFlowDialog(false);
+    // setOpenFlowDialog(false);
 
     if (promptData?.length) {
       handleOpenCharacterModal();
@@ -543,6 +541,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       handleSetupPrompt();
     }
   };
+
+  // console.log(tableExtraData?.video_style, "tableExtraDetails")
 
   return (
     <>
@@ -776,7 +776,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         fieldData={popUpData}
         title={popupTitle}
         handleUpdate={handleUpdate}
-        tableData={extraDetails}
+        tableData={tableExtraData}
       />
 
       <DeleteScenePopup
@@ -941,7 +941,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               >
                 <span>
                   <Button
-                    onClick={handleOpenFlowDialog}
+                    onClick={
+                      tableExtraData?.video_style === "narrative"
+                        ? handleCreateVisualContent
+                        : handleOpenFlowDialog
+                    }
                     // onClick={handleCreateVisualContent}
                     variant="contained"
                     className={styles.primaryBtn}
@@ -951,99 +955,93 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   </Button>
                 </span>
               </Tooltip>
-              <Dialog
-                open={openFlowDialog}
-                onClose={handleCloseFlowDialog}
-                maxWidth="sm"
-                fullWidth
-                PaperProps={{
-                  sx: {
-                    borderRadius: 3,
-                    p: 3,
-                    textAlign: "center",
-                  },
-                }}
-              >
-                <Typography variant="h5" fontWeight={600} mb={1}>
-                  Select Flow
-                </Typography>
-
-                <Typography color="text.secondary" mb={4}>
-                  Choose how you want to proceed:
-                </Typography>
-
-                <Box display="flex" justifyContent="center" gap={4} mb={4}>
-                  {/* Create Visual Content */}
-                  <Box
-                    onClick={handleCreateVisualContent}
-                    sx={{
-                      cursor: "pointer",
-                      width: 140,
-                      p: 2,
-                      borderRadius: 2,
-                      border: "1px solid #e0e0e0",
-                      transition: "0.2s",
-                      "&:hover": {
-                        boxShadow: 3,
-                        transform: "translateY(-2px)",
+              {tableExtraData?.video_style === "conversational" && (
+                <>
+                  <Dialog
+                    open={openFlowDialog}
+                    onClose={handleCloseFlowDialog}
+                    maxWidth="sm"
+                    fullWidth
+                    PaperProps={{
+                      sx: {
+                        borderRadius: 3,
+                        p: 3,
+                        textAlign: "center",
                       },
                     }}
                   >
-                    {/* <img
-                      src="/icons/video.svg" // replace with your asset
-                      alt="Visual Content"
-                      width={60}
-                    /> */}
-                    <Typography fontWeight={500}>
-                      Create Visual Content
+                    <Typography variant="h5" fontWeight={600} mb={1}>
+                      Select Flow
                     </Typography>
-                  </Box>
 
-                  {/* Generate Images flow */}
-                  <Box
-                    onClick={handleGenerateImagesFlow}
-                    sx={{
-                      cursor: "pointer",
-                      width: 160,
-                      p: 2,
-                      borderRadius: 2,
-                      border: "1px solid #e0e0e0",
-                      transition: "0.2s",
-                      "&:hover": {
-                        boxShadow: 3,
-                        transform: "translateY(-2px)",
-                      },
-                    }}
-                  >
-                    {/* <img
-                      src="/icons/image.svg"
-                      alt="Generate Images"
-                      width={60}
-                    /> */}
-                    {promptData?.length < 0 && (
-                      <Typography mt={2} fontWeight={500}>
-                        Generate Images
-                      </Typography>
-                    )}
-
-                    <Typography
-                    //  variant="body2" color="text.secondary" 
-                     fontWeight={500}>
-                      {promptData?.length
-                        ? "View existing prompts"
-                        : "Create prompts & images"}
+                    <Typography color="text.secondary" mb={4}>
+                      Choose how you want to proceed:
                     </Typography>
-                  </Box>
-                </Box>
 
-                <Button
-                  onClick={handleCloseFlowDialog}
-                  variant="outlined"
-                  sx={{ px: 4 }}
-                >
-                  Cancel
-                </Button>
-              </Dialog>
+                    <Box display="flex" justifyContent="center" gap={4} mb={4}>
+                      {/* Create Visual Content */}
+                      <Box
+                        onClick={handleCreateVisualContent}
+                        sx={{
+                          cursor: "pointer",
+                          width: 140,
+                          p: 2,
+                          borderRadius: 2,
+                          border: "1px solid #e0e0e0",
+                          transition: "0.2s",
+                          "&:hover": {
+                            boxShadow: 3,
+                            transform: "translateY(-2px)",
+                          },
+                        }}
+                      >
+                        <Typography fontWeight={500}>
+                          Create Visual Content
+                        </Typography>
+                      </Box>
+
+                      {/* Generate Images flow */}
+                      <Box
+                        onClick={handleGenerateImagesFlow}
+                        sx={{
+                          cursor: "pointer",
+                          width: 160,
+                          p: 2,
+                          borderRadius: 2,
+                          border: "1px solid #e0e0e0",
+                          transition: "0.2s",
+                          "&:hover": {
+                            boxShadow: 3,
+                            transform: "translateY(-2px)",
+                          },
+                        }}
+                      >
+                        {promptData?.length < 0 && (
+                          <Typography mt={2} fontWeight={500}>
+                            Generate Images
+                          </Typography>
+                        )}
+
+                        <Typography
+                          fontWeight={500}
+                        >
+                          {promptData?.length
+                            ? "View existing prompts & Images"
+                            : "Create/Setup prompts"}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Button
+                      onClick={handleCloseFlowDialog}
+                      variant="outlined"
+                      sx={{ px: 4 }}
+                    >
+                      Cancel
+                    </Button>
+                  </Dialog>
+                </>
+              )}
             </>
           )}
         </Stack>
@@ -1054,7 +1052,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           prompt={latestPrompt}
           onSave={handleSavePrompt}
           size="md"
-          extraDetails={extraDetails}
+          extraDetails={tableExtraData}
           operations={operations}
         />
 

@@ -102,7 +102,7 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent
   );
-  
+  console.log(saveVisualContentData?.video_style, 'check_visual_content_Data')
 
   const script_id = saveVisualContentData?.script_id;
 
@@ -201,8 +201,9 @@ const handleUpdate = (data: { fieldData: any | null; prompt: string }) => {
       total_scenes: saveVisualContentData?.total_scenes,
       processed_scenes: saveVisualContentData?.processed_scenes,
       prompts: manipulatedPrompts,
+      video_style:saveVisualContentData?.video_style,
     };
-
+    // console.log(finalPayload, "check_final_payload")
     dispatch(postGenerateVisualContentImage(finalPayload));
   };
 
