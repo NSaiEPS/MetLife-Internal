@@ -492,6 +492,7 @@ const AnimationPage: React.FC = () => {
                           </Typography>
 
                           <VideoTimeline
+                            type="final-video"
                             videosData={finalVideoAsTimeline}
                             isFinalVideo={
                               generatedVideoData?.final_video !== null

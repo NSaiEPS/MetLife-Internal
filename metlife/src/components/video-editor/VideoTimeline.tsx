@@ -20,6 +20,7 @@ interface AnimationData {
 }
 
 interface VideoTimelineProps {
+  type?: string;
   videosData: VideoData[];
   isFinalVideo: boolean;
   animationData: AnimationData[];
@@ -28,6 +29,7 @@ interface VideoTimelineProps {
 }
 
 const VideoTimeline: React.FC<VideoTimelineProps> = ({
+  type,
   videosData,
   isFinalVideo,
   animationData,
@@ -73,7 +75,24 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
     [total, active]
   );
 
-  const next = useCallback(() => goto(active + 1), [goto, active]);
+  const next = useCallback(() => {
+    // 🔥 SINGLE VIDEO CASE
+    if (total === 1) {
+      // Reset progress & restart
+      setProg(0);
+      setPlaying(false);
+
+      // Small delay so CenterDiv can reset video.currentTime
+      setTimeout(() => {
+        setPlaying(true);
+      }, 50);
+
+      return;
+    }
+
+    goto(active + 1);
+  }, [goto, active, total]);
+
   const prev = useCallback(() => goto(active - 1), [goto, active]);
 
   // ------------------ TIMELINE EFFECT ------------------
@@ -195,6 +214,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
       {/* BOTTOM BAR */}
       <Bottom
         active={active}
+        type={type}
         isFinalVideo={isFinalVideo}
         videosData={videosData}
         animationData={animationData}

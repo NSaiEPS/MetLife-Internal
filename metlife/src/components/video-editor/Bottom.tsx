@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import type { VideoData } from "../../utils/types";
 import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 import { useDispatch } from "react-redux";
+import finalVideoImg from "../../assets/final-video-img.png";
 
 const style = {
   position: "absolute",
@@ -30,6 +31,7 @@ const style = {
 };
 
 interface BottomProps {
+  type?: string;
   videosData: VideoData[];
   isFinalVideo: boolean;
   animationData: ModalState[];
@@ -50,6 +52,7 @@ interface ModalState {
 }
 
 export default function Bottom({
+  type = "clips",
   videosData,
   isFinalVideo,
   animationData,
@@ -204,6 +207,7 @@ export default function Bottom({
         sx={{
           padding: "2vw 4vw",
           display: "flex",
+          justifyContent: type === "final-video" ? "center" : "start",
           gap: "5vw",
           width: "100%",
           overflowX: "auto",
@@ -244,7 +248,9 @@ export default function Bottom({
               >
                 <Box
                   component="img"
-                  src={row.image_urls[0]}
+                  src={
+                    type === "final-video" ? finalVideoImg : row.image_urls[0]
+                  }
                   alt=""
                   sx={{
                     height: "17vh",
@@ -398,6 +404,7 @@ export default function Bottom({
                   </Box>
                 )}
               </Box>
+
               {/* Timer */}
               {isActive && !videoHasError && (
                 <motion.img

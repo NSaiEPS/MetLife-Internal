@@ -340,7 +340,15 @@ const CenterDiv: React.FC<CenterDivProps> = ({
               />
 
               {/* Play / Pause Icon */}
-              <Box sx={{ position: "relative", zIndex: 10 }}>
+              <Box
+                sx={{
+                  position: "relative",
+                  zIndex: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 {isGloballyPlaying ? (
                   <SvgIcon
                     sx={{ width: 28, height: 28, color: "white" }}
