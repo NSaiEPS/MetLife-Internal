@@ -490,7 +490,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleCreateVisualContent = () => {
-    setOpenFlowDialog(false);
+    // setOpenFlowDialog(false);
     dispatch(postCreateVisualContent(tableExtraData));
   };
 
@@ -829,6 +829,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 currentIndex={currentIndex}
                 setCurrentIndex={setCurrentIndex}
                 onGenerateImages={handleCharacterGenerateImages}
+                tableExtraData={tableExtraData}
               />
 
               <ButtonComp
@@ -971,16 +972,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     }}
                   >
                     <Typography variant="h5" fontWeight={600} mb={1}>
-                      Select Flow
+                      Connversational Video Flow
                     </Typography>
 
                     <Typography color="text.secondary" mb={4}>
-                      Choose how you want to proceed:
+                      Choose to proceed:
                     </Typography>
 
                     <Box display="flex" justifyContent="center" gap={4} mb={4}>
                       {/* Create Visual Content */}
-                      <Box
+                      {/* <Box
                         onClick={handleCreateVisualContent}
                         sx={{
                           cursor: "pointer",
@@ -998,7 +999,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         <Typography fontWeight={500}>
                           Create Visual Content
                         </Typography>
-                      </Box>
+                      </Box> */}
 
                       {/* Generate Images flow */}
                       <Box
