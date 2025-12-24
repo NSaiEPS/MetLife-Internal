@@ -7,9 +7,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setRouter } from "./utils/navigate";
 function App() {
-  
   setRouter(router);
-  console.log("v1.0.6");
+  console.log("v1.0.7");
   return (
     <>
       {/* <ToastBox /> */}
