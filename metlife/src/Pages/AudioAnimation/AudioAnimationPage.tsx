@@ -280,6 +280,8 @@ const AudioAnimationPage: React.FC = () => {
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
   );
 
+  console.log(audioAnimationData, "audioAnimationData");
+
   const characters =
     audioAnimationData?.voice_map?.characters ||
     audioAnimationData?.Characters ||
@@ -389,6 +391,7 @@ const AudioAnimationPage: React.FC = () => {
     };
     dispatch(postGenerateVideoBatch(payload, successCallBack));
   };
+
   const successCallBack = () => {
     navigateTo(`/animation-page/${id}`);
   };

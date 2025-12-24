@@ -10,6 +10,7 @@ import type { AppDispatch } from "../store";
 export interface AudioAnimationState {
   audioAnimationLoader: boolean;
   videoAnimationLoader: boolean;
+  mediaAPILoader: boolean;
   audioAnimationData: Record<string, unknown> | null;
   audioPreviewData: Record<string, unknown> | null;
   labels: Record<string, unknown> | null;
@@ -38,6 +39,7 @@ interface ApiResponse<T = any> {
 const initialState: AudioAnimationState = {
   audioAnimationLoader: false,
   videoAnimationLoader: false,
+  mediaAPILoader: false,
   audioAnimationData: null,
   audioPreviewData: null,
   labels: null,
@@ -57,6 +59,9 @@ const AudioAnimationSlice = createSlice({
     },
     setVideoAnimationLoader: (state, action: PayloadAction<boolean>) => {
       state.videoAnimationLoader = action.payload;
+    },
+    setMediaAPILoader: (state, action: PayloadAction<boolean>) => {
+      state.mediaAPILoader = action.payload;
     },
     setAudioAnimationData: (
       state,
@@ -104,6 +109,7 @@ const AudioAnimationSlice = createSlice({
 export const {
   setAudioAnimationData,
   setAudioAnimationLoader,
+  setMediaAPILoader,
   setVideoAnimationLoader,
   setAudioPreviewData,
   setLabels,
@@ -238,6 +244,7 @@ export const postGenerateVideoBatch =
 
 export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
   dispatch(setVideoAnimationLoader(true));
+  dispatch(setMediaAPILoader(true));
   try {
     const res: ApiResponse = await api.get(`media/${id}`);
     if (res.status) {
@@ -248,6 +255,7 @@ export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
     toast.error("Failed to fetch videos list!");
   } finally {
     dispatch(setVideoAnimationLoader(false));
+    dispatch(setMediaAPILoader(false));
   }
 };
 

@@ -65,6 +65,7 @@ interface RootState {
   AudioAnimation: {
     audioAnimationLoader: boolean;
     videoAnimationLoader: boolean;
+    mediaAPILoader: boolean;
     animationLabels: AnimationLabels;
     videoAnimationData: VideoItem[];
     generatedVideoData?: { final_video: { url: string } };
@@ -75,8 +76,8 @@ interface RootState {
 /* ---------- COMPONENT ---------- */
 
 const AnimationPage: React.FC = () => {
-  const [entryAnimation, setEntryAnimation] = useState<string>("fade_in");
-  const [exitAnimation, setExitAnimation] = useState<string>("fade_out");
+  const [entryAnimation, setEntryAnimation] = useState<string>("none");
+  const [exitAnimation, setExitAnimation] = useState<string>("none");
   const [timerDone, setTimerDone] = useState<boolean>(false);
   const [animationData, setAnimationData] = useState<AnimationData[]>([]);
   const [openMissingPopup, setOpenMissingPopup] = useState(false);
@@ -85,6 +86,7 @@ const AnimationPage: React.FC = () => {
   const {
     audioAnimationLoader,
     videoAnimationLoader,
+    mediaAPILoader,
     animationLabels,
     videoAnimationData,
     generatedVideoData,
@@ -99,7 +101,7 @@ const AnimationPage: React.FC = () => {
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
-  console.log(audioAnimationLoader, "audioAnimationLoader");
+  // console.log(audioAnimationLoader, "audioAnimationLoader");
 
   // console.log(sceneData, "sceneData");
   // console.log(generatedVideoData, "generatedVideoData");
@@ -123,6 +125,11 @@ const AnimationPage: React.FC = () => {
       ]
     : [];
 
+  const showTimeline =
+    videoAnimationData?.length > 0 &&
+    sceneData?.video_exists === true &&
+    generatedVideoData?.final_video === null;
+
   /* ---------- FETCH DATA ---------- */
 
   useEffect(() => {
@@ -144,45 +151,81 @@ const AnimationPage: React.FC = () => {
     }
   }, [timerDone, dispatch, id]);
 
+  // console.log(finalTime, 'finalTime');
+
   useEffect(() => {
     if (timerDone && sceneData?.video_exists === true && id) {
       dispatch(getVideosList(id));
     }
   }, [timerDone, sceneData?.video_exists, dispatch, id]);
 
+  //   useEffect(() => {
+  //   if (finalTime <= 0) {
+  //     const interval = setInterval(() => {
+  //       dispatch(getVideosList(id!));
+  //     }, 5000);
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [finalTime]);
+
+  /* ----------To set animationData from videoAnimationData---------- */
+
+  useEffect(() => {
+    if (videoAnimationData?.length) {
+      setAnimationData((prev) => {
+        if (prev.length > 0) return prev;
+
+        return videoAnimationData.map((scene) => ({
+          scene_number: scene.scene_number,
+          scene_id: scene.scene_id,
+          start_transition: scene.start_transition ?? "none",
+          end_transition: scene.end_transition ?? "none",
+        }));
+      });
+    }
+  }, [videoAnimationData]);
+
   /* ---------- HANDLERS ---------- */
 
   const handleAllSubmit = () => {
-    // const sceneIds = audioAnimationData?.scenes?.map((item) => item?.scene_id);
-    // const sceneIds = sceneData?.scenes?.map((item) => item?.scene_id);
-    // const scenesPayload = sceneIds?.map((id) => ({
-    //   scene_id: id,
-    //   start_transition: entryAnimation,
-    //   end_transition: exitAnimation,
-    //   // ost: "",
-    // }));
-    // const payload = {
-    //   script_id: id,
-    //   scenes: scenesPayload,
-    // };
-    // dispatch(postGenerateVideoBatch(payload));
+    const updated = videoAnimationData.map((scene) => ({
+      scene_number: scene.scene_number,
+      scene_id: scene.scene_id,
+      start_transition: entryAnimation,
+      end_transition: exitAnimation,
+    }));
+    setAnimationData(updated);
+  };
 
-    const appliedSceneNumbers = new Set(
-      animationData.map((item) => item.scene_number)
+  // console.log(animationData, "animationData");
+
+  const handleAlternateSubmit = () => {
+    setAnimationData((prev) =>
+      prev.map((scene, index) => {
+        if (index % 2 === 0) {
+          return {
+            ...scene,
+            start_transition: entryAnimation,
+            end_transition: exitAnimation,
+          };
+        }
+
+        return scene;
+      })
     );
+  };
 
-    const missingScenes = videoAnimationData
-      .filter((video) => !appliedSceneNumbers.has(video.scene_number))
-      .map((video) => video.scene_number);
+  const handleAnimationChanges = () => {
+    const missing = animationData
+      .filter(
+        (scene) =>
+          scene.start_transition === "none" && scene.end_transition === "none"
+      )
+      .map((scene) => scene.scene_number);
 
-    if (missingScenes.length > 0) {
-      // console.log("Missing animation on scenes:", missingScenes);
-      setMissingScenes(missingScenes);
-      setOpenMissingPopup(true);
-      return;
-    }
-
-    submitAllAnimations();
+    setMissingScenes(missing); // empty bhi ho sakta hai
+    setOpenMissingPopup(true); // popup hamesha open
   };
 
   const handleMissingAnimationConfirm = () => {
@@ -191,42 +234,25 @@ const AnimationPage: React.FC = () => {
   };
 
   const submitAllAnimations = () => {
-    // console.log("Submitting all animations", animationData);
     // dispatch(postGenerateFullVideo(animationData));
-  };
 
-  const handleAlternateSubmit = () => {
-    const scenesData = sceneData?.scenes || [];
-    const allSceneIds = scenesData.flatMap((scene) => {
-      const idsToProcess = [];
-      if (scene?.scene_id) {
-        idsToProcess.push(scene.scene_id);
-      }
-      if (scene?.alternative_scene_id) {
-        idsToProcess.push(scene.alternative_scene_id);
-      }
-      return idsToProcess;
-    });
-
-    const scenesPayload = allSceneIds.map((id, index) => ({
-      scene_id: id,
-      start_transition: index % 2 === 0 ? entryAnimation : "none",
-      end_transition: index % 2 === 0 ? exitAnimation : "none",
-      // ost: "",
+    const scenes = animationData.map((scene) => ({
+      scene_id: scene.scene_id,
+      start_transition: scene.start_transition,
+      end_transition: scene.end_transition,
     }));
-
-    const payload = {
-      script_id: id,
-      scenes: scenesPayload,
+    const data = {
+      script_id: generatedVideoData?.script_id,
+      scenes,
     };
-    dispatch(postGenerateVideoBatch(payload));
+    dispatch(postGenerateVideoBatch(data));
   };
 
   const generateVideo = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
-  // console.log(timerDone);
+  // console.log(finalTime, "finalTime");
 
   return (
     <>
@@ -240,6 +266,7 @@ const AnimationPage: React.FC = () => {
           <>
             {(audioAnimationLoader ||
               videoAnimationLoader ||
+              mediaAPILoader ||
               !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
             )}
@@ -306,7 +333,8 @@ const AnimationPage: React.FC = () => {
                     // )
                   } */}
                   {/* {!timerDone && videoAnimationData?.length > 0 && ( */}
-                  {videoAnimationData?.length > 0 && (
+                  {/* {videoAnimationData?.length > 0 && finalTime < 0 && ( */}
+                  {showTimeline && (
                     <Grid container>
                       <Typography
                         sx={{ fontSize: "20px", fontWeight: 500, mb: 2 }}
@@ -318,7 +346,7 @@ const AnimationPage: React.FC = () => {
                         isFinalVideo={generatedVideoData?.final_video !== null}
                         animationData={animationData}
                         setAnimationData={setAnimationData}
-                        handleAllSubmit={handleAllSubmit}
+                        handleAllSubmit={handleAnimationChanges}
                       />
                     </Grid>
                   )}
@@ -341,7 +369,7 @@ const AnimationPage: React.FC = () => {
                           mt: 2,
                         }}
                       >
-                        Animation Selection
+                        Or Animation Selection - Method 2
                       </Typography>
                       <Grid container spacing={3}>
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
@@ -361,7 +389,8 @@ const AnimationPage: React.FC = () => {
                               borderRadius: 3,
                             }}
                           >
-                            <FormControl disabled={videoAnimationData}>
+                            {/* disabled={videoAnimationData} */}
+                            <FormControl disabled={finalTime > 0}>
                               <RadioGroup
                                 value={entryAnimation}
                                 onChange={(e) =>
@@ -406,7 +435,7 @@ const AnimationPage: React.FC = () => {
                               borderRadius: 3,
                             }}
                           >
-                            <FormControl disabled={videoAnimationData}>
+                            <FormControl disabled={finalTime > 0}>
                               <RadioGroup
                                 value={exitAnimation}
                                 onChange={(e) =>
@@ -444,27 +473,43 @@ const AnimationPage: React.FC = () => {
                             textTransform: "none",
                           }}
                           action={handleAlternateSubmit}
-                          disabled={
-                            audioAnimationLoader ||
-                            videoAnimationLoader ||
-                            generatedVideoData ||
-                            videoAnimationData ||
-                            sceneData?.video_exists === true
-                          }
+                          disabled={finalTime > 0}
+                          // disabled={
+                          //   audioAnimationLoader ||
+                          //   videoAnimationLoader ||
+                          //   generatedVideoData ||
+                          //   videoAnimationData ||
+                          //   sceneData?.video_exists === true
+                          // }
                         />
                         <ButtonComp
                           label={"Apply To All"}
                           sx={{ textTransform: "none" }}
                           action={handleAllSubmit}
-                          disabled={
-                            audioAnimationLoader ||
-                            videoAnimationLoader ||
-                            generatedVideoData ||
-                            videoAnimationData ||
-                            sceneData?.video_exists === true
-                            // false
-                          }
+                          disabled={finalTime > 0}
+                          // disabled={
+                          //   audioAnimationLoader ||
+                          //   videoAnimationLoader ||
+                          //   generatedVideoData ||
+                          //   videoAnimationData ||
+                          //   sceneData?.video_exists === true
+                          // }
                         />
+
+                        <ButtonComp
+                          label={"Submit Animation Changes"}
+                          sx={{ textTransform: "none" }}
+                          action={handleAnimationChanges}
+                          disabled={finalTime > 0}
+                        />
+                        {/* <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ textTransform: "none" }}
+                          onClick={handleAnimationChanges}
+                        >
+                          Submit Animation Changes
+                        </Button> */}
                       </div>
                       <div className={styles.actions_second}>
                         <ButtonComp
@@ -507,7 +552,7 @@ const AnimationPage: React.FC = () => {
                             }
                             animationData={animationData}
                             setAnimationData={setAnimationData}
-                            handleAllSubmit={handleAllSubmit}
+                            handleAllSubmit={handleAnimationChanges}
                           />
 
                           {/* <FullVideoPlayer

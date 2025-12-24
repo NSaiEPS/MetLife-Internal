@@ -46,7 +46,6 @@ interface BottomProps {
 interface ModalState {
   scene_number: number;
   scene_id: string;
-  ost: string;
   start_transition: string;
   end_transition: string;
 }
@@ -91,15 +90,19 @@ export default function Bottom({
 
   const buttonClickHandler = (i: number) => {
     const elem = videosData?.[i];
+
     if (!elem) return;
+
+    const appliedAnimation = animationData.find(
+      (a) => a.scene_number === elem.scene_number
+    );
 
     setModalIndex(i);
     setModalState({
       scene_number: elem.scene_number,
       scene_id: elem.scene_id,
-      start_transition: elem.start_transition,
-      end_transition: elem.end_transition,
-      ost: elem.ost,
+      start_transition: appliedAnimation?.start_transition ?? "none",
+      end_transition: appliedAnimation?.end_transition ?? "none",
     });
   };
 
@@ -136,32 +139,25 @@ export default function Bottom({
     if (modalIndex === null) return;
 
     try {
-      setAnimationData((prev: ModalState[]) => [...prev, modalState]);
+      setAnimationData((prev) => {
+        const exists = prev.find(
+          (a) => a.scene_number === modalState.scene_number
+        );
+
+        if (exists) {
+          return prev.map((a) =>
+            a.scene_number === modalState.scene_number ? modalState : a
+          );
+        }
+
+        return [...prev, modalState];
+      });
+
       setModalIndex(null);
     } catch (err) {
       console.error("Animation apply failed", err);
     }
   };
-
-  // const handleModalSubmit = async () => {
-  //   if (modalIndex === null) return;
-  //   const row = videosData?.[modalIndex];
-
-  //   const payload = {
-  //     scene_id: row.scene_id,
-  //     entry_animation: entryAnimation,
-  //     exit_animation: exitAnimation,
-  //   };
-
-  //   try {
-  //     console.log("API Payload", payload);
-
-  //     // // ✅ Modal close
-  //     setModalIndex(null);
-  //   } catch (err) {
-  //     console.error("Animation apply failed", err);
-  //   }
-  // };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -219,6 +215,11 @@ export default function Bottom({
       >
         {videosData?.map((row, i) => {
           const isActive = i === active;
+          const applied = animationData.find(
+            (a) =>
+              a.scene_number === row.scene_number &&
+              (a.start_transition !== "none" || a.end_transition !== "none")
+          );
 
           return (
             <Box
@@ -306,6 +307,7 @@ export default function Bottom({
                   </Button>
                 )}
               </Box>
+
               <Box
                 sx={{
                   position: "relative",
@@ -420,17 +422,20 @@ export default function Bottom({
                   }}
                 />
               )}
+
               {!isFinalVideo && (
                 <Button onClick={() => buttonClickHandler(i)}>
                   Add Animation
                 </Button>
               )}
-              {/* 
-              {row.start_transition !== "none" && (
-                <Typography fontSize={10} color="green">
-                  Animation Applied
-                </Typography>
-              )} */}
+
+              {applied && !isFinalVideo && (
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <Typography fontSize={10} color="green">
+                    Animation Applied
+                  </Typography>
+                </Box>
+              )}
             </Box>
           );
         })}
@@ -577,7 +582,7 @@ export default function Bottom({
         )}
       </Box>
 
-      {!isFinalVideo && (
+      {/* {!isFinalVideo && (
         <Button
           variant="contained"
           color="primary"
@@ -586,7 +591,7 @@ export default function Bottom({
         >
           Submit Animation Changes
         </Button>
-      )}
+      )} */}
     </Box>
   );
 }

@@ -8,6 +8,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 // ---------- Props ----------
 interface MissingAnimationPopupProps {
@@ -24,6 +26,8 @@ const MissingAnimationPopup: React.FC<MissingAnimationPopupProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const hasMissing = missingScenes.length > 0;
+
   return (
     <Dialog
       open={open}
@@ -32,7 +36,7 @@ const MissingAnimationPopup: React.FC<MissingAnimationPopupProps> = ({
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 2,
+          borderRadius: 3,
           p: 1,
         },
       }}
@@ -42,37 +46,73 @@ const MissingAnimationPopup: React.FC<MissingAnimationPopupProps> = ({
         sx={{
           fontWeight: 600,
           textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1,
         }}
       >
-        Missing Animations
+        {hasMissing ? (
+          <>
+            <WarningAmberIcon color="warning" />
+            Missing Animations
+          </>
+        ) : (
+          <>
+            <CheckCircleOutlineIcon color="success" />
+            Confirm Animation Changes
+          </>
+        )}
       </DialogTitle>
 
       {/* Content */}
       <DialogContent>
         <Box textAlign="center" mt={1}>
-          <Typography variant="body1" sx={{ color: "text.secondary", mb: 1 }}>
-            You have not applied animations to the following scenes:
-          </Typography>
+          {hasMissing ? (
+            <>
+              <Typography
+                variant="body1"
+                sx={{ color: "text.secondary", mb: 1 }}
+              >
+                The following scenes have no animations applied:
+              </Typography>
 
-          <Typography
-            variant="body1"
-            sx={{
-              fontWeight: 600,
-              color: "#1976d2",
-              mb: 2,
-            }}
-          >
-            {missingScenes.join(", ")}
-          </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 600,
+                  color: "#ed6c02",
+                  mb: 2,
+                }}
+              >
+                {missingScenes.join(", ")}
+              </Typography>
 
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Are you sure you want to continue?
-          </Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                These scenes will play <b>without transitions</b>.
+                <br />
+                Do you want to continue?
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Typography
+                variant="body1"
+                sx={{ color: "text.secondary", mb: 2 }}
+              >
+                All scenes have animations applied.
+              </Typography>
+
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                Are you sure you want to submit these animation changes?
+              </Typography>
+            </>
+          )}
         </Box>
       </DialogContent>
 
       {/* Actions */}
-      <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+      <DialogActions sx={{ justifyContent: "center", pb: 2, gap: 1 }}>
         <Button
           onClick={onClose}
           variant="outlined"
@@ -88,14 +128,14 @@ const MissingAnimationPopup: React.FC<MissingAnimationPopupProps> = ({
         <Button
           onClick={onConfirm}
           variant="contained"
+          color={hasMissing ? "warning" : "primary"}
           sx={{
-            background: "#1976d2",
             minWidth: 110,
             textTransform: "none",
             borderRadius: "8px",
           }}
         >
-          Continue
+          {hasMissing ? "Continue Anyway" : "Confirm"}
         </Button>
       </DialogActions>
     </Dialog>

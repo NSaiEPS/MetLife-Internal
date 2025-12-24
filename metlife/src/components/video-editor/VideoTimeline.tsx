@@ -212,18 +212,21 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
       </Box>
 
       {/* BOTTOM BAR */}
-      <Bottom
-        active={active}
-        type={type}
-        isFinalVideo={isFinalVideo}
-        videosData={videosData}
-        animationData={animationData}
-        setAnimationData={setAnimationData}
-        handleAllSubmit={handleAllSubmit}
-        progress={progress}
-        onSelect={goto}
-        videoHasError={activeVideoHasError}
-      />
+
+      {type !== "final-video" && (
+        <Bottom
+          active={active}
+          type={type}
+          isFinalVideo={isFinalVideo}
+          videosData={videosData}
+          animationData={animationData}
+          setAnimationData={setAnimationData}
+          handleAllSubmit={handleAllSubmit}
+          progress={progress}
+          onSelect={goto}
+          videoHasError={activeVideoHasError}
+        />
+      )}
     </Box>
   );
 };
