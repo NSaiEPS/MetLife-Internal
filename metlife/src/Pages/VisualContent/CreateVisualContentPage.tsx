@@ -46,7 +46,7 @@ interface Column<T> {
 // ---------- Component ----------
 const CreateVisualContentPage: React.FC = () => {
  const columns: Column<RowData>[] = [
-  { label: "Scene No.", key: "Scene_No" },  // fixed key
+  { label: "Scene No.", key: "Scene_No", width: "5%"  },  
   {
     label: "Visual Type",
     key: "Visual_Type",
@@ -57,14 +57,15 @@ const CreateVisualContentPage: React.FC = () => {
         onChange={(e: SelectChangeEvent<string>) =>
           handleVisualTypeChange(e.target.value, row)
         }
-        sx={{ width: 120 }}
+        sx={{ width: 110 }}
       >
         <MenuItem value="image">Image</MenuItem>
         <MenuItem value="clip">Footage</MenuItem>
       </Select>
     ),
   },
-  { label: "Visual Description", key: "Visual_Description" },
+  { label: "Scene Description", key: "Scene_Description", width: "30%", },
+  { label: "Visual Description", key: "Visual_Description", width: "30%", },
 ];
 
 
@@ -102,10 +103,8 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent
   );
-  console.log(saveVisualContentData?.video_style, 'check_visual_content_Data')
 
   const script_id = saveVisualContentData?.script_id;
-
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
 
@@ -125,6 +124,7 @@ const CreateVisualContentPage: React.FC = () => {
     const newdata: RowData[] = reqData.map((item, index) => ({
       Scene_No: index + 1,
       Visual_Type: item?.clip_visual_type === "clip" ? "clip" : "image",
+      Scene_Description: item?.description ?? "-",
       Visual_Description:
         item?.clip_visual_type === "clip" ? item?.clip_prompt ?? "-" : item?.prompt ?? "-",
       scene_id: item?.scene_id ?? "",
@@ -228,7 +228,11 @@ const handleUpdate = (data: { fieldData: any | null; prompt: string }) => {
               </div>
             </div>
 
-            <PromptTable columns={columns} rows={rows} actions={actions} />
+            <PromptTable
+             columns={columns}
+             rows={rows}
+             actions={actions} 
+             />
 
             {popup.type === "edit" && popup.data && (
               <EditPromptPopup

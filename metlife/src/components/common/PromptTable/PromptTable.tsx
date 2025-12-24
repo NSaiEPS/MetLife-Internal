@@ -54,7 +54,14 @@ function PromptTable<T extends Record<string, any>>({
           <TableHead>
             <TableRow>
               {columns.map((col, idx) => (
-                <TableCell key={idx} sx={{ fontWeight: 600 }}>
+                <TableCell
+                  key={idx}
+                  sx={{
+                    fontWeight: 600,
+                    width: col.width,
+                    maxWidth: col.width,
+                  }}
+                >
                   {col.label}
                 </TableCell>
               ))}
@@ -66,14 +73,36 @@ function PromptTable<T extends Record<string, any>>({
 
           <TableBody>
             {rows.map((row, rIdx) => (
-              <TableRow key={rIdx}>
+              <TableRow
+                key={rIdx}
+                sx={{
+                  "& td": {
+                    verticalAlign: "top", // 🔥 TOP ALIGN ALL CELLS
+                    wordBreak: "break-word",
+                    whiteSpace: "normal",
+                    paddingTop: "12px",
+                  },
+                }}
+              >
                 {columns.map((col, cIdx) => (
-                  <TableCell key={cIdx}>
+                  <TableCell
+                    key={cIdx}
+                    sx={{
+                      width: col.width,
+                      maxWidth: col.width,
+                    }}
+                  >
                     {col.render ? col.render(row[col.key], row) : row[col.key]}
                   </TableCell>
                 ))}
                 {actions.length > 0 && (
-                  <TableCell>
+                  <TableCell
+                    sx={{
+                      verticalAlign: "top",
+                      wordBreak: "break-word",
+                      whiteSpace: "normal",
+                    }}
+                  >
                     <div style={{ display: "flex", gap: 8 }}>
                       {actions.map((act, aIdx) => (
                         <IconButton
