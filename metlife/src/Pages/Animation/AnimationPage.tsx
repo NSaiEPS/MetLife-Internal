@@ -99,7 +99,7 @@ const AnimationPage: React.FC = () => {
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
-  // console.log(videoAnimationData, "videoAnimationData");
+  console.log(audioAnimationLoader, "audioAnimationLoader");
 
   // console.log(sceneData, "sceneData");
   // console.log(generatedVideoData, "generatedVideoData");
@@ -238,7 +238,9 @@ const AnimationPage: React.FC = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {(audioAnimationLoader || !generatedVideoData) && (
+            {(audioAnimationLoader ||
+              videoAnimationLoader ||
+              !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
             )}
 
@@ -474,7 +476,7 @@ const AnimationPage: React.FC = () => {
                             videoAnimationLoader ||
                             !videoAnimationData ||
                             generatedVideoData?.final_video ||
-                            !timerDone
+                            finalTime > 0
                           }
                         />
                       </div>
