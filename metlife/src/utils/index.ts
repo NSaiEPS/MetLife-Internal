@@ -126,7 +126,7 @@ export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
   saveAs(
     blob,
     data?.upload_info
-      ? `${data?.upload_info?.filename}.pdf`
+      ? `${data?.upload_info?.title}.pdf`
       : data?.source == "file"
       ? `${data?.filename}.pdf`
       : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`
@@ -291,7 +291,7 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
     saveAs(
       blob,
       data?.upload_info
-        ? `${data?.upload_info?.filename}.docx`
+        ? `${data?.upload_info?.title}.docx`
         : data?.source == "file"
         ? `${data?.filename}.docx`
         : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`

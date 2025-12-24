@@ -145,7 +145,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     extraDetails?.char_image_exist
   );
   const [openFlowDialog, setOpenFlowDialog] = useState(false);
-  console.log(extraDetails, "tableExtraData");
+  console.log(tableExtraData, "tableExtraData");
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
   }, [extraDetails]);
@@ -455,7 +455,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const confirmDeleteScene = async (scene: SceneRow) => {
-    const payload = { script_id: id, scene_id: scene.id };
+    const payload = { script_id: id, scene_id: scene.id, version:tableExtraData?.version };
     setDeleteLoader(true);
 
     try {
@@ -943,9 +943,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <span>
                   <Button
                     onClick={
-                      tableExtraData?.video_style === "narrative"
-                        ? handleCreateVisualContent
-                        : handleOpenFlowDialog
+                      tableExtraData?.video_style === "conversational"
+                        ? handleOpenFlowDialog
+                        : handleCreateVisualContent
                     }
                     // onClick={handleCreateVisualContent}
                     variant="contained"
@@ -1023,9 +1023,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                           </Typography>
                         )}
 
-                        <Typography
-                          fontWeight={500}
-                        >
+                        <Typography fontWeight={500}>
                           {promptData?.length
                             ? "View existing prompts & Images"
                             : "Create/Setup prompts"}
