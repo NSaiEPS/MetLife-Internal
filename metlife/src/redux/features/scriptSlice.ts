@@ -98,27 +98,57 @@ export default ScriptDataSlice.reducer;
 
 export const postDeleteScene =
   (
-    data: { script_id?: string; scene_id: string | number },
-    onClose: (v: boolean) => void
+    data: { script_id?: string; scene_id: string | number; version?: number },
+    setOpenDeletePopup: (v: boolean) => void,
+    // successDelete
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
-
     try {
       const res = await api.post("mongo/delete_scene", data);
-
-      onClose(false);
-
-      dispatch(
-        setScriptData({
-          scene_id: data.scene_id,
-        })
-      );
+      console.log(res, "check_delter");
+      if (res.status) {
+        dispatch(
+          setScriptData({
+            scene_id: data.scene_id,
+          })
+        );
+        // successDelete();
+      }
     } catch (error: any) {
       console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
+      setOpenDeletePopup(false);
+    }
+  };
+
+  export const postEditScene =
+  (
+    data: { script_id?: string; scene_id: string | number; version?: number },
+    setOpenDeletePopup: (v: boolean) => void,
+    // successDelete
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await api.post("mongo/edit", data);
+
+      if (res.status) {
+        dispatch(
+          setScriptData({
+            scene_id: data.scene_id,
+          })
+        );
+        // successDelete();
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+      setOpenDeletePopup(false);
     }
   };
 
@@ -182,7 +212,7 @@ export const postPromptSetupCharacters =
 
 // Edit Prompt character s
 export const patchEditPromp =
-  (id: string, character_id:string, name: string, new_prompt: string) =>
+  (id: string, character_id: string, name: string, new_prompt: string) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {

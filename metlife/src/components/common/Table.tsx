@@ -56,6 +56,7 @@ import SinglePromptModal from "./SinglePromptModal";
 import { postSavePrompt } from "../../redux/features/promptSlice";
 import {
   getExtractCharacters,
+  postDeleteScene,
   postExtractCharacters,
   postPromptSetupCharacters,
 } from "../../redux/features/scriptSlice";
@@ -426,9 +427,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleSave = () => {
     setOperations(false);
     const { script_status, saved_version, ...rest } = tableExtraData;
+
     const data = {
       data: {
-        // ...tableExtraData,
         ...rest,
         script_id: id,
         title: tableExtraData?.title,
@@ -436,6 +437,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       },
       is_save_action: true,
     };
+    console.log(data);
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {
@@ -443,7 +445,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         }
       })
     );
-
     setMakeChanges(false);
   };
 
@@ -455,6 +456,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const confirmDeleteScene = async (scene: SceneRow) => {
+    if (!id) return;
+    // dispatch(
+    //   postDeleteScene(
+    //     {
+    //       script_id: id,
+    //       scene_id: scene.id,
+    //       version: tableExtraData?.version,
+    //     },
+    //     setOpenDeletePopup,
+    //     // successDelete
+    //   )
+    // );
+
     const payload = { script_id: id, scene_id: scene.id, version:tableExtraData?.version };
     setDeleteLoader(true);
 
