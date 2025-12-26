@@ -12,6 +12,7 @@ import type { VideoData } from "../../utils/types";
 interface CenterDivProps {
   progress: number;
   isActive: boolean;
+  type: string;
   data: VideoData;
   duration: number;
   onTogglePlay: (val: boolean) => void;
@@ -22,6 +23,7 @@ interface CenterDivProps {
 }
 
 const CenterDiv: React.FC<CenterDivProps> = ({
+  type = "clips",
   progress,
   isActive,
   data,
@@ -35,6 +37,8 @@ const CenterDiv: React.FC<CenterDivProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const triAnim = useAnimation();
   const iconAnim = useAnimation();
+
+  // console.log("type", type);
 
   // Video loading states
   const [isVideoLoaded, setIsVideoLoaded] = useState<boolean>(false);
@@ -170,6 +174,13 @@ const CenterDiv: React.FC<CenterDivProps> = ({
     onTogglePlay,
     progress,
   ]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     if (isActive && onVideoLoadStatus) {
@@ -432,13 +443,18 @@ const CenterDiv: React.FC<CenterDivProps> = ({
           }}
         >
           <Typography sx={{ color: "#34aeff" }}>
-            {isActive
+            {isActive && type === "clips"
               ? String(Math.floor((progress / 100) * videoDuration)).padStart(
                   2,
                   "0"
                 )
-              : "00"}
-            /{String(Math.floor(videoDuration)).padStart(2, "0")}
+              : formatTime((progress / 100) * videoDuration)}
+            /
+            {type === "clips"
+              ? String(Math.floor(videoDuration)).padStart(2, "0")
+              : formatTime(videoDuration)}
+            {/* {isActive ? formatTime((progress / 100) * videoDuration) : "00:00"}/
+            {formatTime(videoDuration)} */}
           </Typography>
         </Box>
       </Box>

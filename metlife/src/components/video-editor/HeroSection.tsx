@@ -26,6 +26,7 @@ interface HeroSectionProps {
   videosData: VideoData[];
   active: number;
   progress: number;
+  type: string;
   next: () => void;
   prev: () => void;
   onTogglePlay: (val: boolean) => void;
@@ -39,6 +40,7 @@ export default function HeroSection({
   videosData,
   active,
   progress,
+  type,
   next,
   prev,
   onTogglePlay,
@@ -137,6 +139,7 @@ export default function HeroSection({
             <CenterDiv
               isActive={isActive}
               data={item}
+              type={type}
               duration={item.duration || 10}
               progress={progress}
               onTogglePlay={onTogglePlay}
