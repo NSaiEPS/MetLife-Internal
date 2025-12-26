@@ -6,8 +6,11 @@ import {
   Button,
   SvgIcon,
 } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
 import { motion, useAnimation } from "framer-motion";
 import type { VideoData } from "../../utils/types";
+import { useDispatch } from "react-redux";
+import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 
 interface CenterDivProps {
   progress: number;
@@ -175,11 +178,24 @@ const CenterDiv: React.FC<CenterDivProps> = ({
     progress,
   ]);
 
+  const dispatch = useDispatch();
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
 
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
+
+  const downloadVideo = (s3_url: string, name: string) => {
+    // const link = document.createElement("a");
+    // link.href = s3_url;
+    // link.setAttribute("download", ${name});
+    // link.setAttribute("target", "_blank");
+    // document.body.appendChild(link);
+    // link.click();
+    // link.remove();
+    dispatch(downloadVideoWithUrl(s3_url, name));
   };
 
   useEffect(() => {
@@ -457,6 +473,34 @@ const CenterDiv: React.FC<CenterDivProps> = ({
             {formatTime(videoDuration)} */}
           </Typography>
         </Box>
+
+        {/* Download Button for final-video */}
+        {type === "final-video" && (
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (data?.final_video?.url) {
+                downloadVideo(
+                  data.final_video.url,
+                  `${data?.ost || "video"}.mp4`
+                );
+              }
+            }}
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: "-5%",
+              minWidth: "auto",
+              p: "2px",
+              backgroundColor: "rgba(0,0,0,0.4)",
+              "&:hover": {
+                backgroundColor: "rgba(0,0,0,0.6)",
+              },
+            }}
+          >
+            <DownloadIcon sx={{ color: "#fff", fontSize: 18 }} />
+          </Button>
+        )}
       </Box>
 
       {/* TRIANGLE IMAGES */}

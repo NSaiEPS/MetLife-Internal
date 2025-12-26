@@ -1,12 +1,9 @@
 import React, { useRef } from "react";
-import DownloadIcon from "@mui/icons-material/Download";
 import { Box, Button } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CenterDiv from "./CenterDiv";
 import type { VideoData } from "../../utils/types";
-import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
-import { useDispatch } from "react-redux";
 
 /* helper: shortest circular offset */
 const offset = (i: number, active: number, total: number) => {
@@ -53,10 +50,6 @@ export default function HeroSection({
   const startX = useRef<number | null>(null);
   const far = Math.floor(total / 2);
 
-  console.log("videosData", videosData);
-
-  const dispatch = useDispatch();
-
   /* pointer handlers */
   const handleDown = (
     e: React.PointerEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
@@ -89,16 +82,6 @@ export default function HeroSection({
     startX.current = null;
   };
 
-  const downloadVideo = (s3_url: string, name: string) => {
-    // const link = document.createElement("a");
-    // link.href = s3_url;
-    // link.setAttribute("download", ${name});
-    // link.setAttribute("target", "_blank");
-    // document.body.appendChild(link);
-    // link.click();
-    // link.remove();
-    dispatch(downloadVideoWithUrl(s3_url, name));
-  };
   return (
     <Box
       onPointerDown={handleDown}
@@ -148,31 +131,6 @@ export default function HeroSection({
               hasUserInteracted={hasUserInteracted}
               onVideoLoadStatus={isActive ? onVideoLoadStatus : undefined}
             />
-            {/* 
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                if (item?.final_video?.url) {
-                  downloadVideo(
-                    item.final_video.url,
-                    `${item?.ost || "video"}.mp4`
-                  );
-                }
-              }}
-              sx={{
-                position: "absolute",
-                top: 4,
-                right: 4,
-                minWidth: "auto",
-                p: "2px",
-                backgroundColor: "rgba(0,0,0,0.4)",
-                "&:hover": {
-                  backgroundColor: "rgba(0,0,0,0.6)",
-                },
-              }}
-            >
-              <DownloadIcon sx={{ color: "#fff", fontSize: 18 }} />
-            </Button> */}
           </Box>
         );
       })}
