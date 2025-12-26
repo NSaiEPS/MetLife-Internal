@@ -201,6 +201,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           videosData={videosData}
           progress={progress}
           active={active}
+          type={type}
           next={next}
           prev={prev}
           onTogglePlay={setPlaying}
