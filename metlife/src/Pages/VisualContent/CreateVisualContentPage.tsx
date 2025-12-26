@@ -65,7 +65,7 @@ const CreateVisualContentPage: React.FC = () => {
     ),
   },
   { label: "Scene Description", key: "Scene_Description", width: "30%", },
-  { label: "Visual Description", key: "Visual_Description", width: "30%", },
+  { label: "Visual Description", key: "Visual_Description", width: "50%", },
 ];
 
 
