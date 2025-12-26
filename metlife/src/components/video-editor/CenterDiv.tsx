@@ -319,15 +319,21 @@ const CenterDiv: React.FC<CenterDivProps> = ({
           }}
         />
 
-        {/* <video
-  ref={videoRef}
-  src={data.final_video.url}
-  preload="auto"
-  playsInline
-  muted={!hasUserInteracted}
-  onCanPlayThrough={() => onVideoLoadStatus?.(true, false)}
-  onError={() => onVideoLoadStatus?.(false, true)}
-/> */}
+    {/* <video
+    ref={videoRef}
+    src={data.final_video.url}
+    preload="metadata"
+    playsInline
+    muted={!hasUserInteracted}
+    onLoadedMetadata={() => onVideoLoadStatus?.(true, false)}
+    onCanPlayThrough={() => onVideoLoadStatus?.(true, false)}
+    onError={() => onVideoLoadStatus?.(false, true)}
+    style={{
+      height: "60vh",
+      opacity: isActive ? 1 : 0.75,
+      transition: "opacity 0.3s",
+    }}
+  /> */}
 
         {isActive && (
           <motion.div
