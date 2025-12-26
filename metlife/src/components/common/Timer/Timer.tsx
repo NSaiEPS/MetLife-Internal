@@ -6,8 +6,8 @@ import { useNavigate } from "react-router";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 interface TimerProps {
-  time: number;             // e.g., 1.5 minutes
-  onComplete?: () => void;  // optional callback
+  time: number;
+  onComplete?: () => void;
 }
 
 const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
@@ -60,153 +60,194 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
-   return (
-    <>
+
+  return (
+    <Box
+      sx={{
+        maxWidth: '100%',
+        mx: "auto",
+        my: 4,
+        p: 3,
+        borderRadius: 2,
+        border: "1px solid #cfe3f5",
+        backgroundColor: "#fff",
+        boxShadow: "0 0 0 1px #e3f2fd",
+      }}
+    >
+      {/* Title */}
+      <Typography fontSize={18} fontWeight={600} mb={2}>
+        Generate Progress
+      </Typography>
+
+      {/* Progress Bar */}
+      <Box
+        sx={{
+          position: "relative",
+          height: 10,
+          borderRadius: 999,
+          backgroundColor: "#e6f0fa",
+          overflow: "hidden",
+          mb: 2,
+        }}
+      >
+        <motion.div
+          style={{
+            height: "100%",
+            backgroundColor: "#4da3ff",
+            width: useTransform(smoothHeight, (v) => `${Math.max(0, v)}%`),
+          }}
+        />
+      </Box>
+
+      {/* Labels */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
-          marginTop: "30px",
+          justifyContent: "space-between",
+          color: "#6b7280",
+          fontSize: 14,
         }}
       >
-        {/* Timer Circle */}
-        <Box
-          sx={{
-            position: "relative",
-            width: 180,
-            height: 180,
-            borderRadius: "50%",
-            overflow: "hidden",
-            background: "linear-gradient(to bottom right, #e5e7eb, #d1d5db)",
-            boxShadow: 4,
-          }}
-        >
-          {/* Water rising animation */}
-          <motion.div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: heightPercent,
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(to bottom, #60a5fa, #3b82f6, #2563eb)",
-              }}
-            />
-
-            {/* shimmer effect */}
-            <Box
-              sx={{
-                position: "absolute",
-                inset: 0,
-                height: "100%",
-                background:
-                  "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
-                animation: "shimmer 3s infinite",
-                filter: "blur(1px)",
-              }}
-            />
-          </motion.div>
-
-          {/* Center small circle */}
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Box
-              sx={{
-                width: "50%",
-                height: "50%",
-                borderRadius: "50%",
-                backgroundColor: "rgba(255,255,255,0.9)",
-                backdropFilter: "blur(4px)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: 4,
-                border: "2px solid rgba(255,255,255,0.5)",
-              }}
-            >
-              <Typography
-                variant="h6"
-                fontWeight={700}
-                color="#333"
-                textAlign="center"
-              >
-                {minutes}:{seconds}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                textAlign="center"
-                fontWeight={600}
-                fontSize="12px"
-                // sx={{ mt: 0.5 }} // slight spacing
-              >
-                remaining
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* Ring border */}
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "50%",
-              border: "4px solid rgba(255,255,255,0.3)",
-              pointerEvents: "none",
-            }}
-          />
-        </Box>
-
-        {/* Loader below the circle */}
-        <Loader exactMinutes={exactMinutes} exactSeconds={exactSeconds} />
-
-        {/* CSS keyframes for shimmer */}
-        <style>
-          {`
-          @keyframes shimmer {
-            0% {
-              transform: translateX(-100%) skewX(-15deg);
-            }
-            100% {
-              transform: translateX(100%) skewX(-15deg);
-            }
-          }
-        `}
-        </style>
+        <Typography>
+          Time Remaining – {minutes}:{seconds}
+        </Typography>
+        <Typography>
+          Total Time – {exactMinutes}:{String(exactSeconds).padStart(2, "0")}
+        </Typography>
       </Box>
-      {/* <Backdrop
-        open={open}
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 9999,
-          backdropFilter: "blur(5px)",
-          backgroundColor: "rgba(0,0,0,0.35)",
-          position: "relative",
-        }}
-      >
-     
-       
-      </Backdrop> */}
-    </>
+    </Box>
   );
 };
 
 export default Timer;
+
+// <Box
+//       sx={{
+//         display: "flex",
+//         flexDirection: "column",
+//         alignItems: "center",
+//         gap: 2,
+//         marginTop: "30px",
+//       }}
+//     >
+//       {/* Timer Circle */}
+//       <Box
+//         sx={{
+//           position: "relative",
+//           width: 180,
+//           height: 180,
+//           borderRadius: "50%",
+//           overflow: "hidden",
+//           background: "linear-gradient(to bottom right, #e5e7eb, #d1d5db)",
+//           boxShadow: 4,
+//         }}
+//       >
+//         {/* Water rising animation */}
+//         <motion.div
+//           style={{
+//             position: "absolute",
+//             bottom: 0,
+//             left: 0,
+//             right: 0,
+//             height: heightPercent,
+//             overflow: "hidden",
+//           }}
+//         >
+//           <Box
+//             sx={{
+//               position: "absolute",
+//               inset: 0,
+//               background:
+//                 "linear-gradient(to bottom, #60a5fa, #3b82f6, #2563eb)",
+//             }}
+//           />
+
+//           {/* shimmer effect */}
+//           <Box
+//             sx={{
+//               position: "absolute",
+//               inset: 0,
+//               height: "100%",
+//               background:
+//                 "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+//               animation: "shimmer 3s infinite",
+//               filter: "blur(1px)",
+//             }}
+//           />
+//         </motion.div>
+
+//         {/* Center small circle */}
+//         <Box
+//           sx={{
+//             position: "absolute",
+//             inset: 0,
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//           }}
+//         >
+//           <Box
+//             sx={{
+//               width: "50%",
+//               height: "50%",
+//               borderRadius: "50%",
+//               backgroundColor: "rgba(255,255,255,0.9)",
+//               backdropFilter: "blur(4px)",
+//               display: "flex",
+//               flexDirection: "column",
+//               alignItems: "center",
+//               justifyContent: "center",
+//               boxShadow: 4,
+//               border: "2px solid rgba(255,255,255,0.5)",
+//             }}
+//           >
+//             <Typography
+//               variant="h6"
+//               fontWeight={700}
+//               color="#333"
+//               textAlign="center"
+//             >
+//               {minutes}:{seconds}
+//             </Typography>
+//             <Typography
+//               variant="body2"
+//               color="text.secondary"
+//               textAlign="center"
+//               fontWeight={600}
+//               fontSize="12px"
+//               // sx={{ mt: 0.5 }} // slight spacing
+//             >
+//               remaining
+//             </Typography>
+//           </Box>
+//         </Box>
+
+//         {/* Ring border */}
+//         <Box
+//           sx={{
+//             position: "absolute",
+//             inset: 0,
+//             borderRadius: "50%",
+//             border: "4px solid rgba(255,255,255,0.3)",
+//             pointerEvents: "none",
+//           }}
+//         />
+//       </Box>
+
+//       {/* Loader below the circle */}
+//       <Loader exactMinutes={exactMinutes} exactSeconds={exactSeconds} />
+
+//       {/* CSS keyframes for shimmer */}
+//       <style>
+//         {`
+//         @keyframes shimmer {
+//           0% {
+//             transform: translateX(-100%) skewX(-15deg);
+//           }
+//           100% {
+//             transform: translateX(100%) skewX(-15deg);
+//           }
+//         }
+//       `}
+//       </style>
+//     </Box>

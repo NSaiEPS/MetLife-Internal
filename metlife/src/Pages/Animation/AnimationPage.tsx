@@ -31,6 +31,7 @@ import { convertToISTParts } from "../../utils";
 import VideoTimeline from "../../components/video-editor/VideoTimeline";
 import type { VideoData } from "../../utils/types";
 import MissingAnimationPopup from "../../components/common/popup/MissingAnimationPopup";
+import { toast } from "react-toastify";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;
@@ -101,14 +102,6 @@ const AnimationPage: React.FC = () => {
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
-  // console.log(audioAnimationLoader, "audioAnimationLoader");
-
-  // console.log(sceneData, "sceneData");
-  // console.log(generatedVideoData, "generatedVideoData");
-
-  // console.log(videoAnimationData, "videoAnimationData");
-  // console.log(generatedVideoData?.final_video !== null, "isFinalVideo");
-
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
         {
@@ -150,8 +143,6 @@ const AnimationPage: React.FC = () => {
       dispatch(getSceneDetails(id));
     }
   }, [timerDone, dispatch, id]);
-
-  // console.log(finalTime, 'finalTime');
 
   useEffect(() => {
     if (timerDone && sceneData?.video_exists === true && id) {
@@ -196,9 +187,8 @@ const AnimationPage: React.FC = () => {
       end_transition: exitAnimation,
     }));
     setAnimationData(updated);
+    toast.success("Animation applied to all clips")
   };
-
-  // console.log(animationData, "animationData");
 
   const handleAlternateSubmit = () => {
     setAnimationData((prev) =>
@@ -210,10 +200,10 @@ const AnimationPage: React.FC = () => {
             end_transition: exitAnimation,
           };
         }
-
         return scene;
       })
     );
+    toast.success("Animation applied to alternative scenes.")
   };
 
   const handleAnimationChanges = () => {
@@ -224,8 +214,8 @@ const AnimationPage: React.FC = () => {
       )
       .map((scene) => scene.scene_number);
 
-    setMissingScenes(missing); // empty bhi ho sakta hai
-    setOpenMissingPopup(true); // popup hamesha open
+    setMissingScenes(missing); 
+    setOpenMissingPopup(true); 
   };
 
   const handleMissingAnimationConfirm = () => {
@@ -252,8 +242,6 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
-  // console.log(finalTime, "finalTime");
-
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -277,11 +265,9 @@ const AnimationPage: React.FC = () => {
                   <h1 className={styles.title}>Animation Toolkit</h1>
                 </div>
 
-                {/* animation part */}
                 <div className={styles.insideContainer}>
                   {/* Available videos */}
                   {!timerDone && finalTime > 0 && (
-                    // {/* { finalTime > 0 && ( */}
                     <Timer
                       time={finalTime}
                       // minutes={finalTime}
@@ -449,7 +435,6 @@ const AnimationPage: React.FC = () => {
                                       value={opt}
                                       label={opt}
                                       control={<Radio color="primary" />}
-                                      // label={opt.label}
                                       sx={{
                                         "& .MuiFormControlLabel-label": {
                                           color: "#555",
@@ -585,5 +570,3 @@ const AnimationPage: React.FC = () => {
 };
 
 export default AnimationPage;
-
-// ///////////////////////

@@ -6,7 +6,7 @@ const FullScreenGradientLoader = ({ open = true, text = "Generating..." }) => {
       sx={{
         color: "#fff",
         zIndex: (theme) => theme.zIndex.drawer + 9999,
-        backgroundColor: "rgba(0, 0, 0, 0.15)",
+        backgroundColor: "rgba(0, 0, 0, 0.35)",
       }}
       open={open}
     >

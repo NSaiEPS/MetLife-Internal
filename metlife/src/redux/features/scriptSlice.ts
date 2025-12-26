@@ -99,7 +99,7 @@ export default ScriptDataSlice.reducer;
 export const postDeleteScene =
   (
     data: { script_id?: string; scene_id: string | number; version?: number },
-    setOpenDeletePopup: (v: boolean) => void,
+    setOpenDeletePopup: (v: boolean) => void
     // successDelete
   ) =>
   async (dispatch: AppDispatch) => {
@@ -124,11 +124,16 @@ export const postDeleteScene =
     }
   };
 
-  export const postEditScene =
+export const postEditScene =
   (
-    data: { script_id?: string; scene_id: string | number; version?: number },
-    setOpenDeletePopup: (v: boolean) => void,
-    // successDelete
+    data: {
+      script_id?: string;
+      scene_id: string | number;
+      version?: number;
+      update_description: string;
+      update_on_screen_text: string;
+    },
+    setOpenDeletePopup: (v: boolean) => void
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
