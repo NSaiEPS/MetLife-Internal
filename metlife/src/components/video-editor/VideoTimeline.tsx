@@ -38,9 +38,6 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
 }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
-
-  // console.log(videosData);
-
   const [activeVideoLoaded, setActiveVideoLoaded] = useState<boolean>(false);
   const [activeVideoHasError, setActiveVideoHasError] =
     useState<boolean>(false);
@@ -57,6 +54,14 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   const slideTime = normalizeDuration(rawDuration);
 
   const total = videosData?.length;
+
+  const preloadUrls = [
+  videosData?.[active]?.final_video?.url,
+  videosData?.[active + 1]?.final_video?.url,
+  videosData?.[active - 1]?.final_video?.url,
+];
+
+// useVideoPreloader(preloadUrls);
 
   const goto = useCallback(
     (idx: number) => {

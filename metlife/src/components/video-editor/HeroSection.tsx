@@ -130,6 +130,10 @@ export default function HeroSection({
               onFirstInteraction={onFirstInteraction}
               hasUserInteracted={hasUserInteracted}
               onVideoLoadStatus={isActive ? onVideoLoadStatus : undefined}
+//               sx={{
+//   opacity: isActive && activeVideoLoaded ? 1 : 0,
+//   transition: "opacity .3s ease",
+// }}
             />
           </Box>
         );
