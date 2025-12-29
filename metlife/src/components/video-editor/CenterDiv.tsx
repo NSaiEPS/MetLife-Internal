@@ -41,9 +41,6 @@ const CenterDiv: React.FC<CenterDivProps> = ({
   const triAnim = useAnimation();
   const iconAnim = useAnimation();
 
-  // console.log("type", type);
-
-  // Video loading states
   const [isVideoLoaded, setIsVideoLoaded] = useState<boolean>(false);
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(false);
   const [videoLoadError, setVideoLoadError] = useState<boolean>(false);

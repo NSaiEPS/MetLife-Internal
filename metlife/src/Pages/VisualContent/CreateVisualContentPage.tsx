@@ -183,7 +183,10 @@ const handleUpdate = (data: { fieldData: any | null; prompt: string }) => {
   const handleGenerate = () => {
     const prompts = saveVisualContentData?.prompts ?? [];
     const manipulatedPrompts = prompts.map((item) => {
-      const obj = { ...item };
+      const obj = {
+         ...item, 
+         scene_type:item?.scene_type ?? item?.scene_type
+        };
       if (item.clip_visual_type === "clip") {
         delete obj?.prompt;
         delete obj.visual_type;
