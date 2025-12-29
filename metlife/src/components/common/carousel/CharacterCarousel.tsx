@@ -23,11 +23,13 @@ export const CharacterCarousel = ({
   setCurrentIndex,
   onGenerateImages,
   tableExtraData,
+  setOpenFlowDialog,
 }) => {
-  console.log(tableExtraData, "Carousel")
-  // if (!characterData || characterData.length === 0) return null;
   const current = characterData[currentIndex];
-  const [stage, setStage] = useState<"prompt" | "images">("prompt");
+  // const [stage, setStage] = useState<"prompt" | "images">("prompt");
+  const [stage, setStage] = useState<"prompt" | "images">(
+    tableExtraData?.char_image_exist ? "images" : "prompt"
+  );
   const [prompts, setPrompts] = useState<Record<string, string>>({});
   const [imgLoaded, setImgLoaded] = useState(false);
   const { scriptLoader } = useSelector((store) => store.Script);
@@ -35,20 +37,30 @@ export const CharacterCarousel = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (open && promptData?.length) {
+    if (!open) return;
+
+    if (tableExtraData?.char_image_exist) {
+      setStage("images");
+    } else {
+      setStage("prompt");
+    }
+  }, [open, tableExtraData?.char_image_exist]);
+
+  useEffect(() => {
+    if (open && promptData?.length && !tableExtraData?.char_image_exist) {
       const initialPrompts: Record<string, string> = {};
 
       promptData.forEach((char) => {
         initialPrompts[char.character_name] = char.prompt || "";
       });
-
       setPrompts(initialPrompts);
     }
-  }, [open, promptData]);
+  }, [open, promptData, !tableExtraData?.char_image_exist]);
 
   const handleApprove = () => {
     onGenerateImages();
     setStage("images");
+    setOpenFlowDialog(true);
   };
 
   const handleEditPrompt = (characterName: string, character_id: string) => {
@@ -57,10 +69,13 @@ export const CharacterCarousel = ({
     dispatch(patchEditPromp(id, character_id, characterName, updatedPrompt));
   };
 
-   const handleCreateVisualContent = () => {
-      // setOpenFlowDialog(false);
+  const handleCreateVisualContent = () => {
+    if (tableExtraData?.video_style === "mixed" && promptData?.length > 0) {
+      onClose(true);
+    } else {
       dispatch(postCreateVisualContent(tableExtraData));
-    };
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -173,7 +188,9 @@ export const CharacterCarousel = ({
               variant="contained"
               sx={{ mt: 2 }}
               disabled={
-                scriptLoader || Object.values(prompts).some((p) => !p.trim())
+                scriptLoader ||
+                Object.values(prompts).some((p) => !p.trim()) ||
+                tableExtraData?.char_image_exist
               }
               onClick={handleApprove}
             >
@@ -253,8 +270,8 @@ export const CharacterCarousel = ({
               onClick={handleCreateVisualContent}
               sx={{
                 cursor: "pointer",
-                width: '100%',
-                textAlign:'center',
+                width: "100%",
+                textAlign: "center",
                 p: 2,
                 borderRadius: 2,
                 border: "1px solid #e0e0e0",
