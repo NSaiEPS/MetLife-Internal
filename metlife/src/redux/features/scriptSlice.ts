@@ -163,7 +163,6 @@ export const postExtractCharacters =
     dispatch(setScriptLoader(true));
     try {
       const res = await api.post(`characters/generate-images?script_id=${id}`);
-      // console.log(res, "check_character_res");
       if (res.status) {
         dispatch(setCharacterData(res?.data?.characters));
         if (callback) {

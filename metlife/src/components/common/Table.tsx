@@ -536,6 +536,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleCreateVisualContent = () => {
     // setOpenFlowDialog(false);
+    console.log(tableExtraData)
     dispatch(postCreateVisualContent(tableExtraData));
   };
 
@@ -580,7 +581,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       handleSetupPrompt();
     }
   };
-
+  console.log(characterData?.length, "characterdata");
   return (
     <>
       <div className={styles1.header}>
@@ -1060,48 +1061,51 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                             gap={4}
                             mb={4}
                           >
-                            <Box
-                              onClick={handleCreateVisualContent}
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                cursor: "pointer",
-                                width: 160,
-                                p: 2,
-                                borderRadius: 2,
-                                border: "1px solid #e0e0e0",
-                                transition: "0.2s",
-                                "&:hover": {
-                                  boxShadow: 3,
-                                  transform: "translateY(-2px)",
-                                },
-                                ":disabled": promptData?.length > 0,
-                              }}
-                            >
-                              <Typography fontWeight={600}>
-                                L3 – Narrative Flow
-                              </Typography>
-                            </Box>
-                            <Box
-                              sx={{
-                                cursor: "pointer",
-                                width: 160,
-                                p: 2,
-                                borderRadius: 2,
-                                border: "1px solid #e0e0e0",
-                                transition: "0.2s",
-                                "&:hover": {
-                                  boxShadow: 3,
-                                  transform: "translateY(-2px)",
-                                },
-                                ":disabled": promptData?.length > 0,
-                              }}
-                            >
-                              <Typography fontWeight={600}>
-                                L4 – Conversational Flow
-                              </Typography>
-                            </Box>
+                            {tableExtraData?.video_style === "mixed" &&
+                              characterData?.length > 0 && (
+                                <Box
+                                  onClick={handleCreateVisualContent}
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    width: 160,
+                                    p: 2,
+                                    borderRadius: 2,
+                                    border: "1px solid #e0e0e0",
+                                    transition: "0.2s",
+                                    "&:hover": {
+                                      boxShadow: 3,
+                                      transform: "translateY(-2px)",
+                                    },
+                                  }}
+                                >
+                                  <Typography fontWeight={600}>
+                                    L3 – Narrative Flow
+                                  </Typography>
+                                </Box>
+                              )}
+                            {tableExtraData?.video_style === "mixed" &&
+                              characterData?.length > 0 && (
+                                <Box
+                                  sx={{
+                                    cursor: "pointer",
+                                    width: 160,
+                                    p: 2,
+                                    borderRadius: 2,
+                                    border: "1px solid #e0e0e0",
+                                    transition: "0.2s",
+                                    "&:hover": {
+                                      boxShadow: 3,
+                                      transform: "translateY(-2px)",
+                                    },
+                                  }}
+                                >
+                                  <Typography fontWeight={600}>
+                                    L4 – Conversational Flow
+                                  </Typography>
+                                </Box>
+                              )}
                           </Box>
                         </>
                       )}
