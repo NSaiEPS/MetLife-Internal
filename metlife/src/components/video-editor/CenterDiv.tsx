@@ -175,6 +175,8 @@ const CenterDiv: React.FC<CenterDivProps> = ({
     progress,
   ]);
 
+  // console.log(data, "data");
+
   const dispatch = useDispatch();
 
   const formatTime = (seconds: number) => {
@@ -316,7 +318,7 @@ const CenterDiv: React.FC<CenterDivProps> = ({
           }}
         />
 
-    {/* <video
+        {/* <video
     ref={videoRef}
     src={data.final_video.url}
     preload="metadata"

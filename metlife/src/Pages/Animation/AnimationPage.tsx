@@ -107,8 +107,10 @@ const AnimationPage: React.FC = () => {
         {
           scene_id: "final_video",
           scene_number: 1,
-          ost: "Final Video",
-          image_urls: ["/imgs/final-thumbnail.png"], // fallback
+          ost: generatedVideoData?.title
+            ? generatedVideoData?.title
+            : "Final Video",
+          image_urls: ["/imgs/final-thumbnail.png"],
           audio_url: "",
           final_video: generatedVideoData?.final_video,
           duration: generatedVideoData?.duration_seconds ?? 0,
@@ -187,7 +189,7 @@ const AnimationPage: React.FC = () => {
       end_transition: exitAnimation,
     }));
     setAnimationData(updated);
-    toast.success("Animation applied to all clips")
+    toast.success("Animation applied to all clips");
   };
 
   const handleAlternateSubmit = () => {
@@ -203,7 +205,7 @@ const AnimationPage: React.FC = () => {
         return scene;
       })
     );
-    toast.success("Animation applied to alternative scenes.")
+    toast.success("Animation applied to alternative scenes.");
   };
 
   const handleAnimationChanges = () => {
@@ -214,8 +216,8 @@ const AnimationPage: React.FC = () => {
       )
       .map((scene) => scene.scene_number);
 
-    setMissingScenes(missing); 
-    setOpenMissingPopup(true); 
+    setMissingScenes(missing);
+    setOpenMissingPopup(true);
   };
 
   const handleMissingAnimationConfirm = () => {

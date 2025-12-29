@@ -60,11 +60,10 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
-
   return (
     <Box
       sx={{
-        maxWidth: '100%',
+        maxWidth: "100%",
         mx: "auto",
         my: 4,
         p: 3,
@@ -76,7 +75,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
     >
       {/* Title */}
       <Typography fontSize={18} fontWeight={600} mb={2}>
-        Generate Progress
+        Video Generation Progress
       </Typography>
 
       {/* Progress Bar */}
