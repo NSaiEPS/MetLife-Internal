@@ -35,6 +35,13 @@ import voice10 from "../../assets/voice_preview_es-ES-AlvaroNeural.wav";
 import voice11 from "../../assets/voice_preview_es-ES-AbrilNeural.wav";
 import voice12 from "../../assets/d0081a4a-4922-4fbd-b1a6-0af564cf810a.mp3";
 import voice13 from "../../assets/3b043e5b-c661-4546-84d0-21148addc39b.mp3";
+// VoiceMaker Voices
+import voiceMaker1 from "../../assets/voice_preview_voicemaker_ai2-Stacy.wav";
+import voiceMaker2 from "../../assets/voice_preview_voicemaker_ai3-Jony.wav";
+//Speechify voices
+import speechify1 from "../../assets/voice_preview_speechify_oliver.wav";
+import speechify2 from "../../assets/voice_preview_speechify_emily.wav";
+import speechify3 from "../../assets/voice_preview_speechify_henry.wav";
 
 interface VoiceOption {
   label: string;
@@ -62,6 +69,40 @@ const narrationVoiceOptions = [
   { label: "Speechify", value: "speechify" },
   { label: "Voicemaker", value: "voicemaker" },
 ];
+
+const genderOptions = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];
+
+const VOICE_GENDER_MAP: Record<string, "male" | "female"> = {
+  //  Azure
+  "en-US-JennyNeural": "female",
+  "en-US-AriaNeural": "female",
+  "en-US-SaraNeural": "female",
+  "en-US-GuyNeural": "male",
+  "en-US-DavisNeural": "male",
+  // spanish options
+  "es-MX-JorgeNeural": "male",
+  "es-MX-DaliaNeural": "female",
+  "es-ES-ElviraNeural": "female",
+  "es-ES-ArnauNeural": "male",
+  "es-ES-AlvaroNeural": "male",
+  "es-ES-AbrilNeural": "female",
+
+  //  Speechify
+  oliver: "male",
+  henry: "male",
+  emily: "female",
+  alejandro: "male",
+  celia: "female",
+
+  //  Voicemaker
+  "ai2-Stacy": "female",
+  "ai3-Jony": "male",
+  "ai3-es-ES-Alvaro": "male",
+  "AI3-ES-ES-Elvira": "female",
+};
 
 const allVoiceOptions = {
   azure: {
@@ -134,12 +175,17 @@ const allVoiceOptions = {
       {
         label: "Oliver",
         value: "oliver",
-        s3_url: voice3,
+        s3_url: speechify1,
       },
       {
         label: "Emily",
         value: "emily",
-        s3_url: voice5,
+        s3_url: speechify2,
+      },
+      {
+        label: "Henry",
+        value: "henry",
+        s3_url: speechify3,
       },
     ],
     spanish: [
@@ -164,12 +210,12 @@ const allVoiceOptions = {
       {
         label: "AI2-Stacy",
         value: "ai2-Stacy",
-        s3_url: voice4,
+        s3_url: voiceMaker1,
       },
       {
         label: "AI3-Jony",
         value: "ai3-Jony",
-        s3_url: voice1,
+        s3_url: voiceMaker2,
       },
     ],
     spanish: [
@@ -191,76 +237,6 @@ const allVoiceOptions = {
   },
 };
 
-const voiceOptions = [
-  {
-    label: "EN-US Jenny Neural",
-    value: "en-US-JennyNeural",
-    s3_url: voice2,
-  },
-  {
-    label: "EN-US Aria Neural",
-    value: "en-US-AriaNeural",
-    s3_url: voice5,
-  },
-  {
-    label: "EN-US Sara Neural",
-    value: "en-US-SaraNeural",
-    s3_url: voice4,
-  },
-  {
-    label: "EN-US Guy Neural",
-    value: "en-US-GuyNeural",
-    s3_url: voice3,
-  },
-  {
-    label: "EN-US Davis Neural",
-    value: "en-US-DavisNeural",
-    s3_url: voice1,
-  },
-  {
-    label: "Spanish Voice Options",
-    disabled: true, // prevents clicking
-  },
-  {
-    label: "es-MX-JorgeNeural",
-    value: "es-MX-JorgeNeural",
-    s3_url: voice6,
-  },
-  {
-    label: "es-MX-DaliaNeural",
-    value: "es-MX-DaliaNeural",
-    s3_url: voice7,
-  },
-  {
-    label: "es-ES-ElviraNeural",
-    value: "es-ES-ElviraNeural",
-    s3_url: voice8,
-  },
-  {
-    label: "es-ES-ArnauNeural",
-    value: "es-ES-ArnauNeural",
-    s3_url: voice9,
-  },
-  {
-    label: "es-ES-AlvaroNeural",
-    value: "es-ES-AlvaroNeural",
-    s3_url: voice10,
-  },
-  {
-    label: "es-ES-AbrilNeural",
-    value: "es-ES-AbrilNeural",
-    s3_url: voice11,
-  },
-];
-
-// const voiceOptions: VoiceOption[] = [
-//   { label: "EN-US Jenny Neural", value: "en-US-JennyNeural", s3_url: voice1 },
-//   { label: "EN-US Aria Neural", value: "en-US-AriaNeural", s3_url: voice2 },
-//   { label: "EN-US Sara Neural", value: "en-US-SaraNeural", s3_url: voice3 },
-//   { label: "EN-US Guy Neural", value: "en-US-GuyNeural", s3_url: voice4 },
-//   { label: "EN-US Davis Neural", value: "en-US-DavisNeural", s3_url: voice5 },
-// ];
-
 const AudioAnimationPage: React.FC = () => {
   const [narrationSelections, setNarrationSelections] =
     useState<NarrationSelectionType>({
@@ -272,6 +248,9 @@ const AudioAnimationPage: React.FC = () => {
   const [voiceSelections, setVoiceSelections] = useState<VoiceSelectionsType>(
     {}
   );
+  const [genderSelections, setGenderSelections] = useState<
+    Record<string, string>
+  >({});
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -310,6 +289,44 @@ const AudioAnimationPage: React.FC = () => {
     }
   }, [audioAnimationData]);
 
+  const handleGenderChange = (charName: string, value: string) => {
+    setGenderSelections((prev) => ({
+      ...prev,
+      [charName]: value,
+    }));
+
+    setVoiceSelections((prev) => {
+      const currentVoice = prev[charName];
+      if (!currentVoice) return prev;
+
+      const allowedVoices = getFilteredVoiceOptions(charName);
+      const stillValid = allowedVoices.some((v) => v.value === currentVoice);
+
+      if (stillValid) return prev;
+
+      return {
+        ...prev,
+        [charName]: "",
+      };
+    });
+  };
+
+  const getFilteredVoiceOptions = (charName: string) => {
+    const narrationType = narrationSelections[charName];
+    const gender = genderSelections[charName];
+
+    const voices = allVoiceOptions?.[narrationType]?.english || [];
+
+
+    const selectableVoices = voices.filter((v) => !v.disabled && v.value);
+
+    if (!gender) return selectableVoices;
+
+    return selectableVoices.filter(
+      (voice) => VOICE_GENDER_MAP[voice.value] === gender
+    );
+  };
+
   const handleNarrationChange = (charName: string, value: any) => {
     setNarrationSelections((prev) => ({
       ...prev,
@@ -346,6 +363,7 @@ const AudioAnimationPage: React.FC = () => {
     return opt?.s3_url || "";
   };
 
+  // Submit 
   const handleSubmit = () => {
     if (!narrationSelections.Narrator) {
       showToast.error("Please select a Narrator");
@@ -355,6 +373,8 @@ const AudioAnimationPage: React.FC = () => {
       showToast.error("Please select a narrator voice");
       return;
     }
+
+    // console.log(narrationSelections?.Narrator, "narrationSelections")
     apiCall();
   };
 
@@ -370,11 +390,13 @@ const AudioAnimationPage: React.FC = () => {
     const payload = {
       script_id: id,
       custom_voice_map,
+      voice_tool:narrationSelections?.Narrator
     };
 
     dispatch(postGenerateVoiceAndAudio(payload));
   };
 
+  // Create transitionn
   const handleCreateTransition = () => {
     dispatch(setSceneData({}));
     dispatch(setVideoAnimationData(null));
@@ -409,12 +431,6 @@ const AudioAnimationPage: React.FC = () => {
               <div className={styles.card}>
                 <div className={styles.headerRow}>
                   <h1 className={styles.title}>Audio & Animation Toolkit</h1>
-                  {/* <Button
-                className={styles.icon}
-                onClick={() => navigate("/video-frame")}
-              >
-                <IoArrowBackCircleOutline size={30} /> Back
-              </Button> */}
                 </div>
 
                 <div className={styles.insideContainer}>
@@ -425,9 +441,8 @@ const AudioAnimationPage: React.FC = () => {
                     Audio Selection
                   </Typography>
 
-                  {
-                    // sortedLabels &&
-                    //   sortedLabels?.length > 0 &&
+                  {sortedLabels &&
+                    sortedLabels?.length > 0 &&
                     sortedLabels?.map((charName, index) => (
                       <Grid
                         container
@@ -436,6 +451,20 @@ const AudioAnimationPage: React.FC = () => {
                         sx={{ mt: 2, mb: 2 }}
                         key={index}
                       >
+                        {/* Gender */}
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                          <SelectComp
+                            label="Gender"
+                            options={genderOptions}
+                            value={genderSelections[charName]}
+                            onChange={(value) =>
+                              handleGenderChange(charName, value)
+                            }
+                            placeholder="Select Gender"
+                            style={true}
+                          />
+                        </Grid>
+
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                           <SelectComp
                             label={charName}
@@ -450,7 +479,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          <SelectWithAudio
+                          {/* <SelectWithAudio
                             // options={
                             //   audioAnimationData?.scenes === null
                             //     ? voiceOptions
@@ -478,7 +507,6 @@ const AudioAnimationPage: React.FC = () => {
                               handleVoiceChange(charName, value)
                             }
                             style={true}
-                            // getPreviewUrl={(voice) => getPreviewUrl(voice)}
                             getPreviewUrl={(voice) =>
                               getPreviewUrl(
                                 voice,
@@ -487,11 +515,38 @@ const AudioAnimationPage: React.FC = () => {
                               )
                             }
                             customOption
+                          /> */}
+
+                          <SelectWithAudio
+                            disabled={!genderSelections[charName]}
+                            options={
+                              audioAnimationData?.scenes === null
+                                ? getFilteredVoiceOptions(charName)
+                                : getFilteredVoiceOptions(charName).map(
+                                    (opt) => ({
+                                      ...opt,
+                                      disabled:
+                                        voiceSelections[charName] !== opt.value,
+                                    })
+                                  )
+                            }
+                            placeholder="Select Voice"
+                            value={voiceSelections[charName] || ""}
+                            onChange={(value) =>
+                              handleVoiceChange(charName, value)
+                            }
+                            style={true}
+                            getPreviewUrl={(voice) =>
+                              getPreviewUrl(
+                                voice,
+                                getFilteredVoiceOptions(charName)
+                              )
+                            }
+                            customOption
                           />
                         </Grid>
                       </Grid>
-                    ))
-                  }
+                    ))}
                   {audioAnimationData?.scenes &&
                   audioAnimationData?.scenes?.length > 0 ? (
                     <>
@@ -545,8 +600,6 @@ const AudioAnimationPage: React.FC = () => {
                     />
 
                     <ButtonComp
-                      // disabled={audioAnimationLoader}
-                      // label={audioAnimationLoader ? "Submit" : "Submitting"}
                       label={"Submit"}
                       sx={{ textTransform: "none" }}
                       className={styles.submitBtn}
@@ -571,5 +624,3 @@ const AudioAnimationPage: React.FC = () => {
 };
 
 export default AudioAnimationPage;
-
-// ////////////////////////
