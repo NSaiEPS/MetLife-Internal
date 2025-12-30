@@ -74,7 +74,7 @@ const GenerateVisualContentPage: React.FC = () => {
     (store: RootState) => store.GenerateVisualContent
   );
   const conversational =
-    generateVisualContentData?.video_style === "conversational";
+    generateVisualContentData?.flow_type === "conversation";
 
   const { audioAnimationLoader } = useSelector(
     (store: RootState) => store.AudioAnimation
