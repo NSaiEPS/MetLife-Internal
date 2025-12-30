@@ -973,7 +973,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     disabled={
                       saveTranslatedData === null ||
                       operations ||
-                      saveTranslatedData?.is_save_action === false
+                      // saveTranslatedData?.is_save_action === false
+                      !saveTranslatedData?.saved_version
                     }
                   >
                     Create Visual Content
