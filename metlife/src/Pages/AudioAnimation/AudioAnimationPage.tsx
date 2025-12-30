@@ -17,11 +17,10 @@ import {
   postGenerateVideoBatch,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
-import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
-import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import { navigateTo } from "../../utils/navigate";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
-
+import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
+import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import voice1 from "../../assets/voice_preview_en-US-DavisNeural.wav";
 import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
 import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
@@ -42,6 +41,15 @@ import voiceMaker2 from "../../assets/voice_preview_voicemaker_ai3-Jony.wav";
 import speechify1 from "../../assets/voice_preview_speechify_oliver.wav";
 import speechify2 from "../../assets/voice_preview_speechify_emily.wav";
 import speechify3 from "../../assets/voice_preview_speechify_henry.wav";
+
+//Spanish voice options for voicemaker
+import voiceMakerSpanish1 from "../../assets/voice_preview_voicemaker_ai3-es-ES-Alvaro.wav";
+import voiceMakerSpanish2 from "../../assets/voice_preview_voicemaker_ai3-es-ES-Elvira.wav";
+
+//Spanish voice options for speechify
+import speechifySpanish1 from "../../assets/voice_preview_speechify_alejandro.wav";
+import speechifySpanish2 from "../../assets/voice_preview_speechify_celia.wav";
+
 
 interface VoiceOption {
   label: string;
