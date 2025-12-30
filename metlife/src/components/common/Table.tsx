@@ -122,6 +122,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData
   );
+
   const { characterData, promptData, scriptLoader } = useSelector(
     (store) => store.Script
   );
@@ -534,10 +535,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setOpenFlowDialog(false);
   };
 
-  const handleCreateVisualContent = () => {
-    // setOpenFlowDialog(false);
-    console.log(tableExtraData)
-    dispatch(postCreateVisualContent(tableExtraData));
+  const handleCreateVisualContent = (flowType) => {
+    const payload = { ...tableExtraData };
+    if (tableExtraData?.video_style === "mixed") {
+      payload.flow_type = flowType;
+    }
+
+    dispatch(postCreateVisualContent(payload));
   };
 
   const handleVersion = async (versionId?: string) => {
@@ -966,7 +970,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     }
                     variant="contained"
                     className={styles.primaryBtn}
-                    disabled={saveTranslatedData === null || operations}
+                    disabled={
+                      saveTranslatedData === null ||
+                      operations ||
+                      saveTranslatedData?.is_save_action === false
+                    }
                   >
                     Create Visual Content
                   </Button>
@@ -999,60 +1007,69 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     </Typography>
 
                     <Box display="flex" justifyContent="center" gap={4} mb={4}>
-                      {!tableExtraData?.char_image_exist && (
-                        <Box
-                          onClick={handleGenerateImagesFlow}
-                          sx={{
-                            cursor: "pointer",
-                            width: 200,
-                            p: 2,
-                            borderRadius: 2,
-                            border: "1px solid #e0e0e0",
-                            transition: "0.2s",
-                            "&:hover": {
-                              boxShadow: 3,
-                              transform: "translateY(-2px)",
-                            },
-                          }}
-                        >
-                          <Typography fontWeight={600}>
-                            {promptData?.length
-                              ? "View existing prompts & Images"
-                              : "Create/Setup prompts"}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Generate character images
-                          </Typography>
-                        </Box>
-                      )}
+                      {/* {!tableExtraData?.char_image_exist &&
+                       ( */}
+                      {(!tableExtraData?.char_image_exist ||
+                        tableExtraData?.video_style === "conversational") &&
+                        !(
+                          tableExtraData?.video_style === "mixed" &&
+                          characterData?.length > 0
+                        ) && (
+                          <Box
+                            onClick={handleGenerateImagesFlow}
+                            sx={{
+                              cursor: "pointer",
+                              width: 200,
+                              p: 2,
+                              borderRadius: 2,
+                              border: "1px solid #e0e0e0",
+                              transition: "0.2s",
+                              "&:hover": {
+                                boxShadow: 3,
+                                transform: "translateY(-2px)",
+                              },
+                            }}
+                          >
+                            <Typography fontWeight={600}>
+                              {promptData?.length
+                                ? "View existing prompts & Images"
+                                : "Create/Setup prompts"}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Generate character images
+                            </Typography>
+                          </Box>
+                        )}
 
-                      {tableExtraData?.char_image_exist && (
-                        <Box
-                          onClick={() => {
-                            handleCloseFlowDialog();
-                            handleOpenCharacterModal();
-                          }}
-                          sx={{
-                            cursor: "pointer",
-                            width: 200,
-                            p: 2,
-                            borderRadius: 2,
-                            border: "1px solid #e0e0e0",
-                            transition: "0.2s",
-                            "&:hover": {
-                              boxShadow: 3,
-                              transform: "translateY(-2px)",
-                            },
-                          }}
-                        >
-                          <Typography fontWeight={600}>
-                            View Existing Images
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Continue conversational flow
-                          </Typography>
-                        </Box>
-                      )}
+                      {tableExtraData?.char_image_exist &&
+                        tableExtraData?.video_style === "conversational" && (
+                          <Box
+                            onClick={() => {
+                              handleCloseFlowDialog();
+                              handleOpenCharacterModal();
+                            }}
+                            sx={{
+                              cursor: "pointer",
+                              width: 200,
+                              p: 2,
+                              borderRadius: 2,
+                              border: "1px solid #e0e0e0",
+                              transition: "0.2s",
+                              "&:hover": {
+                                boxShadow: 3,
+                                transform: "translateY(-2px)",
+                              },
+                            }}
+                          >
+                            <Typography fontWeight={600}>
+                              View Existing Images
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Continue conversational flow
+                            </Typography>
+                          </Box>
+                        )}
+                      {/* mixed */}
                       {tableExtraData?.video_style === "mixed" && (
                         <>
                           <Box
@@ -1064,8 +1081,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                             {tableExtraData?.video_style === "mixed" &&
                               characterData?.length > 0 && (
                                 <Box
-                                  onClick={handleCreateVisualContent}
+                                  onClick={() =>
+                                    handleCreateVisualContent("narrative")
+                                  }
                                   sx={{
+                                    cursor: "pointer",
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "center",
@@ -1088,6 +1108,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                             {tableExtraData?.video_style === "mixed" &&
                               characterData?.length > 0 && (
                                 <Box
+                                  onClick={() =>
+                                    handleCreateVisualContent("conversation")
+                                  }
                                   sx={{
                                     cursor: "pointer",
                                     width: 160,
@@ -1119,129 +1142,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       Cancel
                     </Button>
                   </Dialog>
-                  {/* <Dialog
-                    open={openFlowDialog}
-                    onClose={handleCloseFlowDialog}
-                    maxWidth="sm"
-                    fullWidth
-                    PaperProps={{
-                      sx: { borderRadius: 3, p: 3, textAlign: "center" },
-                    }}
-                  >
-                
-                    {!tableExtraData?.char_image_exist && (
-                      <>
-                        <Typography variant="h5" fontWeight={600} mb={1}>
-                          Conversational Video Flow
-                        </Typography>
-
-                        <Typography color="text.secondary" mb={4}>
-                          Choose to proceed:
-                        </Typography>
-
-                        <Box display="flex" justifyContent="center" mb={4}>
-                          <Box
-                            onClick={handleGenerateImagesFlow}
-                            sx={{
-                              cursor: "pointer",
-                              width: 220,
-                              p: 2,
-                              borderRadius: 2,
-                              border: "1px solid #e0e0e0",
-                              transition: "0.2s",
-                              "&:hover": {
-                                boxShadow: 3,
-                                transform: "translateY(-2px)",
-                              },
-                            }}
-                          >
-                            <Typography fontWeight={600}>
-                              {promptData?.length
-                                ? "View existing prompts & Images"
-                                : "Create / Setup Prompts"}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Generate character images
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </>
-                    )}
-
-                    {tableExtraData?.video_style === "mixed" &&
-                      tableExtraData?.char_image_exist && (
-                        <>
-                          <Typography variant="h5" fontWeight={600} mb={1}>
-                            Combined Video Flow
-                          </Typography>
-
-                          <Typography color="text.secondary" mb={4}>
-                            Choose to proceed:
-                          </Typography>
-
-                          <Box
-                            display="flex"
-                            justifyContent="center"
-                            gap={4}
-                            mb={4}
-                          >
-                            <Box
-                              onClick={() => {
-                                handleCloseFlowDialog();
-                                handleCreateVisualContent(); // L3
-                              }}
-                              sx={{
-                                cursor: "pointer",
-                                width: 180,
-                                p: 2,
-                                borderRadius: 2,
-                                border: "1px solid #e0e0e0",
-                                transition: "0.2s",
-                                "&:hover": {
-                                  boxShadow: 3,
-                                  transform: "translateY(-2px)",
-                                },
-                              }}
-                            >
-                              <Typography fontWeight={600}>
-                                L3 – Narrative Flow
-                              </Typography>
-                            </Box>
-
-                            <Box
-                              onClick={() => {
-                                handleCloseFlowDialog();
-                                handleOpenCharacterModal(); // L4
-                              }}
-                              sx={{
-                                cursor: "pointer",
-                                width: 180,
-                                p: 2,
-                                borderRadius: 2,
-                                border: "1px solid #e0e0e0",
-                                transition: "0.2s",
-                                "&:hover": {
-                                  boxShadow: 3,
-                                  transform: "translateY(-2px)",
-                                },
-                              }}
-                            >
-                              <Typography fontWeight={600}>
-                                L4 – Conversational Flow
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </>
-                      )}
-
-                    <Button
-                      onClick={handleCloseFlowDialog}
-                      variant="outlined"
-                      sx={{ px: 4 }}
-                    >
-                      Cancel
-                    </Button>
-                  </Dialog> */}
                 </>
               ) : null}
             </>
