@@ -103,6 +103,7 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent
   );
+  console.log(saveVisualContentData?.flow_type, "check_data")
 
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
@@ -205,6 +206,7 @@ const handleUpdate = (data: { fieldData: any | null; prompt: string }) => {
       processed_scenes: saveVisualContentData?.processed_scenes,
       prompts: manipulatedPrompts,
       video_style:saveVisualContentData?.video_style,
+      flow_type:saveVisualContentData?.flow_type,
     };
     // console.log(finalPayload, "check_final_payload")
     dispatch(postGenerateVisualContentImage(finalPayload));
