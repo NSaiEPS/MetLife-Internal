@@ -117,8 +117,6 @@ const styles = StyleSheet.create({
 // PDF DOWNLOAD
 // ==========================
 export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
-  // const fileName = localStorage.getItem("file_name") || "Script";
-  // let updatedData = data?.upload_info ? data?.scenes : data;
   const blob = await pdf(
     React.createElement(PdfDocument, { data, uploadDownload })
   ).toBlob();
@@ -127,8 +125,8 @@ export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
     blob,
     data?.upload_info
       ? `${data?.upload_info?.title}.pdf`
-      : data?.source == "file"
-      ? `${data?.filename}.pdf`
+      : data?.upload_info?.source == "file"
+      ? `${data?.title}.pdf`
       : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`
   );
 };
@@ -292,8 +290,8 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
       blob,
       data?.upload_info
         ? `${data?.upload_info?.title}.docx`
-        : data?.source == "file"
-        ? `${data?.filename}.docx`
+        : data?.upload_info?.source == "file"
+        ? `${data?.title}.docx`
         : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`
     );
   });
