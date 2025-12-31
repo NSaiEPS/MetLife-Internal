@@ -301,6 +301,7 @@ const MyVideosDashboard: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: "#E3F2FD" }}>
+                <TableCell>S.No</TableCell>
                 <TableCell>Thumbnail</TableCell>
                 <TableCell>Video Name</TableCell>
                 <TableCell>Duration</TableCell>
@@ -313,6 +314,9 @@ const MyVideosDashboard: React.FC = () => {
             <TableBody>
               {dashBoardInfo.map((video: any, i: number) => (
                 <TableRow key={i}>
+                  <TableCell>
+                    {i + 1}
+                  </TableCell>
                   <TableCell>
                     <Avatar
                       src={video.thumbnail}
