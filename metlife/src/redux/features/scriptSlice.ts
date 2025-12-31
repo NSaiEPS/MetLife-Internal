@@ -204,7 +204,6 @@ export const postPromptSetupCharacters =
       console.log(res, "check_setup_characters");
       if (res.status) {
         dispatch(setPromptData(res?.data?.prompts));
-        // dispatch(getExtractCharacters(id));
       }
     } catch (error: any) {
       console.error(error);

@@ -575,6 +575,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleSetupPrompt = () => {
+    if(!id) return;
     dispatch(postPromptSetupCharacters(id));
   };
 
@@ -585,7 +586,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       handleSetupPrompt();
     }
   };
-  console.log(characterData?.length, "characterdata");
+
   return (
     <>
       <div className={styles1.header}>

@@ -17,11 +17,11 @@ import {
   postGenerateVideoBatch,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
-import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
-import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
 import { navigateTo } from "../../utils/navigate";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
-
+import VoicePlayer from "../../components/common/VoicePlayer/VoicePlayer";
+import SelectWithAudio from "../../components/common/VoicePlayer/SelectWIthAudio";
+// azure voices (English and Spanish)
 import voice1 from "../../assets/voice_preview_en-US-DavisNeural.wav";
 import voice2 from "../../assets/voice_preview_en-US-JennyNeural.wav";
 import voice3 from "../../assets/voice_preview_en-US-GuyNeural.wav";
@@ -33,15 +33,20 @@ import voice8 from "../../assets/voice_preview_es-ES-ElviraNeural.wav";
 import voice9 from "../../assets/voice_preview_es-ES-ArnauNeural.wav";
 import voice10 from "../../assets/voice_preview_es-ES-AlvaroNeural.wav";
 import voice11 from "../../assets/voice_preview_es-ES-AbrilNeural.wav";
-import voice12 from "../../assets/d0081a4a-4922-4fbd-b1a6-0af564cf810a.mp3";
-import voice13 from "../../assets/3b043e5b-c661-4546-84d0-21148addc39b.mp3";
-// VoiceMaker Voices
+// VoiceMaker Voices - English
 import voiceMaker1 from "../../assets/voice_preview_voicemaker_ai2-Stacy.wav";
 import voiceMaker2 from "../../assets/voice_preview_voicemaker_ai3-Jony.wav";
-//Speechify voices
+//Speechify voices - English
 import speechify1 from "../../assets/voice_preview_speechify_oliver.wav";
 import speechify2 from "../../assets/voice_preview_speechify_emily.wav";
 import speechify3 from "../../assets/voice_preview_speechify_henry.wav";
+//Spanish voice options for voicemaker
+import voiceMakerSpanish1 from "../../assets/voice_preview_voicemaker_ai3-es-ES-Alvaro.wav";
+import voiceMakerSpanish2 from "../../assets/voice_preview_voicemaker_ai3-es-ES-Elvira.wav";
+//Spanish voice options for speechify
+import speechifySpanish1 from "../../assets/voice_preview_speechify_alejandro.wav";
+import speechifySpanish2 from "../../assets/voice_preview_speechify_celia.wav";
+import SelectCompOption from "../../components/common/Audio/SelectCompOption";
 
 interface VoiceOption {
   label: string;
@@ -196,12 +201,12 @@ const allVoiceOptions = {
       {
         label: "Alejandro",
         value: "alejandro",
-        s3_url: voice12,
+        s3_url: speechifySpanish1,
       },
       {
         label: "Celia",
         value: "celia",
-        s3_url: voice13,
+        s3_url: speechifySpanish2,
       },
     ],
   },
@@ -226,12 +231,12 @@ const allVoiceOptions = {
       {
         label: "AI3-ES-ES-Alvaro",
         value: "ai3-es-ES-Alvaro",
-        // s3_url: voice12,
+        s3_url: voiceMakerSpanish1,
       },
       {
         label: "AI3-ES-ES-Elvira",
         value: "AI3-ES-ES-Elvira",
-        // s3_url: voice13,
+        s3_url: voiceMakerSpanish2,
       },
     ],
   },
@@ -252,14 +257,21 @@ const AudioAnimationPage: React.FC = () => {
     Record<string, string>
   >({});
 
+  const languageOptions = [
+    { label: "English", value: "english" },
+    { label: "Spanish", value: "spanish" },
+  ];
+
+  const [languageSelections, setLanguageSelections] = useState<
+    Record<string, "english" | "spanish">
+  >({});
+
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
 
   const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
   );
-
-  console.log(audioAnimationData, "audioAnimationData");
 
   const characters =
     audioAnimationData?.voice_map?.characters ||
@@ -282,43 +294,112 @@ const AudioAnimationPage: React.FC = () => {
   }, [id, dispatch]);
 
   useEffect(() => {
-    if (audioAnimationData?.custom_voice_map) {
-      setVoiceSelections(audioAnimationData.custom_voice_map);
-    } else {
+    if (!audioAnimationData?.custom_voice_map) {
       setVoiceSelections({});
+      return;
     }
-  }, [audioAnimationData]);
 
-  const handleGenderChange = (charName: string, value: string) => {
-    setGenderSelections((prev) => ({
+    const sanitized: Record<string, string> = {};
+
+    Object.entries(audioAnimationData.custom_voice_map).forEach(
+      ([charName, voice]) => {
+        const narrationType = narrationSelections[charName];
+        const language = languageSelections[charName] || "english";
+
+        const validOptions = allVoiceOptions?.[narrationType]?.[language] || [];
+
+        const exists = validOptions.some((v: any) => v.value === voice);
+
+        sanitized[charName] = exists ? (voice as string) : "";
+      }
+    );
+
+    setVoiceSelections(sanitized);
+  }, [audioAnimationData, narrationSelections, languageSelections]);
+
+  useEffect(() => {
+    if (!sortedLabels.length) return;
+
+    setLanguageSelections((prev) => {
+      let changed = false;
+      const updated = { ...prev };
+
+      sortedLabels.forEach((char) => {
+        if (!updated[char]) {
+          updated[char] = "english";
+          changed = true;
+        }
+      });
+
+      return changed ? updated : prev;
+    });
+  }, [sortedLabels]);
+
+  const handleLanguageChange = (
+    charName: string,
+    value: "english" | "spanish"
+    // option: { label: string; value: "english" | "spanish" }
+  ) => {
+    setLanguageSelections((prev) => ({
       ...prev,
       [charName]: value,
     }));
 
-    setVoiceSelections((prev) => {
-      const currentVoice = prev[charName];
-      if (!currentVoice) return prev;
+    setVoiceSelections((prev) => ({
+      ...prev,
+      [charName]: "",
+    }));
+  };
 
-      const allowedVoices = getFilteredVoiceOptions(charName);
-      const stillValid = allowedVoices.some((v) => v.value === currentVoice);
-
-      if (stillValid) return prev;
-
-      return {
-        ...prev,
-        [charName]: "",
+  const handleGenderChange = (
+    charName: string,
+    value: string
+    // option: { label: string; value: "male" | "female" }
+  ) => {
+    const gender = value;
+    setGenderSelections((prevGender) => {
+      const updatedGender = {
+        ...prevGender,
+        [charName]: gender,
       };
+
+      setVoiceSelections((prevVoice) => {
+        const currentVoice = prevVoice[charName];
+        if (!currentVoice) return prevVoice;
+
+        const narrationType = narrationSelections[charName];
+        const language = languageSelections[charName] || "english";
+
+        const voices = allVoiceOptions?.[narrationType]?.[language] || [];
+
+        const validVoices = voices.filter(
+          (v) => v.value && !v.disabled && VOICE_GENDER_MAP[v.value] === gender
+        );
+
+        const stillValid = validVoices.some((v) => v.value === currentVoice);
+
+        if (stillValid) return prevVoice;
+
+        return {
+          ...prevVoice,
+          [charName]: "",
+        };
+      });
+
+      return updatedGender;
     });
   };
 
   const getFilteredVoiceOptions = (charName: string) => {
     const narrationType = narrationSelections[charName];
+    if (!narrationType) return [];
     const gender = genderSelections[charName];
+    const language = languageSelections[charName] || "english";
 
-    const voices = allVoiceOptions?.[narrationType]?.english || [];
+    const voices = allVoiceOptions?.[narrationType]?.[language] || [];
 
-
-    const selectableVoices = voices.filter((v) => !v.disabled && v.value);
+    // remove disabled items
+    const selectableVoices = voices.filter((v) => v.value && !v.disabled);
 
     if (!gender) return selectableVoices;
 
@@ -327,10 +408,20 @@ const AudioAnimationPage: React.FC = () => {
     );
   };
 
-  const handleNarrationChange = (charName: string, value: any) => {
+  const handleNarrationChange = (
+    charName: string,
+    value: any
+    // option: { label: string; value: string }
+  ) => {
     setNarrationSelections((prev) => ({
       ...prev,
       [charName]: value,
+    }));
+
+    // reset voice because narration source changed
+    setVoiceSelections((prev) => ({
+      ...prev,
+      [charName]: "",
     }));
   };
 
@@ -341,29 +432,13 @@ const AudioAnimationPage: React.FC = () => {
     }));
   };
 
-  // const getPreviewUrl = (voiceName: string): string => {
-  //   return voiceOptions.find((v) => v.value === voiceName)?.s3_url || "";
-  // };
-
-  // const getPreviewUrl = (voiceName: string) => {
-  //   // const opt = voiceOptions.find((v) => v.value === voiceName);
-  //   // return opt?.s3_url || "";
-
-  //   const all = Object.values(allVoiceOptions).flat();
-  //   const opt = all.find((v) => v.value === voiceName);
-  //   return opt?.s3_url || "";
-  // };
-
   const getPreviewUrl = (voiceName: string, options = []) => {
-    // const opt = voiceOptions.find((v) => v.value === voiceName);
-    // return opt?.s3_url || "";
-
     const all = options;
     const opt = all.find((v) => v.value === voiceName);
     return opt?.s3_url || "";
   };
 
-  // Submit 
+  // Submit
   const handleSubmit = () => {
     if (!narrationSelections.Narrator) {
       showToast.error("Please select a Narrator");
@@ -373,8 +448,6 @@ const AudioAnimationPage: React.FC = () => {
       showToast.error("Please select a narrator voice");
       return;
     }
-
-    // console.log(narrationSelections?.Narrator, "narrationSelections")
     apiCall();
   };
 
@@ -390,7 +463,7 @@ const AudioAnimationPage: React.FC = () => {
     const payload = {
       script_id: id,
       custom_voice_map,
-      voice_tool:narrationSelections?.Narrator
+      voice_tool: narrationSelections?.Narrator,
     };
 
     dispatch(postGenerateVoiceAndAudio(payload));
@@ -451,14 +524,34 @@ const AudioAnimationPage: React.FC = () => {
                         sx={{ mt: 2, mb: 2 }}
                         key={index}
                       >
+                        {/* Language */}
+                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                          <SelectComp
+                            label="Language"
+                            options={languageOptions}
+                            value={languageSelections[charName] || "english"}
+                            onChange={(value) =>
+                              handleLanguageChange(
+                                charName,
+                                value as "english" | "spanish"
+                              )
+                            }
+                            placeholder="Select Language"
+                            style={true}
+                          />
+                        </Grid>
+
                         {/* Gender */}
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
                           <SelectComp
                             label="Gender"
                             options={genderOptions}
-                            value={genderSelections[charName]}
+                            value={genderSelections[charName] || ""}
                             onChange={(value) =>
-                              handleGenderChange(charName, value)
+                              handleGenderChange(
+                                charName,
+                                value as "male" | "female"
+                              )
                             }
                             placeholder="Select Gender"
                             style={true}
@@ -469,7 +562,7 @@ const AudioAnimationPage: React.FC = () => {
                           <SelectComp
                             label={charName}
                             options={narrationVoiceOptions}
-                            value={narrationSelections[charName]}
+                            value={narrationSelections[charName] || ""}
                             onChange={(value) =>
                               handleNarrationChange(charName, value)
                             }
@@ -479,57 +572,34 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          {/* <SelectWithAudio
-                            // options={
-                            //   audioAnimationData?.scenes === null
-                            //     ? voiceOptions
-                            //     : voiceOptions.map((opt) => ({
-                            //         ...opt,
-                            //         disabled:
-                            //           voiceSelections[charName] !== opt.value,
-                            //       }))
-                            // }
-                            options={
-                              audioAnimationData?.scenes === null
-                                ? allVoiceOptions[narrationSelections[charName]]
-                                    ?.english
-                                : allVoiceOptions[
-                                    narrationSelections[charName]
-                                  ]?.english?.map((opt) => ({
-                                    ...opt,
-                                    disabled:
-                                      voiceSelections[charName] !== opt.value,
-                                  }))
-                            }
-                            placeholder="Select Voice"
-                            value={voiceSelections[charName] || ""}
-                            onChange={(value) =>
-                              handleVoiceChange(charName, value)
-                            }
-                            style={true}
-                            getPreviewUrl={(voice) =>
-                              getPreviewUrl(
-                                voice,
-                                allVoiceOptions[narrationSelections[charName]]
-                                  ?.english
-                              )
-                            }
-                            customOption
-                          /> */}
-
                           <SelectWithAudio
-                            disabled={!genderSelections[charName]}
+                            disabled={
+                              !languageSelections[charName] ||
+                              !narrationSelections[charName]
+                            }
                             options={
-                              audioAnimationData?.scenes === null
-                                ? getFilteredVoiceOptions(charName)
-                                : getFilteredVoiceOptions(charName).map(
+                              Array.isArray(audioAnimationData?.scenes) &&
+                              audioAnimationData.scenes.length > 0
+                                ? getFilteredVoiceOptions(charName).map(
                                     (opt) => ({
                                       ...opt,
                                       disabled:
                                         voiceSelections[charName] !== opt.value,
                                     })
                                   )
+                                : getFilteredVoiceOptions(charName)
                             }
+                            // options={
+                            //   audioAnimationData?.scenes === null
+                            //     ? getFilteredVoiceOptions(charName)
+                            //     : getFilteredVoiceOptions(charName).map(
+                            //         (opt) => ({
+                            //           ...opt,
+                            //           disabled:
+                            //             voiceSelections[charName] !== opt.value,
+                            //         })
+                            //       )
+                            // }
                             placeholder="Select Voice"
                             value={voiceSelections[charName] || ""}
                             onChange={(value) =>

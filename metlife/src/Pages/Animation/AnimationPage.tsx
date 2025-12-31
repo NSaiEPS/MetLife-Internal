@@ -187,7 +187,7 @@ const AnimationPage: React.FC = () => {
       end_transition: exitAnimation,
     }));
     setAnimationData(updated);
-    toast.success("Animation applied to all clips")
+    toast.success("Animation applied to all clips");
   };
 
   const handleAlternateSubmit = () => {
@@ -203,7 +203,7 @@ const AnimationPage: React.FC = () => {
         return scene;
       })
     );
-    toast.success("Animation applied to alternative scenes.")
+    toast.success("Animation applied to alternative scenes.");
   };
 
   const handleAnimationChanges = () => {
@@ -214,8 +214,8 @@ const AnimationPage: React.FC = () => {
       )
       .map((scene) => scene.scene_number);
 
-    setMissingScenes(missing); 
-    setOpenMissingPopup(true); 
+    setMissingScenes(missing);
+    setOpenMissingPopup(true);
   };
 
   const handleMissingAnimationConfirm = () => {
@@ -242,6 +242,21 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
+  const formatSeconds = (seconds?: number) => {
+    if (!seconds || seconds <= 0) return "";
+
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    if (mins > 0) {
+      return `${mins} min ${secs} sec`;
+    }
+
+    return `${secs} sec`;
+  };
+
+  console.log(generatedVideoData, "gener");
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -252,12 +267,25 @@ const AnimationPage: React.FC = () => {
         (animationLabels?.entry_transitions?.length > 0 ||
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
-            {(audioAnimationLoader ||
-              videoAnimationLoader ||
-              mediaAPILoader ||
-              !generatedVideoData) && (
+            {(mediaAPILoader || !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
             )}
+            {audioAnimationLoader && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
+            {videoAnimationLoader && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
+{/* 
+            {!generatedVideoData && videoAnimationData &&  (
+              <FullScreenGradientLoader
+                text={`Generating final video${
+                  generatedVideoData
+                    ? ` (≈ ${formatSeconds(generatedVideoData)})`
+                    : ""
+                }`}
+              />
+            )} */}
 
             <main className={styles.cardWrap}>
               <div className={styles.card}>
@@ -267,13 +295,15 @@ const AnimationPage: React.FC = () => {
 
                 <div className={styles.insideContainer}>
                   {/* Available videos */}
-                  {!timerDone && finalTime > 0 && (
-                    <Timer
-                      time={finalTime}
-                      // minutes={finalTime}
-                      onComplete={() => setTimerDone(true)}
-                    />
-                  )}
+                  {!timerDone &&
+                    finalTime > 0 &&
+                    !generatedVideoData?.final_video && (
+                      <Timer
+                        time={finalTime}
+                        // minutes={finalTime}
+                        onComplete={() => setTimerDone(true)}
+                      />
+                    )}
 
                   {/* {
                     videoAnimationData?.length > 0 &&

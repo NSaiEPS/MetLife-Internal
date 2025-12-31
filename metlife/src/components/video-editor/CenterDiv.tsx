@@ -9,7 +9,7 @@ import {
 import DownloadIcon from "@mui/icons-material/Download";
 import { motion, useAnimation } from "framer-motion";
 import type { VideoData } from "../../utils/types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 
 interface CenterDivProps {
@@ -45,7 +45,12 @@ const CenterDiv: React.FC<CenterDivProps> = ({
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(false);
   const [videoLoadError, setVideoLoadError] = useState<boolean>(false);
   const [videoDuration, setVideoDuration] = useState<number>(duration);
+  
+  const {
+    generatedVideoData,
+  } = useSelector((store) => store.AudioAnimation);
 
+const finalVideoTitle = generatedVideoData?.title;
   // Track if this specific video has started
   const hasStartedRef = useRef<boolean>(false);
   const iconTimeoutRef = useRef<number | null>(null);
@@ -495,7 +500,7 @@ const CenterDiv: React.FC<CenterDivProps> = ({
               if (data?.final_video?.url) {
                 downloadVideo(
                   data.final_video.url,
-                  `${data?.ost || "video"}.mp4`
+                  `${finalVideoTitle || "video"}.mp4`
                 );
               }
             }}
