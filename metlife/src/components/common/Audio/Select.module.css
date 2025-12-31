@@ -1,0 +1,39 @@
+.selectWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.selectLabel {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.875rem;
+  font-family: "Roboto", sans-serif;
+}
+
+.selectBox {
+  background-color: #fff;
+  height: 50px;
+  border: 1px #dfdfdf;
+  border-radius: 10px !important;
+}
+
+.selectPlaceholder {
+  color: #aaa;
+  font-family: "Roboto", sans-serif;
+}
+
+.textareaWrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.scriptTextarea {
+  width: 100%;
+  padding: 12px 40px 12;
+}
