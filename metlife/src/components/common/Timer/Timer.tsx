@@ -76,7 +76,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
     >
       {/* Title */}
       <Typography fontSize={18} fontWeight={600} mb={2}>
-        Generate Progress
+       Video Generation Progress
       </Typography>
 
       {/* Progress Bar */}

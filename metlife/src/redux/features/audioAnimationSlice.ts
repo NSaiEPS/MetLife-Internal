@@ -7,6 +7,11 @@ import { convertToISTParts } from "../../utils";
 import type { AppDispatch } from "../store";
 
 // ---------- Types ----------
+
+export interface FullVideoGenerationState {
+  estimated_seconds: number | null;
+}
+
 export interface AudioAnimationState {
   audioAnimationLoader: boolean;
   videoAnimationLoader: boolean;
@@ -20,6 +25,7 @@ export interface AudioAnimationState {
   } | null;
   videoAnimationData: any[] | null; // list of scenes
   generatedVideoData: Record<string, unknown> | null;
+  fullVideoGeneration: FullVideoGenerationState | null;
   sceneData: {
     scenes?: Array<{
       scene_id?: string;
@@ -47,6 +53,7 @@ const initialState: AudioAnimationState = {
   videoAnimationData: null,
   generatedVideoData: null,
   sceneData: null,
+  fullVideoGeneration: null,
 };
 
 // ---------- Slice ----------
@@ -102,6 +109,12 @@ const AudioAnimationSlice = createSlice({
     ) => {
       state.sceneData = action.payload;
     },
+    setFullVideoGenerationData: (
+      state,
+      action: PayloadAction<FullVideoGenerationState | null>
+    ) => {
+      state.fullVideoGeneration = action.payload;
+    },
   },
 });
 
@@ -117,6 +130,7 @@ export const {
   setVideoAnimationData,
   setGeneratedVideoData,
   setSceneData,
+   setFullVideoGenerationData,
 } = AudioAnimationSlice.actions;
 
 export default AudioAnimationSlice.reducer;
@@ -259,6 +273,7 @@ export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
   }
 };
 
+// final video
 export const postGenerateFullVideo =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(setAudioAnimationLoader(true));
@@ -266,13 +281,15 @@ export const postGenerateFullVideo =
       const res: ApiResponse = await api.post(
         `media/generate-video-full/${id}`
       );
+      console.log(res, "final_video_response");
 
       if (res.status) {
-        let data = {
-          final_video: res.data?.final_video_with_intro || null,
-          duration_seconds: res.data?.duration_seconds || null,
-        };
-        dispatch(setGeneratedVideoData(data));
+        // let data = {
+        //   final_video: res.data?.final_video_with_intro || null,
+        //   duration_seconds: res.data?.estimated_seconds || null,
+        // };
+        dispatch(setGeneratedVideoData(res?.data?.estimated_seconds));
+        // dispatch(setFullVideoGenerationData(res?.data?.estimated_seconds));
       }
     } catch {
       toast.error("Something went wrong while generating full video!");
