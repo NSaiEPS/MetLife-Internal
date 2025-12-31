@@ -253,9 +253,11 @@ const AnimationPage: React.FC = () => {
           animationLabels?.exit_transitions?.length > 0) ? (
           <>
             {(audioAnimationLoader ||
-              videoAnimationLoader ||
               mediaAPILoader ||
               !generatedVideoData) && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
+              {videoAnimationLoader && (
               <FullScreenGradientLoader text="loading..." />
             )}
 
