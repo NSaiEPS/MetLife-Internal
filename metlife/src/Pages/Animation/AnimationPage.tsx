@@ -83,7 +83,6 @@ const AnimationPage: React.FC = () => {
   const [animationData, setAnimationData] = useState<AnimationData[]>([]);
   const [openMissingPopup, setOpenMissingPopup] = useState(false);
   const [missingScenes, setMissingScenes] = useState<number[]>([]);
-
   const {
     audioAnimationLoader,
     videoAnimationLoader,
@@ -91,8 +90,10 @@ const AnimationPage: React.FC = () => {
     animationLabels,
     videoAnimationData,
     generatedVideoData,
+    // fullVideoGeneration,
     sceneData,
   } = useSelector((store: RootState) => store.AudioAnimation);
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -101,7 +102,12 @@ const AnimationPage: React.FC = () => {
       sceneData?.estimated_completion_at
   );
   const finalTime = Math.ceil(waitingTime / 60);
+  const isWaitingVideoTime = convertToISTParts(
+    sceneData?.final_video_estimated_completion_at ||
+      generatedVideoData?.estimated_completion_at
+  );
 
+  const finalVideoTime = Math.ceil(isWaitingVideoTime / 60);
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
         {
@@ -111,7 +117,8 @@ const AnimationPage: React.FC = () => {
           image_urls: ["/imgs/final-thumbnail.png"], // fallback
           audio_url: "",
           final_video: generatedVideoData?.final_video,
-          duration: generatedVideoData?.duration_seconds ?? 0,
+          // duration: generatedVideoData?.duration_seconds ?? 0,
+          duration: generatedVideoData?.estimated_seconds ?? 0,
           start_transition: "none",
           end_transition: "none",
         },
@@ -145,20 +152,13 @@ const AnimationPage: React.FC = () => {
   }, [timerDone, dispatch, id]);
 
   useEffect(() => {
-    if (timerDone && sceneData?.video_exists === true && id) {
+    if (
+      ((timerDone && sceneData?.video_exists === true) || isGeneratingVideo) &&
+      id
+    ) {
       dispatch(getVideosList(id));
     }
-  }, [timerDone, sceneData?.video_exists, dispatch, id]);
-
-  //   useEffect(() => {
-  //   if (finalTime <= 0) {
-  //     const interval = setInterval(() => {
-  //       dispatch(getVideosList(id!));
-  //     }, 5000);
-
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [finalTime]);
+  }, [timerDone, sceneData?.video_exists, isGeneratingVideo, dispatch, id]);
 
   /* ----------To set animationData from videoAnimationData---------- */
 
@@ -239,23 +239,9 @@ const AnimationPage: React.FC = () => {
   };
 
   const generateVideo = () => {
+    if (!id) return;
     dispatch(postGenerateFullVideo(id));
   };
-
-  const formatSeconds = (seconds?: number) => {
-    if (!seconds || seconds <= 0) return "";
-
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-
-    if (mins > 0) {
-      return `${mins} min ${secs} sec`;
-    }
-
-    return `${secs} sec`;
-  };
-
-  console.log(generatedVideoData, "gener");
 
   return (
     <>
@@ -270,22 +256,10 @@ const AnimationPage: React.FC = () => {
             {(mediaAPILoader || !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
             )}
-            {audioAnimationLoader && (
-              <FullScreenGradientLoader text="loading..." />
-            )}
-            {videoAnimationLoader && (
-              <FullScreenGradientLoader text="loading..." />
-            )}
-{/* 
-            {!generatedVideoData && videoAnimationData &&  (
-              <FullScreenGradientLoader
-                text={`Generating final video${
-                  generatedVideoData
-                    ? ` (≈ ${formatSeconds(generatedVideoData)})`
-                    : ""
-                }`}
-              />
-            )} */}
+            {audioAnimationLoader ||
+              (videoAnimationLoader && (
+                <FullScreenGradientLoader text="loading..." />
+              ))}
 
             <main className={styles.cardWrap}>
               <div className={styles.card}>
@@ -304,6 +278,14 @@ const AnimationPage: React.FC = () => {
                         onComplete={() => setTimerDone(true)}
                       />
                     )}
+
+                  {finalVideoTime > 0 && (
+                    <Timer
+                      time={finalVideoTime}
+                      // minutes={finalTime}
+                      onComplete={() => setIsGeneratingVideo(true)}
+                    />
+                  )}
 
                   {/* {
                     videoAnimationData?.length > 0 &&
@@ -544,46 +526,37 @@ const AnimationPage: React.FC = () => {
                   )}
 
                   {/* Full Video */}
-                  {
-                    generatedVideoData?.final_video !== null &&
-                      sceneData?.video_exists === true && (
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "20px",
-                              fontWeight: 500,
-                              mt: 4,
-                              mb: 2,
-                            }}
-                          >
-                            Generated Video
-                          </Typography>
+                  {generatedVideoData?.final_video !== null &&
+                    sceneData?.video_exists === true &&
+                    generatedVideoData?.final_video_status === "completed" && (
+                      <>
+                        <Typography
+                          sx={{
+                            fontSize: "20px",
+                            fontWeight: 500,
+                            mt: 4,
+                            mb: 2,
+                          }}
+                        >
+                          Generated Video
+                        </Typography>
 
-                          <VideoTimeline
-                            type="final-video"
-                            videosData={finalVideoAsTimeline}
-                            isFinalVideo={
-                              generatedVideoData?.final_video !== null
-                            }
-                            animationData={animationData}
-                            setAnimationData={setAnimationData}
-                            handleAllSubmit={handleAnimationChanges}
-                          />
+                        <VideoTimeline
+                          type="final-video"
+                          videosData={finalVideoAsTimeline}
+                          isFinalVideo={
+                            generatedVideoData?.final_video !== null
+                          }
+                          animationData={animationData}
+                          setAnimationData={setAnimationData}
+                          handleAllSubmit={handleAnimationChanges}
+                        />
 
-                          {/* <FullVideoPlayer
+                        {/* <FullVideoPlayer
                             video_url={generatedVideoData?.final_video?.url}
                           /> */}
-                        </>
-                      )
-                    //  : (
-                    //   <>
-                    //     <NoDataMessage
-                    //       filter={false}
-                    //       // loading={audioAnimationLoader}
-                    //     />
-                    //   </>
-                    // )
-                  }
+                      </>
+                    )}
                 </div>
               </div>
             </main>

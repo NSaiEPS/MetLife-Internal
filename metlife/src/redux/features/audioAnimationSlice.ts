@@ -288,8 +288,7 @@ export const postGenerateFullVideo =
         //   final_video: res.data?.final_video_with_intro || null,
         //   duration_seconds: res.data?.estimated_seconds || null,
         // };
-        dispatch(setGeneratedVideoData(res?.data?.estimated_seconds));
-        // dispatch(setFullVideoGenerationData(res?.data?.estimated_seconds));
+        dispatch(setGeneratedVideoData(res?.data));
       }
     } catch {
       toast.error("Something went wrong while generating full video!");
