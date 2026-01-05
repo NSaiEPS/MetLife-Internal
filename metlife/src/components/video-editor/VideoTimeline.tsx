@@ -9,6 +9,7 @@ const TICK = 100;
 const normalizeDuration = (duration?: number) => {
   if (!duration) return 6000;
   return duration * 1000;
+  // return duration * 60 * 1000;
 };
 
 interface AnimationData {
@@ -35,6 +36,10 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   animationData,
   setAnimationData,
   handleAllSubmit,
+  finalTime,
+  handleAlternateSubmit,
+  handleAllSubmitInside,
+  handleAnimationChanges,
 }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
@@ -56,12 +61,12 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   const total = videosData?.length;
 
   const preloadUrls = [
-  videosData?.[active]?.final_video?.url,
-  videosData?.[active + 1]?.final_video?.url,
-  videosData?.[active - 1]?.final_video?.url,
-];
+    videosData?.[active]?.final_video?.url,
+    videosData?.[active + 1]?.final_video?.url,
+    videosData?.[active - 1]?.final_video?.url,
+  ];
 
-// useVideoPreloader(preloadUrls);
+  // useVideoPreloader(preloadUrls);
 
   const goto = useCallback(
     (idx: number) => {
@@ -231,6 +236,10 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           progress={progress}
           onSelect={goto}
           videoHasError={activeVideoHasError}
+          finalTime={finalTime}
+          handleAlternateSubmit={handleAlternateSubmit}
+          handleAllSubmitInside={handleAllSubmitInside}
+          handleAnimationChanges={handleAnimationChanges}
         />
       )}
     </Box>

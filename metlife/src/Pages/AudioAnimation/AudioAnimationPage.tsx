@@ -525,7 +525,7 @@ const AudioAnimationPage: React.FC = () => {
                         key={index}
                       >
                         {/* Language */}
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                           <SelectComp
                             label="Language"
                             options={languageOptions}
@@ -542,7 +542,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         {/* Gender */}
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                           <SelectComp
                             label="Gender"
                             options={genderOptions}
@@ -558,7 +558,7 @@ const AudioAnimationPage: React.FC = () => {
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                           <SelectComp
                             label={charName}
                             options={narrationVoiceOptions}
@@ -571,7 +571,7 @@ const AudioAnimationPage: React.FC = () => {
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                           <SelectWithAudio
                             disabled={
                               !languageSelections[charName] ||
@@ -660,8 +660,8 @@ const AudioAnimationPage: React.FC = () => {
                   <div className={styles.actions}>
                     <ButtonComp
                       disabled={
-                        !audioAnimationData?.scenes &&
-                        !audioAnimationData?.scenes?.length > 0
+                        (!audioAnimationData?.scenes &&
+                        !audioAnimationData?.scenes?.length > 0) || audioAnimationLoader
                       }
                       label={"Create Transition"}
                       sx={{ textTransform: "none", backgroundColor: "#99d539" }}

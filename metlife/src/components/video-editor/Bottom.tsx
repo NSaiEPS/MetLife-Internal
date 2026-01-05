@@ -14,6 +14,7 @@ import type { VideoData } from "../../utils/types";
 import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 import { useDispatch } from "react-redux";
 import finalVideoImg from "../../assets/final-video-img.png";
+import ButtonComp from "../common/Buton/Button";
 
 const style = {
   position: "absolute",
@@ -41,6 +42,8 @@ interface BottomProps {
   progress: number;
   onSelect: (index: number) => void;
   videoHasError?: boolean;
+  finalTime: any;
+  handleAlternateSubmit: any;
 }
 
 interface ModalState {
@@ -61,6 +64,10 @@ export default function Bottom({
   progress,
   onSelect,
   videoHasError = false,
+  finalTime,
+  handleAlternateSubmit,
+  handleAllSubmitInside,
+  handleAnimationChanges,
 }: BottomProps) {
   const dispatch = useDispatch();
   // const [sceneData, setSceneData] = useState<VideoData[]>(videosData);
@@ -468,14 +475,14 @@ export default function Bottom({
                   p: 3,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography fontWeight={600} mb={2}>
                     OST :
                   </Typography>
                   <Typography fontWeight={600} mb={2}>
                     {modalState?.ost}
                   </Typography>
-                </Box>
+                </Box> */}
 
                 <Box display="flex" gap={3}>
                   {/* Entry */}
@@ -572,6 +579,27 @@ export default function Bottom({
                 {/* Actions */}
                 <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
                   <Button onClick={() => setModalIndex(null)}>Cancel</Button>
+                  {/* <ButtonComp
+                    label={"Alternative Scenes"}
+                    sx={{
+                      backgroundColor: "#99d539",
+                      textTransform: "none",
+                    }}
+                    action={handleAlternateSubmit}
+                    disabled={finalTime > 0}
+                  />
+                  <ButtonComp
+                    label={"Apply To All"}
+                    sx={{ textTransform: "none" }}
+                    action={handleAllSubmitInside}
+                    disabled={finalTime > 0}
+                  /> */}
+                  {/* <ButtonComp
+                    label={"Submit Animation Changes"}
+                    sx={{ textTransform: "none" }}
+                    action={handleAnimationChanges}
+                    disabled={finalTime > 0}
+                  /> */}
                   <Button onClick={handleModalSubmit} variant="contained">
                     Apply
                   </Button>

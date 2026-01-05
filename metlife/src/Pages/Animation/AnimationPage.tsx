@@ -94,7 +94,7 @@ const AnimationPage: React.FC = () => {
     sceneData,
   } = useSelector((store: RootState) => store.AudioAnimation);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
-  const [animationVideos, setAnimationVideos] = useState(false);
+  // const [animationVideos, setAnimationVideos] = useState(false);
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -112,10 +112,10 @@ const AnimationPage: React.FC = () => {
   const finalVideoTime = Math.ceil(isWaitingVideoTime / 60);
   // const isAnimationTime = convertToISTParts(videoAnimationData?.estimated_completion_at)
   // const finalAnimationTime = Math.ceil(isAnimationTime);
-  console.log(
-      generatedVideoData?.estimated_completion_at,
-      videoAnimationData?.estimated_completion_at
-  );
+  // console.log(
+  //   generatedVideoData?.estimated_completion_at,
+  //   videoAnimationData?.estimated_completion_at, "check_things"
+  // );
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
         {
@@ -161,22 +161,12 @@ const AnimationPage: React.FC = () => {
 
   useEffect(() => {
     if (
-      ((timerDone && sceneData?.video_exists === true) ||
-        isGeneratingVideo 
-        // || animationVideos
-      ) &&
+      ((timerDone && sceneData?.video_exists === true) || isGeneratingVideo) &&
       id
     ) {
       dispatch(getVideosList(id));
     }
-  }, [
-    timerDone,
-    sceneData?.video_exists,
-    isGeneratingVideo,
-    // animationVideos,
-    dispatch,
-    id,
-  ]);
+  }, [timerDone, sceneData?.video_exists, isGeneratingVideo, dispatch, id]);
 
   /* ----------To set animationData from videoAnimationData---------- */
 
@@ -258,7 +248,6 @@ const AnimationPage: React.FC = () => {
     if (!id) return;
     dispatch(postGenerateFullVideo(id));
   };
-
 
   return (
     <>
@@ -352,8 +341,6 @@ const AnimationPage: React.FC = () => {
                     //   </>
                     // )
                   } */}
-                  {/* {!timerDone && videoAnimationData?.length > 0 && ( */}
-                  {/* {videoAnimationData?.length > 0 && finalTime < 0 && ( */}
                   {showTimeline && (
                     <Grid container>
                       <Typography
@@ -367,6 +354,10 @@ const AnimationPage: React.FC = () => {
                         animationData={animationData}
                         setAnimationData={setAnimationData}
                         handleAllSubmit={handleAnimationChanges}
+                        finalTime={finalTime}
+                        handleAlternateSubmit={handleAlternateSubmit}
+                        handleAllSubmitInside={handleAllSubmit}
+                        handleAnimationChanges={handleAnimationChanges}
                       />
                     </Grid>
                   )}
@@ -521,14 +512,6 @@ const AnimationPage: React.FC = () => {
                           action={handleAnimationChanges}
                           disabled={finalTime > 0}
                         />
-                        {/* <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{ textTransform: "none" }}
-                          onClick={handleAnimationChanges}
-                        >
-                          Submit Animation Changes
-                        </Button> */}
                       </div>
                       <div className={styles.actions_second}>
                         <ButtonComp
@@ -572,6 +555,10 @@ const AnimationPage: React.FC = () => {
                           animationData={animationData}
                           setAnimationData={setAnimationData}
                           handleAllSubmit={handleAnimationChanges}
+                          finalTime={finalTime}
+                          handleAlternateSubmit={handleAlternateSubmit}
+                          handleAllSubmitInside={handleAllSubmit}
+                          handleAnimationChanges={handleAnimationChanges}
                         />
 
                         {/* <FullVideoPlayer
