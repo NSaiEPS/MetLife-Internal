@@ -36,8 +36,9 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
     const updateAnimation = (currentTime: number) => {
       const elapsed = (currentTime - startTime) / 1000;
       const remaining = Math.max(0, TOTAL_TIME - elapsed);
-      const progress = remaining / TOTAL_TIME;
-
+      // const progress = remaining / TOTAL_TIME;
+      // rawHeight.set(progress * 100);
+      const progress = 1 - remaining / TOTAL_TIME;
       rawHeight.set(progress * 100);
       setTimeLeft(Math.ceil(remaining));
 
@@ -60,11 +61,10 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
-
   return (
     <Box
       sx={{
-        maxWidth: '100%',
+        maxWidth: "100%",
         mx: "auto",
         my: 4,
         p: 3,
@@ -76,7 +76,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
     >
       {/* Title */}
       <Typography fontSize={18} fontWeight={600} mb={2}>
-       Video Generation Progress
+        Video Generation in Progress
       </Typography>
 
       {/* Progress Bar */}

@@ -49,7 +49,7 @@ const [resolution, setResolution] = useState<string | number>("");
     
     <h2 className={styles.title}>Finalization & Download</h2>
     
-    <p className={styles.subTitle}>Video Generation Progress</p>
+    <p className={styles.subTitle}>Video Generation in Progress</p>
     
     <ProgressBar progress={progress} />
     <p className={styles.progressText}>{progress}%</p>

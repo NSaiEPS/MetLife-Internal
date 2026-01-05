@@ -94,6 +94,7 @@ const AnimationPage: React.FC = () => {
     sceneData,
   } = useSelector((store: RootState) => store.AudioAnimation);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [animationVideos, setAnimationVideos] = useState(false);
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -102,19 +103,26 @@ const AnimationPage: React.FC = () => {
       sceneData?.estimated_completion_at
   );
   const finalTime = Math.ceil(waitingTime / 60);
+
   const isWaitingVideoTime = convertToISTParts(
     sceneData?.final_video_estimated_completion_at ||
-      generatedVideoData?.estimated_completion_at
+      generatedVideoData?.estimated_completion_at ||
+      videoAnimationData?.estimated_completion_at
   );
-
   const finalVideoTime = Math.ceil(isWaitingVideoTime / 60);
+  // const isAnimationTime = convertToISTParts(videoAnimationData?.estimated_completion_at)
+  // const finalAnimationTime = Math.ceil(isAnimationTime);
+  console.log(
+      generatedVideoData?.estimated_completion_at,
+      videoAnimationData?.estimated_completion_at
+  );
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
         {
           scene_id: "final_video",
           scene_number: 1,
           ost: "Final Video",
-          image_urls: ["/imgs/final-thumbnail.png"], // fallback
+          image_urls: ["/imgs/final-thumbnail.png"],
           audio_url: "",
           final_video: generatedVideoData?.final_video,
           // duration: generatedVideoData?.duration_seconds ?? 0,
@@ -153,12 +161,22 @@ const AnimationPage: React.FC = () => {
 
   useEffect(() => {
     if (
-      ((timerDone && sceneData?.video_exists === true) || isGeneratingVideo) &&
+      ((timerDone && sceneData?.video_exists === true) ||
+        isGeneratingVideo 
+        // || animationVideos
+      ) &&
       id
     ) {
       dispatch(getVideosList(id));
     }
-  }, [timerDone, sceneData?.video_exists, isGeneratingVideo, dispatch, id]);
+  }, [
+    timerDone,
+    sceneData?.video_exists,
+    isGeneratingVideo,
+    // animationVideos,
+    dispatch,
+    id,
+  ]);
 
   /* ----------To set animationData from videoAnimationData---------- */
 
@@ -224,8 +242,6 @@ const AnimationPage: React.FC = () => {
   };
 
   const submitAllAnimations = () => {
-    // dispatch(postGenerateFullVideo(animationData));
-
     const scenes = animationData.map((scene) => ({
       scene_id: scene.scene_id,
       start_transition: scene.start_transition,
@@ -242,6 +258,7 @@ const AnimationPage: React.FC = () => {
     if (!id) return;
     dispatch(postGenerateFullVideo(id));
   };
+
 
   return (
     <>
@@ -274,7 +291,6 @@ const AnimationPage: React.FC = () => {
                     !generatedVideoData?.final_video && (
                       <Timer
                         time={finalTime}
-                        // minutes={finalTime}
                         onComplete={() => setTimerDone(true)}
                       />
                     )}
@@ -282,10 +298,16 @@ const AnimationPage: React.FC = () => {
                   {finalVideoTime > 0 && (
                     <Timer
                       time={finalVideoTime}
-                      // minutes={finalTime}
                       onComplete={() => setIsGeneratingVideo(true)}
                     />
                   )}
+
+                  {/* {finalAnimationTime > 0 && (
+                    <Timer
+                      time={finalAnimationTime}
+                      onComplete={() => setAnimationVideos(true)}
+                    />
+                  )} */}
 
                   {/* {
                     videoAnimationData?.length > 0 &&
