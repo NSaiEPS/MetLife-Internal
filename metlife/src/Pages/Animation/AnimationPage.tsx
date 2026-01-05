@@ -539,11 +539,11 @@ const AnimationPage: React.FC = () => {
                           sx={{
                             fontSize: "20px",
                             fontWeight: 500,
-                            mt: 4,
+                            mt: 1,
                             mb: 2,
                           }}
                         >
-                          Generated Video
+                          {generatedVideoData?.title || "Generated Video"}
                         </Typography>
 
                         <VideoTimeline
