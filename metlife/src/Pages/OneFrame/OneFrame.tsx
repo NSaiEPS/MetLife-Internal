@@ -72,7 +72,7 @@ const VideoCreationOptions: React.FC = () => {
                   </Typography>
 
                   <Typography className={styles.boxText}>
-                    Already have a script? Upload a .pdf file to get started.
+                    Already have a script? Upload a .pdf file or video to get started.
                   </Typography>
 
                   <div className={styles.parentContainer}>

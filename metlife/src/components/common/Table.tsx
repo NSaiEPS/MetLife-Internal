@@ -17,6 +17,8 @@ import {
   Dialog,
   Typography,
   Box,
+  FormControl,
+  Select,
 } from "@mui/material";
 
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
@@ -149,8 +151,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     extraDetails?.char_image_exist
   );
   const [openFlowDialog, setOpenFlowDialog] = useState(false);
-
   const [flowStep, setFlowStep] = useState<FlowStep>(null);
+  const PROVIDERS = ["google", "azure", "gpt"] as const;
+  type ProviderType = (typeof PROVIDERS)[number];
+  const [selectedProvider, setSelectedProvider] =
+    React.useState<ProviderType>("azure");
+
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
   }, [extraDetails]);
@@ -381,6 +387,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleTranslateScript = async () => {
     if (!pdfId && !id) return;
+    if (!selectedLang || !selectedProvider) return;
 
     setOperations(true);
     setLoader(true);
@@ -390,7 +397,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     const formData = new FormData();
     formData.append(id ? "script_id" : "file_id", String(file_id));
     formData.append("language", selectedLang);
-    formData.append("provider", "azure");
+    // formData.append("provider", "azure");
+    formData.append("provider", selectedProvider);
+
     if (
       tableExtraData?.version !== undefined &&
       tableExtraData?.version !== null
@@ -574,7 +583,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleSetupPrompt = () => {
-    if(!id) return;
+    if (!id) return;
     dispatch(postPromptSetupCharacters(id));
   };
 
@@ -864,8 +873,33 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 open={open}
                 onClose={() => setOpen(false)}
                 title="Select Language"
+                
               >
                 <div className={styles.languageList}>
+                  {/* Translate tool options */}
+                  {/* <div className={styles.providerSection}>
+                    <h4 className={styles.sectionTitle}>Select Provider</h4>
+
+                    <div className={styles.providerList}>
+                      {PROVIDERS.map((provider) => (
+                        <div
+                          key={provider}
+                          className={`${styles.providerItem} ${
+                            selectedProvider === provider
+                              ? styles.activeProvider
+                              : ""
+                          }`}
+                          onClick={() => setSelectedProvider(provider)}
+                        >
+                          {selectedProvider === provider && (
+                            <MdDone size={18} className={styles.tickIcon} />
+                          )}
+                          <span>{provider.toUpperCase()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div> */}
+                  {/* language options */}
                   {filteredLanguages.map((lang, index) => (
                     <div
                       key={index}
@@ -886,6 +920,24 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </div>
 
                 <div className={styles.popupButtonRow}>
+                  <FormControl size="small" className={styles.providerDropdown}>
+                    <Select
+                    sx={{
+                      height: "80px",
+                      width:"110px"
+                    }}
+                      value={selectedProvider}
+                      onChange={(e) =>
+                        setSelectedProvider(e.target.value as ProviderType)
+                      }
+                    >
+                      {PROVIDERS.map((provider) => (
+                        <MenuItem key={provider} value={provider}>
+                          {provider.toUpperCase()}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   <ButtonComp
                     label="Translate Script"
                     variant="contained"
