@@ -1,5 +1,5 @@
-import React from "react";
-import { Typography, Box, Grid, Button } from "@mui/material";
+import React, { useState } from "react";
+import { Typography, Box, Grid, Button, MenuItem, Menu } from "@mui/material";
 import UploadIcon from "../../assets/UploadCloudIcon.svg";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -8,6 +8,7 @@ import OneFrameHeader from "../../components/common/OneFrameHeader";
 import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { UploadPopup } from "../../components/common/popup/UploadPopup";
 
 // If needed for importing SVGs
 // declare module "*.svg" {
@@ -16,6 +17,16 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 // }
 
 const VideoCreationOptions: React.FC = () => {
+  const [open, setOpen] = React.useState<null | HTMLElement>(null);
+  const openPopup = Boolean(open);
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
   const navigate = useNavigate();
 
   return (
@@ -55,7 +66,9 @@ const VideoCreationOptions: React.FC = () => {
               <div className={styles.beigeCard}>
                 <div className={styles.completeBoxData}>
                   <Typography variant="h6" className={styles.boxHeading}>
-                    Upload a Script
+                    {/* Upload a Script
+                     */}
+                    Localization
                   </Typography>
 
                   <Typography className={styles.boxText}>
@@ -64,12 +77,20 @@ const VideoCreationOptions: React.FC = () => {
 
                   <div className={styles.parentContainer}>
                     <ButtonComp
-                      label="Upload a Script"
+                      // label="Upload a Script"
+                      label="Localization"
                       sx={styles.Button}
                       icon={UploadIcon}
                       variant="contained"
-                      action={() => navigate("/upload-script")}
+                      // action={() => navigate("/upload-script")}
+                      action={handleOpenMenu}
                     />
+
+                    <UploadPopup
+                      open={open}
+                      openPopup={openPopup}
+                      handleCloseMenu={handleCloseMenu}
+                     />
                   </div>
                 </div>
               </div>
