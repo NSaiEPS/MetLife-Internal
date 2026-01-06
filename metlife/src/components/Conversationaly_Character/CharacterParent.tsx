@@ -73,7 +73,7 @@ const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters })
       return Boolean(hasBasicInfo && hasValidInput);
     });
 
-    console.log("Final character list:", validCharacters);
+    // console.log("Final character list:", validCharacters);
   };
 
   /* ================= EFFECT ================= */

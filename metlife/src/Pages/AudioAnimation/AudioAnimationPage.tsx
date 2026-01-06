@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "./audioAnimation.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import { Box, Typography, Grid } from "@mui/material";
-import { useParams } from "react-router";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
+import { Box, Typography, Grid } from "@mui/material";
+import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
@@ -46,7 +46,6 @@ import voiceMakerSpanish2 from "../../assets/voice_preview_voicemaker_ai3-es-ES-
 //Spanish voice options for speechify
 import speechifySpanish1 from "../../assets/voice_preview_speechify_alejandro.wav";
 import speechifySpanish2 from "../../assets/voice_preview_speechify_celia.wav";
-import SelectCompOption from "../../components/common/Audio/SelectCompOption";
 
 interface VoiceOption {
   label: string;
@@ -286,6 +285,8 @@ const AudioAnimationPage: React.FC = () => {
     ];
   }
 
+  console.log(sortedLabels, "check")
+
   useEffect(() => {
     if (id) {
       // dispatch(getLabels(id));
@@ -524,8 +525,33 @@ const AudioAnimationPage: React.FC = () => {
                         sx={{ mt: 2, mb: 2 }}
                         key={index}
                       >
+                        {/* Script Type */}
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                          <SelectComp
+                            label="Character"
+                            options={sortedLabels}
+                            value={charName}
+                              disabled={true}
+                          
+                            style={true}
+                          />
+                        </Grid>
+                        {/* Slect Tool */}
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                          <SelectComp
+                            label="Tool"
+                            options={narrationVoiceOptions}
+                            value={narrationSelections[charName] || ""}
+                            onChange={(value) =>
+                              handleNarrationChange(charName, value)
+                            }
+                            placeholder="Select Tool"
+                            style={true}
+                          />
+                        </Grid>
+
                         {/* Language */}
-                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
                           <SelectComp
                             label="Language"
                             options={languageOptions}
@@ -542,7 +568,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         {/* Gender */}
-                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
                           <SelectComp
                             label="Gender"
                             options={genderOptions}
@@ -558,25 +584,23 @@ const AudioAnimationPage: React.FC = () => {
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                          <SelectComp
-                            label={charName}
-                            options={narrationVoiceOptions}
-                            value={narrationSelections[charName] || ""}
-                            onChange={(value) =>
-                              handleNarrationChange(charName, value)
-                            }
-                            placeholder="Select Tool"
-                            style={true}
-                          />
-                        </Grid>
-
-                        <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                          <Typography
+                            sx={{
+                              fontSize: "1rem",
+                              fontWeight: 400,
+                              mb: "8px",
+                              lineHeight: "1.5",
+                            }}
+                          >
+                            Voice options
+                          </Typography>
                           <SelectWithAudio
                             disabled={
                               !languageSelections[charName] ||
                               !narrationSelections[charName]
                             }
+                            label="Voice Options/Voice Name"
                             options={
                               Array.isArray(audioAnimationData?.scenes) &&
                               audioAnimationData.scenes.length > 0
@@ -589,17 +613,6 @@ const AudioAnimationPage: React.FC = () => {
                                   )
                                 : getFilteredVoiceOptions(charName)
                             }
-                            // options={
-                            //   audioAnimationData?.scenes === null
-                            //     ? getFilteredVoiceOptions(charName)
-                            //     : getFilteredVoiceOptions(charName).map(
-                            //         (opt) => ({
-                            //           ...opt,
-                            //           disabled:
-                            //             voiceSelections[charName] !== opt.value,
-                            //         })
-                            //       )
-                            // }
                             placeholder="Select Voice"
                             value={voiceSelections[charName] || ""}
                             onChange={(value) =>
@@ -661,7 +674,8 @@ const AudioAnimationPage: React.FC = () => {
                     <ButtonComp
                       disabled={
                         (!audioAnimationData?.scenes &&
-                        !audioAnimationData?.scenes?.length > 0) || audioAnimationLoader
+                          !audioAnimationData?.scenes?.length > 0) ||
+                        audioAnimationLoader
                       }
                       label={"Create Transition"}
                       sx={{ textTransform: "none", backgroundColor: "#99d539" }}

@@ -106,7 +106,7 @@ export const postDeleteScene =
     dispatch(setScriptLoader(true));
     try {
       const res = await api.post("mongo/delete_scene", data);
-      console.log(res, "check_delter");
+      // console.log(res, "check_delter");
       if (res.status) {
         dispatch(
           setScriptData({
@@ -116,7 +116,7 @@ export const postDeleteScene =
         // successDelete();
       }
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
@@ -149,7 +149,7 @@ export const postEditScene =
         // successDelete();
       }
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
@@ -201,12 +201,11 @@ export const postPromptSetupCharacters =
     dispatch(setScriptLoader(true));
     try {
       const res = await api.post(`characters/setup-prompts?script_id=${id}`);
-      console.log(res, "check_setup_characters");
       if (res.status) {
         dispatch(setPromptData(res?.data?.prompts));
       }
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
@@ -223,7 +222,6 @@ export const patchEditPromp =
         `characters/edit-prompt?script_id=${id}&character_name=${name}`,
         { new_prompt }
       );
-      console.log(res, "check_edit_characters");
       if (res.status) {
         // dispatch(setPromptData(res?.data?.prompts));
         dispatch(
@@ -234,7 +232,7 @@ export const patchEditPromp =
         );
       }
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));

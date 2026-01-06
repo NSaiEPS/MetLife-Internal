@@ -451,7 +451,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       },
       is_save_action: true,
     };
-    console.log(data);
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {

@@ -281,7 +281,7 @@ export const postGenerateFullVideo =
       const res: ApiResponse = await api.post(
         `media/generate-video-full/${id}`
       );
-      console.log(res, "final_video_response");
+      // console.log(res, "final_video_response");
 
       if (res.status) {
         // let data = {

@@ -65,7 +65,6 @@ export const CharacterCarousel = ({
 
   const handleEditPrompt = (characterName: string, character_id: string) => {
     const updatedPrompt = prompts[characterName];
-    // console.log(updatedPrompt, "chekc_prompt")
     dispatch(patchEditPromp(id, character_id, characterName, updatedPrompt));
   };
 
@@ -96,6 +95,7 @@ export const CharacterCarousel = ({
           alignItems: "center",
           gap: 2,
           position: "relative",
+          overflowY: "scroll !important"
         }}
       >
         <IconButton
@@ -122,6 +122,8 @@ export const CharacterCarousel = ({
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
+                maxHeight: "30rem",
+                overflowY: "scroll",
               }}
             >
               {promptData?.length &&

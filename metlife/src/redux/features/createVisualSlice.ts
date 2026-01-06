@@ -138,7 +138,7 @@ export const postEditVisualContent =
       toast.success(response?.data?.message || "Prompt updated successfully");
       onClose(false);
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setSaveVisualContentLoader(false));

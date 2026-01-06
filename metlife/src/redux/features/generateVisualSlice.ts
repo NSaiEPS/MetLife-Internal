@@ -135,7 +135,7 @@ export const postEditGenerateVisualContent =
       );
       onClose(false);
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setGenerateVisualLoader(false));
@@ -150,7 +150,7 @@ export const deleteGenerateVisualContent =
       toast.success(response?.data?.message || "Deleted successfully");
       onClose(false);
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setGenerateVisualLoader(false));
@@ -168,7 +168,7 @@ export const postRegenerateImage =
       dispatch(updateGenerateVisual({ visuals: response?.data?.visuals }));
       onCloseTempData(false);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       onCloseTempData(true);
     } finally {
       dispatch(setGenerateVisualLoader(false));

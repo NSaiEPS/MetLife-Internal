@@ -113,12 +113,12 @@ const GenerateVisualsPage = () => {
 
   const handleGenerateVideo = () => {
     // wire up real API later. For now show console
-    console.log(
-      "Generate video for scene:",
-      selectedScene,
-      "visualType:",
-      selectedVisualType
-    );
+    // console.log(
+    //   "Generate video for scene:",
+    //   selectedScene,
+    //   "visualType:",
+    //   selectedVisualType
+    // );
     alert(`Generate video for ${selectedScene.title} as ${selectedVisualType}`);
   };
 

@@ -72,7 +72,7 @@ export const postStitchAllVideos =
         toast.success("Video stitching completed successfully!");
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error("Something went wrong");
     } finally {
       dispatch(setConversationalLoader(false));
@@ -102,7 +102,7 @@ export const uploadSceneClip = (data: any) => async (dispatch: AppDispatch) => {
       // toast.success("Video scene uploaded successfully!");
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     toast.error("Upload Failed!");
   } finally {
     // dispatch(setUploadSceneClipLoader(false));

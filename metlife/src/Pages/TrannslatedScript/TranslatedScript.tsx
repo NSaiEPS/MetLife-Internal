@@ -65,7 +65,7 @@ const TranslatedScript: React.FC = () => {
           setPdfViewData(result.data);
         }
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         toast.error("Failed to fetch data");
       }
     };

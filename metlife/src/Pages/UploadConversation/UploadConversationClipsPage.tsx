@@ -65,7 +65,7 @@ const UploadConversationalClipsPage: React.FC = () => {
   const { generateVisualLoader, scenesData } = useSelector(
     (store: RootState) => store.GenerateVisualContent
   );
-  console.log(scenesData, "scenesData");
+
 
   const title = scenesData?.title;
   const {
@@ -181,7 +181,6 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
-  console.log(remainingScenes, "remainingScenes");
   return (
     <>
       <div className={styles.container}>

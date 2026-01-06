@@ -195,7 +195,7 @@ const GenerateScript: React.FC = () => {
   const apiCall = async () => {
     setLoader(true);
     const characterPayload = buildCharacterPayload(characters);
-    console.log("Character Payload:", characterPayload);
+    // console.log("Character Payload:", characterPayload);
     const new_payload: any = {
       title,
       brief: scriptText,

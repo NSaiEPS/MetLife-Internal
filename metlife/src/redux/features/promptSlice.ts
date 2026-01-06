@@ -75,7 +75,7 @@ export const postSavePrompt =
         if (setOperations) setOperations(true);
       }
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setPromptLoader(false));

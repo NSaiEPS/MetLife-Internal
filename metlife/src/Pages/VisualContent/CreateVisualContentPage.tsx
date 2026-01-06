@@ -103,7 +103,6 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent
   );
-  console.log(saveVisualContentData?.flow_type, "check_data")
 
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
