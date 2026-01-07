@@ -175,7 +175,7 @@ const AnimationPage: React.FC = () => {
       setAnimationData((prev) => {
         if (prev.length > 0) return prev;
 
-        return videoAnimationData.map((scene) => ({
+        return videoAnimationData?.map((scene) => ({
           scene_number: scene.scene_number,
           scene_id: scene.scene_id,
           start_transition: scene.start_transition ?? "none",
@@ -188,7 +188,7 @@ const AnimationPage: React.FC = () => {
   /* ---------- HANDLERS ---------- */
 
   const handleAllSubmit = () => {
-    const updated = videoAnimationData.map((scene) => ({
+    const updated = videoAnimationData?.map((scene) => ({
       scene_number: scene.scene_number,
       scene_id: scene.scene_id,
       start_transition: entryAnimation,
