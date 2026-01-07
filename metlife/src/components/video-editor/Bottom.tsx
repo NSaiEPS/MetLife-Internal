@@ -82,7 +82,7 @@ export default function Bottom({
     ost: "",
   });
 
-  // console.log(videosData, "videosData");
+  console.log(videosData, "videosData");
 
   const downloadVideo = (s3_url: string, name: string) => {
     // const link = document.createElement("a");
@@ -221,13 +221,14 @@ export default function Bottom({
         }}
       >
         {videosData?.map((row, i) => {
+          console.log(row, "rows")
           const isActive = i === active;
           const applied = animationData.find(
             (a) =>
               a.scene_number === row.scene_number &&
               (a.start_transition !== "none" || a.end_transition !== "none")
           );
-
+          console.log(videosData, "cvskdhjf");
           return (
             <Box
               key={i}
@@ -257,7 +258,7 @@ export default function Bottom({
                 <Box
                   component="img"
                   src={
-                    type === "final-video" ? finalVideoImg : row.image_urls[0]
+                    type === "final-video" ? finalVideoImg : row?.image_urls ? row?.image_urls[0] : ""
                   }
                   alt=""
                   sx={{

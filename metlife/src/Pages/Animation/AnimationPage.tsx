@@ -291,56 +291,6 @@ const AnimationPage: React.FC = () => {
                     />
                   )}
 
-                  {/* {finalAnimationTime > 0 && (
-                    <Timer
-                      time={finalAnimationTime}
-                      onComplete={() => setAnimationVideos(true)}
-                    />
-                  )} */}
-
-                  {/* {
-                    videoAnimationData?.length > 0 &&
-                      sceneData?.video_exists === true && (
-                        <>
-                          <Typography
-                            sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
-                          >
-                            Available Videos
-                          </Typography>
-                          <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {videoAnimationData?.map((scene, idx) => (
-                              <Grid
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                                key={idx}
-                                sx={{ width: "100%" }}
-                              >
-                                <GeneratedVideoPlayer
-                                  data={scene}
-                                  image_url={scene?.image_urls[0]}
-                                  index={idx}
-                                  description={scene?.ost}
-                                  s3_url={scene?.final_video?.url}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        </>
-                      )
-                    //  : (
-                    //   <>
-                    //     {
-                    //       <NoDataMessage
-                    //         filter={false}
-                    //         loading={!videoAnimationData}
-                    //       />
-                    //     }
-
-                    //   </>
-                    // )
-                  } */}
                   {showTimeline && (
                     <Grid container>
                       <Typography
@@ -400,7 +350,6 @@ const AnimationPage: React.FC = () => {
                               borderRadius: 3,
                             }}
                           >
-                            {/* disabled={videoAnimationData} */}
                             <FormControl disabled={finalTime > 0}>
                               <RadioGroup
                                 value={entryAnimation}
@@ -484,26 +433,12 @@ const AnimationPage: React.FC = () => {
                           }}
                           action={handleAlternateSubmit}
                           disabled={finalTime > 0}
-                          // disabled={
-                          //   audioAnimationLoader ||
-                          //   videoAnimationLoader ||
-                          //   generatedVideoData ||
-                          //   videoAnimationData ||
-                          //   sceneData?.video_exists === true
-                          // }
                         />
                         <ButtonComp
                           label={"Apply To All"}
                           sx={{ textTransform: "none" }}
                           action={handleAllSubmit}
                           disabled={finalTime > 0}
-                          // disabled={
-                          //   audioAnimationLoader ||
-                          //   videoAnimationLoader ||
-                          //   generatedVideoData ||
-                          //   videoAnimationData ||
-                          //   sceneData?.video_exists === true
-                          // }
                         />
 
                         <ButtonComp
@@ -560,10 +495,6 @@ const AnimationPage: React.FC = () => {
                           handleAllSubmitInside={handleAllSubmit}
                           handleAnimationChanges={handleAnimationChanges}
                         />
-
-                        {/* <FullVideoPlayer
-                            video_url={generatedVideoData?.final_video?.url}
-                          /> */}
                       </>
                     )}
                 </div>
@@ -582,3 +513,63 @@ const AnimationPage: React.FC = () => {
 };
 
 export default AnimationPage;
+
+{
+  /* {finalAnimationTime > 0 && (
+                    <Timer
+                      time={finalAnimationTime}
+                      onComplete={() => setAnimationVideos(true)}
+                    />
+                  )} */
+}
+
+{
+  /* {
+                    videoAnimationData?.length > 0 &&
+                      sceneData?.video_exists === true && (
+                        <>
+                          <Typography
+                            sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                          >
+                            Available Videos
+                          </Typography>
+                          <Grid container spacing={2} sx={{ mt: 1 }}>
+                            {videoAnimationData?.map((scene, idx) => (
+                              <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                key={idx}
+                                sx={{ width: "100%" }}
+                              >
+                                <GeneratedVideoPlayer
+                                  data={scene}
+                                  image_url={scene?.image_urls[0]}
+                                  index={idx}
+                                  description={scene?.ost}
+                                  s3_url={scene?.final_video?.url}
+                                />
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </>
+                      )
+                    //  : (
+                    //   <>
+                    //     {
+                    //       <NoDataMessage
+                    //         filter={false}
+                    //         loading={!videoAnimationData}
+                    //       />
+                    //     }
+
+                    //   </>
+                    // )
+                  } */
+}
+{
+  /* <FullVideoPlayer
+                            video_url={generatedVideoData?.final_video?.url}
+                          /> */
+}
