@@ -17,6 +17,11 @@ import oneFrame from "../../assets/OneFrame.png";
 import unnamed from "../../assets/updatedLogo.png";
 import serfAilogo from "../../assets/serfAi-logo.jpg";
 import mailIcon from "../../assets/mail-account.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { postAuthLogin } from "../../redux/auth/authSlice";
+import type { RootState } from "../../redux/store";
+import FullScreenGradientLoader from "../common/GradientLoader";
+import { navigateTo } from "../../utils/navigate";
 
 /* ---------------- Types ---------------- */
 
@@ -34,6 +39,10 @@ interface FormErrors {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { userInfo, authLoader } = useSelector(
+    (store: RootState) => store.Auth
+  );
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -42,7 +51,7 @@ const Login: React.FC = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [permission, setPermission] = useState<boolean>(false);
 
   /* ---------------- Handlers ---------------- */
 
@@ -84,25 +93,32 @@ const Login: React.FC = () => {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+    console.log(formData, "check_formData");
 
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
-    try {
-      setLoading(true);
-      // API CALL HERE
-      navigate("/dashboard");
-    } finally {
-      setLoading(false);
-    }
+    // dispatch(postAuthLogin(formData, successPermission));
+    // try {
+    //   setLoading(true);
+    //   // API CALL HERE
+    //   navigate("/dashboard");
+    // } finally {
+    //   setLoading(false);
+    // }
   };
+
+  const successPermission = () => {
+    navigateTo(`/dashboard`);
+  }
 
   /* ---------------- JSX ---------------- */
 
   return (
+    <>
+    {authLoader && <FullScreenGradientLoader text="Loading..." />}
     <Grid
       container
       justifyContent="center"
@@ -224,7 +240,7 @@ const Login: React.FC = () => {
                 backgroundColor: "#239DE0",
               }}
               type="submit"
-              disabled={loading}
+              disabled={authLoader}
             >
               Log in
             </Button>
@@ -246,6 +262,7 @@ const Login: React.FC = () => {
         />
       </Grid>
     </Grid>
+    </>
   );
 };
 

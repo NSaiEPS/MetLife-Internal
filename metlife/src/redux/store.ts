@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-
+import authSlice from "./auth/authSlice";
 import dashBoardSlice from "./features/dashBoardSlice";
 import saveTranslatedDataSlice from "./features/saveSlice";
 import createVisualContentSlice from "./features/createVisualSlice";
@@ -12,6 +12,7 @@ import conversationalSlice from "./features/conversationalSlice";
 
 export const store = configureStore({
   reducer: {
+    Auth:authSlice,
     DashBoard: dashBoardSlice,
     SaveTranslatedData: saveTranslatedDataSlice,
     CreateVisualContent: createVisualContentSlice,
