@@ -82,7 +82,7 @@ const UploadConversationalClipsPage: React.FC = () => {
     scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
     [];
   const hasMissingScenes = remainingScenes.length > 0;
-  const maxFileSize = 2 * 1024 * 1024;
+  const maxFileSize = 10 * 1024 * 1024;
 
   useEffect(() => {
     if (uploadSceneClipResponse) {
@@ -106,7 +106,7 @@ const UploadConversationalClipsPage: React.FC = () => {
     if (!file) return;
 
     if (file.size > maxFileSize) {
-      showToast.error("File size must be less than or equal to 2 MB");
+      showToast.error("File size must be less than or equal to 10 MB");
       e.target.value = "";
       return;
     }
