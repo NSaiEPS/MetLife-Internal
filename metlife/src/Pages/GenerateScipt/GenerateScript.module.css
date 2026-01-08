@@ -2,7 +2,7 @@
 .page {
   min-height: 100vh;
   background: #f7fbfc;
-  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  /* font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; */
 }
 
 /* ===========================
@@ -34,7 +34,7 @@ border-radius: 10px !important;
 .input::placeholder{
    color: #aaa;
    font-size: 16px;
-  font-family: "Roboto", sans-serif !important;
+  /* font-family: "Roboto", sans-serif !important; */
 }
 
 .brand {
@@ -64,14 +64,14 @@ border-radius: 10px !important;
   color: #666;
   resize: none;
   margin-bottom: 28px;
-  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  /* font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; */
   box-sizing: border-box;
 }
 
 .scriptTextarea::placeholder{
    color: #aaa;
    font-size: 16px;
-  font-family: "Roboto", sans-serif !important;
+  /* font-family: "Roboto", sans-serif !important; */
 }
 
 .bookmarkIcon {

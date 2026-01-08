@@ -3,7 +3,7 @@ import {
   Box,
   Typography,
   CircularProgress,
-  Button,
+  // Button,
   SvgIcon,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -11,6 +11,7 @@ import { motion, useAnimation } from "framer-motion";
 import type { VideoData } from "../../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
+import Button from "../common/Buton/Button";
 
 interface CenterDivProps {
   progress: number;
@@ -45,12 +46,10 @@ const CenterDiv: React.FC<CenterDivProps> = ({
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(false);
   const [videoLoadError, setVideoLoadError] = useState<boolean>(false);
   const [videoDuration, setVideoDuration] = useState<number>(duration);
-  
-  const {
-    generatedVideoData,
-  } = useSelector((store) => store.AudioAnimation);
 
-const finalVideoTitle = generatedVideoData?.title;
+  const { generatedVideoData } = useSelector((store) => store.AudioAnimation);
+
+  const finalVideoTitle = generatedVideoData?.title;
   // Track if this specific video has started
   const hasStartedRef = useRef<boolean>(false);
   const iconTimeoutRef = useRef<number | null>(null);
@@ -321,7 +320,7 @@ const finalVideoTitle = generatedVideoData?.title;
           }}
         />
 
-    {/* <video
+        {/* <video
     ref={videoRef}
     src={data.final_video.url}
     preload="metadata"
@@ -461,6 +460,9 @@ const finalVideoTitle = generatedVideoData?.title;
             <Button variant="contained" sx={{ bgcolor: "#61B2E9" }}>
               Retry
             </Button>
+            {/* <button>
+              Retry
+            </button> */}
           </Box>
         )}
 
