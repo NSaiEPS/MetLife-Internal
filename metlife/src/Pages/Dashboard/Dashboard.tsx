@@ -93,13 +93,13 @@ const MyVideosDashboard: React.FC = () => {
     },
     {
       title: "In Progress",
-      value: completed_result?.length,
+      value: total_progress,
       color: "#E8F5E9",
       icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
     },
     {
       title: "Completed Scripts",
-      value: total_progress,
+      value: completed_result?.length,
       color: "#FFEBEE",
       icon: <PlayCircle fontSize="large" color="error" />,
     },
@@ -314,9 +314,7 @@ const MyVideosDashboard: React.FC = () => {
             <TableBody>
               {dashBoardInfo.map((video: any, i: number) => (
                 <TableRow key={i}>
-                  <TableCell>
-                    {i + 1}
-                  </TableCell>
+                  <TableCell>{i + 1}</TableCell>
                   <TableCell>
                     <Avatar
                       src={video.thumbnail}

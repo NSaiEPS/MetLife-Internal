@@ -61,41 +61,6 @@ const VideoCreationOptions: React.FC = () => {
             alignItems="stretch"
             sx={{ maxWidth: 1000, width: "100%" }}
           >
-            {/* Upload Script Card */}
-            <Grid item xs={12} sm={6} md={4}>
-              <div className={styles.beigeCard}>
-                <div className={styles.completeBoxData}>
-                  <Typography variant="h6" className={styles.boxHeading}>
-                    {/* Upload a Script
-                     */}
-                    Localization
-                  </Typography>
-
-                  <Typography className={styles.boxText}>
-                    Already have a script? Upload a .pdf file or video to get started.
-                  </Typography>
-
-                  <div className={styles.parentContainer}>
-                    <ButtonComp
-                      // label="Upload a Script"
-                      label="Localization"
-                      sx={styles.Button}
-                      icon={UploadIcon}
-                      variant="contained"
-                      // action={() => navigate("/upload-script")}
-                      action={handleOpenMenu}
-                    />
-
-                    <UploadPopup
-                      open={open}
-                      openPopup={openPopup}
-                      handleCloseMenu={handleCloseMenu}
-                     />
-                  </div>
-                </div>
-              </div>
-            </Grid>
-
             {/* Generate Script Card */}
             <Grid item xs={12} sm={6} md={4}>
               <div className={styles.beigeCard}>
@@ -116,6 +81,42 @@ const VideoCreationOptions: React.FC = () => {
                       icon={AutoFixHighIcon}
                       variant="contained"
                       action={() => navigate("/generate-script")}
+                    />
+                  </div>
+                </div>
+              </div>
+            </Grid>
+
+            {/* Upload Script Card */}
+            <Grid item xs={12} sm={6} md={4}>
+              <div className={styles.beigeCard}>
+                <div className={styles.completeBoxData}>
+                  <Typography variant="h6" className={styles.boxHeading}>
+                    {/* Upload a Script
+                     */}
+                    Localization
+                  </Typography>
+
+                  <Typography className={styles.boxText}>
+                    Already have a script? Upload a .pdf file or video to get
+                    started.
+                  </Typography>
+
+                  <div className={styles.parentContainer}>
+                    <ButtonComp
+                      // label="Upload a Script"
+                      label="Localization"
+                      sx={styles.Button}
+                      icon={UploadIcon}
+                      variant="contained"
+                      // action={() => navigate("/upload-script")}
+                      action={handleOpenMenu}
+                    />
+
+                    <UploadPopup
+                      open={open}
+                      openPopup={openPopup}
+                      handleCloseMenu={handleCloseMenu}
                     />
                   </div>
                 </div>
