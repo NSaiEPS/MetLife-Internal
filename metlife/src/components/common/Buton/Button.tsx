@@ -83,12 +83,12 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
         backgroundColor:
         colorType === "primary" ? "#007ABC" : "#FFFFFF",
         color:  colorType === "primary" ? "#FFFFFF" : "#2f91c7",
-        border: colorType !== "primary" && "2px solid #64add5",
+        border: !disabled && colorType !== "primary" && "2px solid #64add5",
         "&:hover": {
           backgroundColor:
             colorType === "primary" ? "#0061A0" : "#0061A0",
             color:  colorType === "primary" ? "#FFFFFF" : "#FFFFFF",
-            border: colorType !== "primary" && "2px solid #64add5",
+            border: colorType !== "primary" && "2px solid #0061A0",
 
 
         },
