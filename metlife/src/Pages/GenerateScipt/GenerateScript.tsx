@@ -301,15 +301,21 @@ const GenerateScript: React.FC = () => {
       <main className={styles.cardWrap}>
         <div className={styles.card}>
           <div className={styles.headerRow}>
-            {" "}
-            <h1 className={styles.title}>Generate Script</h1>{" "}
             <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                paddingX: 0,
+              }}
             >
-              {" "}
-              <IoArrowBackCircleOutline size={30} /> Back{" "}
-            </Button>{" "}
+              <IoArrowBackCircleOutline size={30} />
+              <span>Back</span>
+            </Button>
+
+            <h1 className={styles.title}>Generate Script</h1>
           </div>
           <div>
             <Input
