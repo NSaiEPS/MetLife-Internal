@@ -24,6 +24,7 @@ import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import type { RootState } from "../../redux/store"; // adjust path if needed
 import { navigateTo } from "../../utils/navigate";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 
 // ---------- Types ----------
 interface VisualRow {
@@ -74,10 +75,15 @@ const GenerateVisualContentPage: React.FC = () => {
     (store: RootState) => store.GenerateVisualContent
   );
   const conversational =
-    generateVisualContentData?.flow_type === "conversation" || generateVisualContentData?.video_style === "conversational";
+    generateVisualContentData?.flow_type === "conversation" ||
+    generateVisualContentData?.video_style === "conversational";
 
   const { audioAnimationLoader } = useSelector(
     (store: RootState) => store.AudioAnimation
+  );
+
+  const { saveLoader, saveTranslatedData } = useSelector(
+    (store) => store.SaveTranslatedData
   );
 
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
@@ -345,122 +351,160 @@ const GenerateVisualContentPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    navigateTo(`/upload-conversational-clips/${id}`)
-  }
+    navigateTo(`/upload-conversational-clips/${id}`);
+  };
+
+  const handleSave = () => {
+    const { title, ...rest } = generateVisualContentData;
+
+    const data = {
+      data: {
+        ...rest,
+        script_id: id,
+        title: title,
+        page: "visual",
+      },
+      is_save_action: true,
+    };
+    dispatch(postTranslatedDataSave(data, id));
+  };
 
   // ---------- Render ----------
   return (
-    <div className={styles.container}>
-      <OneFrameHeader />
-      <div className={styles.tableContainer}>
-        {generateVisualContentData?.visuals?.length &&
-        generateVisualContentData?.visuals?.length > 0 ? (
-          <>
-            <div className={styles.innerContainer}>
-              <div className={styles.header}>
-                <h2 className={styles.title}>
-                  {generateVisualContentData?.title || "Visual Content"}
-                </h2>
-                <Button
-                  className={styles.icon}
-                  onClick={() =>
-                    navigate(`/create-visual-content/${prompt_batch_id}`)
-                  }
-                >
-                  <IoArrowBackCircleOutline size={30} /> Back
-                </Button>
+    <>
+      {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
+
+      <div className={styles.container}>
+        <OneFrameHeader />
+        <div className={styles.tableContainer}>
+          {generateVisualContentData?.visuals?.length &&
+          generateVisualContentData?.visuals?.length > 0 ? (
+            <>
+              <div className={styles.innerContainer}>
+                <div className={styles.header}>
+                  <h2 className={styles.title}>
+                    {generateVisualContentData?.title || "Visual Content"}
+                  </h2>
+                  <Button
+                    className={styles.icon}
+                    onClick={() =>
+                      navigate(`/create-visual-content/${prompt_batch_id}`)
+                    }
+                  >
+                    <IoArrowBackCircleOutline size={30} /> Back
+                  </Button>
+                </div>
               </div>
-            </div>
 
-            <VisualContentTable
-              columns={columns}
-              rows={rows}
-              actions={actions}
-              updateImagesInRow={updateImagesInRow}
-              updatePromptInRow={updatePromptInRow}
-              conversational={conversational}
-            />
-
-            {popup.type === "upload" && (
-              <ImageUploadPopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                script_id={id!}
-                prompt_batch_id={prompt_batch_id}
-                title={title}
-                // handleImageUpdate={handleImageUpdate}
+              <VisualContentTable
+                columns={columns}
+                rows={rows}
+                actions={actions}
+                updateImagesInRow={updateImagesInRow}
+                updatePromptInRow={updatePromptInRow}
+                conversational={conversational}
               />
-            )}
 
-            {popup.type === "video_upload" && (
-              <VideoUploadPopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                script_id={id!}
-                prompt_batch_id={prompt_batch_id}
-                title={title}
-              />
-            )}
-
-            {popup.type === "edit" && (
-              <EditVisualPopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                script_id={id!}
-                prompt_batch_id={prompt_batch_id}
-                handleUpdate={handleUpdate}
-              />
-            )}
-
-            {popup.type === "regenerate" && (
-              <RegenerateImagePopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                prompt_batch_id={prompt_batch_id}
-              />
-            )}
-            <div className={styles.footerButtons}>
-              {conversational ? (
-                <>
-                  <Button
-                    variant="contained"
-                    className={styles.primaryBtn}
-                    onClick={handleNext}
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    variant="contained"
-                    className={styles.primaryBtn}
-                    onClick={handleDownloadAssets}
-                    disabled={generateVisualLoader}
-                  >
-                    Download Assets
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="contained"
-                  className={styles.primaryBtn}
-                  onClick={handleAudioAndAnimation}
-                  disabled={generateVisualLoader}
-                >
-                  Audio & Animation Toolkit
-                </Button>
+              {popup.type === "upload" && (
+                <ImageUploadPopup
+                  open
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={id!}
+                  prompt_batch_id={prompt_batch_id}
+                  title={title}
+                  // handleImageUpdate={handleImageUpdate}
+                />
               )}
-            </div>
-          </>
-        ) : (
-          <NoDataMessage filter={false} loading={generateVisualLoader} />
-        )}
-      </div>
 
-      <Footer />
-    </div>
+              {popup.type === "video_upload" && (
+                <VideoUploadPopup
+                  open
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={id!}
+                  prompt_batch_id={prompt_batch_id}
+                  title={title}
+                />
+              )}
+
+              {popup.type === "edit" && (
+                <EditVisualPopup
+                  open
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={id!}
+                  prompt_batch_id={prompt_batch_id}
+                  handleUpdate={handleUpdate}
+                />
+              )}
+
+              {popup.type === "regenerate" && (
+                <RegenerateImagePopup
+                  open
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  prompt_batch_id={prompt_batch_id}
+                />
+              )}
+              <div className={styles.footerButtons}>
+                {conversational ? (
+                  <>
+                    <Button
+                      variant="outlined"
+                      className={styles.largeOutline}
+                      onClick={handleSave}
+                      disabled={saveLoader}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className={styles.primaryBtn}
+                      onClick={handleNext}
+                      disabled={saveTranslatedData === null}
+                    >
+                      Next
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className={styles.primaryBtn}
+                      onClick={handleDownloadAssets}
+                      disabled={generateVisualLoader || saveTranslatedData === null}
+                    >
+                      Download Assets
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outlined"
+                      className={styles.largeOutline}
+                      onClick={handleSave}
+                      disabled={saveLoader}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className={styles.primaryBtn}
+                      onClick={handleAudioAndAnimation}
+                      disabled={generateVisualLoader || saveTranslatedData === null}
+                    >
+                      Audio & Animation Toolkit
+                    </Button>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            <NoDataMessage filter={false} loading={generateVisualLoader} />
+          )}
+        </div>
+
+        <Footer />
+      </div>
+    </>
   );
 };
 

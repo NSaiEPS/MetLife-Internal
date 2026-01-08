@@ -154,6 +154,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [flowStep, setFlowStep] = useState<FlowStep>(null);
   const PROVIDERS = ["google", "azure", "gpt"] as const;
   type ProviderType = (typeof PROVIDERS)[number];
+  const PROVIDER_LABELS: Record<ProviderType, string> = {
+    google: "GOOGLE",
+    azure: "AZURE",
+    gpt: "OneFrame Translator",
+  };
   const [selectedProvider, setSelectedProvider] =
     React.useState<ProviderType>("azure");
 
@@ -873,7 +878,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 open={open}
                 onClose={() => setOpen(false)}
                 title="Select Language"
-                
               >
                 <div className={styles.languageList}>
                   {/* Translate tool options */}
@@ -922,10 +926,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <div className={styles.popupButtonRow}>
                   <FormControl size="small" className={styles.providerDropdown}>
                     <Select
-                    sx={{
-                      height: "80px",
-                      width:"110px"
-                    }}
+                      sx={{
+                        height: "80px",
+                        width: "110px",
+                      }}
                       value={selectedProvider}
                       onChange={(e) =>
                         setSelectedProvider(e.target.value as ProviderType)
@@ -933,7 +937,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     >
                       {PROVIDERS.map((provider) => (
                         <MenuItem key={provider} value={provider}>
-                          {provider.toUpperCase()}
+                          {/* {provider.toUpperCase()} */}
+                          {PROVIDER_LABELS[provider]}
                         </MenuItem>
                       ))}
                     </Select>
