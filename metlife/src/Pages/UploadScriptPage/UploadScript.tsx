@@ -371,16 +371,21 @@ const UploadScript = () => {
                   state: { data: scriptData, pdf: false },
                 })
               }
-            />
+            >
+              {loader ? "Submitting" : "Submit"}
+            </ButtonComp>
             <ButtonComp
               label="Sample Download"
+              colorType="secondary"
               variant="contained"
               action={handleDownloadScript}
               sx={{
-                backgroundColor: "#239DE0",
-                "&:hover": { backgroundColor: "#7fbcddff" },
+                // backgroundColor: "#239DE0",
+                // "&:hover": { backgroundColor: "#7fbcddff" },
               }}
-            />
+            >
+              Sample Download
+            </ButtonComp>
           </div>
         </div>
         <DownloadPopup

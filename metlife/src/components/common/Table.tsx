@@ -958,8 +958,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           )}
 
           {showDragAndActions && features && (
-            <Button
+            <ButtonComp
               variant="outlined"
+              colorType="secondary"
               className={styles.largeOutline}
               disabled={pathname.startsWith("SCRIPT-")}
               onClick={() => {
@@ -969,7 +970,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               }}
             >
               Regenerate Script
-            </Button>
+            </ButtonComp>
           )}
 
           {/* Regenerate Popup */}
@@ -986,14 +987,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           />
 
           {features && (
-            <Button
+            <ButtonComp
               variant="outlined"
+              colorType="secondary"
               className={styles.largeOutline}
               onClick={handleSave}
               disabled={saveLoader}
             >
               Save
-            </Button>
+            </ButtonComp>
           )}
 
           {features && (
@@ -1018,7 +1020,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 arrow
               >
                 <span>
-                  <Button
+                  <ButtonComp
                     onClick={
                       tableExtraData?.video_style === "conversational" ||
                       tableExtraData?.video_style === "mixed"
@@ -1026,6 +1028,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         : handleCreateVisualContent
                     }
                     variant="contained"
+                    colorType="secondary"
                     className={styles.primaryBtn}
                     disabled={
                       saveTranslatedData === null ||
@@ -1035,7 +1038,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     }
                   >
                     Create Visual Content
-                  </Button>
+                  </ButtonComp>
                 </span>
               </Tooltip>
               {tableExtraData?.video_style === "conversational" ||

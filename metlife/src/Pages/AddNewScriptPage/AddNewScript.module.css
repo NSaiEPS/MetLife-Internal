@@ -93,6 +93,7 @@
   border-radius: 8px;
   background-color: #99d538 !important;
   color: #fff;
+  line-height: 0;
 }
 .noDataText {
   text-align: center;
