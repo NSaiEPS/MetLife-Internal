@@ -84,7 +84,7 @@ const VideoCreationOptions: React.FC = () => {
                       variant="contained"
                       // action={() => navigate("/upload-script")}
                       action={handleOpenMenu}
-                    />
+                    >Localization</ButtonComp>
 
                     <UploadPopup
                       open={open}
@@ -116,7 +116,7 @@ const VideoCreationOptions: React.FC = () => {
                       icon={AutoFixHighIcon}
                       variant="contained"
                       action={() => navigate("/generate-script")}
-                    />
+                    >Generate a Script</ButtonComp>
                   </div>
                 </div>
               </div>

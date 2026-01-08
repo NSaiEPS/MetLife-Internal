@@ -23,6 +23,7 @@ import { getDashboardInfo } from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
+import ButtonComp from "../../components/common/Buton/Button";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -284,17 +285,16 @@ const MyVideosDashboard: React.FC = () => {
             Video List
           </Typography>
 
-          <Button
+          <ButtonComp
             variant="contained"
+            colorType="secondary"
+            label="+ Create New Video"
             sx={{
-              bgcolor: "#29B6F6",
-              textTransform: "none",
-              borderRadius: "8px",
+              // bgcolor: "#2f91c7",
+              // borderRadius: "8px",
             }}
             onClick={handleClick}
-          >
-            + Create New Video
-          </Button>
+          > + Create New Video</ButtonComp>
         </Box>
 
         <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
@@ -324,11 +324,10 @@ const MyVideosDashboard: React.FC = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell>
-                  <TableCell>{`${
-                    video.language === null
+                  <TableCell>{`${video.language === null
                       ? ""
                       : video.language.slice(0, 2) + "_"
-                  }${video.title}`}</TableCell>
+                    }${video.title}`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>{getStatusChip(video)}</TableCell>

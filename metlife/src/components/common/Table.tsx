@@ -618,8 +618,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               arrow
             >
               <span>
-                <Button
+                <ButtonComp
                   variant="outlined"
+                  colorType="secondary"
                   className={styles1.outlineBtn}
                   onClick={() =>
                     handleVersion(tableExtraData?.previous_version_id)
@@ -627,7 +628,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   disabled={!tableExtraData?.previous_version_id}
                 >
                   ← Backward
-                </Button>
+                </ButtonComp>
               </span>
             </Tooltip>
 
@@ -642,25 +643,27 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               arrow
             >
               <span>
-                <Button
+                <ButtonComp
                   variant="outlined"
+                  colorType="secondary"
                   className={styles1.outlineBtn}
                   onClick={() => handleVersion(tableExtraData?.next_version_id)}
                   disabled={!tableExtraData?.next_version_id}
                 >
                   Forward →
-                </Button>
+                </ButtonComp>
               </span>
             </Tooltip>
 
             {/* Add Scene */}
-            <Button
+            <ButtonComp
               variant="outlined"
+              colorType="secondary"
               className={styles1.outlineBtn}
               onClick={() => addScene()}
             >
               + Add Scene
-            </Button>
+            </ButtonComp>
 
             {/* Show Source */}
             {!id?.startsWith("SCRIPT") && (
@@ -674,25 +677,25 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 arrow
               >
                 <span>
-                  <Button
+                  <ButtonComp
                     variant="contained"
                     className={styles1.primaryBtn}
                     onClick={handleShowSource}
                     disabled={tableExtraData?.data_source == "openai"}
                   >
                     Show Source
-                  </Button>
+                  </ButtonComp>
                 </span>
               </Tooltip>
             )}
             {!id?.startsWith("SCRIPT") && (
-              <Button
+              <ButtonComp
                 variant="contained"
                 className={styles1.BtnSavePrompt}
                 onClick={() => setOpenSavePrompt(true)}
               >
                 Save Prompt
-              </Button>
+              </ButtonComp>
             )}
             <ShowSourcePopup
               open={openShowPopup}
@@ -866,7 +869,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 variant="contained"
                 sx={{ backgroundColor: "#239DE0" }}
                 action={() => setOpen(true)}
-              />
+              >
+                {loader ? "Translating" : "Translate Script"}
+              </ButtonComp>
 
               {/* Language Popup */}
               <PopupModal

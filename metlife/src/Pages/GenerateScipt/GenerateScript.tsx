@@ -333,6 +333,15 @@ const GenerateScript: React.FC = () => {
             />
 
             {/* <img src={path} alt="Bookmark" className={styles.bookmarkIcon} /> */}
+            {/* <button
+              className={styles.savedBtn}
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              Saved Prompts
+            </button> */}
+
             <button
               className={styles.savedBtn}
               onClick={() => {
@@ -519,7 +528,9 @@ const GenerateScript: React.FC = () => {
                 label={loader ? "Generating..." : "Generate Script"}
                 className={styles.generateBtn}
                 action={handleGenerate}
-              />
+              >
+                {loader ? "Generating..." : "Generate Script"}
+              </ButtonComp>
             </div>
           </div>
         </div>
