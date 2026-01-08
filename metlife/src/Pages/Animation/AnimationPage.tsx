@@ -268,12 +268,14 @@ const AnimationPage: React.FC = () => {
               ))}
 
             <main className={styles.cardWrap}>
-              <div className={styles.card}>
-                <div className={styles.headerRow}>
-                  <h1 className={styles.title}>Animation Toolkit</h1>
-                </div>
+              <Box className={styles.card}>
+                <Box className={styles.headerRow}>
+                  <Typography variant="h4" className={styles.title}>
+                    Animation Toolkit
+                  </Typography>
+                </Box>
 
-                <div className={styles.insideContainer}>
+                <Box className={styles.insideContainer}>
                   {/* Available videos */}
                   {!timerDone &&
                     finalTime > 0 &&
@@ -471,9 +473,10 @@ const AnimationPage: React.FC = () => {
                     generatedVideoData?.final_video_status === "completed" && (
                       <>
                         <Typography
+                          variant="h4"
                           sx={{
                             fontSize: "20px",
-                            fontWeight: 500,
+                            fontWeight: 600,
                             mt: 1,
                             mb: 2,
                           }}
@@ -497,8 +500,8 @@ const AnimationPage: React.FC = () => {
                         />
                       </>
                     )}
-                </div>
-              </div>
+                </Box>
+              </Box>
             </main>
           </>
         ) : (
