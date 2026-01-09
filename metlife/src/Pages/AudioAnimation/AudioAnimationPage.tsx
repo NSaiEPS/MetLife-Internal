@@ -681,7 +681,7 @@ const AudioAnimationPage: React.FC = () => {
                       sx={{ textTransform: "none", backgroundColor: "#99d539" }}
                       className={styles.createBtn}
                       action={handleCreateTransition}
-                    />
+                    >Create Transition</ButtonComp>
 
                     <ButtonComp
                       label={"Submit"}
@@ -689,7 +689,7 @@ const AudioAnimationPage: React.FC = () => {
                       className={styles.submitBtn}
                       action={handleSubmit}
                       disabled={audioAnimationData?.scenes?.length > 0}
-                    />
+                    >Submit</ButtonComp>
                   </div>
                 </div>
               </div>

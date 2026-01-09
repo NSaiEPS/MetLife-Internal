@@ -45,6 +45,7 @@
 .popupButtonRow {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 16px;
   padding-left: 20px;
   gap:20px;

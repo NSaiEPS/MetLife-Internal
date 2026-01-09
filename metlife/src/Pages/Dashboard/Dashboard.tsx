@@ -289,6 +289,7 @@ const MyVideosDashboard: React.FC = () => {
             variant="contained"
             colorType="secondary"
             label="+ Create New Video"
+            transform="none"
             sx={{
               // bgcolor: "#2f91c7",
               // borderRadius: "8px",

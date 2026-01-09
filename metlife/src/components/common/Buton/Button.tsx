@@ -37,8 +37,6 @@
 
 // export default ButtonComp;
 
-
-
 import React from "react";
 import { Button } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
@@ -47,55 +45,89 @@ interface ButtonCompProps {
   children: React.ReactNode;
   variant?: ButtonProps["variant"];
   icon?: string;
+  label: string;
+  transform: string;
   className?: string;
   sx?: any;
   action?: () => void;
   disabled?: boolean;
-  colorType?: "primary" | "secondary"; // 🔥 NEW
+  colorType?: "primary" | "secondary" | "download"; // 🔥 NEW
 }
+
+const COLOR_CONFIG = {
+  primary: {
+    bg: "#007ABC",
+    text: "#FFFFFF",
+    border: "2px solid #007ABC",
+    hoverBg: "#0061A0",
+    hoverText: "#FFFFFF",
+    hoverBorder: "2px solid #0061A0",
+  },
+  secondary: {
+    bg: "#FFFFFF",
+    text: "#2f91c7",
+    border: "2px solid #007ABC",
+    hoverBg: "#0061A0",
+    hoverText: "#FFFFFF",
+    hoverBorder: "2px solid #0061A0",
+  },
+  download: {
+    bg: "#327037ff",
+    text: "#ffffff",
+    border: "2px solid #327037ff",
+    hoverBg: "#1B5E20",
+    hoverText: "#ffffff",
+    hoverBorder: "2px solid #1B5E20",
+  },
+};
 
 const ButtonComp: React.FC<ButtonCompProps> = ({
   children,
+  label,
+  transform = "uppercase",
   variant = "contained",
   icon,
   className,
   sx,
   action,
   disabled = false,
-  colorType = "primary", 
+  colorType = "primary",
   ...rest
 }) => {
+  const colors = COLOR_CONFIG[colorType];
+
   return (
     <Button
       variant={variant}
       startIcon={icon ? <img src={icon} alt="icon" /> : undefined}
       className={className}
       onClick={action}
-      {...rest}
       disabled={disabled}
+      {...rest}
       sx={{
         lineHeight: "normal",
-        borderRadius: "8px",
-        textTransform: "none",
+        boxSizing: "border-box",
+        height: "fit-content",
+        borderRadius: "4px",
+        textTransform: transform,
         fontSize: "14px",
-        fontWeight: 600,
+        fontWeight: 500,
         padding: "8px 16px",
-        backgroundColor:
-        colorType === "primary" ? "#007ABC" : "#FFFFFF",
-        color:  colorType === "primary" ? "#FFFFFF" : "#2f91c7",
-        border: !disabled && colorType !== "primary" && "2px solid #64add5",
+
+        backgroundColor: disabled ? "#E0E0E0" : colors.bg,
+        color: disabled ? "#9E9E9E" : colors.text,
+        border: disabled ? "none" : colors.border,
+
         "&:hover": {
-          backgroundColor:
-            colorType === "primary" ? "#0061A0" : "#0061A0",
-            color:  colorType === "primary" ? "#FFFFFF" : "#FFFFFF",
-            border: colorType !== "primary" && "2px solid #0061A0",
-
-
+          backgroundColor: disabled ? "#E0E0E0" : colors.hoverBg,
+          color: disabled ? "#9E9E9E" : colors.hoverText,
+          border: disabled ? "none" : colors.hoverBorder,
         },
+
         ...sx,
       }}
     >
-    {children}
+      {children || label}
     </Button>
   );
 };

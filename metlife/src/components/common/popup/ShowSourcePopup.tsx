@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import FullScreenGradientLoader from "../GradientLoader";
 import { NoDataMessage } from "../NoDataMessage";
+import ButtonComp from "../Buton/Button";
 
 const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
   return (
@@ -101,9 +102,9 @@ const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
         </DialogContent>
 
         <DialogActions sx={{ justifyContent: "center", mt: 2 }}>
-          <Button onClick={onClose} color="inherit" variant="outlined">
+          <ButtonComp onClick={onClose} color="inherit" variant="outlined" colorType="secondary">
             Cancel
-          </Button>
+          </ButtonComp>
         </DialogActions>
       </Dialog>
     </>
