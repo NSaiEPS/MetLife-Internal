@@ -24,6 +24,7 @@ import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import type { RootState } from "../../redux/store"; // adjust path if needed
 import { navigateTo } from "../../utils/navigate";
+import ButtonComp from "../../components/common/Buton/Button";
 
 // ---------- Types ----------
 interface VisualRow {
@@ -74,7 +75,8 @@ const GenerateVisualContentPage: React.FC = () => {
     (store: RootState) => store.GenerateVisualContent
   );
   const conversational =
-    generateVisualContentData?.flow_type === "conversation" || generateVisualContentData?.video_style === "conversational";
+    generateVisualContentData?.flow_type === "conversation" ||
+    generateVisualContentData?.video_style === "conversational";
 
   const { audioAnimationLoader } = useSelector(
     (store: RootState) => store.AudioAnimation
@@ -345,8 +347,8 @@ const GenerateVisualContentPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    navigateTo(`/upload-conversational-clips/${id}`)
-  }
+    navigateTo(`/upload-conversational-clips/${id}`);
+  };
 
   // ---------- Render ----------
   return (
@@ -426,31 +428,31 @@ const GenerateVisualContentPage: React.FC = () => {
             <div className={styles.footerButtons}>
               {conversational ? (
                 <>
-                  <Button
+                  <ButtonComp
                     variant="contained"
                     className={styles.primaryBtn}
                     onClick={handleNext}
                   >
                     Next
-                  </Button>
-                  <Button
+                  </ButtonComp>
+                  <ButtonComp
                     variant="contained"
                     className={styles.primaryBtn}
                     onClick={handleDownloadAssets}
                     disabled={generateVisualLoader}
                   >
                     Download Assets
-                  </Button>
+                  </ButtonComp>
                 </>
               ) : (
-                <Button
+                <ButtonComp
                   variant="contained"
                   className={styles.primaryBtn}
                   onClick={handleAudioAndAnimation}
                   disabled={generateVisualLoader}
                 >
                   Audio & Animation Toolkit
-                </Button>
+                </ButtonComp>
               )}
             </div>
           </>

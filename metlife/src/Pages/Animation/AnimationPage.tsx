@@ -429,10 +429,12 @@ const AnimationPage: React.FC = () => {
                       <div className={styles.actions}>
                         <ButtonComp
                           label={"Alternative Scenes"}
-                          sx={{
-                            backgroundColor: "#99d539",
-                            textTransform: "none",
-                          }}
+                          colorType="download"
+
+                          // sx={{
+                          //   backgroundColor: "#99d539",
+                          //   textTransform: "none",
+                          // }}
                           action={handleAlternateSubmit}
                           disabled={finalTime > 0}
                         />

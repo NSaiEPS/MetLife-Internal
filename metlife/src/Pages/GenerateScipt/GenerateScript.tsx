@@ -534,7 +534,7 @@ const GenerateScript: React.FC = () => {
                 disabled={loader}
                 icon={AutoFixHighIcon}
                 label={loader ? "Generating..." : "Generate Script"}
-                className={styles.generateBtn}
+                // className={styles.generateBtn}
                 action={handleGenerate}
               >
                 {loader ? "Generating..." : "Generate Script"}
