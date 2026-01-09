@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { postRegenerateImage } from "../../../redux/features/generateVisualSlice";
+import ButtonComp from "../Buton/Button";
 
 const RegenerateImagePopup = ({
   open,
@@ -72,20 +73,21 @@ const RegenerateImagePopup = ({
       </DialogContent>
 
       <DialogActions>
-        <Button
+        <ButtonComp
           disabled={generateVisualLoader}
           variant="outlined"
+          colorType="secondary"
           onClick={onCloseTempData}
         >
           Cancel
-        </Button>
-        <Button
+        </ButtonComp>
+        <ButtonComp
           disabled={generateVisualLoader}
           variant="contained"
           onClick={handleRegenerateApi}
         >
           Regenerate
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

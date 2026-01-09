@@ -20,6 +20,8 @@ import PromptTable from "../../components/common/PromptTable/PromptTable";
 import { postGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import type { AppDispatch, RootState } from "../../redux/store"; // adjust according to your setup
+import ButtonComp from "../../components/common/Buton/Button";
+import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 
 // ---------- Types ----------
 interface RowData {
@@ -258,13 +260,14 @@ const handleUpdate = (data: { fieldData: any | null; prompt: string }) => {
             )}
 
             <div className={styles.footerButtons}>
-              <Button
+              <ButtonComp
                 onClick={handleGenerate}
                 variant="contained"
-                className={styles.primaryBtn}
+                icon={AutoFixHighIcon}
+                // className={styles.primaryBtn}
               >
                 Generate Visual
-              </Button>
+              </ButtonComp>
             </div>
           </>
         ) : (

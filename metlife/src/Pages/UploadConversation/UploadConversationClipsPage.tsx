@@ -30,6 +30,7 @@ import {
 } from "../../redux/features/conversationalSlice";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import type { SceneDataType, SceneType } from "../../utils/types";
+import ButtonComp from "../../components/common/Buton/Button";
 
 interface ClipData {
   file: File;
@@ -66,7 +67,6 @@ const UploadConversationalClipsPage: React.FC = () => {
     (store: RootState) => store.GenerateVisualContent
   );
 
-
   const title = scenesData?.title;
   const {
     stitchedVideoUrl,
@@ -98,10 +98,7 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   }, [uploadSceneClipResponse]);
 
-  const handleUpload = (
-    scene: SceneType,
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleUpload = (scene: SceneType, e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -120,8 +117,8 @@ const UploadConversationalClipsPage: React.FC = () => {
     }));
 
     const formData = new FormData();
-    if(id){
-    formData.append("script_id", id);
+    if (id) {
+      formData.append("script_id", id);
     }
     formData.append("scene_id", String(scene.scene_id));
     formData.append("scene_number", String(scene.scene_number));
@@ -175,9 +172,8 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   const handleStichVideo = () => {
-    if(id){
-    dispatch(postStitchAllVideos(id, setOpenConfirm));
-
+    if (id) {
+      dispatch(postStitchAllVideos(id, setOpenConfirm));
     }
   };
 
@@ -237,19 +233,19 @@ const UploadConversationalClipsPage: React.FC = () => {
                           </Typography>
                         </Box>
 
-                        <Button
+                        <ButtonComp
                           variant="contained"
                           component="label"
                           disabled={
                             uploadSceneClipLoader?.[scene?.scene_id] ||
                             clips[scene.scene_id]?.upload_url
                           }
-                          sx={{
-                            borderRadius: "10px",
-                            textTransform: "none",
-                            padding: "10px 25px",
-                            minWidth: "140px",
-                          }}
+                          // sx={{
+                          //   borderRadius: "10px",
+                          //   textTransform: "none",
+                          //   padding: "10px 25px",
+                          //   minWidth: "140px",
+                          // }}
                         >
                           {uploadSceneClipLoader?.[scene?.scene_id] ? (
                             <CircularProgress
@@ -270,7 +266,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                             }
                             onChange={(e) => handleUpload(scene, e)}
                           />
-                        </Button>
+                        </ButtonComp>
                       </Box>
 
                       <Box
@@ -329,14 +325,14 @@ const UploadConversationalClipsPage: React.FC = () => {
                     Upload all clips to enable stitching.
                   </Typography>
 
-                  <Button
+                  <ButtonComp
                     variant="contained"
-                    sx={{
-                      borderRadius: "10px",
-                      padding: "10px 25px",
-                      textTransform: "none",
-                      backgroundColor: allUploaded ? "#1976d2" : "#a8c8e8",
-                    }}
+                    // sx={{
+                    //   borderRadius: "10px",
+                    //   padding: "10px 25px",
+                    //   textTransform: "none",
+                    //   backgroundColor: allUploaded ? "#1976d2" : "#a8c8e8",
+                    // }}
                     onClick={handleDownloadAssets}
                     disabled={generateVisualLoader}
                   >
@@ -350,9 +346,9 @@ const UploadConversationalClipsPage: React.FC = () => {
                     ) : (
                       "Download Assets"
                     )}
-                  </Button>
+                  </ButtonComp>
 
-                  <Button
+                  <ButtonComp
                     variant="contained"
                     onClick={handleStitchClick}
                     disabled={
@@ -360,15 +356,15 @@ const UploadConversationalClipsPage: React.FC = () => {
                       stitchedVideoUrl ||
                       scenesData?.stitched_video?.url
                     }
-                    sx={{
-                      borderRadius: "10px",
-                      padding: "10px 25px",
-                      textTransform: "none",
-                      backgroundColor: allUploaded ? "#1976d2" : "#a8c8e8",
-                    }}
+                    // sx={{
+                    //   borderRadius: "10px",
+                    //   padding: "10px 25px",
+                    //   textTransform: "none",
+                    //   backgroundColor: allUploaded ? "#1976d2" : "#a8c8e8",
+                    // }}
                   >
                     Stitch My Video
-                  </Button>
+                  </ButtonComp>
                 </Box>
 
                 <Dialog
@@ -425,21 +421,22 @@ const UploadConversationalClipsPage: React.FC = () => {
                   </DialogContent>
 
                   <DialogActions>
-                    <Button
+                    <ButtonComp
+                      colorType="secondary"
                       onClick={() => setOpenConfirm(false)}
                       color="inherit"
                     >
                       No
-                    </Button>
+                    </ButtonComp>
 
-                    <Button
+                    <ButtonComp
                       onClick={handleStichVideo}
                       variant="contained"
-                      color="primary"
+                      // color="primary"
                       disabled={conversationalLoader}
                     >
                       Yes
-                    </Button>
+                    </ButtonComp>
                   </DialogActions>
                 </Dialog>
 

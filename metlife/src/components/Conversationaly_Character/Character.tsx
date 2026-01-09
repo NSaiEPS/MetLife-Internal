@@ -113,6 +113,7 @@ import {
   Paper,
 } from "@mui/material";
 import type { CharacterType } from "../../utils/types";
+import ButtonComp from "../common/Buton/Button";
 
 /* ================= TYPES ================= */
 
@@ -488,12 +489,12 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 
             {/* ACTIONS */}
             <Box display="flex" justifyContent="space-between" mt={4}>
-              <Button color="inherit" variant="outlined" onClick={closePrompt}>
+              <ButtonComp color="inherit" variant="outlined" onClick={closePrompt} colorType="secondary">
                 Cancel
-              </Button>
-              <Button variant="contained" onClick={handleSave}>
+              </ButtonComp>
+              <ButtonComp variant="contained" onClick={handleSave}>
                 Save
-              </Button>
+              </ButtonComp>
             </Box>
           </Paper>
         </Box>

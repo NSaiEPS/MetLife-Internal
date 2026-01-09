@@ -11,6 +11,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
+import ButtonComp from "../Buton/Button";
 
 // ---------- Props Types ----------
 interface FieldDataType {
@@ -96,13 +97,13 @@ const EditVisualPopup: React.FC<EditVisualPopupProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">
+        <ButtonComp onClick={onClose} variant="outlined" colorType="secondary">
           Cancel
-        </Button>
+        </ButtonComp>
 
-        <Button variant="contained" onClick={handleSave}>
+        <ButtonComp variant="contained" onClick={handleSave}>
           Save
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );
