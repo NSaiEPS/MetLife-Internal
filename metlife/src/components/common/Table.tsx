@@ -103,7 +103,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
-  setMakeChanges = () => {},
+  setMakeChanges = () => { },
   features = true,
   visualContentTitle,
 }) => {
@@ -337,12 +337,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       const updated = rows.map((item) =>
         item.id === data.fieldData.id
           ? {
-              "Scene No.": data.fieldData?.["Scene No."],
-              Script: data.script,
-              OST: data.ost,
-              Type: data.type,
-              id: data.fieldData?.id,
-            }
+            "Scene No.": data.fieldData?.["Scene No."],
+            Script: data.script,
+            OST: data.ost,
+            Type: data.type,
+            id: data.fieldData?.id,
+          }
           : item
       );
       setRows(updated);
@@ -477,7 +477,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setMakeChanges(true);
   };
 
-  const editSceneForScript = () => {};
+  const editSceneForScript = () => { };
 
   const confirmDeleteScene = async (scene: SceneRow) => {
     if (!id) return;
@@ -867,7 +867,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <ButtonComp
                 label={loader ? "Translating" : "Translate Script"}
                 variant="contained"
-                sx={{ backgroundColor: "#239DE0" }}
+
+                sx={{ 
+                  // backgroundColor: "#239DE0" 
+                }}
                 action={() => setOpen(true)}
               >
                 {loader ? "Translating" : "Translate Script"}
@@ -878,7 +881,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 open={open}
                 onClose={() => setOpen(false)}
                 title="Select Language"
-                
+
               >
                 <div className={styles.languageList}>
                   {/* Translate tool options */}
@@ -908,9 +911,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {filteredLanguages.map((lang, index) => (
                     <div
                       key={index}
-                      className={`${styles.languageItem} ${
-                        selectedLang === lang ? styles.activeLang : ""
-                      }`}
+                      className={`${styles.languageItem} ${selectedLang === lang ? styles.activeLang : ""
+                        }`}
                       onClick={() => {
                         setSelectedLang(lang);
                         setMakeChanges(true);
@@ -927,10 +929,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <div className={styles.popupButtonRow}>
                   <FormControl size="small" className={styles.providerDropdown}>
                     <Select
-                    sx={{
-                      height: "80px",
-                      width:"110px"
-                    }}
+                      sx={{
+                        // height: "50px",
+                        width: "110px"
+                      }}
                       value={selectedProvider}
                       onChange={(e) =>
                         setSelectedProvider(e.target.value as ProviderType)
@@ -946,12 +948,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <ButtonComp
                     label="Translate Script"
                     variant="contained"
-                    className={styles.downloadBtn}
+
+                    // className={styles.downloadBtn}
                     action={() => {
                       handleTranslateScript();
                       setOpen(false);
                     }}
-                  />
+                  >Translate Script</ButtonComp>
                 </div>
               </PopupModal>
             </>
@@ -999,13 +1002,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           )}
 
           {features && (
-            <Button
+            <ButtonComp
+              colorType="download"
               variant="contained"
-              className={styles.successBtn}
+              // className={styles.successBtn}
               onClick={() => setOpenDownloadPopup(true)}
             >
               Download Script
-            </Button>
+            </ButtonComp>
           )}
 
           {showDragAndActions && features && (
@@ -1023,7 +1027,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <ButtonComp
                     onClick={
                       tableExtraData?.video_style === "conversational" ||
-                      tableExtraData?.video_style === "mixed"
+                        tableExtraData?.video_style === "mixed"
                         ? handleOpenFlowDialog
                         : handleCreateVisualContent
                     }
@@ -1042,7 +1046,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </span>
               </Tooltip>
               {tableExtraData?.video_style === "conversational" ||
-              tableExtraData?.video_style === "mixed" ? (
+                tableExtraData?.video_style === "mixed" ? (
                 <>
                   <Dialog
                     open={openFlowDialog}
@@ -1195,13 +1199,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       )}
                     </Box>
 
-                    <Button
+                    <ButtonComp
                       onClick={handleCloseFlowDialog}
                       variant="outlined"
-                      sx={{ px: 4 }}
+                      sx={{ px: 4
+                       }}
                     >
                       Cancel
-                    </Button>
+                    </ButtonComp>
                   </Dialog>
                 </>
               ) : null}

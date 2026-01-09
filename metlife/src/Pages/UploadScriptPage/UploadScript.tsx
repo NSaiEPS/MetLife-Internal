@@ -352,14 +352,14 @@ const UploadScript = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
               accept=".pdf"
-              // multiple
+            // multiple
             />
           </div>
 
           <div className={styles.buttonRow}>
-            <ButtonComp
+            {/* <ButtonComp
               label={loader ? "Submitting" : "Submit"}
-              // label="Submit"
+              label="Submit"
               variant="contained"
               sx={{
                 backgroundColor: "#99D538",
@@ -373,7 +373,7 @@ const UploadScript = () => {
               }
             >
               {loader ? "Submitting" : "Submit"}
-            </ButtonComp>
+            </ButtonComp> */}
             <ButtonComp
               label="Sample Download"
               colorType="secondary"
@@ -386,6 +386,32 @@ const UploadScript = () => {
             >
               Sample Download
             </ButtonComp>
+            <ButtonComp
+              label={loader ? "Uploading" : "Upload"}
+              variant="contained"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px", 
+                textTransform: "none",
+              }}
+              disabled={isDisabled}
+              action={() =>
+                navigate("/translated-script", {
+                  state: { data: scriptData, pdf: false },
+                })
+              }
+            >
+              {!loader && (
+                <img
+                  src={UploadIcon}
+                  alt="upload"
+                  className={styles.uploadIcon}
+                />
+              )}
+              {loader ? "Uploading" : "Upload a Script"}
+            </ButtonComp>
+
           </div>
         </div>
         <DownloadPopup

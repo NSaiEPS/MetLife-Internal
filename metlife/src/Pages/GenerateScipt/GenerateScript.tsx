@@ -29,6 +29,7 @@ import Input from "../../components/common/Input";
 import type { RootState } from "../../redux/store"; // import your store type
 import { showToast } from "../../utils/toast";
 import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
+import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import type { CharacterType, PromptItem } from "../../utils/types";
 
 // ---------- Options ----------
@@ -531,6 +532,7 @@ const GenerateScript: React.FC = () => {
             <div className={styles.actions}>
               <ButtonComp
                 disabled={loader}
+                icon={AutoFixHighIcon}
                 label={loader ? "Generating..." : "Generate Script"}
                 className={styles.generateBtn}
                 action={handleGenerate}
