@@ -1,7 +1,8 @@
 import { message } from "antd";
 import axios from "axios";
 
-export const SERVER_URL = "https://oneframeapi.com/";
+// export const SERVER_URL = "https://oneframeapi.com/";
+export const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const BASE_URL = `${SERVER_URL}`;
 
