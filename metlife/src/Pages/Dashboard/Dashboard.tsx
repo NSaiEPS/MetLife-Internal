@@ -302,7 +302,7 @@ const MyVideosDashboard: React.FC = () => {
             <TableHead>
               <TableRow sx={{ bgcolor: "#E3F2FD" }}>
                 <TableCell>S.No</TableCell>
-                <TableCell>Thumbnail</TableCell>
+                {/* <TableCell>Thumbnail</TableCell> */}
                 <TableCell>Video Name</TableCell>
                 <TableCell>Duration</TableCell>
                 <TableCell>Last Update</TableCell>
@@ -317,13 +317,13 @@ const MyVideosDashboard: React.FC = () => {
                   <TableCell>
                     {i + 1}
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <Avatar
                       src={video.thumbnail}
                       variant="rounded"
                       sx={{ width: 60, height: 60 }}
                     />
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>{`${
                     video.language === null
                       ? ""
