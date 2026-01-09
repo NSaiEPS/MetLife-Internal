@@ -123,7 +123,16 @@ const MyVideosDashboard: React.FC = () => {
 
     if (status.videos)
       return (
-        <Chip label="Completed" sx={{ bgcolor: "#4CAF50", color: "#fff" }} />
+        <Chip
+          label="Completed"
+          sx={{
+            bgcolor: "#ecfcf2",
+            fontWeight: "bold",
+            lineHeight: "normal",
+            color: "#057647",
+            border: "2px solid #aaefc6",
+          }}
+        />
       );
 
     if (status.audio && !status.videos)
@@ -138,7 +147,13 @@ const MyVideosDashboard: React.FC = () => {
       return (
         <Chip
           label="Visuals in Progress"
-          sx={{ bgcolor: "#9C27B0", color: "#fff" }}
+          sx={{
+            bgcolor: "#fdf1f9",
+            color: "#c01573",
+            fontWeight: "bold",
+            lineHeight: "normal",
+            border: "2px solid #fbceee",
+          }}
         />
       );
 
@@ -146,7 +161,13 @@ const MyVideosDashboard: React.FC = () => {
       return (
         <Chip
           label="Script Completed"
-          sx={{ bgcolor: "#FF9800", color: "#fff" }}
+          sx={{
+            bgcolor: "#edf3ff",
+            fontWeight: "bold",
+            lineHeight: "normal",
+            color: "#3537cc",
+            border: "2px solid #c6d7fe",
+          }}
         />
       );
 
@@ -293,10 +314,12 @@ const MyVideosDashboard: React.FC = () => {
             colorType="secondary"
             label="+ Create New Video"
             transform="none"
-            sx={{
-              // bgcolor: "#2f91c7",
-              // borderRadius: "8px",
-            }}
+            sx={
+              {
+                // bgcolor: "#2f91c7",
+                // borderRadius: "8px",
+              }
+            }
             onClick={handleClick}
           >
             {" "}
