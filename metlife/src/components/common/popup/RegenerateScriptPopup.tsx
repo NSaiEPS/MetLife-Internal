@@ -236,15 +236,16 @@ const RegenerateScriptPopup = ({
             disabled={loader}
             label={loader ? "Submitting" : "Submit"}
             variant="contained"
-            sx={{
-              backgroundColor: "#1976d2",
-              "&:hover": { backgroundColor: "#b2d1f0ff" },
-            }}
+            // sx={{
+            //   backgroundColor: "#1976d2",
+            //   "&:hover": { backgroundColor: "#b2d1f0ff" },
+            // }}
             action={handleRegenerate}
           />
-          <Button onClick={onCloseFun} color="inherit" variant="outlined">
+
+          <ButtonComp onClick={onCloseFun} color="inherit" variant="outlined" colorType="secondary">
             Cancel
-          </Button>
+          </ButtonComp>
         </DialogActions>
       </Dialog>
     </>

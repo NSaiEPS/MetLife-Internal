@@ -23,6 +23,7 @@ import { getDashboardInfo } from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
+import ButtonComp from "../../components/common/Buton/Button";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -87,27 +88,30 @@ const MyVideosDashboard: React.FC = () => {
     {
       title: "Total Videos",
       value: dashBoardInfo?.length || 0,
-      color: "#E3F2FD",
-      icon: <VideoLibrary fontSize="large" color="primary" />,
+      color: "#E3F2FD", // Soft Blue (info / neutral)
+      icon: <VideoLibrary fontSize="large" sx={{ color: "#1976D2" }} />,
       iconColor: "#1976D2",
     },
     {
       title: "In Progress",
-      value: completed_result?.length,
-      color: "#E8F5E9",
-      icon: <FaRegPlayCircle size={35} color="#4CAF50" />,
+      value: total_progress,
+      color: "#FFF8E1", // Warm Yellow (processing / ongoing)
+      icon: <FaRegPlayCircle size={35} color="#F9A825" />,
+      iconColor: "#F9A825",
     },
     {
-      title: "Completed Scripts",
-      value: total_progress,
-      color: "#FFEBEE",
-      icon: <PlayCircle fontSize="large" color="error" />,
+      title: "Completed Videos",
+      value: completed_result?.length,
+      color: "#E8F5E9", // Soft Green (success)
+      icon: <PlayCircle fontSize="large" sx={{ color: "#2E7D32" }} />,
+      iconColor: "#2E7D32",
     },
     {
       title: "Failed / Error",
       value: 0,
-      color: "#F3E5F5",
-      icon: <ErrorOutline fontSize="large" color="secondary" />,
+      color: "#FDECEA", // Light Red (error / danger)
+      icon: <ErrorOutline fontSize="large" sx={{ color: "#D32F2F" }} />,
+      iconColor: "#D32F2F",
     },
   ];
 
@@ -284,17 +288,20 @@ const MyVideosDashboard: React.FC = () => {
             Video List
           </Typography>
 
-          <Button
+          <ButtonComp
             variant="contained"
+            colorType="secondary"
+            label="+ Create New Video"
+            transform="none"
             sx={{
-              bgcolor: "#29B6F6",
-              textTransform: "none",
-              borderRadius: "8px",
+              // bgcolor: "#2f91c7",
+              // borderRadius: "8px",
             }}
             onClick={handleClick}
           >
+            {" "}
             + Create New Video
-          </Button>
+          </ButtonComp>
         </Box>
 
         <TableContainer component={Paper} sx={{ borderRadius: 3 }}>

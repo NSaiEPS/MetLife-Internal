@@ -103,7 +103,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
-  setMakeChanges = () => {},
+  setMakeChanges = () => { },
   features = true,
   visualContentTitle,
 }) => {
@@ -342,12 +342,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       const updated = rows.map((item) =>
         item.id === data.fieldData.id
           ? {
-              "Scene No.": data.fieldData?.["Scene No."],
-              Script: data.script,
-              OST: data.ost,
-              Type: data.type,
-              id: data.fieldData?.id,
-            }
+            "Scene No.": data.fieldData?.["Scene No."],
+            Script: data.script,
+            OST: data.ost,
+            Type: data.type,
+            id: data.fieldData?.id,
+          }
           : item
       );
       setRows(updated);
@@ -482,7 +482,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setMakeChanges(true);
   };
 
-  const editSceneForScript = () => {};
+  const editSceneForScript = () => { };
 
   const confirmDeleteScene = async (scene: SceneRow) => {
     if (!id) return;
@@ -623,8 +623,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               arrow
             >
               <span>
-                <Button
+                <ButtonComp
                   variant="outlined"
+                  colorType="secondary"
                   className={styles1.outlineBtn}
                   onClick={() =>
                     handleVersion(tableExtraData?.previous_version_id)
@@ -632,7 +633,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   disabled={!tableExtraData?.previous_version_id}
                 >
                   ← Backward
-                </Button>
+                </ButtonComp>
               </span>
             </Tooltip>
 
@@ -647,25 +648,27 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               arrow
             >
               <span>
-                <Button
+                <ButtonComp
                   variant="outlined"
+                  colorType="secondary"
                   className={styles1.outlineBtn}
                   onClick={() => handleVersion(tableExtraData?.next_version_id)}
                   disabled={!tableExtraData?.next_version_id}
                 >
                   Forward →
-                </Button>
+                </ButtonComp>
               </span>
             </Tooltip>
 
             {/* Add Scene */}
-            <Button
+            <ButtonComp
               variant="outlined"
+              colorType="secondary"
               className={styles1.outlineBtn}
               onClick={() => addScene()}
             >
               + Add Scene
-            </Button>
+            </ButtonComp>
 
             {/* Show Source */}
             {!id?.startsWith("SCRIPT") && (
@@ -679,25 +682,25 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 arrow
               >
                 <span>
-                  <Button
+                  <ButtonComp
                     variant="contained"
                     className={styles1.primaryBtn}
                     onClick={handleShowSource}
                     disabled={tableExtraData?.data_source == "openai"}
                   >
                     Show Source
-                  </Button>
+                  </ButtonComp>
                 </span>
               </Tooltip>
             )}
             {!id?.startsWith("SCRIPT") && (
-              <Button
+              <ButtonComp
                 variant="contained"
                 className={styles1.BtnSavePrompt}
                 onClick={() => setOpenSavePrompt(true)}
               >
                 Save Prompt
-              </Button>
+              </ButtonComp>
             )}
             <ShowSourcePopup
               open={openShowPopup}
@@ -869,9 +872,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <ButtonComp
                 label={loader ? "Translating" : "Translate Script"}
                 variant="contained"
-                sx={{ backgroundColor: "#239DE0" }}
+
+                sx={{ 
+                  // backgroundColor: "#239DE0" 
+                }}
                 action={() => setOpen(true)}
-              />
+              >
+                {loader ? "Translating" : "Translate Script"}
+              </ButtonComp>
 
               {/* Language Popup */}
               <PopupModal
@@ -907,9 +915,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {filteredLanguages.map((lang, index) => (
                     <div
                       key={index}
-                      className={`${styles.languageItem} ${
-                        selectedLang === lang ? styles.activeLang : ""
-                      }`}
+                      className={`${styles.languageItem} ${selectedLang === lang ? styles.activeLang : ""
+                        }`}
                       onClick={() => {
                         setSelectedLang(lang);
                         setMakeChanges(true);
@@ -927,8 +934,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <FormControl size="small" className={styles.providerDropdown}>
                     <Select
                       sx={{
-                        height: "80px",
-                        width: "110px",
+                        // height: "50px",
+                        width: "110px"
                       }}
                       value={selectedProvider}
                       onChange={(e) =>
@@ -946,20 +953,22 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <ButtonComp
                     label="Translate Script"
                     variant="contained"
-                    className={styles.downloadBtn}
+
+                    // className={styles.downloadBtn}
                     action={() => {
                       handleTranslateScript();
                       setOpen(false);
                     }}
-                  />
+                  >Translate Script</ButtonComp>
                 </div>
               </PopupModal>
             </>
           )}
 
           {showDragAndActions && features && (
-            <Button
+            <ButtonComp
               variant="outlined"
+              colorType="secondary"
               className={styles.largeOutline}
               disabled={pathname.startsWith("SCRIPT-")}
               onClick={() => {
@@ -969,7 +978,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               }}
             >
               Regenerate Script
-            </Button>
+            </ButtonComp>
           )}
 
           {/* Regenerate Popup */}
@@ -986,24 +995,26 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           />
 
           {features && (
-            <Button
+            <ButtonComp
               variant="outlined"
+              colorType="secondary"
               className={styles.largeOutline}
               onClick={handleSave}
               disabled={saveLoader}
             >
               Save
-            </Button>
+            </ButtonComp>
           )}
 
           {features && (
-            <Button
+            <ButtonComp
+              colorType="download"
               variant="contained"
-              className={styles.successBtn}
+              // className={styles.successBtn}
               onClick={() => setOpenDownloadPopup(true)}
             >
               Download Script
-            </Button>
+            </ButtonComp>
           )}
 
           {showDragAndActions && features && (
@@ -1018,14 +1029,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 arrow
               >
                 <span>
-                  <Button
+                  <ButtonComp
                     onClick={
                       tableExtraData?.video_style === "conversational" ||
-                      tableExtraData?.video_style === "mixed"
+                        tableExtraData?.video_style === "mixed"
                         ? handleOpenFlowDialog
                         : handleCreateVisualContent
                     }
                     variant="contained"
+                    colorType="secondary"
                     className={styles.primaryBtn}
                     disabled={
                       saveTranslatedData === null ||
@@ -1035,11 +1047,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     }
                   >
                     Create Visual Content
-                  </Button>
+                  </ButtonComp>
                 </span>
               </Tooltip>
               {tableExtraData?.video_style === "conversational" ||
-              tableExtraData?.video_style === "mixed" ? (
+                tableExtraData?.video_style === "mixed" ? (
                 <>
                   <Dialog
                     open={openFlowDialog}
@@ -1192,13 +1204,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       )}
                     </Box>
 
-                    <Button
+                    <ButtonComp
                       onClick={handleCloseFlowDialog}
                       variant="outlined"
-                      sx={{ px: 4 }}
+                      sx={{ px: 4
+                       }}
                     >
                       Cancel
-                    </Button>
+                    </ButtonComp>
                   </Dialog>
                 </>
               ) : null}

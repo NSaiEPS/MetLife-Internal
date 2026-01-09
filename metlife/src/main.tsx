@@ -47,12 +47,12 @@ const theme = createTheme({
 
     // Subheadings
     subtitle1: {
-      fontFamily: "Noto Sans, sans-serif",
+      fontFamily: "Noto_Sans, sans-serif",
       fontWeight: 500,
       color: "#333333",
     },
     subtitle2: {
-      fontFamily: "Noto Sans, sans-serif",
+      fontFamily: "Noto_Sans, sans-serif",
       fontWeight: 500,
       color: "#555555",
     },

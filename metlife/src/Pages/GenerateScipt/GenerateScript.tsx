@@ -29,6 +29,7 @@ import Input from "../../components/common/Input";
 import type { RootState } from "../../redux/store"; // import your store type
 import { showToast } from "../../utils/toast";
 import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
+import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import type { CharacterType, PromptItem } from "../../utils/types";
 
 // ---------- Options ----------
@@ -301,15 +302,21 @@ const GenerateScript: React.FC = () => {
       <main className={styles.cardWrap}>
         <div className={styles.card}>
           <div className={styles.headerRow}>
-            {" "}
-            <h1 className={styles.title}>Generate Script</h1>{" "}
             <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                paddingX: 0,
+              }}
             >
-              {" "}
-              <IoArrowBackCircleOutline size={30} /> Back{" "}
-            </Button>{" "}
+              <IoArrowBackCircleOutline size={30} />
+              <span>Back</span>
+            </Button>
+
+            <h1 className={styles.title}>Generate Script</h1>
           </div>
           <div>
             <Input
@@ -333,6 +340,15 @@ const GenerateScript: React.FC = () => {
             />
 
             {/* <img src={path} alt="Bookmark" className={styles.bookmarkIcon} /> */}
+            {/* <button
+              className={styles.savedBtn}
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              Saved Prompts
+            </button> */}
+
             <button
               className={styles.savedBtn}
               onClick={() => {
@@ -516,10 +532,13 @@ const GenerateScript: React.FC = () => {
             <div className={styles.actions}>
               <ButtonComp
                 disabled={loader}
+                icon={AutoFixHighIcon}
                 label={loader ? "Generating..." : "Generate Script"}
-                className={styles.generateBtn}
+                // className={styles.generateBtn}
                 action={handleGenerate}
-              />
+              >
+                {loader ? "Generating..." : "Generate Script"}
+              </ButtonComp>
             </div>
           </div>
         </div>

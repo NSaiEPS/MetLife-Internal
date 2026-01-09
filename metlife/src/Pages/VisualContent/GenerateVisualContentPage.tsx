@@ -25,6 +25,8 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import type { RootState } from "../../redux/store"; // adjust path if needed
 import { navigateTo } from "../../utils/navigate";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import ButtonComp from "../../components/common/Buton/Button";
+
 
 // ---------- Types ----------
 interface VisualRow {
@@ -416,8 +418,67 @@ const GenerateVisualContentPage: React.FC = () => {
                   // handleImageUpdate={handleImageUpdate}
                 />
               )}
+            {popup.type === "video_upload" && (
+              <VideoUploadPopup
+                open
+                onClose={closePopup}
+                fieldData={popup.data}
+                script_id={id!}
+                prompt_batch_id={prompt_batch_id}
+                title={title}
+              />
+            )}
 
-              {popup.type === "video_upload" && (
+            {popup.type === "edit" && (
+              <EditVisualPopup
+                open
+                onClose={closePopup}
+                fieldData={popup.data}
+                script_id={id!}
+                prompt_batch_id={prompt_batch_id}
+                handleUpdate={handleUpdate}
+              />
+            )}
+
+            {popup.type === "regenerate" && (
+              <RegenerateImagePopup
+                open
+                onClose={closePopup}
+                fieldData={popup.data}
+                prompt_batch_id={prompt_batch_id}
+              />
+            )}
+            {/* <div className={styles.footerButtons}> */}
+              {/* {conversational ? (
+                <>
+                  <ButtonComp
+                    variant="contained"
+                    className={styles.primaryBtn}
+                    onClick={handleNext}
+                  >
+                    Next
+                  </ButtonComp>
+                  <ButtonComp
+                    variant="contained"
+                    className={styles.primaryBtn}
+                    onClick={handleDownloadAssets}
+                    disabled={generateVisualLoader}
+                  >
+                    Download Assets
+                  </ButtonComp>
+                </>
+              ) : (
+                <ButtonComp
+                  variant="contained"
+                  className={styles.primaryBtn}
+                  onClick={handleAudioAndAnimation}
+                  disabled={generateVisualLoader}
+                >
+                  Audio & Animation Toolkit
+                </ButtonComp>
+              )} */}
+
+              {/* {popup.type === "video_upload" && (
                 <VideoUploadPopup
                   open
                   onClose={closePopup}
@@ -446,7 +507,7 @@ const GenerateVisualContentPage: React.FC = () => {
                   fieldData={popup.data}
                   prompt_batch_id={prompt_batch_id}
                 />
-              )}
+              )} */}
               <div className={styles.footerButtons}>
                 {conversational ? (
                   <>
@@ -458,22 +519,22 @@ const GenerateVisualContentPage: React.FC = () => {
                     >
                       Save
                     </Button>
-                    <Button
+                    <ButtonComp
                       variant="contained"
                       className={styles.primaryBtn}
                       onClick={handleNext}
                       disabled={saveTranslatedData === null}
                     >
                       Next
-                    </Button>
-                    <Button
+                    </ButtonComp>
+                    <ButtonComp
                       variant="contained"
                       className={styles.primaryBtn}
                       onClick={handleDownloadAssets}
                       disabled={generateVisualLoader || saveTranslatedData === null}
                     >
                       Download Assets
-                    </Button>
+                    </ButtonComp>
                   </>
                 ) : (
                   <>
@@ -485,14 +546,14 @@ const GenerateVisualContentPage: React.FC = () => {
                     >
                       Save
                     </Button>
-                    <Button
+                    <ButtonComp
                       variant="contained"
                       className={styles.primaryBtn}
                       onClick={handleAudioAndAnimation}
                       disabled={generateVisualLoader || saveTranslatedData === null}
                     >
                       Audio & Animation Toolkit
-                    </Button>
+                    </ButtonComp>
                   </>
                 )}
               </div>
