@@ -32,7 +32,9 @@ const UploadClipsPage = () => {
       <ButtonComp
         label="Add Dummy Clip"
         variant="contained"
-        sx={{ backgroundColor: "#333", "&:hover": { backgroundColor: "#000" } }}
+        sx={{
+          //  backgroundColor: "#333", "&:hover": { backgroundColor: "#000" }
+          }}
         action={addDummyClip}
       />
 

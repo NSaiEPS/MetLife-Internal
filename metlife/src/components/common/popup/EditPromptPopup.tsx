@@ -6,6 +6,7 @@ import {
   DialogActions,
   Button,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { postEditVisualContent } from "../../../redux/features/createVisualSlice";

@@ -195,7 +195,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                   minHeight: "70vh",
                 }}
               >
-                <Typography fontSize="32px" fontWeight="600" mb={4}>
+                <Typography variant = "h1" fontSize="32px" mb={4}>
                   Upload Conversational Clips
                 </Typography>
 

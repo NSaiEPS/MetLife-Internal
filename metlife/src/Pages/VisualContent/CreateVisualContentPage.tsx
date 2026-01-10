@@ -8,7 +8,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, MenuItem, Select, Tooltip } from "@mui/material";
+import { Button, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -247,9 +247,11 @@ const CreateVisualContentPage: React.FC = () => {
             <>
               <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                  <h2 className={styles.title}>
+                  {/* <h2 className={styles.title}>
                     {saveVisualContentData?.title || "Visual Content"}
-                  </h2>
+                  </h2> */}
+
+                  <Typography variant="h4"> {saveVisualContentData?.title || "Visual Content"}</Typography>
                   <Button
                     className={styles.icon}
                     onClick={() => navigate(`/scenes/${script_id}`)}
@@ -281,14 +283,15 @@ const CreateVisualContentPage: React.FC = () => {
               )}
 
               <div className={styles.footerButtons}>
-                <Button
+                <ButtonComp
                   variant="outlined"
-                  className={styles.largeOutline}
+                  colorType="secondary"
+                  // className={styles.largeOutline}
                   onClick={handleSave}
                   disabled={saveLoader}
                 >
                   Save
-                </Button>
+                </ButtonComp>
                 <ButtonComp
                   onClick={handleGenerate}
                   variant="contained"

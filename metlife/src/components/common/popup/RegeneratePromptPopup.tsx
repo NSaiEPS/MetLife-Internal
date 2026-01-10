@@ -40,6 +40,7 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
           width: "500px",
           borderRadius: "16px",
           padding: "16px",
+          fontFamily:"Nunito",
         },
       }}
     >

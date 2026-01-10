@@ -227,14 +227,14 @@ const MyVideosDashboard: React.FC = () => {
             mb: 3,
           }}
         >
-          <Typography variant="h4" fontWeight={600}>
+          <Typography variant="h4">
             My Videos Dashboard
           </Typography>
         </Box>
 
         {/* ===================== STATISTICS ====================== */}
         <Paper elevation={1} sx={{ p: 3, mb: 4, borderRadius: 3 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
+          <Typography variant="h6" mb={2}>
             Statistics
           </Typography>
 
@@ -290,7 +290,7 @@ const MyVideosDashboard: React.FC = () => {
                   </Box>
 
                   <Box sx={{ textAlign: "right" }}>
-                    <Typography variant="h5" fontWeight={700}>
+                    <Typography variant="h5">
                       {s.value}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -305,7 +305,7 @@ const MyVideosDashboard: React.FC = () => {
 
         {/* ===================== VIDEO LIST ====================== */}
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6" fontWeight={600}>
+          <Typography variant="h6">
             Video List
           </Typography>
 

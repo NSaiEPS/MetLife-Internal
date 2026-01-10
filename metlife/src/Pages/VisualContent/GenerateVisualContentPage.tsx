@@ -511,14 +511,15 @@ const GenerateVisualContentPage: React.FC = () => {
               <div className={styles.footerButtons}>
                 {conversational ? (
                   <>
-                    <Button
+                    <ButtonComp
                       variant="outlined"
-                      className={styles.largeOutline}
+                      colorType="secondary"
+                      // className={styles.largeOutline}
                       onClick={handleSave}
                       disabled={saveLoader}
                     >
                       Save
-                    </Button>
+                    </ButtonComp>
                     <ButtonComp
                       variant="contained"
                       className={styles.primaryBtn}
@@ -529,7 +530,7 @@ const GenerateVisualContentPage: React.FC = () => {
                     </ButtonComp>
                     <ButtonComp
                       variant="contained"
-                      className={styles.primaryBtn}
+                      // className={styles.primaryBtn}
                       onClick={handleDownloadAssets}
                       disabled={generateVisualLoader || saveTranslatedData === null}
                     >
@@ -538,17 +539,18 @@ const GenerateVisualContentPage: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Button
+                    <ButtonComp
                       variant="outlined"
-                      className={styles.largeOutline}
+                      // className={styles.largeOutline}
+                      colorType="secondary"
                       onClick={handleSave}
                       disabled={saveLoader}
                     >
                       Save
-                    </Button>
+                    </ButtonComp>
                     <ButtonComp
                       variant="contained"
-                      className={styles.primaryBtn}
+                      // className={styles.primaryBtn}
                       onClick={handleAudioAndAnimation}
                       disabled={generateVisualLoader || saveTranslatedData === null}
                     >
