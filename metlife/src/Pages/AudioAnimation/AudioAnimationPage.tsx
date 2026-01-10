@@ -5,7 +5,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid, Button } from "@mui/material";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -46,6 +46,7 @@ import voiceMakerSpanish2 from "../../assets/voice_preview_voicemaker_ai3-es-ES-
 //Spanish voice options for speechify
 import speechifySpanish1 from "../../assets/voice_preview_speechify_alejandro.wav";
 import speechifySpanish2 from "../../assets/voice_preview_speechify_celia.wav";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 
 interface VoiceOption {
   label: string;
@@ -272,6 +273,10 @@ const AudioAnimationPage: React.FC = () => {
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
   );
 
+  const { saveLoader, saveTranslatedData } = useSelector(
+    (store) => store.SaveTranslatedData
+  );
+
   const characters =
     audioAnimationData?.voice_map?.characters ||
     audioAnimationData?.Characters ||
@@ -285,7 +290,7 @@ const AudioAnimationPage: React.FC = () => {
     ];
   }
 
-  console.log(sortedLabels, "check")
+  console.log(audioAnimationData, "audioAnimationData");
 
   useEffect(() => {
     if (id) {
@@ -492,13 +497,28 @@ const AudioAnimationPage: React.FC = () => {
     navigateTo(`/animation-page/${id}`);
   };
 
+  const handleSave = () => {
+    const { title, ...rest } = audioAnimationData;
+
+    const data = {
+      data: {
+        ...rest,
+        script_id: id,
+        title: title,
+        page: "audio",
+      },
+      is_save_action: true,
+    };
+    dispatch(postTranslatedDataSave(data, id));
+  };
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
-            {audioAnimationLoader && (
+            {audioAnimationLoader || saveLoader && (
               <FullScreenGradientLoader text="loading..." />
             )}
             <main className={styles.cardWrap}>
@@ -531,8 +551,7 @@ const AudioAnimationPage: React.FC = () => {
                             label="Character"
                             options={sortedLabels}
                             value={charName}
-                              disabled={true}
-                          
+                            disabled={true}
                             style={true}
                           />
                         </Grid>
@@ -672,6 +691,14 @@ const AudioAnimationPage: React.FC = () => {
 
                   <div className={styles.actions}>
                     <ButtonComp
+                      variant="outlined"
+                      className={styles.largeOutline}
+                      onClick={handleSave}
+                      disabled={saveLoader}
+                    >
+                      Save
+                    </ButtonComp>
+                    <ButtonComp
                       disabled={
                         (!audioAnimationData?.scenes &&
                           !audioAnimationData?.scenes?.length > 0) ||
@@ -681,15 +708,19 @@ const AudioAnimationPage: React.FC = () => {
                       // sx={{ textTransform: "none", backgroundColor: "#99d539" }}
                       // className={styles.createBtn}
                       action={handleCreateTransition}
-                    >Create Transition</ButtonComp>
+                    >
+                      Create Transition
+                    </ButtonComp>
 
                     <ButtonComp
                       label={"Submit"}
                       // sx={{ textTransform: "none" }}
                       // className={styles.submitBtn}
                       action={handleSubmit}
-                      disabled={audioAnimationData?.scenes?.length > 0}
-                    >Submit</ButtonComp>
+                      disabled={audioAnimationData?.scenes?.length > 0 || saveTranslatedData === null}
+                    >
+                      Submit
+                    </ButtonComp>
                   </div>
                 </div>
               </div>

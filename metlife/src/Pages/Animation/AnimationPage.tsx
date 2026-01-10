@@ -32,6 +32,8 @@ import VideoTimeline from "../../components/video-editor/VideoTimeline";
 import type { VideoData } from "../../utils/types";
 import MissingAnimationPopup from "../../components/common/popup/MissingAnimationPopup";
 import { toast } from "react-toastify";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import { navigateTo } from "../../utils/navigate";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;
@@ -93,6 +95,10 @@ const AnimationPage: React.FC = () => {
     // fullVideoGeneration,
     sceneData,
   } = useSelector((store: RootState) => store.AudioAnimation);
+
+  const { saveLoader, saveTranslatedData } = useSelector(
+    (store) => store.SaveTranslatedData
+  );
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   // const [animationVideos, setAnimationVideos] = useState(false);
 
@@ -249,10 +255,28 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateFullVideo(id));
   };
 
+  console.log(sceneData, "sceneData");
+
+  const handleSave = () => {
+    const { title, ...rest } = sceneData;
+
+    const data = {
+      data: {
+        ...rest,
+        script_id: id,
+        title: title,
+        page: "video",
+      },
+      is_save_action: true,
+    };
+    dispatch(postTranslatedDataSave(data, id));
+  };
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
+        {saveLoader && <FullScreenGradientLoader text="loading..." />}
 
         {(animationLabels?.entry_transitions ||
           animationLabels?.exit_transitions) &&
@@ -430,7 +454,6 @@ const AnimationPage: React.FC = () => {
                         <ButtonComp
                           label={"Alternative Scenes"}
                           colorType="download"
-
                           // sx={{
                           //   backgroundColor: "#99d539",
                           //   textTransform: "none",
@@ -474,17 +497,49 @@ const AnimationPage: React.FC = () => {
                     sceneData?.video_exists === true &&
                     generatedVideoData?.final_video_status === "completed" && (
                       <>
-                        <Typography
-                          variant="h4"
+                        <Box
                           sx={{
-                            fontSize: "20px",
-                            fontWeight: 600,
-                            mt: 1,
-                            mb: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            marginBottom: "1rem",
                           }}
                         >
-                          {generatedVideoData?.title || "Generated Video"}
-                        </Typography>
+                          <Typography
+                            variant="h4"
+                            sx={{
+                              fontSize: "20px",
+                              fontWeight: 600,
+                              mt: 1,
+                              mb: 2,
+                            }}
+                          >
+                            {generatedVideoData?.title || "Generated Video"}
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: "12px",
+                            }}
+                          >
+                            <ButtonComp
+                              variant="outlined"
+                              className={styles.largeOutline}
+                              onClick={() => navigateTo(`/scenes/${id}`)}
+                            >
+                              Edit
+                            </ButtonComp>
+
+                            <ButtonComp
+                              variant="contained"
+                              onClick={() => handleSave()} 
+                              disabled={saveLoader}
+                            >
+                              Save
+                            </ButtonComp>
+                          </Box>
+                          
+                        </Box>
 
                         <VideoTimeline
                           type="final-video"
@@ -518,63 +573,3 @@ const AnimationPage: React.FC = () => {
 };
 
 export default AnimationPage;
-
-{
-  /* {finalAnimationTime > 0 && (
-                    <Timer
-                      time={finalAnimationTime}
-                      onComplete={() => setAnimationVideos(true)}
-                    />
-                  )} */
-}
-
-{
-  /* {
-                    videoAnimationData?.length > 0 &&
-                      sceneData?.video_exists === true && (
-                        <>
-                          <Typography
-                            sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
-                          >
-                            Available Videos
-                          </Typography>
-                          <Grid container spacing={2} sx={{ mt: 1 }}>
-                            {videoAnimationData?.map((scene, idx) => (
-                              <Grid
-                                item
-                                xs={12}
-                                md={6}
-                                lg={4}
-                                key={idx}
-                                sx={{ width: "100%" }}
-                              >
-                                <GeneratedVideoPlayer
-                                  data={scene}
-                                  image_url={scene?.image_urls[0]}
-                                  index={idx}
-                                  description={scene?.ost}
-                                  s3_url={scene?.final_video?.url}
-                                />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        </>
-                      )
-                    //  : (
-                    //   <>
-                    //     {
-                    //       <NoDataMessage
-                    //         filter={false}
-                    //         loading={!videoAnimationData}
-                    //       />
-                    //     }
-
-                    //   </>
-                    // )
-                  } */
-}
-{
-  /* <FullVideoPlayer
-                            video_url={generatedVideoData?.final_video?.url}
-                          /> */
-}
