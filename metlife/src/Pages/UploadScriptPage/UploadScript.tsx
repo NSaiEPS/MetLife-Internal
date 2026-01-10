@@ -18,6 +18,7 @@ import DownloadPopup from "../../components/common/popup/DownloadPopup";
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { Button } from "@mui/material";
+import BackButton from "../../components/common/Buton/BackButton";
 
 // import { IoMdDownload } from "react-icons/io";
 
@@ -305,12 +306,13 @@ const UploadScript = () => {
         <div className={styles.uploadCard}>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              // display: "flex",
+              // justifyContent: "space-between",
+              // alignItems: "center",
               marginBottom: "24px",
             }}
           >
+            <BackButton route="/video-frame" />
             <h2
               style={{
                 marginBottom: "0",
@@ -319,13 +321,13 @@ const UploadScript = () => {
             >
               Upload Script
             </h2>
-            <Button
+            {/* <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
             >
               {" "}
               <IoArrowBackCircleOutline size={30} /> Back{" "}
-            </Button>
+            </Button> */}
           </div>
 
           <div>
@@ -352,7 +354,7 @@ const UploadScript = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
               accept=".pdf"
-            // multiple
+              // multiple
             />
           </div>
 
@@ -379,10 +381,12 @@ const UploadScript = () => {
               colorType="secondary"
               variant="contained"
               action={handleDownloadScript}
-              sx={{
-                // backgroundColor: "#239DE0",
-                // "&:hover": { backgroundColor: "#7fbcddff" },
-              }}
+              sx={
+                {
+                  // backgroundColor: "#239DE0",
+                  // "&:hover": { backgroundColor: "#7fbcddff" },
+                }
+              }
             >
               Sample Download
             </ButtonComp>
@@ -392,7 +396,7 @@ const UploadScript = () => {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: "8px", 
+                gap: "8px",
                 textTransform: "none",
               }}
               disabled={isDisabled}
@@ -411,7 +415,6 @@ const UploadScript = () => {
               )}
               {loader ? "Uploading" : "Upload a Script"}
             </ButtonComp>
-
           </div>
         </div>
         <DownloadPopup

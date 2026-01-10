@@ -31,6 +31,7 @@ import { showToast } from "../../utils/toast";
 import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import type { CharacterType, PromptItem } from "../../utils/types";
+import BackButton from "../../components/common/Buton/BackButton";
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -302,7 +303,7 @@ const GenerateScript: React.FC = () => {
       <main className={styles.cardWrap}>
         <div className={styles.card}>
           <div className={styles.headerRow}>
-            <Button
+            {/* <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
               sx={{
@@ -313,9 +314,10 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <IoArrowBackCircleOutline size={30} />
-              <span>Back</span>
-            </Button>
+              <span style={{ lineHeight: "normal" }}>Back</span>
+            </Button> */}
 
+            <BackButton route="/video-frame" />
             <h1 className={styles.title}>Generate Script</h1>
           </div>
           <div>

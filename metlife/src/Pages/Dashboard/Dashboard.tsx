@@ -88,30 +88,30 @@ const MyVideosDashboard: React.FC = () => {
     {
       title: "Total Videos",
       value: dashBoardInfo?.length || 0,
-      color: "#E3F2FD", // Soft Blue (info / neutral)
-      icon: <VideoLibrary fontSize="large" sx={{ color: "#1976D2" }} />,
-      iconColor: "#1976D2",
+      color: "#e2f1fc",
+      icon: <VideoLibrary fontSize="large" sx={{ color: "#1876d2" }} />,
+      iconColor: "#1876d2",
     },
     {
       title: "In Progress",
       value: total_progress,
-      color: "#FFF8E1", // Warm Yellow (processing / ongoing)
-      icon: <FaRegPlayCircle size={35} color="#F9A825" />,
-      iconColor: "#F9A825",
+      color: "#e8f5e9",
+      icon: <FaRegPlayCircle size={35} color="#4bae50" />,
+      iconColor: "#4bae50",
     },
     {
       title: "Completed Videos",
       value: completed_result?.length,
-      color: "#E8F5E9", // Soft Green (success)
-      icon: <PlayCircle fontSize="large" sx={{ color: "#2E7D32" }} />,
+      color: "#f3e4f5",
+      icon: <PlayCircle fontSize="large" sx={{ color: "#9c27af" }} />,
       iconColor: "#2E7D32",
     },
     {
       title: "Failed / Error",
       value: 0,
-      color: "#FDECEA", // Light Red (error / danger)
-      icon: <ErrorOutline fontSize="large" sx={{ color: "#D32F2F" }} />,
-      iconColor: "#D32F2F",
+      color: "#ffebed",
+      icon: <ErrorOutline fontSize="large" sx={{ color: "#d22e2e" }} />,
+      iconColor: "#d22e2e",
     },
   ];
 
@@ -344,9 +344,7 @@ const MyVideosDashboard: React.FC = () => {
             <TableBody>
               {dashBoardInfo.map((video: any, i: number) => (
                 <TableRow key={i}>
-                  <TableCell>
-                    {i + 1}
-                  </TableCell>
+                  <TableCell>{i + 1}</TableCell>
                   {/* <TableCell>
                     <Avatar
                       src={video.thumbnail}
@@ -354,11 +352,11 @@ const MyVideosDashboard: React.FC = () => {
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell> */}
-                  <TableCell>{`${
+                  <TableCell>{`${video.title}${
                     video.language === null
                       ? ""
-                      : video.language.slice(0, 2) + "_"
-                  }${video.title}`}</TableCell>
+                      : "_" + video.language.slice(0, 2)
+                  }`}</TableCell>
                   <TableCell>{video.suggested_duration_minutes}</TableCell>
                   <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                   <TableCell>{getStatusChip(video)}</TableCell>

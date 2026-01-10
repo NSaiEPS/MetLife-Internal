@@ -93,14 +93,14 @@
   position: absolute;
   right: 20px;
   bottom: 40px;
-  background-color: #239de01a;
-  color: #239de0;
+  /* background-color: #239de01a; */
+  /* color: #239de0; */
   border: 1px solid #239de033;
   border-radius: 8px;
   text-align: left;
   font: normal;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
