@@ -6,6 +6,7 @@ import {
   emptyCharacter,
   type CharacterType,
 } from "../../Pages/GenerateScipt/GenerateScript";
+import ButtonComp from "../common/Buton/Button";
 
 /* ================= TYPES ================= */
 
@@ -108,14 +109,16 @@ const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters })
       ))}
 
       <Box display="flex" justifyContent="space-between" gap={5} mt={2}>
-        <Button
+        <ButtonComp
           variant="contained"
           color="primary"
           onClick={addCharacter}
-          sx={{ px: 3, py: 1, fontSize: "14px" }}
+          sx={{ 
+            // px: 3, py: 1, fontSize: "14px" 
+          }}
         >
           Add Character
-        </Button>
+        </ButtonComp>
 
         {/* {showSubmit && (
           <Button

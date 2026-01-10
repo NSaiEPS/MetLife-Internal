@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { postRegenerateVisualContent } from "../../../redux/features/createVisualSlice";
 import { useDispatch, useSelector } from "react-redux";
+import ButtonComp from "../Buton/Button";
 
 const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
   const onCloseTempData = () => {
@@ -59,20 +60,21 @@ const RegeneratePromptPopup = ({ open, onClose, fieldData, id }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button
+        <ButtonComp
           disabled={saveVisualContentLoader}
           variant="outlined"
           onClick={onCloseTempData}
+          colorType="secondary"
         >
           Cancel
-        </Button>
-        <Button
+        </ButtonComp>
+        <ButtonComp
           disabled={saveVisualContentLoader}
           variant="contained"
           onClick={handleRegenerateApi}
         >
           Regenerate
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

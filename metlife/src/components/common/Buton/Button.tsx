@@ -51,7 +51,7 @@ interface ButtonCompProps {
   sx?: any;
   action?: () => void;
   disabled?: boolean;
-  colorType?: "primary" | "secondary" | "download"; // 🔥 NEW
+  colorType?: "primary" | "secondary" | "download" | "warning" | "error"; // 🔥 NEW
 }
 
 const COLOR_CONFIG = {
@@ -78,6 +78,23 @@ const COLOR_CONFIG = {
     hoverBg: "#1B5E20",
     hoverText: "#ffffff",
     hoverBorder: "2px solid #1B5E20",
+  },
+  warning: {
+    bg: "#e65100",          // ORANGE
+    text: "#FFFFFF",
+    border: "2px solid #e65100",
+    hoverBg: "#E59400",
+    hoverText: "#FFFFFF",
+    hoverBorder: "2px solid #E59400",
+  },
+
+  error: {
+    bg: "#C62828",          
+    text: "#FFFFFF",
+    border: "2px solid #C62828",
+    hoverBg: "#B71C1C",
+    hoverText: "#FFFFFF",
+    hoverBorder: "2px solid #B71C1C",
   },
 };
 
