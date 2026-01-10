@@ -69,6 +69,13 @@ interface AudioAnimationState {
   labels: string[];
 }
 
+type CustomVoiceMapPayload = {
+  [charName: string]: {
+    voice: string;
+    voice_tool: string;
+  };
+};
+
 const narrationVoiceOptions = [
   { label: "Azure", value: "azure" },
   { label: "Speechify", value: "speechify" },
@@ -458,19 +465,37 @@ const AudioAnimationPage: React.FC = () => {
   };
 
   const apiCall = () => {
-    const custom_voice_map: VoiceSelectionsType = {};
+    // const custom_voice_map: VoiceSelectionsType = {};
+    // Object.keys(voiceSelections).forEach((char) => {
+    //   if (voiceSelections[char]) {
+    //     custom_voice_map[char] = voiceSelections[char];
+    //   }
+    // });
 
-    Object.keys(voiceSelections).forEach((char) => {
-      if (voiceSelections[char]) {
-        custom_voice_map[char] = voiceSelections[char];
+    // const payload = {
+    //   script_id: id,
+    //   custom_voice_map,
+    //   voice_tool: narrationSelections?.Narrator,
+    // };
+    // console.log(payload, "payload");
+
+    const custom_voice_map: CustomVoiceMapPayload = {};
+    Object.keys(voiceSelections).forEach((charName) => {
+      const voice = voiceSelections[charName];
+      const voiceTool = narrationSelections[charName];
+
+      if (voice && voiceTool) {
+        custom_voice_map[charName] = {
+          voice,
+          voice_tool: voiceTool,
+        };
       }
     });
-
     const payload = {
       script_id: id,
       custom_voice_map,
-      voice_tool: narrationSelections?.Narrator,
     };
+     console.log("FINAL_PAYLOAD", payload);
 
     dispatch(postGenerateVoiceAndAudio(payload));
   };
@@ -518,9 +543,8 @@ const AudioAnimationPage: React.FC = () => {
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
-            {audioAnimationLoader || saveLoader && (
-              <FullScreenGradientLoader text="loading..." />
-            )}
+            {audioAnimationLoader ||
+              (saveLoader && <FullScreenGradientLoader text="loading..." />)}
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>
@@ -717,7 +741,10 @@ const AudioAnimationPage: React.FC = () => {
                       // sx={{ textTransform: "none" }}
                       // className={styles.submitBtn}
                       action={handleSubmit}
-                      disabled={audioAnimationData?.scenes?.length > 0 || saveTranslatedData === null}
+                      disabled={
+                        audioAnimationData?.scenes?.length > 0 ||
+                        saveTranslatedData === null
+                      }
                     >
                       Submit
                     </ButtonComp>
