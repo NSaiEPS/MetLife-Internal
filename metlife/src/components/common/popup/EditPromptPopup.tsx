@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { postEditVisualContent } from "../../../redux/features/createVisualSlice";
 import type { RootState } from "../../../redux/store";
+import ButtonComp from "../Buton/Button";
 
 interface FieldData {
   scene_id: string | number;
@@ -93,21 +94,22 @@ const EditPromptPopup: React.FC<EditPromptPopupProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button
+        <ButtonComp
           onClick={onClose}
+          colorType="secondary"
           variant="outlined"
           disabled={saveVisualContentLoader}
         >
           Cancel
-        </Button>
+        </ButtonComp>
 
-        <Button
+        <ButtonComp
           variant="contained"
           onClick={handleSave}
           disabled={saveVisualContentLoader}
         >
           Save
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

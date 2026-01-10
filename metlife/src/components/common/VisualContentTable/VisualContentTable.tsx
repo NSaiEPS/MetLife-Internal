@@ -28,6 +28,7 @@ import {
   deleteGenerateVisualContent,
   postEditGenerateVisualContent,
 } from "../../../redux/features/generateVisualSlice";
+import ButtonComp from "../Buton/Button";
 
 // ------------------ TYPES ------------------
 
@@ -272,18 +273,18 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
               gap: 8,
             }}
           >
-            <Button
+            <ButtonComp
               variant="contained"
               sx={{
-                textTransform: "none",
-                backgroundColor: "#1976d2",
-                color: "#fff",
-                borderRadius: "8px",
+                // textTransform: "none",
+                // backgroundColor: "#1976d2",
+                // color: "#fff",
+                // borderRadius: "8px",
               }}
               onClick={() => handlePrompt(visuaiImages)}
             >
               Prompt
-            </Button>
+            </ButtonComp>
 
             {visuaiImages?.image_uploaded_urls?.length > 0 && (
               <IconButton
@@ -347,13 +348,13 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
           />
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-            <Button variant="outlined" onClick={() => setOpenPromptModal(false)}>
+            <ButtonComp variant="outlined" onClick={() => setOpenPromptModal(false)} colorType="secondary">
               Close
-            </Button>
+            </ButtonComp>
 
-            <Button variant="contained" onClick={() => handleEditDescription(visuaiImages)}>
+            <ButtonComp variant="contained" onClick={() => handleEditDescription(visuaiImages)}>
               Submit
-            </Button>
+            </ButtonComp>
           </Box>
         </DialogContent>
       </Dialog>

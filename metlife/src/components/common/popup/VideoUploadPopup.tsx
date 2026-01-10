@@ -13,6 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../../redux/store"; // <-- update this path
 import { postImageUpload } from "../../../redux/features/generateVisualSlice";
+import ButtonComp from "../Buton/Button";
 
 // ---------- TYPES ----------
 
@@ -126,17 +127,17 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">
+        <ButtonComp onClick={onClose} variant="outlined" colorType="secondary">
           Cancel
-        </Button>
+        </ButtonComp>
 
-        <Button
+        <ButtonComp
           onClick={handleUploadClick}
           variant="contained"
           disabled={!videoFile}
         >
           Upload
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

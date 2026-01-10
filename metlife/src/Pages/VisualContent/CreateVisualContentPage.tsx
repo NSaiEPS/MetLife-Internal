@@ -21,6 +21,8 @@ import { postGenerateVisualContentImage } from "../../redux/features/generateVis
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import type { AppDispatch, RootState } from "../../redux/store"; // adjust according to your setup
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import ButtonComp from "../../components/common/Buton/Button";
+import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 
 // ---------- Types ----------
 interface RowData {
@@ -287,14 +289,15 @@ const CreateVisualContentPage: React.FC = () => {
                 >
                   Save
                 </Button>
-                <Button
+                <ButtonComp
                   onClick={handleGenerate}
                   variant="contained"
-                  className={styles.primaryBtn}
+                  // className={styles.primaryBtn}
                   disabled={saveTranslatedData === null}
+                  icon={AutoFixHighIcon}
                 >
                   Generate Visual
-                </Button>
+                </ButtonComp>
               </div>
             </>
           ) : (

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { patchEditPromp } from "../../../redux/features/scriptSlice";
 import { postCreateVisualContent } from "../../../redux/features/createVisualSlice";
+import ButtonComp from "../Buton/Button";
 
 export const CharacterCarousel = ({
   open,
@@ -148,9 +149,10 @@ export const CharacterCarousel = ({
                         {char.character_name}
                       </Typography>
 
-                      <Button
+                      <ButtonComp
                         size="small"
                         variant="outlined"
+                        colorType="secondary"
                         disabled={
                           scriptLoader ||
                           prompts[char.character_name] === char.prompt
@@ -163,7 +165,7 @@ export const CharacterCarousel = ({
                         }
                       >
                         Edit
-                      </Button>
+                      </ButtonComp>
                     </Box>
                     {/* <Typography fontWeight={600} mb={1}>
                     {char.character_name}
@@ -186,9 +188,12 @@ export const CharacterCarousel = ({
                 ))}
             </Box>
 
-            <Button
+            <ButtonComp
               variant="contained"
-              sx={{ mt: 2 }}
+              sx={{
+                 mt: 2 
+                }
+              }
               disabled={
                 scriptLoader ||
                 Object.values(prompts).some((p) => !p.trim()) ||
@@ -197,7 +202,7 @@ export const CharacterCarousel = ({
               onClick={handleApprove}
             >
               {scriptLoader ? "Generating..." : "Approve & Generate"}
-            </Button>
+            </ButtonComp>
           </>
         ) : (
           <>
@@ -244,7 +249,8 @@ export const CharacterCarousel = ({
                 width: "100%",
               }}
             >
-              <Button
+              <ButtonComp
+              
                 variant="contained"
                 disabled={currentIndex === 0}
                 // onClick={() => setCurrentIndex((i) => i - 1)}
@@ -254,9 +260,9 @@ export const CharacterCarousel = ({
                 }}
               >
                 Previous
-              </Button>
+              </ButtonComp>
 
-              <Button
+              <ButtonComp
                 variant="contained"
                 disabled={currentIndex === characterData.length - 1}
                 // onClick={() => setCurrentIndex((i) => i + 1)}
@@ -266,7 +272,7 @@ export const CharacterCarousel = ({
                 }}
               >
                 Next
-              </Button>
+              </ButtonComp>
             </Box>
             <Box
               onClick={handleCreateVisualContent}

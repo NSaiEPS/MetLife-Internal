@@ -626,7 +626,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <ButtonComp
                   variant="outlined"
                   colorType="secondary"
-                  className={styles1.outlineBtn}
+                  // className={styles1.outlineBtn}
                   onClick={() =>
                     handleVersion(tableExtraData?.previous_version_id)
                   }
@@ -651,7 +651,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <ButtonComp
                   variant="outlined"
                   colorType="secondary"
-                  className={styles1.outlineBtn}
+                  // className={styles1.outlineBtn}
                   onClick={() => handleVersion(tableExtraData?.next_version_id)}
                   disabled={!tableExtraData?.next_version_id}
                 >
@@ -664,7 +664,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             <ButtonComp
               variant="outlined"
               colorType="secondary"
-              className={styles1.outlineBtn}
+              // className={styles1.outlineBtn}
               onClick={() => addScene()}
             >
               + Add Scene
@@ -684,7 +684,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <span>
                   <ButtonComp
                     variant="contained"
-                    className={styles1.primaryBtn}
+                    // className={styles1.primaryBtn}
                     onClick={handleShowSource}
                     disabled={tableExtraData?.data_source == "openai"}
                   >
@@ -696,7 +696,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             {!id?.startsWith("SCRIPT") && (
               <ButtonComp
                 variant="contained"
-                className={styles1.BtnSavePrompt}
+                // className={styles1.BtnSavePrompt}
                 onClick={() => setOpenSavePrompt(true)}
               >
                 Save Prompt
@@ -969,7 +969,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             <ButtonComp
               variant="outlined"
               colorType="secondary"
-              className={styles.largeOutline}
+              // className={styles.largeOutline}
               disabled={pathname.startsWith("SCRIPT-")}
               onClick={() => {
                 setMakeChanges(true);
@@ -998,7 +998,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             <ButtonComp
               variant="outlined"
               colorType="secondary"
-              className={styles.largeOutline}
+              // className={styles.largeOutline}
               onClick={handleSave}
               disabled={saveLoader}
             >
@@ -1038,7 +1038,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     }
                     variant="contained"
                     colorType="secondary"
-                    className={styles.primaryBtn}
+                    // className={styles.primaryBtn}
                     disabled={
                       saveTranslatedData === null ||
                       operations ||

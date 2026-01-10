@@ -13,6 +13,7 @@ import type {ChangeEvent} from "react"
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch } from "react-redux";
 import { postImageUpload } from "../../../redux/features/generateVisualSlice";
+import ButtonComp from "../Buton/Button";
 
 // ---------- Props Interface ----------
 interface ImageUploadPopupProps {
@@ -105,16 +106,16 @@ const ImageUploadPopup: React.FC<ImageUploadPopupProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">
+        <ButtonComp onClick={onClose} variant="outlined" colorType="secondary">
           Cancel
-        </Button>
-        <Button
+        </ButtonComp>
+        <ButtonComp
           onClick={handleUploadClick}
           variant="contained"
           disabled={!imageFile}
         >
           Upload
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

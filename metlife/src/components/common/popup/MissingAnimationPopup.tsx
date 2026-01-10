@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ButtonComp from "../Buton/Button";
 
 // ---------- Props ----------
 interface MissingAnimationPopupProps {
@@ -113,30 +114,32 @@ const MissingAnimationPopup: React.FC<MissingAnimationPopupProps> = ({
 
       {/* Actions */}
       <DialogActions sx={{ justifyContent: "center", pb: 2, gap: 1 }}>
-        <Button
+        <ButtonComp
           onClick={onClose}
           variant="outlined"
+          colorType="secondary"
           sx={{
-            minWidth: 110,
-            textTransform: "none",
-            borderRadius: "8px",
+            // minWidth: 110,
+            // textTransform: "none",
+            // borderRadius: "8px",
           }}
         >
           Cancel
-        </Button>
+        </ButtonComp>
 
-        <Button
+        <ButtonComp
           onClick={onConfirm}
+          colorType="warning"
           variant="contained"
           color={hasMissing ? "warning" : "primary"}
           sx={{
-            minWidth: 110,
-            textTransform: "none",
-            borderRadius: "8px",
+            // minWidth: 110,
+            // textTransform: "none",
+            // borderRadius: "8px",
           }}
         >
           {hasMissing ? "Continue Anyway" : "Confirm"}
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

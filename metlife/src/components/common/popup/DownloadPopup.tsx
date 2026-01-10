@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import pdfIcon from "../../../assets/pdfIcon.png";
 import wordIcon from "../../../assets/microsoft-word-icon.webp";
+import ButtonComp from "../Buton/Button";
 
 const DownloadPopup = ({ open, onClose, onSelect }) => {
   return (
@@ -96,9 +97,9 @@ const DownloadPopup = ({ open, onClose, onSelect }) => {
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: "center", mt: 2 }}>
-        <Button onClick={onClose} color="inherit" variant="outlined">
+        <ButtonComp onClick={onClose} color="inherit" variant="outlined" colorType="secondary">
           Cancel
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

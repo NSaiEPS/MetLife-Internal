@@ -8,6 +8,7 @@ import {
   Divider,
   Tooltip,
 } from "@mui/material";
+import ButtonComp from "./Buton/Button";
 
 // ---------- TYPES ----------
 interface ExtraDetails {
@@ -81,17 +82,18 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
 
         {/* Actions */}
         <Box display="flex" justifyContent="space-between" mt={3}>
-          <Button
+          <ButtonComp
             variant="outlined"
+            colorType="secondary"
             onClick={onClose}
             sx={{
-              textTransform: "none",
-              borderRadius: 2,
-              px: 3,
+              // textTransform: "none",
+              // borderRadius: 2,
+              // px: 3,
             }}
           >
             Close
-          </Button>
+          </ButtonComp>
 
           <Tooltip
             title={extraDetails?.is_saved ? "Cannot use this prompt!" : ""}
@@ -99,22 +101,22 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
             arrow
           >
             <span>
-              <Button
+              <ButtonComp
                 variant="contained"
                 onClick={() => onSave(prompt)}
                  disabled={extraDetails?.is_saved || operations}
                 sx={{
-                  textTransform: "none",
-                  borderRadius: 2,
-                  px: 3,
-                  opacity: extraDetails?.is_saved ? 0.5 : 1,
+                  // textTransform: "none",
+                  // borderRadius: 2,
+                  // px: 3,
+                  // opacity: extraDetails?.is_saved ? 0.5 : 1,
                   cursor: extraDetails?.is_saved
                     ? "not-allowed"
                     : "pointer",
                 }}
               >
                 SAVE THIS PROMPT
-              </Button>
+              </ButtonComp>
             </span>
           </Tooltip>
         </Box>

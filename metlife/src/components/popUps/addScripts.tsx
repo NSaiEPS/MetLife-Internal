@@ -13,6 +13,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import styles from "./addScripts.module.css";
+import ButtonComp from "../common/Buton/Button";
 
 interface ScriptData {
   Script?: string;
@@ -124,12 +125,12 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">
+        <ButtonComp onClick={onClose} variant="outlined" colorType="secondary">
           Cancel
-        </Button>
-        <Button variant="contained" onClick={handleSave}>
+        </ButtonComp>
+        <ButtonComp variant="contained" onClick={handleSave}>
           Save
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );

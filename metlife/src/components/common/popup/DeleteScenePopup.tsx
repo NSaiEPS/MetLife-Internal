@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import FullScreenGradientLoader from "../GradientLoader";
+import ButtonComp from "../Buton/Button";
 
 // ---------- Types ----------
 interface RowData {
@@ -80,30 +81,32 @@ const DeleteScenePopup: React.FC<DeleteScenePopupProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
-        <Button
+        <ButtonComp
           onClick={onClose}
+          colorType="secondary"
           variant="outlined"
           sx={{
-            minWidth: 100,
-            textTransform: "none",
-            borderRadius: "8px",
+            // minWidth: 100,
+            // textTransform: "none",
+            // borderRadius: "8px",
           }}
         >
           No
-        </Button>
+        </ButtonComp>
 
-        <Button
+        <ButtonComp
           onClick={() => onConfirm(rowData)}
           variant="contained"
-          color="error"
+          colorType="error"
+          // color="error"
           sx={{
-            minWidth: 100,
-            textTransform: "none",
-            borderRadius: "8px",
+            // minWidth: 100,
+            // textTransform: "none",
+            // borderRadius: "8px",
           }}
         >
           Yes
-        </Button>
+        </ButtonComp>
       </DialogActions>
     </Dialog>
   );
