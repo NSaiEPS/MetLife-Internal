@@ -12,8 +12,7 @@ const BackButton = ({ route }: { route: string }) => {
         alignItems: "center",
         color: "#005f9f",
         gap: "5px",
-        marginBottom: "12px",
-        marginTop: "15px",
+        marginBottom: "15px",
         paddingX: 0,
       }}
     >
