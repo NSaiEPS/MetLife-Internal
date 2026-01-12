@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import styles from "./generateVisualContent.module.css";
@@ -384,9 +384,10 @@ const GenerateVisualContentPage: React.FC = () => {
             <>
               <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                  <h2 className={styles.title}>
+                  {/* <h2 className={styles.title}>
                     {generateVisualContentData?.title || "Visual Content"}
-                  </h2>
+                  </h2> */}
+                  <Typography variant="h4">{generateVisualContentData?.title || "Visual Content"}</Typography>
                   <Button
                     className={styles.icon}
                     onClick={() =>

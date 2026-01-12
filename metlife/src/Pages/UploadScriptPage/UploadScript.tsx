@@ -17,8 +17,9 @@ import DownloadPopup from "../../components/common/popup/DownloadPopup";
 
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Button } from "@mui/material";
 import BackButton from "../../components/common/Buton/BackButton";
+import { Button, Typography } from "@mui/material";
+import { color } from "framer-motion";
 
 // import { IoMdDownload } from "react-icons/io";
 
@@ -313,21 +314,15 @@ const UploadScript = () => {
             }}
           >
             <BackButton route="/video-frame" />
-            <h2
-              style={{
-                marginBottom: "0",
-              }}
-              className={styles.uploadTitle}
-            >
-              Upload Script
-            </h2>
+            
+            <Typography variant="h4">Upload Script</Typography>
             {/* <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
             >
               {" "}
               <IoArrowBackCircleOutline size={30} /> Back{" "}
-            </Button> */}
+            </Button>  */}
           </div>
 
           <div>
@@ -394,10 +389,19 @@ const UploadScript = () => {
               label={loader ? "Uploading" : "Upload"}
               variant="contained"
               sx={{
-                display: "flex",
-                alignItems: "center",
+                color:"#ffffff",
+
+                "&.Mui-disabled": {
+                  color: "#ffffff",
+                  backgroundColor: "#adadad", 
+                },
+                "& img": {
+                  filter: "brightness(0) invert(1)", 
+                },
+                // display: "flex",
+                // alignItems: "center",
                 gap: "8px",
-                textTransform: "none",
+                // textTransform: "none",
               }}
               disabled={isDisabled}
               action={() =>

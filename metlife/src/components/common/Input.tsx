@@ -31,6 +31,7 @@ const Input: React.FC<InputProps> = ({
         flexDirection: "column",
         width: "100%",
         marginBottom: "15px",
+        fontFamily: "Noto_Sans, sans-serif",
       }}
     >
       {label && <label>{label}</label>}
