@@ -317,8 +317,8 @@ const GenerateScript: React.FC = () => {
               <span style={{ lineHeight: "normal" }}>Back</span>
             </Button> */}
 
-            <BackButton route="/video-frame" />
-            <h1 className={styles.title}>Generate Script</h1>
+            {/* <h1 className={styles.title}>Generate Script</h1> */}
+            <Typography variant="h4" my={1} >Generate Script</Typography>
           </div>
           <div>
             <Input
@@ -373,7 +373,7 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
+                <Typography variant = "body1" className={styles.accordionTitle}>
                   Video Filters
                 </Typography>
               </AccordionSummary>
@@ -439,7 +439,7 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
+                <Typography variant = "body1" className={styles.accordionTitle}>
                   Model Filters
                 </Typography>
               </AccordionSummary>
@@ -504,7 +504,7 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
+                <Typography  variant = "body1" className={styles.accordionTitle}>
                   Data Filters
                 </Typography>
               </AccordionSummary>

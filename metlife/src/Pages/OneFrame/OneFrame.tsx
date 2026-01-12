@@ -49,10 +49,15 @@ const VideoCreationOptions: React.FC = () => {
             justifyContent: "center",
             alignItems: "center",
             px: 2,
+            gap: "40px",
             textAlign: "center",
           }}
         >
-          <p className={styles.upperHeading}>Create Your Video with OneFrame</p>
+          {/* <p className={styles.upperHeading}>Create Your Video with OneFrame</p> */}
+
+          <Typography variant="h3"> Create Your Video with OneFrame
+            
+          </Typography>
 
           <Grid
             container
@@ -69,7 +74,7 @@ const VideoCreationOptions: React.FC = () => {
                     Generate a Script
                   </Typography>
 
-                  <Typography className={styles.boxText}>
+                  <Typography variant = "body1" className={styles.boxText}>
                     Describe your video idea, and our AI will write the perfect
                     script for you.
                   </Typography>
@@ -77,7 +82,7 @@ const VideoCreationOptions: React.FC = () => {
                   <div className={styles.parentContainer}>
                     <ButtonComp
                       label="Generate a Script"
-                      sx={styles.Button}
+                      // sx={styles.Button}
                       icon={AutoFixHighIcon}
                       variant="contained"
                       action={() => navigate("/generate-script")}
@@ -99,7 +104,7 @@ const VideoCreationOptions: React.FC = () => {
                     Localization
                   </Typography>
 
-                  <Typography className={styles.boxText}>
+                  <Typography  variant = "body1" className={styles.boxText}>
                     Already have a script? Upload a .pdf file or video to get
                     started.
                   </Typography>
@@ -108,7 +113,7 @@ const VideoCreationOptions: React.FC = () => {
                     <ButtonComp
                       // label="Upload a Script"
                       label="Localization"
-                      sx={styles.Button}
+                      // sx={styles.Button}
                       icon={UploadIcon}
                       variant="contained"
                       // action={() => navigate("/upload-script")}
