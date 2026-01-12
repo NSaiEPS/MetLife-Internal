@@ -61,7 +61,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             lineHeight: "30px",
             color: "#000000",
             fontWeight: 600,
-            padding: "15px",
+            padding: "11px",
             marginBottom: "-9px",
             borderRadius: 0,
             textTransform: "none",
