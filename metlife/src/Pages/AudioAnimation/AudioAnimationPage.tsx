@@ -495,7 +495,7 @@ const AudioAnimationPage: React.FC = () => {
       script_id: id,
       custom_voice_map,
     };
-     console.log("FINAL_PAYLOAD", payload);
+    console.log("FINAL_PAYLOAD", payload);
 
     dispatch(postGenerateVoiceAndAudio(payload));
   };
@@ -539,12 +539,14 @@ const AudioAnimationPage: React.FC = () => {
 
   return (
     <>
+      {saveLoader && <FullScreenGradientLoader text="loading..." />}
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
-            {audioAnimationLoader ||
-              (saveLoader && <FullScreenGradientLoader text="loading..." />)}
+            {audioAnimationLoader && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>

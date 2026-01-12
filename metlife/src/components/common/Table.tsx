@@ -462,6 +462,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         script_id: id,
         title: tableExtraData?.title,
         version: tableExtraData?.version,
+        page:"script",
       },
       is_save_action: true,
     };
@@ -536,7 +537,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       return;
     }
 
-    // Mixed also requires characters FIRST
     if (tableExtraData?.video_style === "mixed") {
       setFlowStep("characters");
       setOpenFlowDialog(true);
@@ -553,8 +553,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (tableExtraData?.video_style === "mixed") {
       payload.flow_type = flowType;
     }
-
     dispatch(postCreateVisualContent(payload));
+    setOpenFlowDialog(false);
   };
 
   const handleVersion = async (versionId?: string) => {

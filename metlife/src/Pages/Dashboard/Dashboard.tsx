@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -47,9 +47,12 @@ export interface DashboardItem {
   failed?: boolean;
 }
 
+type DashboardFilter = "ALL" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
+
 const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
 
   const { dashBoardInfo, dashboardLoader } = useSelector(
     (store: RootState) => store.DashBoard
@@ -88,30 +91,34 @@ const MyVideosDashboard: React.FC = () => {
     {
       title: "Total Videos",
       value: dashBoardInfo?.length || 0,
-      color: "#E3F2FD", // Soft Blue (info / neutral)
+      color: "#E3F2FD",
       icon: <VideoLibrary fontSize="large" sx={{ color: "#1976D2" }} />,
       iconColor: "#1976D2",
+      filter: "ALL",
     },
     {
       title: "In Progress",
       value: total_progress,
-      color: "#FFF8E1", // Warm Yellow (processing / ongoing)
+      color: "#FFF8E1",
       icon: <FaRegPlayCircle size={35} color="#F9A825" />,
       iconColor: "#F9A825",
+      filter: "IN_PROGRESS",
     },
     {
       title: "Completed Videos",
       value: completed_result?.length,
-      color: "#E8F5E9", // Soft Green (success)
+      color: "#E8F5E9",
       icon: <PlayCircle fontSize="large" sx={{ color: "#2E7D32" }} />,
       iconColor: "#2E7D32",
+      filter: "COMPLETED",
     },
     {
       title: "Failed / Error",
       value: 0,
-      color: "#FDECEA", // Light Red (error / danger)
+      color: "#FDECEA",
       icon: <ErrorOutline fontSize="large" sx={{ color: "#D32F2F" }} />,
       iconColor: "#D32F2F",
+      filter: "FAILED",
     },
   ];
 
@@ -213,58 +220,82 @@ const MyVideosDashboard: React.FC = () => {
     navigate(`/scenes/${video.script_id}`);
   };
 
+  const isCompleted = (item: DashboardItem) => !!item.videos;
+
+  const isInProgress = (item: DashboardItem) =>
+    !item.videos && (item.audio || item.visuals || !item.script_id);
+
+  const isFailed = (item: DashboardItem) => !!item.failed;
+
+  const filteredDashboardInfo = dashBoardInfo.filter((item) => {
+    switch (selectedFilter) {
+      case "COMPLETED":
+        return isCompleted(item);
+
+      case "IN_PROGRESS":
+        return isInProgress(item);
+
+      case "FAILED":
+        return isFailed(item);
+
+      default:
+        return true;
+    }
+  });
+
   return (
-    <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
-      <OneFrameHeader />
-      {dashboardLoader && <FullScreenGradientLoader text="Loading..." />}
+    <>
+      <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
+        <OneFrameHeader />
+        {dashboardLoader && <FullScreenGradientLoader text="Loading..." />}
 
-      <Box sx={{ p: 4 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3,
-          }}
-        >
-          <Typography variant="h4" fontWeight={600}>
-            My Videos Dashboard
-          </Typography>
-        </Box>
-
-        {/* ===================== STATISTICS ====================== */}
-        <Paper elevation={1} sx={{ p: 3, mb: 4, borderRadius: 3 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Statistics
-          </Typography>
-
-          <Grid
-            container
-            spacing={3}
+        <Box sx={{ p: 4 }}>
+          <Box
             sx={{
-              width: "100%",
-              m: 0,
-              flexWrap: "nowrap",
-              overflowX: "auto",
-              scrollbarWidth: "none",
-              "&::-webkit-scrollbar": { display: "none" },
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
             }}
           >
-            {stats.map((s, idx) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={3}
-                key={idx}
-                sx={{
-                  flex: 1,
-                  minWidth: { xs: "200px", md: "auto" },
-                  cursor: "pointer",
-                }}
-              >
-                <Paper
-                  elevation={0}
+            <Typography variant="h4" fontWeight={600}>
+              My Videos Dashboard
+            </Typography>
+          </Box>
+
+          {/* ===================== STATISTICS ====================== */}
+          <Paper elevation={1} sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+            <Typography variant="h6" fontWeight={600} mb={2}>
+              Statistics
+            </Typography>
+
+            <Grid
+              container
+              spacing={3}
+              sx={{
+                width: "100%",
+                m: 0,
+                flexWrap: "nowrap",
+                overflowX: "auto",
+                scrollbarWidth: "none",
+                "&::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {stats.map((s, idx) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={3}
+                  key={idx}
+                  sx={{
+                    flex: 1,
+                    minWidth: { xs: "200px", md: "auto" },
+                    cursor: "pointer",
+                  }}
+                >
+                  {/* <Paper
+                  // elevation={0}
                   sx={{
                     p: 3,
                     borderRadius: 4,
@@ -274,104 +305,127 @@ const MyVideosDashboard: React.FC = () => {
                     justifyContent: "space-between",
                     transition: "0.3s",
                   }}
-                >
-                  <Box
+                > */}
+                  <Paper
+                    elevation={selectedFilter === s.filter ? 6 : 0}
+                    onClick={() => setSelectedFilter(s.filter)}
                     sx={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: "50%",
-                      bgcolor: "#fff",
+                      p: 3,
+                      borderRadius: 4,
+                      bgcolor: s.color,
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
+                      justifyContent: "space-between",
+                      cursor: "pointer",
+                      border:
+                        selectedFilter === s.filter
+                          ? "2px solid #1976D2"
+                          : "2px solid transparent",
+                      transition: "0.3s",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                      },
                     }}
                   >
-                    {s.icon}
-                  </Box>
+                    <Box
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: "50%",
+                        bgcolor: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {s.icon}
+                    </Box>
 
-                  <Box sx={{ textAlign: "right" }}>
-                    <Typography variant="h5" fontWeight={700}>
-                      {s.value}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {s.title}
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Paper>
+                    <Box sx={{ textAlign: "right" }}>
+                      <Typography variant="h5" fontWeight={700}>
+                        {s.value}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {s.title}
+                      </Typography>
+                    </Box>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
 
-        {/* ===================== VIDEO LIST ====================== */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6" fontWeight={600}>
-            Video List
-          </Typography>
+          {/* ===================== VIDEO LIST ====================== */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Typography variant="h6" fontWeight={600}>
+              Video List
+            </Typography>
 
-          <ButtonComp
-            variant="contained"
-            colorType="secondary"
-            label="+ Create New Video"
-            transform="none"
-            sx={
-              {
-                // bgcolor: "#2f91c7",
-                // borderRadius: "8px",
+            <ButtonComp
+              variant="contained"
+              colorType="secondary"
+              label="+ Create New Video"
+              transform="none"
+              sx={
+                {
+                  // bgcolor: "#2f91c7",
+                  // borderRadius: "8px",
+                }
               }
-            }
-            onClick={handleClick}
-          >
-            {" "}
-            + Create New Video
-          </ButtonComp>
-        </Box>
+              onClick={handleClick}
+            >
+              {" "}
+              + Create New Video
+            </ButtonComp>
+          </Box>
 
-        <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: "#E3F2FD" }}>
-                <TableCell>S.No</TableCell>
-                {/* <TableCell>Thumbnail</TableCell> */}
-                <TableCell>Video Name</TableCell>
-                <TableCell>Duration</TableCell>
-                <TableCell>Last Update</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
+          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: "#E3F2FD" }}>
+                  <TableCell>S.No</TableCell>
+                  {/* <TableCell>Thumbnail</TableCell> */}
+                  <TableCell>Video Name</TableCell>
+                  <TableCell>Duration</TableCell>
+                  <TableCell>Last Update</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell align="center">Action</TableCell>
+                </TableRow>
+              </TableHead>
 
-            <TableBody>
-              {dashBoardInfo.map((video: any, i: number) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    {i + 1}
-                  </TableCell>
-                  {/* <TableCell>
+              <TableBody>
+                {/* {dashBoardInfo.map((video: any, i: number) => ( */}
+                {filteredDashboardInfo.map((video, i) => (
+                  <TableRow key={i}>
+                    <TableCell>{i + 1}</TableCell>
+                    {/* <TableCell>
                     <Avatar
                       src={video.thumbnail}
                       variant="rounded"
                       sx={{ width: 60, height: 60 }}
                     />
                   </TableCell> */}
-                  <TableCell>{`${
-                    video.language === null
-                      ? ""
-                      : video.language.slice(0, 2) + "_"
-                  }${video.title}`}</TableCell>
-                  <TableCell>{video.suggested_duration_minutes}</TableCell>
-                  <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
-                  <TableCell>{getStatusChip(video)}</TableCell>
-                  <TableCell align="center">
-                    <Button onClick={() => handleView(video)}>👁️</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                    <TableCell>{`${
+                      video.language === null
+                        ? ""
+                        : video.language.slice(0, 2) + "_"
+                    }${video.title}`}</TableCell>
+                    <TableCell>{video.suggested_duration_minutes}</TableCell>
+                    <TableCell>
+                      {formatRelativeTime(video.created_at)}
+                    </TableCell>
+                    <TableCell>{getStatusChip(video)}</TableCell>
+                    <TableCell align="center">
+                      <Button onClick={() => handleView(video)}>👁️</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
