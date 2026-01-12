@@ -17,7 +17,8 @@ import DownloadPopup from "../../components/common/popup/DownloadPopup";
 
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
+import { color } from "framer-motion";
 
 // import { IoMdDownload } from "react-icons/io";
 
@@ -311,14 +312,15 @@ const UploadScript = () => {
               marginBottom: "24px",
             }}
           >
-            <h2
+            {/* <h2
               style={{
                 marginBottom: "0",
               }}
               className={styles.uploadTitle}
             >
               Upload Script
-            </h2>
+            </h2> */}
+            <Typography variant="h4">Upload Script</Typography>
             <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
@@ -352,7 +354,7 @@ const UploadScript = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
               accept=".pdf"
-            // multiple
+              // multiple
             />
           </div>
 
@@ -379,10 +381,12 @@ const UploadScript = () => {
               colorType="secondary"
               variant="contained"
               action={handleDownloadScript}
-              sx={{
-                // backgroundColor: "#239DE0",
-                // "&:hover": { backgroundColor: "#7fbcddff" },
-              }}
+              sx={
+                {
+                  // backgroundColor: "#239DE0",
+                  // "&:hover": { backgroundColor: "#7fbcddff" },
+                }
+              }
             >
               Sample Download
             </ButtonComp>
@@ -390,10 +394,19 @@ const UploadScript = () => {
               label={loader ? "Uploading" : "Upload"}
               variant="contained"
               sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px", 
-                textTransform: "none",
+                color:"#ffffff",
+
+                "&.Mui-disabled": {
+                  color: "#ffffff",
+                  backgroundColor: "#adadad", 
+                },
+                "& img": {
+                  filter: "brightness(0) invert(1)", 
+                },
+                // display: "flex",
+                // alignItems: "center",
+                gap: "8px",
+                // textTransform: "none",
               }}
               disabled={isDisabled}
               action={() =>
@@ -411,7 +424,6 @@ const UploadScript = () => {
               )}
               {loader ? "Uploading" : "Upload a Script"}
             </ButtonComp>
-
           </div>
         </div>
         <DownloadPopup

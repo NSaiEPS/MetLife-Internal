@@ -504,7 +504,8 @@ const AudioAnimationPage: React.FC = () => {
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>
-                  <h1 className={styles.title}>Audio & Animation Toolkit</h1>
+                  {/* <h1 className={styles.title}>Audio & Animation Toolkit</h1> */}
+                  <Typography variant="h3">Audio & Animation Toolkit</Typography>
                 </div>
 
                 <div className={styles.insideContainer}>
