@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { PlayCircle, ErrorOutline, VideoLibrary } from "@mui/icons-material";
 import { FaRegPlayCircle } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
@@ -103,7 +104,7 @@ const MyVideosDashboard: React.FC = () => {
       title: "Completed Videos",
       value: completed_result?.length,
       color: "#f3e4f5",
-      icon: <PlayCircle fontSize="large" sx={{ color: "#9c27af" }} />,
+      icon: <FiEdit size={30} color="#9c27af" />,
       iconColor: "#2E7D32",
     },
     {

@@ -13,6 +13,7 @@ const BackButton = ({ route }: { route: string }) => {
         color: "#005f9f",
         gap: "5px",
         marginBottom: "12px",
+        marginTop: "15px",
         paddingX: 0,
       }}
     >
