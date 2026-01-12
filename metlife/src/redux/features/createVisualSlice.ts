@@ -97,12 +97,15 @@ export const {
 
 export default CreateVisualContentPageSlice.reducer;
 export const postCreateVisualContent =
-  (data: any) => async (dispatch: AppDispatch) => {
+  (data: any, setOpenFlowDialog:any) => async (dispatch: AppDispatch) => {
     dispatch(setSaveVisualContentLoader(true));
     try {
       const response = await api.post("prompt/generate", data);
       if (response?.status) {
         dispatch(setSaveVisualContentData(response.data));
+        if(setOpenFlowDialog) {
+          setOpenFlowDialog(false);
+        }
         navigateTo(`/create-visual-content/${response.data?.prompt_batch_id}`);
       }
     } catch (error) {

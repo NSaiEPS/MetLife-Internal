@@ -103,7 +103,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
-  setMakeChanges = () => { },
+  setMakeChanges = () => {},
   features = true,
   visualContentTitle,
 }) => {
@@ -342,12 +342,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       const updated = rows.map((item) =>
         item.id === data.fieldData.id
           ? {
-            "Scene No.": data.fieldData?.["Scene No."],
-            Script: data.script,
-            OST: data.ost,
-            Type: data.type,
-            id: data.fieldData?.id,
-          }
+              "Scene No.": data.fieldData?.["Scene No."],
+              Script: data.script,
+              OST: data.ost,
+              Type: data.type,
+              id: data.fieldData?.id,
+            }
           : item
       );
       setRows(updated);
@@ -462,7 +462,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         script_id: id,
         title: tableExtraData?.title,
         version: tableExtraData?.version,
-        page:"script",
+        page: "script",
       },
       is_save_action: true,
     };
@@ -483,7 +483,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setMakeChanges(true);
   };
 
-  const editSceneForScript = () => { };
+  const editSceneForScript = () => {};
 
   const confirmDeleteScene = async (scene: SceneRow) => {
     if (!id) return;
@@ -553,8 +553,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (tableExtraData?.video_style === "mixed") {
       payload.flow_type = flowType;
     }
-    dispatch(postCreateVisualContent(payload));
-    setOpenFlowDialog(false);
+    dispatch(postCreateVisualContent(payload, setOpenFlowDialog));
   };
 
   const handleVersion = async (versionId?: string) => {
@@ -872,10 +871,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <ButtonComp
                 label={loader ? "Translating" : "Translate Script"}
                 variant="contained"
-
-                sx={{ 
-                  // backgroundColor: "#239DE0" 
-                }}
+                sx={
+                  {
+                    // backgroundColor: "#239DE0"
+                  }
+                }
                 action={() => setOpen(true)}
               >
                 {loader ? "Translating" : "Translate Script"}
@@ -915,8 +915,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {filteredLanguages.map((lang, index) => (
                     <div
                       key={index}
-                      className={`${styles.languageItem} ${selectedLang === lang ? styles.activeLang : ""
-                        }`}
+                      className={`${styles.languageItem} ${
+                        selectedLang === lang ? styles.activeLang : ""
+                      }`}
                       onClick={() => {
                         setSelectedLang(lang);
                         setMakeChanges(true);
@@ -935,7 +936,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     <Select
                       sx={{
                         // height: "50px",
-                        width: "110px"
+                        width: "110px",
                       }}
                       value={selectedProvider}
                       onChange={(e) =>
@@ -953,13 +954,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <ButtonComp
                     label="Translate Script"
                     variant="contained"
-
                     // className={styles.downloadBtn}
                     action={() => {
                       handleTranslateScript();
                       setOpen(false);
                     }}
-                  >Translate Script</ButtonComp>
+                  >
+                    Translate Script
+                  </ButtonComp>
                 </div>
               </PopupModal>
             </>
@@ -1032,7 +1034,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <ButtonComp
                     onClick={
                       tableExtraData?.video_style === "conversational" ||
-                        tableExtraData?.video_style === "mixed"
+                      tableExtraData?.video_style === "mixed"
                         ? handleOpenFlowDialog
                         : handleCreateVisualContent
                     }
@@ -1051,7 +1053,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </span>
               </Tooltip>
               {tableExtraData?.video_style === "conversational" ||
-                tableExtraData?.video_style === "mixed" ? (
+              tableExtraData?.video_style === "mixed" ? (
                 <>
                   <Dialog
                     open={openFlowDialog}
@@ -1207,13 +1209,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     <ButtonComp
                       onClick={handleCloseFlowDialog}
                       variant="outlined"
-                      sx={{ px: 4
-                       }}
+                      sx={{ px: 4 }}
                     >
                       Cancel
                     </ButtonComp>
                   </Dialog>
                 </>
+
               ) : null}
             </>
           )}
