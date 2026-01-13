@@ -217,14 +217,18 @@ const MyVideosDashboard: React.FC = () => {
       navigate(`/create-visual-content/${video.prompt_batch_id}`);
       return;
     }
-
     navigate(`/scenes/${video.script_id}`);
   };
 
   const isCompleted = (item: DashboardItem) => !!item.videos;
 
-  const isInProgress = (item: DashboardItem) =>
-    !item.videos && (item.audio || item.visuals || !item.script_id);
+  const isInProgress = (item: DashboardItem) => {
+    if (item.audio && !item.videos) return true;
+    if (item.visuals && !item.videos && !item.audio) return true;
+    if (!item.visuals && !item.videos && !item.audio) return true;
+
+    return false;
+  };
 
   const isFailed = (item: DashboardItem) => !!item.failed;
 
@@ -295,18 +299,6 @@ const MyVideosDashboard: React.FC = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {/* <Paper
-                  // elevation={0}
-                  sx={{
-                    p: 3,
-                    borderRadius: 4,
-                    bgcolor: s.color,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    transition: "0.3s",
-                  }}
-                > */}
                   <Paper
                     elevation={selectedFilter === s.filter ? 6 : 0}
                     onClick={() => setSelectedFilter(s.filter)}
@@ -342,25 +334,21 @@ const MyVideosDashboard: React.FC = () => {
                       {s.icon}
                     </Box>
 
-                  <Box sx={{ textAlign: "right" }}>
-                    <Typography variant="h5">
-                      {s.value}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {s.title}
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Paper>
+                    <Box sx={{ textAlign: "right" }}>
+                      <Typography variant="h5">{s.value}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {s.title}
+                      </Typography>
+                    </Box>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
 
-        {/* ===================== VIDEO LIST ====================== */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6">
-            Video List
-          </Typography>
+          {/* ===================== VIDEO LIST ====================== */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Typography variant="h6">Video List</Typography>
 
             <ButtonComp
               variant="contained"
@@ -395,32 +383,42 @@ const MyVideosDashboard: React.FC = () => {
               </TableHead>
 
               <TableBody>
-                {/* {dashBoardInfo.map((video: any, i: number) => ( */}
-                {filteredDashboardInfo.map((video, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{i + 1}</TableCell>
-                    {/* <TableCell>
-                    <Avatar
-                      src={video.thumbnail}
-                      variant="rounded"
-                      sx={{ width: 60, height: 60 }}
-                    />
-                  </TableCell> */}
-                    <TableCell>{`${
-                      video.language === null
-                        ? ""
-                        : video.language.slice(0, 2) + "_"
-                    }${video.title}`}</TableCell>
-                    <TableCell>{video.suggested_duration_minutes}</TableCell>
-                    <TableCell>
-                      {formatRelativeTime(video.created_at)}
-                    </TableCell>
-                    <TableCell>{getStatusChip(video)}</TableCell>
-                    <TableCell align="center">
-                      <Button onClick={() => handleView(video)}>👁️</Button>
+                {filteredDashboardInfo.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center">
+                      <Typography
+                        variant="body1"
+                        sx={{ py: 4, color: "text.secondary", fontWeight: 500 }}
+                      >
+                        Data not available
+                      </Typography>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  filteredDashboardInfo.map((video, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{i + 1}</TableCell>
+
+                      <TableCell>
+                        {`${
+                          video.language ? video.language.slice(0, 2) + "_" : ""
+                        }${video.title}`}
+                      </TableCell>
+
+                      <TableCell>{video.suggested_duration_minutes}</TableCell>
+
+                      <TableCell>
+                        {formatRelativeTime(video.created_at)}
+                      </TableCell>
+
+                      <TableCell>{getStatusChip(video)}</TableCell>
+
+                      <TableCell align="center">
+                        <Button onClick={() => handleView(video)}>👁️</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -431,3 +429,30 @@ const MyVideosDashboard: React.FC = () => {
 };
 
 export default MyVideosDashboard;
+
+// {/* {dashBoardInfo.map((video: any, i: number) => ( */}
+//                 {filteredDashboardInfo.map((video, i) => (
+//                   <TableRow key={i}>
+//                     <TableCell>{i + 1}</TableCell>
+//                     {/* <TableCell>
+//                       <Avatar
+//                         src={video.thumbnail}
+//                         variant="rounded"
+//                         sx={{ width: 60, height: 60 }}
+//                       />
+//                     </TableCell> */}
+//                     <TableCell>{`${
+//                       video.language === null
+//                         ? ""
+//                         : video.language.slice(0, 2) + "_"
+//                     }${video.title}`}</TableCell>
+//                     <TableCell>{video.suggested_duration_minutes}</TableCell>
+//                     <TableCell>
+//                       {formatRelativeTime(video.created_at)}
+//                     </TableCell>
+//                     <TableCell>{getStatusChip(video)}</TableCell>
+//                     <TableCell align="center">
+//                       <Button onClick={() => handleView(video)}>👁️</Button>
+//                     </TableCell>
+//                   </TableRow>
+//                 ))}

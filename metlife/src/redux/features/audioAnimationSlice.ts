@@ -130,7 +130,7 @@ export const {
   setVideoAnimationData,
   setGeneratedVideoData,
   setSceneData,
-   setFullVideoGenerationData,
+  setFullVideoGenerationData,
 } = AudioAnimationSlice.actions;
 
 export default AudioAnimationSlice.reducer;
@@ -407,5 +407,56 @@ export const downloadVideoWithUrl =
       console.error("Download error:", error);
     } finally {
       dispatch(setVideoAnimationLoader(false));
+    }
+  };
+
+export const downloadAudioWithUrl =
+  (fileUrl: string, title: string) => async (dispatch: any) => {
+    try {
+      dispatch(setAudioAnimationLoader(true)); 
+
+      const response = await api.get(
+        `download/download-file?file_url=${encodeURIComponent(fileUrl)}`,
+        {
+          responseType: "blob",
+          headers: {
+            Accept: "audio/mpeg", 
+          },
+        }
+      );
+
+      // Default filename
+      let fileName = title || "audio.mp3";
+
+      // Read filename from headers
+      const disposition = response.headers["content-disposition"];
+      if (disposition) {
+        const utf = disposition.match(/filename\*=UTF-8''(.+)/);
+        if (utf) fileName = decodeURIComponent(utf[1]);
+
+        const quoted = disposition.match(/filename="(.+?)"/);
+        if (!utf && quoted) fileName = quoted[1];
+
+        const plain = disposition.match(/filename=(.+)/);
+        if (!utf && !quoted && plain) fileName = plain[1];
+      }
+
+      // Create blob (audio)
+      const blob = new Blob([response.data], { type: "audio/mpeg" });
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Trigger download
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Audio download error:", error);
+    } finally {
+      dispatch(setAudioAnimationLoader(false));
     }
   };
