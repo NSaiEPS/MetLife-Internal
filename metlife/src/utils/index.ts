@@ -28,6 +28,7 @@ import devnagri from "../assets/NotoSansDevanagari-Regular.ttf";
 import bengali from "../assets/NotoSansBengali-Regular.ttf";
 import PdfDocument from "../components/common/Pdf/PdfDocument";
 import React from "react";
+import secureLocalStorage from "react-secure-storage";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -297,9 +298,14 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
   });
 };
 
-export const getToken = (): string | undefined => {
-  const data = JSON.parse(localStorage.getItem("authDetails") || "null");
-  return data?.access_token;
+// export const getToken = (): string | undefined => {
+//   const data = JSON.parse(localStorage.getItem("authDetails") || "null");
+//   return data?.access_token;
+// };
+
+
+export const getToken = (): string | null => {
+  return secureLocalStorage.getItem("token") as string | null;
 };
 
 export const downloadCSV = (
@@ -371,5 +377,3 @@ export const convertToISTParts = (isoString: string): number => {
 
   return Math.floor((backendIST.getTime() - nowIST.getTime()) / 1000) + 60;
 };
-
-
