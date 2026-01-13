@@ -374,7 +374,7 @@ const AnimationPage: React.FC = () => {
                     missingScenes={missingScenes}
                   />
 
-                  {generatedVideoData?.final_video === null && (
+                  {/* {generatedVideoData?.final_video === null && (
                     <>
                       <Typography
                         className={styles.audioSelectionTitle}
@@ -519,6 +519,37 @@ const AnimationPage: React.FC = () => {
                         />
                       </div>
                     </>
+                  )} */}
+
+                  {generatedVideoData?.final_video === null && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "end",
+                        gap: "1rem",
+                        mt: "1rem",
+                      }}
+                    >
+                      <ButtonComp
+                        label={"Submit Animation Changes"}
+                        sx={{ textTransform: "none" }}
+                        action={handleAnimationChanges}
+                        disabled={finalTime > 0}
+                      />
+
+                      <ButtonComp
+                        sx={{ textTransform: "none", width: "200px" }}
+                        label={"Generate Video"}
+                        action={generateVideo}
+                        disabled={
+                          audioAnimationLoader ||
+                          videoAnimationLoader ||
+                          !videoAnimationData ||
+                          generatedVideoData?.final_video ||
+                          finalTime > 0
+                        }
+                      />
+                    </Box>
                   )}
 
                   {/* Full Video */}

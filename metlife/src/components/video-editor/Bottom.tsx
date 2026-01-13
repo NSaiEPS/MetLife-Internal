@@ -630,23 +630,25 @@ export default function Bottom({
                   <ButtonComp
                     label="Alternative Scenes"
                     colorType="download"
-                    action={() =>
+                    action={() => {
                       handleAlternateSubmit(
                         modalState.start_transition,
                         modalState.end_transition
-                      )
-                    }
+                      );
+                      setModalIndex(null);
+                    }}
                     disabled={finalTime > 0}
                   />
 
                   <ButtonComp
                     label="Apply To All"
-                    action={() =>
+                    action={() => {
                       handleAllSubmit(
                         modalState.start_transition,
                         modalState.end_transition
-                      )
-                    }
+                      );
+                      setModalIndex(null);
+                    }}
                     disabled={finalTime > 0}
                   />
 
