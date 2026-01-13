@@ -466,7 +466,7 @@ export default function Bottom({
               }}
             >
               {/* Title */}
-              <Typography variant="h5" fontWeight={600} mb={2}>
+              <Typography variant="h5"  mb={2}>
                 Animation Toolkit
               </Typography>
 
@@ -581,12 +581,7 @@ export default function Bottom({
 
                 {/* Actions */}
                 <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-                  <ButtonComp
-                    colorType="secondary"
-                    onClick={() => setModalIndex(null)}
-                  >
-                    Cancel
-                  </ButtonComp>
+                  <ButtonComp onClick={() => setModalIndex(null)} colorType="secondary">Cancel</ButtonComp>
                   {/* <ButtonComp
                     label={"Alternative Scenes"}
                     sx={{

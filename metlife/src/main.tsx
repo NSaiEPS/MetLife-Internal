@@ -68,6 +68,18 @@ const theme = createTheme({
       color: "#555555",
     },
   },
+  components: {
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontFamily: "Metlife_Circular, Noto_Sans, sans-serif",
+          fontWeight: 600,
+          fontSize: "1.25rem", // optional
+          color: "#333333",
+        },
+      },
+    },
+  },
 });
 
 if (rootElement) {

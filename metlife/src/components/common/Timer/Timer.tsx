@@ -75,7 +75,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
       }}
     >
       {/* Title */}
-      <Typography fontSize={18} fontWeight={600} mb={2}>
+      <Typography fontSize={18} variant="h5" mb={2}>
         Video Generation in Progress
       </Typography>
 

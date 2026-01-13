@@ -376,11 +376,11 @@ const AnimationPage: React.FC = () => {
 
                   {/* {generatedVideoData?.final_video === null && (
                     <>
-                      <Typography
+                      <Typography variant="h5"
                         className={styles.audioSelectionTitle}
                         sx={{
                           fontSize: "22px",
-                          fontWeight: "500",
+                          // fontWeight: "500",
                           marginBottom: "10px",
                           mt: 2,
                         }}
