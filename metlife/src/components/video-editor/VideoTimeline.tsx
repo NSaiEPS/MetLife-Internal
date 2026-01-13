@@ -35,11 +35,10 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   isFinalVideo,
   animationData,
   setAnimationData,
+  // handleAnimationChanges,
   handleAllSubmit,
   finalTime,
   handleAlternateSubmit,
-  handleAllSubmitInside,
-  handleAnimationChanges,
 }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
@@ -232,14 +231,14 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           videosData={videosData}
           animationData={animationData}
           setAnimationData={setAnimationData}
+          // handleAnimationChanges={handleAnimationChanges}
           handleAllSubmit={handleAllSubmit}
           progress={progress}
           onSelect={goto}
           videoHasError={activeVideoHasError}
           finalTime={finalTime}
           handleAlternateSubmit={handleAlternateSubmit}
-          handleAllSubmitInside={handleAllSubmitInside}
-          handleAnimationChanges={handleAnimationChanges}
+          // handleAllSubmitInside={handleAllSubmitInside}
         />
       )}
     </Box>
