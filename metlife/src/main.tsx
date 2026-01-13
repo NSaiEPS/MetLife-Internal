@@ -40,7 +40,7 @@ const theme = createTheme({
       fontWeight: 600,
     },
     h6: {
-      fontFamily: "Metlife_Circular, Noto_Sans, sans-serif",
+      fontFamily: "Noto_Sans,Metlife_Circular, sans-serif",
       color: "#333333",
       fontWeight: 600,
     },
@@ -49,6 +49,7 @@ const theme = createTheme({
     subtitle1: {
       fontFamily: "Noto_Sans, sans-serif",
       fontWeight: 500,
+
       color: "#333333",
     },
     subtitle2: {

@@ -61,12 +61,12 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             lineHeight: "30px",
             color: "#000000",
             fontWeight: 600,
-            padding: 0,
+            padding: "11px",
+            marginBottom: "-9px",
             borderRadius: 0,
             textTransform: "none",
             borderBottom: "4px solid transparent",
             minWidth: "auto",
-
             ":hover": {
               borderBottom: "4px solid #0079bb",
               backgroundColor: "transparent",

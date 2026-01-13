@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { PlayCircle, ErrorOutline, VideoLibrary } from "@mui/icons-material";
 import { FaRegPlayCircle } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
@@ -341,25 +342,25 @@ const MyVideosDashboard: React.FC = () => {
                       {s.icon}
                     </Box>
 
-                    <Box sx={{ textAlign: "right" }}>
-                      <Typography variant="h5" fontWeight={700}>
-                        {s.value}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {s.title}
-                      </Typography>
-                    </Box>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
+                  <Box sx={{ textAlign: "right" }}>
+                    <Typography variant="h5">
+                      {s.value}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {s.title}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
 
-          {/* ===================== VIDEO LIST ====================== */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-            <Typography variant="h6" fontWeight={600}>
-              Video List
-            </Typography>
+        {/* ===================== VIDEO LIST ====================== */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          <Typography variant="h6">
+            Video List
+          </Typography>
 
             <ButtonComp
               variant="contained"

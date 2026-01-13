@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import styles from "./generateVisualContent.module.css";
@@ -384,9 +384,10 @@ const GenerateVisualContentPage: React.FC = () => {
             <>
               <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                  <h2 className={styles.title}>
+                  {/* <h2 className={styles.title}>
                     {generateVisualContentData?.title || "Visual Content"}
-                  </h2>
+                  </h2> */}
+                  <Typography variant="h4">{generateVisualContentData?.title || "Visual Content"}</Typography>
                   <Button
                     className={styles.icon}
                     onClick={() =>
@@ -511,14 +512,15 @@ const GenerateVisualContentPage: React.FC = () => {
               <div className={styles.footerButtons}>
                 {conversational ? (
                   <>
-                    <Button
+                    <ButtonComp
                       variant="outlined"
-                      className={styles.largeOutline}
+                      colorType="secondary"
+                      // className={styles.largeOutline}
                       onClick={handleSave}
                       disabled={saveLoader}
                     >
                       Save
-                    </Button>
+                    </ButtonComp>
                     <ButtonComp
                       variant="contained"
                       className={styles.primaryBtn}
@@ -529,7 +531,7 @@ const GenerateVisualContentPage: React.FC = () => {
                     </ButtonComp>
                     <ButtonComp
                       variant="contained"
-                      className={styles.primaryBtn}
+                      // className={styles.primaryBtn}
                       onClick={handleDownloadAssets}
                       disabled={generateVisualLoader || saveTranslatedData === null}
                     >
@@ -538,17 +540,18 @@ const GenerateVisualContentPage: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Button
+                    <ButtonComp
                       variant="outlined"
-                      className={styles.largeOutline}
+                      // className={styles.largeOutline}
+                      colorType="secondary"
                       onClick={handleSave}
                       disabled={saveLoader}
                     >
                       Save
-                    </Button>
+                    </ButtonComp>
                     <ButtonComp
                       variant="contained"
-                      className={styles.primaryBtn}
+                      // className={styles.primaryBtn}
                       onClick={handleAudioAndAnimation}
                       disabled={generateVisualLoader || saveTranslatedData === null}
                     >

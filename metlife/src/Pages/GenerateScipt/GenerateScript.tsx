@@ -31,6 +31,7 @@ import { showToast } from "../../utils/toast";
 import CharacterParent from "../../components/Conversationaly_Character/CharacterParent";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import type { CharacterType, PromptItem } from "../../utils/types";
+import BackButton from "../../components/common/Buton/BackButton";
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -302,7 +303,7 @@ const GenerateScript: React.FC = () => {
       <main className={styles.cardWrap}>
         <div className={styles.card}>
           <div className={styles.headerRow}>
-            <Button
+            {/* <Button
               className={styles.icon}
               onClick={() => navigate("/video-frame")}
               sx={{
@@ -313,10 +314,14 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <IoArrowBackCircleOutline size={30} />
-              <span>Back</span>
-            </Button>
+              <span style={{ lineHeight: "normal" }}>Back</span>
+            </Button> */}
 
-            <h1 className={styles.title}>Generate Script</h1>
+            {/* <h1 className={styles.title}>Generate Script</h1> */}
+            <BackButton route="/video-frame" />
+            <Typography variant="h4" my={1}>
+              Generate Script
+            </Typography>
           </div>
           <div>
             <Input
@@ -371,7 +376,7 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
+                <Typography variant="body1" className={styles.accordionTitle}>
                   Video Filters
                 </Typography>
               </AccordionSummary>
@@ -437,7 +442,7 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
+                <Typography variant="body1" className={styles.accordionTitle}>
                   Model Filters
                 </Typography>
               </AccordionSummary>
@@ -502,7 +507,7 @@ const GenerateScript: React.FC = () => {
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={styles.accordionTitle}>
+                <Typography variant="body1" className={styles.accordionTitle}>
                   Data Filters
                 </Typography>
               </AccordionSummary>

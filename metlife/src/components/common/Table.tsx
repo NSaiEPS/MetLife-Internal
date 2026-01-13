@@ -602,12 +602,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   return (
     <>
       <div className={styles1.header}>
-        <h2 className={styles1.title}>
+        {/* <h2 className={styles1.title}>
           {tableExtraData?.title ||
             visualContentTitle ||
             tableExtraData?.upload_info?.title ||
             "Your Script"}
-        </h2>
+        </h2> */}
+
+        <Typography variant="h4">
+          {tableExtraData?.title ||
+            visualContentTitle ||
+            tableExtraData?.upload_info?.title ||
+            "Your Script"}
+        </Typography>
 
         {showDragAndActions && features && (
           <div className={styles1.headerButtons}>
