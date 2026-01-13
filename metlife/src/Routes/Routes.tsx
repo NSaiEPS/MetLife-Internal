@@ -29,12 +29,32 @@ interface ProtectedRouteProps {
   allowedRoles?: string[];
 }
 
+// const ProtectedRoute = ({
+//   element,
+//   allowedRoles = [],
+// }: ProtectedRouteProps) => {
+//   const token = getToken();
+//   const userType = getLoggedInUserType();
+
+//   return element;
+// };
+
 const ProtectedRoute = ({
   element,
   allowedRoles = [],
 }: ProtectedRouteProps) => {
   const token = getToken();
-  const userType = getLoggedInUserType();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // if (allowedRoles.length > 0) {
+  //   const userType = getLoggedInUserType();
+  //   if (!allowedRoles.includes(userType)) {
+  //     return <Navigate to="/login" replace />;
+  //   }
+  // }
 
   return element;
 };
@@ -43,12 +63,22 @@ interface AuthorizationProps {
   element: ReactElement;
 }
 
+// const Authorization = ({ element }: AuthorizationProps) => {
+//   const token = getToken();
+
+//   // if (token) {
+//   //   return <Navigate to="/" replace />;
+//   // }
+
+//   return element;
+// };
+
 const Authorization = ({ element }: AuthorizationProps) => {
   const token = getToken();
 
-  // if (token) {
-  //   return <Navigate to="/" replace />;
-  // }
+  if (token) {
+    return <Navigate to="/video-frame" replace />;
+  }
 
   return element;
 };
@@ -76,7 +106,8 @@ export const router = createBrowserRouter([
     element: <Authorization element={<ForgotPassword />} />,
   },
   {
-    element: <Layout />,
+    // element: <Layout />,
+    element: <ProtectedRoute element={<Layout />} />,
     children: [
       {
         path: "/dashboard",
