@@ -3,6 +3,7 @@ import type { AppDispatch } from "../store";
 import { toast } from "react-toastify";
 import { apiErrorHandling } from "../../utils";
 import api from "../../api/axios";
+import secureLocalStorage from "react-secure-storage";
 
 export interface AuthState {
   userInfo: any[];
@@ -30,25 +31,28 @@ const AuthSlice = createSlice({
 export const { setLoginInfo, setAuthLoader } = AuthSlice.actions;
 export default AuthSlice.reducer;
 
-export const postAuthLogin = (data, permission) => async (dispatch: AppDispatch) => {
-  dispatch(setAuthLoader(true));
+export const postAuthLogin =
+  (data, permission) => async (dispatch: AppDispatch) => {
+    dispatch(setAuthLoader(true));
 
-  try {
-    const res = await api.post("login", data);
-    console.log(res, 'res__loginn')
+    try {
+      const res = await api.post("login", data);
+      console.log(res, "res__loginn");
 
-    if (res?.status) {
-      dispatch(setLoginInfo(res?.data));
-      if(permission) {
-        permission();
-        toast.success("Login Successful")
+      if (res?.status) {
+        dispatch(setLoginInfo(res?.data));
+        secureLocalStorage.setItem("token", res?.data?.access_token);
+        secureLocalStorage.setItem("userDetails", res?.data?.user_details);
+        if(permission) {
+          permission();
+          toast.success("Login Successful")
+        }
+      } else {
+        apiErrorHandling(res);
       }
-    } else {
-      apiErrorHandling(res);
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message ?? "Error Try again!!");
+    } finally {
+      dispatch(setAuthLoader(false));
     }
-  } catch (e: any) {
-    toast.error(e?.response?.data?.message ?? "Error Try again!!");
-  } finally {
-    dispatch(setAuthLoader(false));
-  }
-};
+  };

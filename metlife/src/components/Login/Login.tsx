@@ -10,18 +10,16 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom";
-
-import rightImg from "../../assets/login-right.png";
 import oneFrame from "../../assets/OneFrame.png";
 import unnamed from "../../assets/updatedLogo.png";
-import serfAilogo from "../../assets/serfAi-logo.jpg";
 import mailIcon from "../../assets/mail-account.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { postAuthLogin } from "../../redux/auth/authSlice";
 import type { RootState } from "../../redux/store";
 import FullScreenGradientLoader from "../common/GradientLoader";
 import { navigateTo } from "../../utils/navigate";
+// import rightImg from "../../assets/login-right.png";
+// import serfAilogo from "../../assets/serfAi-logo.jpg";
 
 /* ---------------- Types ---------------- */
 
@@ -38,7 +36,6 @@ interface FormErrors {
 /* ---------------- Component ---------------- */
 
 const Login: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userInfo, authLoader } = useSelector(
     (store: RootState) => store.Auth
@@ -51,7 +48,6 @@ const Login: React.FC = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [permission, setPermission] = useState<boolean>(false);
 
   /* ---------------- Handlers ---------------- */
 
@@ -94,174 +90,166 @@ const Login: React.FC = () => {
   ): Promise<void> => {
     e.preventDefault();
     console.log(formData, "check_formData");
-
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    // dispatch(postAuthLogin(formData, successPermission));
-    // try {
-    //   setLoading(true);
-    //   // API CALL HERE
-    //   navigate("/dashboard");
-    // } finally {
-    //   setLoading(false);
-    // }
+    dispatch(postAuthLogin(formData, successPermission));
   };
 
   const successPermission = () => {
-    navigateTo(`/dashboard`);
-  }
+    navigateTo(`/video-frame`);
+  };
 
   /* ---------------- JSX ---------------- */
 
   return (
     <>
-    {authLoader && <FullScreenGradientLoader text="Loading..." />}
-    <Grid
-      container
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-      sx={{ width: "100%" }}
-    >
-      {/* LEFT SECTION */}
+      {authLoader && <FullScreenGradientLoader text="Loading..." />}
       <Grid
-        item
-        display="flex"
+        container
         justifyContent="center"
         alignItems="center"
-        sx={{ width: { xs: "80%", lg: "50%" } }}
-      >
-        <Box sx={{ width: { xs: "100%", md: "80%" } }}>
-          <img src={oneFrame} alt="oneFrame" />
-
-          <Typography variant="h4" fontWeight={600} mb={1}>
-            Account Login
-          </Typography>
-
-          <Typography color="text.secondary" mb={3}>
-            Enter your login details to continue
-          </Typography>
-
-          <Box component="form" onSubmit={handleSubmit} noValidate>
-            <Typography variant="body2" fontWeight={600}>
-              Email ID
-            </Typography>
-
-            <TextField
-              fullWidth
-              size="small"
-              name="email"
-              placeholder="john@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              error={!!errors.email}
-              helperText={errors.email}
-              margin="dense"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                },
-              }}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        size="small"
-                        edge="end"
-                        sx={{ pointerEvents: "none" }}
-                      >
-                        <img src={mailIcon} alt="mailIcon" />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <Typography variant="body2" mt={2} fontWeight={600}>
-              Password
-            </Typography>
-
-            <TextField
-              fullWidth
-              size="small"
-              name="password"
-              placeholder="Enter your password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              margin="dense"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                },
-              }}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        size="small"
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <VisibilityOff
-                            sx={{ color: "#231F204D", fontSize: 20 }}
-                          />
-                        ) : (
-                          <Visibility
-                            sx={{ color: "#231F204D", fontSize: 20 }}
-                          />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              sx={{
-                mt: 3,
-                py: 1,
-                borderRadius: 2,
-                textTransform: "none",
-                fontSize: 16,
-                backgroundColor: "#239DE0",
-              }}
-              type="submit"
-              disabled={authLoader}
-            >
-              Log in
-            </Button>
-          </Box>
-        </Box>
-      </Grid>
-
-      {/* RIGHT SECTION (lg+) */}
-      <Grid
-        item
-        display={{ xs: "none", lg: "block" }}
         height="100vh"
-        sx={{ width: "50%" }}
+        sx={{ width: "100%" }}
       >
-        <img
-          src={unnamed}
-          alt="login"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        {/* LEFT SECTION */}
+        <Grid
+          item
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ width: { xs: "80%", lg: "50%" } }}
+        >
+          <Box sx={{ width: { xs: "100%", md: "80%" } }}>
+            <img src={oneFrame} alt="oneFrame" />
+
+            <Typography variant="h4" fontWeight={600} mb={1}>
+              Account Login
+            </Typography>
+
+            <Typography color="text.secondary" mb={3}>
+              Enter your login details to continue
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit} noValidate>
+              <Typography variant="body2" fontWeight={600}>
+                Email ID
+              </Typography>
+
+              <TextField
+                fullWidth
+                size="small"
+                name="email"
+                placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                margin="dense"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
+                }}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          edge="end"
+                          sx={{ pointerEvents: "none" }}
+                        >
+                          <img src={mailIcon} alt="mailIcon" />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+
+              <Typography variant="body2" mt={2} fontWeight={600}>
+                Password
+              </Typography>
+
+              <TextField
+                fullWidth
+                size="small"
+                name="password"
+                placeholder="Enter your password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                margin="dense"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
+                }}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          onClick={() => setShowPassword((prev) => !prev)}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOff
+                              sx={{ color: "#231F204D", fontSize: 20 }}
+                            />
+                          ) : (
+                            <Visibility
+                              sx={{ color: "#231F204D", fontSize: 20 }}
+                            />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+
+              <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                sx={{
+                  mt: 3,
+                  py: 1,
+                  borderRadius: 2,
+                  textTransform: "none",
+                  fontSize: 16,
+                  backgroundColor: "#239DE0",
+                }}
+                type="submit"
+                disabled={authLoader}
+              >
+                Log in
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* RIGHT SECTION (lg+) */}
+        <Grid
+          item
+          display={{ xs: "none", lg: "block" }}
+          height="100vh"
+          sx={{ width: "50%" }}
+        >
+          <img
+            src={unnamed}
+            alt="login"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </Grid>
       </Grid>
-    </Grid>
     </>
   );
 };
