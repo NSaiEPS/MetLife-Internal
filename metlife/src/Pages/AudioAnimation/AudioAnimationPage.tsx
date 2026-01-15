@@ -470,6 +470,7 @@ const AudioAnimationPage: React.FC = () => {
   };
 
   const apiCall = () => {
+    // ** Old functionality **
     // const custom_voice_map: VoiceSelectionsType = {};
     // Object.keys(voiceSelections).forEach((char) => {
     //   if (voiceSelections[char]) {
@@ -549,10 +550,9 @@ const AudioAnimationPage: React.FC = () => {
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
-            {audioAnimationLoader ||
-              (videoAnimationLoader && (
-                <FullScreenGradientLoader text="loading..." />
-              ))}
+            {(audioAnimationLoader || videoAnimationLoader) && (
+              <FullScreenGradientLoader text="loading..." />
+            )}
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>
@@ -740,10 +740,9 @@ const AudioAnimationPage: React.FC = () => {
                         (!audioAnimationData?.scenes &&
                           !audioAnimationData?.scenes?.length > 0) ||
                         audioAnimationLoader ||
-                        videoAnimationLoader
+                        videoAnimationLoader 
                       }
                       label={"Create Transition"}
-                      // sx={{ textTransform: "none", backgroundColor: "#99d539" }}
                       // className={styles.createBtn}
                       action={handleCreateTransition}
                     >
@@ -756,7 +755,8 @@ const AudioAnimationPage: React.FC = () => {
                       // className={styles.submitBtn}
                       action={handleSubmit}
                       disabled={
-                        audioAnimationData?.scenes?.length > 0
+                        audioAnimationData?.scenes?.length > 0 ||
+                        audioAnimationLoader
                         //  ||saveTranslatedData === null
                       }
                     >
@@ -772,7 +772,6 @@ const AudioAnimationPage: React.FC = () => {
             <NoDataMessage filter={false} loading={true} />
           </>
         )}
-
         <Footer />
       </Box>
     </>

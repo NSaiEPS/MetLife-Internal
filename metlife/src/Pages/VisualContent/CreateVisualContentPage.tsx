@@ -238,19 +238,13 @@ const CreateVisualContentPage: React.FC = () => {
   return (
     <>
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
-
       <div className={styles.container}>
         <OneFrameHeader />
-
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length ? (
             <>
               <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                  {/* <h2 className={styles.title}>
-                    {saveVisualContentData?.title || "Visual Content"}
-                  </h2> */}
-
                   <Typography variant="h4"> {saveVisualContentData?.title || "Visual Content"}</Typography>
                   <Button
                     className={styles.icon}
@@ -288,7 +282,7 @@ const CreateVisualContentPage: React.FC = () => {
                   colorType="secondary"
                   // className={styles.largeOutline}
                   onClick={handleSave}
-                  disabled={saveLoader}
+                  disabled={saveLoader }
                 >
                   Save
                 </ButtonComp>
@@ -307,7 +301,6 @@ const CreateVisualContentPage: React.FC = () => {
             <NoDataMessage filter={false} loading={saveVisualContentLoader} />
           )}
         </div>
-
         <Footer />
       </div>
     </>
