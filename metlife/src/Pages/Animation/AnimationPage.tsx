@@ -136,8 +136,6 @@ const AnimationPage: React.FC = () => {
     sceneData?.video_exists === true &&
     generatedVideoData?.final_video === null;
 
-    console.log(showTimeline, "check_timeline")
-
   /* ---------- FETCH DATA ---------- */
 
   useEffect(() => {
@@ -292,8 +290,6 @@ const AnimationPage: React.FC = () => {
     };
     dispatch(postTranslatedDataSave(data, id));
   };
-
-  console.log(generatedVideoData, "generatedVideoData")
 
   return (
     <>
