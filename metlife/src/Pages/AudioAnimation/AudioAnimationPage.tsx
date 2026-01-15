@@ -302,8 +302,6 @@ const AudioAnimationPage: React.FC = () => {
     ];
   }
 
-  console.log(audioAnimationData, "audioAnimationData");
-
   useEffect(() => {
     if (id) {
       // dispatch(getLabels(id));
