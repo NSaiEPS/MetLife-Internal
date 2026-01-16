@@ -95,7 +95,7 @@ const Login: React.FC = () => {
       setErrors(validationErrors);
       return;
     }
-    // dispatch(postAuthLogin(formData, successPermission));
+    dispatch(postAuthLogin(formData, successPermission));
   };
 
   const successPermission = () => {

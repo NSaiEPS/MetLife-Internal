@@ -298,15 +298,15 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
   });
 };
 
-export const getToken = (): string | undefined => {
-  const data = JSON.parse(localStorage.getItem("authDetails") || "null");
-  return data?.access_token;
-};
-
-
-// export const getToken = (): string | null => {
-//   return secureLocalStorage.getItem("token") as string | null;
+// export const getToken = (): string | undefined => {
+//   const data = JSON.parse(localStorage.getItem("authDetails") || "null");
+//   return data?.access_token;
 // };
+
+
+export const getToken = (): string | null => {
+  return secureLocalStorage.getItem("token") as string | null;
+};
 
 export const downloadCSV = (
   response: { data: BlobPart },
