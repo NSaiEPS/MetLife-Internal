@@ -39,7 +39,7 @@ export const UploadPopup = ({
         <MenuItem
           onClick={() => {
             handleCloseMenu();
-            // navigate("/upload-video");
+            navigate("/upload-video");
           }}
         >
           Upload Video

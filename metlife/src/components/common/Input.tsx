@@ -23,14 +23,16 @@ const Input: React.FC<InputProps> = ({
   handleChange,
   errors,
   errorClass,
+  marginStyle = true,
 }) => {
+  const marginBottomStyle = marginStyle ? "5px" : "15px";
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        marginBottom: "15px",
+        marginBottom: marginBottomStyle,
         fontFamily: "Noto_Sans, sans-serif",
       }}
     >

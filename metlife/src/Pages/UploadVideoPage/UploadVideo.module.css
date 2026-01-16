@@ -1,0 +1,145 @@
+.uploadPageContainer {
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding:60px 40px;
+  background-color: #f8fafc;
+  /* padding-top: 100px; */
+}
+
+.uploadCard {
+  width: 1500px;
+  background-color: #239de01a;
+  border-radius: 12px;
+  min-height: 700px;
+  border: 1px solid rgba(35, 157, 224, 0.4);
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-y: scroll;
+  margin-bottom: 50px;
+}
+
+.input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  font: inherit;
+  /* font-family: "Metlife_Circular", "Noto_Sans", Arial, sans-serif; */
+  outline: none;
+  font-size: 16px;
+  color: #000;
+  width: 100%;
+  height: 41px;
+  line-height: 37px;
+  background-color: #fff;
+  height: 50px;
+  border: 1px solid #dfdfdf;
+  border-radius: 10px !important;
+}
+
+.input::placeholder {
+  color: #aaa;
+  font-size: 16px;
+  /* font-family: "Roboto", sans-serif !important; */
+}
+
+.uploadTitle {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.uploadBox {
+  border: 1px dashed #ccc;
+  border-radius: 10px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  margin-bottom: 32px;
+  cursor: pointer;
+}
+
+.uploadIcon {
+  font-size: 40px;
+  color: gray;
+}
+
+.uploadText {
+  margin-top: 8px;
+  color: gray;
+}
+
+.buttonRow {
+  padding-top: 20px 100px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-left: 30px;
+}
+
+/* ✅ BUTTON STYLES HERE (MUI allows className override) */
+.btnDark {
+  background-color: #333 !important;
+  color: #fff !important;
+  text-transform: none !important;
+}
+.btnDark:hover {
+  background-color: #000 !important;
+}
+
+.btnLight {
+  background-color: #ddd !important;
+  color: #000 !important;
+  text-transform: none !important;
+}
+.btnLight:hover {
+  background-color: #ccc !important;
+}
+
+.languageList {
+  overflow-y: auto;
+  margin-bottom: 24px;
+}
+
+.languageItem {
+  padding: 14px 20px;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  color: #444;
+}
+.languageItem:hover {
+  background-color: #239de01a;
+}
+
+.activeLang {
+  background-color: #239de01a;
+  font-weight: 500;
+}
+
+.popupButtonRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding-left: 20px;
+}
+
+.downloadBtn {
+  padding: 15px 100px !important;
+  background-color: #239de0 !important;
+  color: white !important;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  text-transform: none;
+  transition: 0.2s ease;
+  line-height: normal;
+}
+
+.downloadBtn:hover {
+  background-color: #5cb2e1ff !important;
+}

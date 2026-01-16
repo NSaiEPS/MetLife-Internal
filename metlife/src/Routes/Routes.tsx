@@ -12,7 +12,7 @@ import UploadScript from "../Pages/UploadScriptPage/UploadScript";
 import TranslatedScript from "../Pages/TrannslatedScript/TranslatedScript";
 import GenerateScript from "../Pages/GenerateScipt/GenerateScript";
 import VideoProgressPage from "../Pages/VedioPregressPage/VedioProgressvideo";
-import UploadClipsPage from "../Pages/UploadVedioPage/UploadVideoPage";
+// import UploadClipsPage from "../Pages/UploadVedioPage/UploadVideoPage";
 import ScriptPage from "../Pages/AddNewScriptPage/AddNewScriptPage";
 import { getToken, getLoggedInUserType, USERS } from "../utils";
 import Layout from "../components/layout/Layout";
@@ -22,6 +22,8 @@ import GenerateVisualContentPage from "../Pages/VisualContent/GenerateVisualCont
 import AudioAnimationPage from "../Pages/AudioAnimation/AudioAnimationPage";
 import AnimationPage from "../Pages/Animation/AnimationPage";
 import UploadConversationalClipsPage from "../Pages/UploadConversation/UploadConversationClipsPage";
+import UploadVideoPage from "../Pages/UploadVideoPage/UploadVideoPage";
+
 
 // ===============================
 interface ProtectedRouteProps {
@@ -118,6 +120,10 @@ export const router = createBrowserRouter([
         element: <VideoCreationOptions />,
       },
       {
+        path: "/upload-video",
+        element: <UploadVideoPage />,
+      },
+      {
         path: "/upload-script",
         element: <UploadScript />,
       },
@@ -153,10 +159,10 @@ export const router = createBrowserRouter([
         path: "/upload-conversational-clips/:id",
         element: <UploadConversationalClipsPage />,
       },
-      {
-        path: "upload-generated-clips",
-        element: <UploadClipsPage />,
-      },
+      // {
+      //   path: "upload-generated-clips",
+      //   element: <UploadClipsPage />,
+      // },
       {
         path: "scenes/:id",
         element: <ScriptPage />,
