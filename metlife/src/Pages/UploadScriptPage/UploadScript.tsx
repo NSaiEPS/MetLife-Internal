@@ -18,6 +18,7 @@ import DownloadPopup from "../../components/common/popup/DownloadPopup";
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 // import { IoArrowBackCircleOutline } from "react-icons/io5";
 import BackButton from "../../components/common/Buton/BackButton";
+import { Typography } from "@mui/material";
 // import { Button, Typography } from "@mui/material";
 // import { color } from "framer-motion";
 
