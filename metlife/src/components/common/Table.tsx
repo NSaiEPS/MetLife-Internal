@@ -187,15 +187,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   }, [id, dispatch, tableExtraData?.char_image_exist]);
 
-  useEffect(() => {
-    if (
-      tableExtraData?.video_style === "mixed" &&
-      tableExtraData?.char_image_exist
-    ) {
-      setFlowStep("mixed-options");
-      setOpenFlowDialog(true);
-    }
-  }, [tableExtraData?.char_image_exist]);
+  // useEffect(() => {
+  //   if (
+  //     tableExtraData?.video_style === "mixed" &&
+  //     tableExtraData?.char_image_exist
+  //   ) {
+  //     setFlowStep("mixed-options");
+  //     setOpenFlowDialog(true);
+  //   }
+  // }, [tableExtraData?.char_image_exist,  ]);
 
   const handleSavePrompt = (prompt: string) => {
     const payload = { prompt };
@@ -483,7 +483,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setMakeChanges(true);
   };
 
-  const editSceneForScript = () => {};
+  // const editSceneForScript = () => {};
 
   const confirmDeleteScene = async (scene: SceneRow) => {
     if (!id) return;
@@ -530,7 +530,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleOpenFlowDialog = () => {
-    // setOpenFlowDialog(true);
     if (tableExtraData?.video_style === "conversational") {
       setFlowStep("characters");
       setOpenFlowDialog(true);
