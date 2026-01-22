@@ -2,7 +2,6 @@ import { message } from "antd";
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 
-
 // export const SERVER_URL = "https://oneframeapi.com/";
 export const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -62,8 +61,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      error?.response?.status === 401 &&
+      !window.location.pathname.includes("/login")
+    ) {
+      secureLocalStorage.removeItem("token");
+      secureLocalStorage.removeItem("userDetails");
+      window.location.href = "/login";
+    }
 
-
-
+    return Promise.reject(error);
+  },
+);
 
 export default api;

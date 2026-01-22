@@ -1,5 +1,4 @@
 import { Divider, Menu, MenuItem } from "@mui/material";
-import React from "react";
 import { useNavigate } from "react-router";
 
 export const UploadPopup = ({
@@ -39,7 +38,7 @@ export const UploadPopup = ({
         <MenuItem
           onClick={() => {
             handleCloseMenu();
-            // navigate("/upload-video");
+            navigate("/upload-video");
           }}
         >
           Upload Video

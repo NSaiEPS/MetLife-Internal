@@ -5,7 +5,14 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
-import { Box, Typography, Grid, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  Button,
+  TextField,
+  Slider,
+} from "@mui/material";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -249,6 +256,27 @@ const allVoiceOptions = {
   },
 };
 
+const voiceToneOptions = [
+  { label: "Neutral", value: "neutral" },
+  { label: "Cheerful", value: "cheerful" },
+  { label: "Calm", value: "calm" },
+  { label: "Professional", value: "professional" },
+  { label: "Empathetic", value: "empathetic" },
+  { label: "Serious", value: "serious" },
+  { label: "Excited", value: "excited" },
+  { label: "Friendly", value: "friendly" },
+];
+
+const voiceSpeedOptions = [
+  { label: "0.5x", value: 0.5 },
+  { label: "0.75x", value: 0.75 },
+  { label: "1x", value: 1 },
+  { label: "1.25x", value: 1.25 },
+  { label: "1.5x", value: 1.5 },
+  { label: "1.75x", value: 1.75 },
+  { label: "2x", value: 2 },
+];
+
 const AudioAnimationPage: React.FC = () => {
   const [narrationSelections, setNarrationSelections] =
     useState<NarrationSelectionType>({
@@ -258,7 +286,7 @@ const AudioAnimationPage: React.FC = () => {
     });
 
   const [voiceSelections, setVoiceSelections] = useState<VoiceSelectionsType>(
-    {}
+    {},
   );
   const [genderSelections, setGenderSelections] = useState<
     Record<string, string>
@@ -266,15 +294,32 @@ const AudioAnimationPage: React.FC = () => {
 
   const languageOptions = [
     { label: "English", value: "english" },
+    { label: "Hindi", value: "hindi" },
+    { label: "Arabic", value: "arabic" },
+    { label: "Nepali", value: "nepali" },
+    { label: "Bangla", value: "bangla" },
     { label: "Spanish", value: "spanish" },
+    { label: "Portuguese", value: "portuguese" },
+    { label: "Romanian", value: "romanian" },
+    { label: "Ukrainian", value: "ukrainian" },
   ];
 
   const [languageSelections, setLanguageSelections] = useState<
     Record<string, "english" | "spanish">
   >({});
 
+  const [voiceToneSelections, setVoiceToneSelections] = useState<
+    Record<string, string>
+  >({});
+
+  const [voiceSpeedSelections, setVoiceSpeedSelections] = useState<
+    Record<string, number>
+  >({});
+
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
+  
+
 
   const {
     audioAnimationLoader,
@@ -282,11 +327,11 @@ const AudioAnimationPage: React.FC = () => {
     videoAnimationLoader,
     labels,
   } = useSelector(
-    (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
+    (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation,
   );
 
   const { saveLoader, saveTranslatedData } = useSelector(
-    (store) => store.SaveTranslatedData
+    (store) => store.SaveTranslatedData,
   );
 
   const characters =
@@ -327,7 +372,7 @@ const AudioAnimationPage: React.FC = () => {
         const exists = validOptions.some((v: any) => v.value === voice);
 
         sanitized[charName] = exists ? (voice as string) : "";
-      }
+      },
     );
 
     setVoiceSelections(sanitized);
@@ -353,7 +398,7 @@ const AudioAnimationPage: React.FC = () => {
 
   const handleLanguageChange = (
     charName: string,
-    value: "english" | "spanish"
+    value: "english" | "spanish",
     // option: { label: string; value: "english" | "spanish" }
   ) => {
     setLanguageSelections((prev) => ({
@@ -369,7 +414,7 @@ const AudioAnimationPage: React.FC = () => {
 
   const handleGenderChange = (
     charName: string,
-    value: string
+    value: string,
     // option: { label: string; value: "male" | "female" }
   ) => {
     const gender = value;
@@ -389,7 +434,7 @@ const AudioAnimationPage: React.FC = () => {
         const voices = allVoiceOptions?.[narrationType]?.[language] || [];
 
         const validVoices = voices.filter(
-          (v) => v.value && !v.disabled && VOICE_GENDER_MAP[v.value] === gender
+          (v) => v.value && !v.disabled && VOICE_GENDER_MAP[v.value] === gender,
         );
 
         const stillValid = validVoices.some((v) => v.value === currentVoice);
@@ -420,13 +465,13 @@ const AudioAnimationPage: React.FC = () => {
     if (!gender) return selectableVoices;
 
     return selectableVoices.filter(
-      (voice) => VOICE_GENDER_MAP[voice.value] === gender
+      (voice) => VOICE_GENDER_MAP[voice.value] === gender,
     );
   };
 
   const handleNarrationChange = (
     charName: string,
-    value: any
+    value: any,
     // option: { label: string; value: string }
   ) => {
     setNarrationSelections((prev) => ({
@@ -445,6 +490,21 @@ const AudioAnimationPage: React.FC = () => {
     setVoiceSelections((prev) => ({
       ...prev,
       [charName]: selected,
+    }));
+  };
+
+  // Voice notes
+  const handleVoiceToneChange = (charName: string, tone: string) => {
+    setVoiceToneSelections((prev) => ({
+      ...prev,
+      [charName]: tone,
+    }));
+  };
+
+  const handleVoiceSpeedChange = (charName: string, value: number) => {
+    setVoiceSpeedSelections((prev) => ({
+      ...prev,
+      [charName]: value,
     }));
   };
 
@@ -487,11 +547,25 @@ const AudioAnimationPage: React.FC = () => {
     Object.keys(voiceSelections).forEach((charName) => {
       const voice = voiceSelections[charName];
       const voiceTool = narrationSelections[charName];
+      const voiceTone = voiceToneSelections?.[charName];
+      const voiceSpeed = voiceSpeedSelections?.[charName];
 
+      // if (voice && voiceTool) {
+      //   custom_voice_map[charName] = {
+      //     voice,
+      //     voice_tool: voiceTool,
+      //   };
+      // }
       if (voice && voiceTool) {
         custom_voice_map[charName] = {
           voice,
           voice_tool: voiceTool,
+          ...(voiceTool === "azure" && voiceTone
+            ? { voice_tone: voiceTone }
+            : {}),
+          ...(voiceTool === "azure" && typeof voiceSpeed !== undefined
+            ? { voice_speed: voiceSpeed }
+            : {}),
         };
       }
     });
@@ -611,7 +685,7 @@ const AudioAnimationPage: React.FC = () => {
                             onChange={(value) =>
                               handleLanguageChange(
                                 charName,
-                                value as "english" | "spanish"
+                                value as "english" | "spanish",
                               )
                             }
                             placeholder="Select Language"
@@ -620,7 +694,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         {/* Gender */}
-                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 1 }}>
                           <SelectComp
                             label="Gender"
                             options={genderOptions}
@@ -628,7 +702,7 @@ const AudioAnimationPage: React.FC = () => {
                             onChange={(value) =>
                               handleGenderChange(
                                 charName,
-                                value as "male" | "female"
+                                value as "male" | "female",
                               )
                             }
                             placeholder="Select Gender"
@@ -636,7 +710,70 @@ const AudioAnimationPage: React.FC = () => {
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+                        {/* Voice speed */}
+                        <Grid size={{ xs: 12, md: 6, lg: 1 }}>
+                          <SelectComp
+                            label="Voice Speed"
+                            options={voiceSpeedOptions}
+                            value={voiceSpeedSelections[charName] ?? ""}
+                            onChange={(value) =>
+                              handleVoiceSpeedChange(charName, value as number)
+                            }
+                            placeholder="Select Voice Speed"
+                            style={true}
+                             disabled={narrationSelections?.[charName] !== "azure"} 
+                          />
+                        </Grid>
+
+                        {/* <Grid size={{ xs: 12, md: 6, lg: 1 }}>
+                          <TextField
+                            label="Voice Speed"
+                            type="number"
+                            inputProps={{
+                              min: 0,
+                              max: 2,
+                              step: 0.1,
+                            }}
+                            value={voiceSpeedSelections[charName] ?? 1}
+                            onChange={(e) =>
+                              handleVoiceSpeedChange(
+                                charName,
+                                Number(e.target.value),
+                              )
+                            }
+                            fullWidth
+                          />
+                        </Grid> */}
+
+                        {/* <Grid size={{ xs: 12, md: 6, lg: 1 }}>
+                          <Slider
+                            value={voiceSpeedSelections[charName] ?? 1}
+                            min={0}
+                            max={2}
+                            step={0.1}
+                            onChange={(_, value) =>
+                              handleVoiceSpeedChange(charName, value as number)
+                            }
+                            valueLabelDisplay="auto"
+                          />
+                        </Grid> */}
+
+                        {/* Voice tone */}
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                          <SelectComp
+                            label="Voice Tone"
+                            options={voiceToneOptions}
+                            value={voiceToneSelections[charName] || ""}
+                            onChange={(value) =>
+                              handleVoiceToneChange(charName, value as string)
+                            }
+                            placeholder="Select Voice Tone"
+                            style={true}
+                             disabled={narrationSelections?.[charName] !== "azure"} 
+                          />
+                        </Grid>
+
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
                           <Typography
                             sx={{
                               fontSize: "1rem",
@@ -661,7 +798,7 @@ const AudioAnimationPage: React.FC = () => {
                                       ...opt,
                                       disabled:
                                         voiceSelections[charName] !== opt.value,
-                                    })
+                                    }),
                                   )
                                 : getFilteredVoiceOptions(charName)
                             }
@@ -674,7 +811,7 @@ const AudioAnimationPage: React.FC = () => {
                             getPreviewUrl={(voice) =>
                               getPreviewUrl(
                                 voice,
-                                getFilteredVoiceOptions(charName)
+                                getFilteredVoiceOptions(charName),
                               )
                             }
                             customOption
@@ -707,7 +844,7 @@ const AudioAnimationPage: React.FC = () => {
                                 s3_url={scene.final_audio_s3_url}
                               />
                             </Grid>
-                          )
+                          ),
                         )}
                       </Grid>
                     </>
@@ -738,7 +875,7 @@ const AudioAnimationPage: React.FC = () => {
                         (!audioAnimationData?.scenes &&
                           !audioAnimationData?.scenes?.length > 0) ||
                         audioAnimationLoader ||
-                        videoAnimationLoader 
+                        videoAnimationLoader
                       }
                       label={"Create Transition"}
                       // className={styles.createBtn}

@@ -1,34 +1,19 @@
-// src/pages/UploadScript/UploadScript.jsx
 import { useRef, useState } from "react";
 import styles from "./UploadVideo.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import UploadIcon from "../../assets/UploadCloudIcon.svg";
-import { useNavigate } from "react-router-dom";
 import Footer from "../../components/common/mainFooter";
-import { BASE_URL } from "../../api/axios";
-import { toast } from "react-toastify";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Input from "../../components/common/Input";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../api/axios";
+import { toast } from "react-toastify";
 import { showToast } from "../../utils/toast";
-import DownloadPopup from "../../components/common/popup/DownloadPopup";
-
-import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 import BackButton from "../../components/common/Buton/BackButton";
-import {
-  Box,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Typography,
-} from "@mui/material";
+import { Box, FormControlLabel, Radio, Typography } from "@mui/material";
 import SelectComp from "../../components/common/select";
 
 const videoTypeOptions = [
@@ -44,12 +29,8 @@ const UploadVideoPage = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [scriptData, setScriptData] = useState(null);
   const [loader, setLoader] = useState(false);
-  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const [lipSync, setLipSync] = useState<"yes" | "no">("no");
-  const [option, setOption] = useState<"yes" | "no">("no");
-
   const [videoType, setVideoType] = useState<string>("l1");
-
   const navigate = useNavigate();
   const fileInputRef = useRef<any>(null);
   const isDisabled = !title.trim() || !uploadSuccess;
@@ -59,7 +40,7 @@ const UploadVideoPage = () => {
 
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
-    const doc = new jsPDF();
+    // const doc = new jsPDF();
     if (!files || files.length === 0) {
       showToast.error("Please give input first");
       return;
@@ -121,20 +102,23 @@ const UploadVideoPage = () => {
     }
   };
 
-  type DownloadType = "pdf" | "word";
-
-  
-
-  const handleDownloadScript = () => {
-    setOpenDownloadPopup(true);
-    // setMakeChanges(true);
-  };
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     if (name == "title") {
       setTitle(value);
     }
   };
+
+  console.log(selectedFile, "selectedFile")
+
+  // const formData = new FormData();
+  // formData.append("video", file);
+
+  // dispatch(
+  //   postUploadVideo(scriptId, formData, () => {
+  //     console.log("Upload complete");
+  //   }),
+  // );
 
   return (
     <>
@@ -179,18 +163,18 @@ const UploadVideoPage = () => {
               className={styles.input}
               sx={{
                 flex: 1,
-                borderColor: option === "yes" ? "#1976d2" : "#e0e0e0",
+                borderColor: lipSync === "yes" ? "#1976d2" : "#e0e0e0",
                 cursor: "pointer",
                 padding: "4px 20px",
               }}
-              onClick={() => setOption("yes")}
+              onClick={() => setLipSync("yes")}
             >
               <FormControlLabel
                 value="yes"
                 control={
                   <Radio
-                    checked={option === "yes"}
-                    onChange={() => setOption("yes")}
+                    checked={lipSync === "yes"}
+                    onChange={() => setLipSync("yes")}
                   />
                 }
                 label="Yes"
@@ -203,18 +187,18 @@ const UploadVideoPage = () => {
               className={styles.input}
               sx={{
                 flex: 1,
-                borderColor: option === "no" ? "#1976d2" : "#e0e0e0",
+                borderColor: lipSync === "no" ? "#1976d2" : "#e0e0e0",
                 cursor: "pointer",
                 padding: "4px",
               }}
-              onClick={() => setOption("no")}
+              onClick={() => setLipSync("no")}
             >
               <FormControlLabel
                 value="no"
                 control={
                   <Radio
-                    checked={option === "no"}
-                    onChange={() => setOption("no")}
+                    checked={lipSync === "no"}
+                    onChange={() => setLipSync("no")}
                   />
                 }
                 label="No"
@@ -258,20 +242,6 @@ const UploadVideoPage = () => {
           </div>
 
           <div className={styles.buttonRow}>
-            {/* <ButtonComp
-              label="Sample Download"
-              colorType="secondary"
-              variant="contained"
-              action={handleDownloadScript}
-              sx={
-                {
-                  // backgroundColor: "#239DE0",
-                  // "&:hover": { backgroundColor: "#7fbcddff" },
-                }
-              }
-            >
-              Sample Download
-            </ButtonComp> */}
             <ButtonComp
               label={loader ? "Uploading" : "Upload"}
               variant="contained"
@@ -285,10 +255,7 @@ const UploadVideoPage = () => {
                 "& img": {
                   filter: "brightness(0) invert(1)",
                 },
-                // display: "flex",
-                // alignItems: "center",
                 gap: "8px",
-                // textTransform: "none",
               }}
               disabled={isDisabled}
               action={() =>
@@ -308,11 +275,6 @@ const UploadVideoPage = () => {
             </ButtonComp>
           </div>
         </div>
-        {/* <DownloadPopup
-          open={openDownloadPopup}
-          onClose={() => setOpenDownloadPopup(false)}
-          onSelect={handleDownloadType}
-        /> */}
       </div>
       <Footer />
     </>
@@ -320,150 +282,3 @@ const UploadVideoPage = () => {
 };
 
 export default UploadVideoPage;
-
-
-// const handleDownloadType = async (type: DownloadType) => {
-//     try {
-//       if (type === "pdf") {
-//         const doc = new jsPDF();
-
-//         // Title
-//         doc.setFontSize(18);
-//         doc.text("Sample Script", 14, 20);
-
-//         // Table data
-//         const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-//         const tableRows: string[][] = [
-//           ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-//           [
-//             "02",
-//             "Create a 90-second explainer video script about photosynthesis",
-//             "Dummy text",
-//             "Monologue",
-//           ],
-//           ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-//           [
-//             "04",
-//             "Create a 90-second explainer video script about photosynthesis",
-//             "Dummy text",
-//             "Monologue",
-//           ],
-//           ["05", "Create a 90-second video", "Dummy text", "Narration"],
-//         ];
-
-//         // Add table
-//         (doc as any).autoTable({
-//           head: [tableColumn],
-//           body: tableRows,
-//           startY: 30,
-//           theme: "grid",
-//           headStyles: { fillColor: [100, 149, 237] },
-//         });
-
-//         // Save PDF
-//         doc.save("Sample_Script.pdf");
-//       } else if (type === "word") {
-//         // Lazy import docx (TypeScript supported)
-//         const {
-//           Document,
-//           Packer,
-//           Paragraph,
-//           Table,
-//           TableCell,
-//           TableRow,
-//           TextRun,
-//         } = await import("docx");
-
-//         const doc = new Document({
-//           sections: [
-//             {
-//               children: [
-//                 // Title
-//                 new Paragraph({
-//                   children: [
-//                     new TextRun({
-//                       text: "Sample Script",
-//                       bold: true,
-//                       size: 32,
-//                     }),
-//                   ],
-//                   spacing: { after: 300 },
-//                 }),
-
-//                 // Table
-//                 new Table({
-//                   rows: [
-//                     // Header Row
-//                     new TableRow({
-//                       children: [
-//                         new TableCell({
-//                           children: [new Paragraph("Scene No.")],
-//                         }),
-//                         new TableCell({ children: [new Paragraph("Script")] }),
-//                         new TableCell({ children: [new Paragraph("OST")] }),
-//                         new TableCell({ children: [new Paragraph("Type")] }),
-//                       ],
-//                     }),
-
-//                     // Data rows
-//                     ...[
-//                       [
-//                         "01",
-//                         "Create a 90-second explainer",
-//                         "Dummy text",
-//                         "Narration",
-//                       ],
-//                       [
-//                         "02",
-//                         "Create a 90-second explainer video script about photosynthesis",
-//                         "Dummy text",
-//                         "Monologue",
-//                       ],
-//                       [
-//                         "03",
-//                         "Create a 90-second video",
-//                         "Dummy text",
-//                         "Conversation",
-//                       ],
-//                       [
-//                         "04",
-//                         "Create a 90-second explainer video script about photosynthesis",
-//                         "Dummy text",
-//                         "Monologue",
-//                       ],
-//                       [
-//                         "05",
-//                         "Create a 90-second video",
-//                         "Dummy text",
-//                         "Narration",
-//                       ],
-//                     ].map(
-//                       (row) =>
-//                         new TableRow({
-//                           children: row.map(
-//                             (cell) =>
-//                               new TableCell({ children: [new Paragraph(cell)] })
-//                           ),
-//                         })
-//                     ),
-//                   ],
-//                 }),
-//               ],
-//             },
-//           ],
-//         });
-
-//         // Download Word File
-//         const blob = await Packer.toBlob(doc);
-//         const url = window.URL.createObjectURL(blob);
-//         const a = document.createElement("a");
-//         a.href = url;
-//         a.download = "Sample_Script.docx";
-//         a.click();
-//       }
-
-//       setOpenDownloadPopup(false);
-//     } catch (err) {
-//       console.error("Error generating file:", err);
-//     }
-//   };

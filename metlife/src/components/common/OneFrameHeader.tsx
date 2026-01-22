@@ -31,7 +31,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   const { pathname } = useLocation();
   const token = secureLocalStorage.getItem("token") as string | null;
   const {username} = secureLocalStorage.getItem("userDetails") as string | null;
-  console.log(username, "chcekc")
+
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

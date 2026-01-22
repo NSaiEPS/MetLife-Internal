@@ -28,11 +28,17 @@ export interface CharacterData {
   created_at: string;
 }
 
+export interface UploadVideoData {
+  uploadVideoLoader: boolean;
+  uploadVideoInfo: any[];
+}
+
 interface ScriptState {
   scriptLoader: boolean;
   scriptData: ScriptData;
   characterData: CharacterData[];
   promptData: PromptData[];
+  uploadVideoData: UploadVideoData;
 }
 
 const initialState: ScriptState = {
@@ -40,6 +46,10 @@ const initialState: ScriptState = {
   scriptData: { scenes: [] },
   characterData: [],
   promptData: [],
+  uploadVideoData: {
+    uploadVideoLoader: false,
+    uploadVideoInfo: [],
+  },
 };
 
 const ScriptDataSlice = createSlice({
@@ -52,7 +62,7 @@ const ScriptDataSlice = createSlice({
 
     setScriptData(state, action: PayloadAction<{ scene_id: string | number }>) {
       const filteredScenes = state.scriptData.scenes.filter(
-        (item) => item.scene_id !== action.payload.scene_id
+        (item) => item.scene_id !== action.payload.scene_id,
       );
 
       state.scriptData = {
@@ -70,10 +80,10 @@ const ScriptDataSlice = createSlice({
       action: PayloadAction<{
         character_id: string;
         prompt: string;
-      }>
+      }>,
     ) {
       const item = state.promptData.find(
-        (p) => p.character_id === action.payload.character_id
+        (p) => p.character_id === action.payload.character_id,
       );
 
       if (item) {
@@ -84,6 +94,12 @@ const ScriptDataSlice = createSlice({
     setCharacterData(state, action: PayloadAction<CharacterData[]>) {
       state.characterData = action.payload;
     },
+    setUploadVideoLoader(state, action: PayloadAction<boolean>) {
+      state.uploadVideoData.uploadVideoLoader = action.payload;
+    },
+    setUploadVideoInfo(state, action: PayloadAction<any[]>) {
+      state.uploadVideoData.uploadVideoInfo = action.payload;
+    },
   },
 });
 
@@ -93,13 +109,15 @@ export const {
   setCharacterData,
   setPromptData,
   updateCharacterPrompt,
+  setUploadVideoInfo,
+  setUploadVideoLoader,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
 export const postDeleteScene =
   (
     data: { script_id?: string; scene_id: string | number; version?: number },
-    setOpenDeletePopup: (v: boolean) => void
+    setOpenDeletePopup: (v: boolean) => void,
     // successDelete
   ) =>
   async (dispatch: AppDispatch) => {
@@ -111,7 +129,7 @@ export const postDeleteScene =
         dispatch(
           setScriptData({
             scene_id: data.scene_id,
-          })
+          }),
         );
         // successDelete();
       }
@@ -133,7 +151,7 @@ export const postEditScene =
       update_description: string;
       update_on_screen_text: string;
     },
-    setOpenDeletePopup: (v: boolean) => void
+    setOpenDeletePopup: (v: boolean) => void,
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
@@ -144,7 +162,7 @@ export const postEditScene =
         dispatch(
           setScriptData({
             scene_id: data.scene_id,
-          })
+          }),
         );
         // successDelete();
       }
@@ -220,7 +238,7 @@ export const patchEditPromp =
     try {
       const res = await api.patch(
         `characters/edit-prompt?script_id=${id}&character_name=${name}`,
-        { new_prompt }
+        { new_prompt },
       );
       if (res.status) {
         // dispatch(setPromptData(res?.data?.prompts));
@@ -228,7 +246,7 @@ export const patchEditPromp =
           updateCharacterPrompt({
             character_id,
             prompt: new_prompt,
-          })
+          }),
         );
       }
     } catch (error: any) {
@@ -236,5 +254,36 @@ export const patchEditPromp =
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
+    }
+  };
+
+//Upload video
+export const postUploadVideo =
+  (scriptId: string, payload: FormData, callback?: () => void) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setUploadVideoLoader(true));
+
+    try {
+      const res = await api.post(
+        `videos/upload?script_id=${scriptId}`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      if (res?.status) {
+        dispatch(setUploadVideoInfo(res?.data?.videos || []));
+
+        if (callback) {
+          callback();
+        }
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Video upload failed!");
+    } finally {
+      dispatch(setUploadVideoLoader(false));
     }
   };
