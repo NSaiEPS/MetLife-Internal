@@ -130,7 +130,7 @@ const Login: React.FC = () => {
               Account Login
             </Typography>
 
-            <Typography color="text.secondary" mb={3}>
+            <Typography color="text.secondary" variant = "body1" mb={3}>
               Enter your login details to continue
             </Typography>
 
