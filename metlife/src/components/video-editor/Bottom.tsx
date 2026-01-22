@@ -37,13 +37,13 @@ interface BottomProps {
   isFinalVideo: boolean;
   animationData: ModalState[];
   setAnimationData: (data: ModalState[]) => void;
-  handleAllSubmit: () => void;
+  handleAllSubmit: (entry: string, exit: string) => void;
+  handleAlternateSubmit: (entry: string, exit: string) => void;
   active: number;
   progress: number;
   onSelect: (index: number) => void;
   videoHasError?: boolean;
   finalTime: any;
-  handleAlternateSubmit: any;
 }
 
 interface ModalState {
@@ -59,6 +59,7 @@ export default function Bottom({
   isFinalVideo,
   animationData,
   setAnimationData,
+  // handleAnimationChanges,
   handleAllSubmit,
   active,
   progress,
@@ -66,8 +67,6 @@ export default function Bottom({
   videoHasError = false,
   finalTime,
   handleAlternateSubmit,
-  handleAllSubmitInside,
-  handleAnimationChanges,
 }: BottomProps) {
   const dispatch = useDispatch();
   // const [sceneData, setSceneData] = useState<VideoData[]>(videosData);
@@ -82,7 +81,7 @@ export default function Bottom({
     ost: "",
   });
 
-  console.log(videosData, "videosData");
+  // console.log(videosData, "videosData");
 
   const downloadVideo = (s3_url: string, name: string) => {
     // const link = document.createElement("a");
@@ -221,14 +220,13 @@ export default function Bottom({
         }}
       >
         {videosData?.map((row, i) => {
-          console.log(row, "rows")
           const isActive = i === active;
           const applied = animationData.find(
             (a) =>
               a.scene_number === row.scene_number &&
               (a.start_transition !== "none" || a.end_transition !== "none")
           );
-          console.log(videosData, "cvskdhjf");
+
           return (
             <Box
               key={i}
@@ -258,7 +256,11 @@ export default function Bottom({
                 <Box
                   component="img"
                   src={
-                    type === "final-video" ? finalVideoImg : row?.image_urls ? row?.image_urls[0] : ""
+                    type === "final-video"
+                      ? finalVideoImg
+                      : row?.image_urls
+                      ? row?.image_urls[0]
+                      : ""
                   }
                   alt=""
                   sx={{
@@ -601,9 +603,56 @@ export default function Bottom({
                     action={handleAnimationChanges}
                     disabled={finalTime > 0}
                   /> */}
-                  <ButtonComp onClick={handleModalSubmit} variant="contained">
-                    Apply
-                  </ButtonComp>
+
+                  {/* <div> */}
+                  {/* <ButtonComp
+                    label={"Alternative Scenes"}
+                    colorType="download"
+                    // sx={{
+                    //   backgroundColor: "#99d539",
+                    //   textTransform: "none",
+                    // }}
+                    action={handleAlternateSubmit}
+                    disabled={finalTime > 0}
+                  />
+                  <ButtonComp
+                    label={"Apply To All"}
+                    // sx={{ textTransform: "none" }}
+                    action={handleAllSubmit}
+                    disabled={finalTime > 0}
+                  /> */}
+
+                  <ButtonComp
+                    label="Alternative Scenes"
+                    colorType="download"
+                    action={() => {
+                      handleAlternateSubmit(
+                        modalState.start_transition,
+                        modalState.end_transition
+                      );
+                      setModalIndex(null);
+                    }}
+                    disabled={finalTime > 0}
+                  />
+
+                  <ButtonComp
+                    label="Apply To All"
+                    action={() => {
+                      handleAllSubmit(
+                        modalState.start_transition,
+                        modalState.end_transition
+                      );
+                      setModalIndex(null);
+                    }}
+                    disabled={finalTime > 0}
+                  />
+
+                  {/* </div> */}
+                  <ButtonComp
+                    label="Apply"
+                    onClick={handleModalSubmit}
+                    variant="contained"
+                  />
                 </Box>
               </Box>
             </Box>

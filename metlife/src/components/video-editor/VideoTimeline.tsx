@@ -35,11 +35,10 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   isFinalVideo,
   animationData,
   setAnimationData,
+  // handleAnimationChanges,
   handleAllSubmit,
   finalTime,
   handleAlternateSubmit,
-  handleAllSubmitInside,
-  handleAnimationChanges,
 }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
@@ -59,6 +58,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   const slideTime = normalizeDuration(rawDuration);
 
   const total = videosData?.length;
+  const hasEndedRef = useRef<boolean>(false);
 
   const preloadUrls = [
     videosData?.[active]?.final_video?.url,
@@ -137,9 +137,20 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
 
     const remaining = Math.max(0, slideTime * (1 - progress / 100));
 
+    // timerEnd.current = window.setTimeout(() => {
+    //   setProg(100);
+    //   next();
+    // }, remaining);
+
     timerEnd.current = window.setTimeout(() => {
       setProg(100);
-      next();
+
+      if (total > 1) {
+        next();
+      } else {
+        setPlaying(false);
+        hasEndedRef.current = true; // 🔒 mark ended
+      }
     }, remaining);
 
     return () => {
@@ -157,16 +168,28 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
   ]);
 
   // ------------------ AUTO-PLAY ON VIDEO CHANGE ------------------
+  // useEffect(() => {
+  //   if (
+  //     hasUserInteracted &&
+  //     !playing &&
+  //     activeVideoLoaded &&
+  //     !activeVideoHasError
+  //   ) {
+  //     setPlaying(true);
+  //   } else if (activeVideoHasError) {
+  //     setPlaying(false);
+  //   }
+  // }, [active, hasUserInteracted, activeVideoLoaded, activeVideoHasError]);
+
   useEffect(() => {
     if (
       hasUserInteracted &&
       !playing &&
       activeVideoLoaded &&
-      !activeVideoHasError
+      !activeVideoHasError &&
+      !hasEndedRef.current // 👈 this is the key
     ) {
       setPlaying(true);
-    } else if (activeVideoHasError) {
-      setPlaying(false);
     }
   }, [active, hasUserInteracted, activeVideoLoaded, activeVideoHasError]);
 
@@ -214,7 +237,15 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           type={type}
           next={next}
           prev={prev}
-          onTogglePlay={setPlaying}
+          // onTogglePlay={setPlaying}
+        onTogglePlay={(val) => {
+  if (val) {
+    hasEndedRef.current = false;
+    setProg(0); // 🔑 THIS WAS MISSING
+  }
+  setPlaying(val);
+}}
+
           isGloballyPlaying={playing}
           onFirstInteraction={() => setHasUserInteracted(true)}
           hasUserInteracted={hasUserInteracted}
@@ -232,14 +263,14 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           videosData={videosData}
           animationData={animationData}
           setAnimationData={setAnimationData}
+          // handleAnimationChanges={handleAnimationChanges}
           handleAllSubmit={handleAllSubmit}
           progress={progress}
           onSelect={goto}
           videoHasError={activeVideoHasError}
           finalTime={finalTime}
           handleAlternateSubmit={handleAlternateSubmit}
-          handleAllSubmitInside={handleAllSubmitInside}
-          handleAnimationChanges={handleAnimationChanges}
+          // handleAllSubmitInside={handleAllSubmitInside}
         />
       )}
     </Box>

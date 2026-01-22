@@ -276,7 +276,12 @@ const AudioAnimationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
 
-  const { audioAnimationLoader, audioAnimationData, labels } = useSelector(
+  const {
+    audioAnimationLoader,
+    audioAnimationData,
+    videoAnimationLoader,
+    labels,
+  } = useSelector(
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
   );
 
@@ -296,8 +301,6 @@ const AudioAnimationPage: React.FC = () => {
       ...characters.filter((c: string) => c !== "Narrator"),
     ];
   }
-
-  console.log(audioAnimationData, "audioAnimationData");
 
   useEffect(() => {
     if (id) {
@@ -465,6 +468,7 @@ const AudioAnimationPage: React.FC = () => {
   };
 
   const apiCall = () => {
+    // ** Old functionality **
     // const custom_voice_map: VoiceSelectionsType = {};
     // Object.keys(voiceSelections).forEach((char) => {
     //   if (voiceSelections[char]) {
@@ -544,14 +548,16 @@ const AudioAnimationPage: React.FC = () => {
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
-            {audioAnimationLoader && (
+            {(audioAnimationLoader || videoAnimationLoader) && (
               <FullScreenGradientLoader text="loading..." />
             )}
             <main className={styles.cardWrap}>
               <div className={styles.card}>
                 <div className={styles.headerRow}>
                   {/* <h1 className={styles.title}>Audio & Animation Toolkit</h1> */}
-                  <Typography variant="h3">Audio & Animation Toolkit</Typography>
+                  <Typography variant="h3">
+                    Audio & Animation Toolkit
+                  </Typography>
                 </div>
 
                 <div className={styles.insideContainer}>
@@ -721,7 +727,9 @@ const AudioAnimationPage: React.FC = () => {
                       variant="outlined"
                       className={styles.largeOutline}
                       onClick={handleSave}
-                      disabled={saveLoader}
+                      disabled={
+                        audioAnimationData?.scenes === null || saveLoader
+                      }
                     >
                       Save
                     </ButtonComp>
@@ -729,10 +737,10 @@ const AudioAnimationPage: React.FC = () => {
                       disabled={
                         (!audioAnimationData?.scenes &&
                           !audioAnimationData?.scenes?.length > 0) ||
-                        audioAnimationLoader
+                        audioAnimationLoader ||
+                        videoAnimationLoader 
                       }
                       label={"Create Transition"}
-                      // sx={{ textTransform: "none", backgroundColor: "#99d539" }}
                       // className={styles.createBtn}
                       action={handleCreateTransition}
                     >
@@ -746,7 +754,8 @@ const AudioAnimationPage: React.FC = () => {
                       action={handleSubmit}
                       disabled={
                         audioAnimationData?.scenes?.length > 0 ||
-                        saveTranslatedData === null
+                        audioAnimationLoader
+                        //  ||saveTranslatedData === null
                       }
                     >
                       Submit
@@ -761,7 +770,6 @@ const AudioAnimationPage: React.FC = () => {
             <NoDataMessage filter={false} loading={true} />
           </>
         )}
-
         <Footer />
       </Box>
     </>

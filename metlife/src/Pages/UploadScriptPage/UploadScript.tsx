@@ -16,10 +16,11 @@ import { showToast } from "../../utils/toast";
 import DownloadPopup from "../../components/common/popup/DownloadPopup";
 
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+// import { IoArrowBackCircleOutline } from "react-icons/io5";
 import BackButton from "../../components/common/Buton/BackButton";
-import { Button, Typography } from "@mui/material";
-import { color } from "framer-motion";
+import { Typography } from "@mui/material";
+// import { Button, Typography } from "@mui/material";
+// import { color } from "framer-motion";
 
 // import { IoMdDownload } from "react-icons/io";
 
@@ -249,45 +250,6 @@ const UploadScript = () => {
     }
   };
 
-  //   const handleDownload = () => {
-  //     const doc = new jsPDF();
-
-  //     // Title
-  //     doc.setFontSize(18);
-  //     doc.text("Sample Script", 14, 20);
-
-  //     // Table data
-  //     const tableColumn = ["Scene No.", "Script", "OST", "Type"];
-  //     const tableRows = [
-  //       ["01", "Create a 90-second explainer", "Dummy text", "Narration"],
-  //       [
-  //         "02",
-  //         "Create a 90-second explainer video script about photosynthesis",
-  //         "Dummy text",
-  //         "Monologue",
-  //       ],
-  //       ["03", "Create a 90-second video", "Dummy text", "Conversation"],
-  //       [
-  //         "04",
-  //         "Create a 90-second explainer video script about photosynthesis",
-  //         "Dummy text",
-  //         "Monologue",
-  //       ],
-  //       ["05", "Create a 90-second video", "Dummy text", "Narration"],
-  //     ];
-
-  //     // Add table
-  //   (doc as any).autoTable({
-  //   head: [tableColumn],
-  //   body: tableRows,
-  //   startY: 30,
-  //   theme: "grid",
-  //   headStyles: { fillColor: [100, 149, 237] },
-  // });
-
-  //     // Save PDF
-  //     doc.save("Sample_Script.pdf");
-  //   };
   const handleDownloadScript = () => {
     setOpenDownloadPopup(true);
     // setMakeChanges(true);

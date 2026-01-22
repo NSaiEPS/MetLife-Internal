@@ -11,10 +11,10 @@ import {
   AccordionDetails,
   Typography,
   Grid,
-  Button,
+  // Button,
   Tooltip,
 } from "@mui/material";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+// import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getPromptsList } from "../../redux/features/promptSlice";
@@ -100,6 +100,7 @@ interface VideoPrompt {
   title: string;
   script: string;
 }
+
 export type InputType = "prompt" | "image";
 
 /* ================= CONSTANT ================= */
@@ -194,6 +195,7 @@ const GenerateScript: React.FC = () => {
         break;
     }
   };
+  
   const apiCall = async () => {
     setLoader(true);
     const characterPayload = buildCharacterPayload(characters);
@@ -222,7 +224,7 @@ const GenerateScript: React.FC = () => {
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
           toast.error(
-            result?.data?.detail || "Something went wrong while generating!"
+            result?.data?.detail || "Insufficient Internal Data!"
           );
         }
       } else {
@@ -235,6 +237,7 @@ const GenerateScript: React.FC = () => {
       setLoader(false);
     }
   };
+
   const handleGenerate = () => {
     if (!language) showToast.error("Please select Language in Video Filters");
     else if (!videoType)

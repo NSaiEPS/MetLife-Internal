@@ -187,15 +187,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   }, [id, dispatch, tableExtraData?.char_image_exist]);
 
-  useEffect(() => {
-    if (
-      tableExtraData?.video_style === "mixed" &&
-      tableExtraData?.char_image_exist
-    ) {
-      setFlowStep("mixed-options");
-      setOpenFlowDialog(true);
-    }
-  }, [tableExtraData?.char_image_exist]);
+  // useEffect(() => {
+  //   if (
+  //     tableExtraData?.video_style === "mixed" &&
+  //     tableExtraData?.char_image_exist
+  //   ) {
+  //     setFlowStep("mixed-options");
+  //     setOpenFlowDialog(true);
+  //   }
+  // }, [tableExtraData?.char_image_exist,  ]);
 
   const handleSavePrompt = (prompt: string) => {
     const payload = { prompt };
@@ -483,7 +483,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setMakeChanges(true);
   };
 
-  const editSceneForScript = () => {};
+  // const editSceneForScript = () => {};
 
   const confirmDeleteScene = async (scene: SceneRow) => {
     if (!id) return;
@@ -530,7 +530,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleOpenFlowDialog = () => {
-    // setOpenFlowDialog(true);
     if (tableExtraData?.video_style === "conversational") {
       setFlowStep("characters");
       setOpenFlowDialog(true);
@@ -1086,39 +1085,42 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     </Typography>
 
                     <Box display="flex" justifyContent="center" gap={4} mb={4}>
-                      {/* {!tableExtraData?.char_image_exist &&
-                       ( */}
-                      {(!tableExtraData?.char_image_exist ||
+                      {/* {
+                      (!tableExtraData?.char_image_exist ||
                         tableExtraData?.video_style === "conversational") &&
                         !(
                           tableExtraData?.video_style === "mixed" &&
                           characterData?.length > 0
-                        ) && (
-                          <Box
-                            onClick={handleGenerateImagesFlow}
-                            sx={{
-                              cursor: "pointer",
-                              width: 200,
-                              p: 2,
-                              borderRadius: 2,
-                              border: "1px solid #e0e0e0",
-                              transition: "0.2s",
-                              "&:hover": {
-                                boxShadow: 3,
-                                transform: "translateY(-2px)",
-                              },
-                            }}
-                          >
-                            <Typography fontWeight={600}>
-                              {promptData?.length
-                                ? "View existing prompts & Images"
-                                : "Create/Setup prompts"}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Generate character images
-                            </Typography>
-                          </Box>
-                        )}
+                        ) && ( */}
+                      {((tableExtraData?.video_style === "conversational" &&
+                        !tableExtraData?.char_image_exist) ||
+                        (tableExtraData?.video_style === "mixed" &&
+                          !characterData?.length)) && (
+                        <Box
+                          onClick={handleGenerateImagesFlow}
+                          sx={{
+                            cursor: "pointer",
+                            width: 200,
+                            p: 2,
+                            borderRadius: 2,
+                            border: "1px solid #e0e0e0",
+                            transition: "0.2s",
+                            "&:hover": {
+                              boxShadow: 3,
+                              transform: "translateY(-2px)",
+                            },
+                          }}
+                        >
+                          <Typography fontWeight={600}>
+                            {promptData?.length
+                              ? "View existing prompts & Images"
+                              : "Create/Setup prompts"}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Generate character images
+                          </Typography>
+                        </Box>
+                      )}
 
                       {tableExtraData?.char_image_exist &&
                         tableExtraData?.video_style === "conversational" && (
@@ -1222,7 +1224,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     </ButtonComp>
                   </Dialog>
                 </>
-
               ) : null}
             </>
           )}
