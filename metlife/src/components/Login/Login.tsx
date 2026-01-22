@@ -18,6 +18,7 @@ import { postAuthLogin } from "../../redux/auth/authSlice";
 import type { RootState } from "../../redux/store";
 import FullScreenGradientLoader from "../common/GradientLoader";
 import { navigateTo } from "../../utils/navigate";
+import ButtonComp from "../common/Buton/Button";
 // import rightImg from "../../assets/login-right.png";
 // import serfAilogo from "../../assets/serfAi-logo.jpg";
 
@@ -129,7 +130,7 @@ const Login: React.FC = () => {
               Account Login
             </Typography>
 
-            <Typography color="text.secondary" mb={3}>
+            <Typography color="text.secondary" variant = "body1" mb={3}>
               Enter your login details to continue
             </Typography>
 
@@ -215,23 +216,23 @@ const Login: React.FC = () => {
                 }}
               />
 
-              <Button
+              <ButtonComp
                 fullWidth
                 variant="contained"
                 size="large"
                 sx={{
                   mt: 3,
                   py: 1,
-                  borderRadius: 2,
+                  // borderRadius: 2,
                   textTransform: "none",
                   fontSize: 16,
-                  backgroundColor: "#239DE0",
+                  // backgroundColor: "#239DE0",
                 }}
                 type="submit"
                 disabled={authLoader}
               >
                 Log in
-              </Button>
+              </ButtonComp>
             </Box>
           </Box>
         </Grid>
