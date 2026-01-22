@@ -19,6 +19,7 @@ import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 // import { IoArrowBackCircleOutline } from "react-icons/io5";
 import BackButton from "../../components/common/Buton/BackButton";
 import { Typography } from "@mui/material";
+import secureLocalStorage from "react-secure-storage";
 // import { Button, Typography } from "@mui/material";
 // import { color } from "framer-motion";
 
@@ -67,6 +68,13 @@ const UploadScript = () => {
       return;
     }
 
+    const token = secureLocalStorage.getItem("token") as string | null;
+
+    if (!token) {
+      showToast.error("User not authenticated");
+      return;
+    }
+
     setSelectedFile(file);
     setLoader(true);
     setUploadSuccess(false);
@@ -78,6 +86,9 @@ const UploadScript = () => {
       formData.append("title", title);
       const response = await fetch(`${BASE_URL}upload-script`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
         body: formData,
       });
 
@@ -224,9 +235,11 @@ const UploadScript = () => {
                         new TableRow({
                           children: row.map(
                             (cell) =>
-                              new TableCell({ children: [new Paragraph(cell)] })
+                              new TableCell({
+                                children: [new Paragraph(cell)],
+                              }),
                           ),
-                        })
+                        }),
                     ),
                   ],
                 }),
@@ -276,7 +289,7 @@ const UploadScript = () => {
             }}
           >
             <BackButton route="/video-frame" />
-            
+
             <Typography variant="h4">Upload Script</Typography>
             {/* <Button
               className={styles.icon}
@@ -351,14 +364,14 @@ const UploadScript = () => {
               label={loader ? "Uploading" : "Upload"}
               variant="contained"
               sx={{
-                color:"#ffffff",
+                color: "#ffffff",
 
                 "&.Mui-disabled": {
                   color: "#ffffff",
-                  backgroundColor: "#adadad", 
+                  backgroundColor: "#adadad",
                 },
                 "& img": {
-                  filter: "brightness(0) invert(1)", 
+                  filter: "brightness(0) invert(1)",
                 },
                 // display: "flex",
                 // alignItems: "center",

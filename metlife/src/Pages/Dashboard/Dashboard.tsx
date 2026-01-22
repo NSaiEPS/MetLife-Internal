@@ -280,6 +280,7 @@ const MyVideosDashboard: React.FC = () => {
               sx={{
                 width: "100%",
                 m: 0,
+                paddingTop: "10px",
                 flexWrap: "nowrap",
                 overflowX: "auto",
                 scrollbarWidth: "none",

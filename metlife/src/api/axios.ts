@@ -9,10 +9,10 @@ export const BASE_URL = `${SERVER_URL}`;
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
+  // headers: {
+  //   // "Content-Type": "application/json",
+  //   Accept: "application/json",
+  // },
 });
 
 // api.interceptors.response.use(
@@ -53,11 +53,9 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = secureLocalStorage.getItem("token") as string | null;
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 

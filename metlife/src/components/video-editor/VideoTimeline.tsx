@@ -82,7 +82,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
         setPlaying(false);
       }
     },
-    [total, active]
+    [total, active],
   );
 
   const next = useCallback(() => {
@@ -203,7 +203,7 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
         setPlaying(false);
       }
     },
-    []
+    [],
   );
 
   return (
@@ -238,14 +238,13 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           next={next}
           prev={prev}
           // onTogglePlay={setPlaying}
-        onTogglePlay={(val) => {
-  if (val) {
-    hasEndedRef.current = false;
-    setProg(0); // 🔑 THIS WAS MISSING
-  }
-  setPlaying(val);
-}}
-
+          onTogglePlay={(val) => {
+            if (val) {
+              hasEndedRef.current = false;
+              setProg(0); // 🔑 THIS WAS MISSING
+            }
+            setPlaying(val);
+          }}
           isGloballyPlaying={playing}
           onFirstInteraction={() => setHasUserInteracted(true)}
           hasUserInteracted={hasUserInteracted}

@@ -126,7 +126,7 @@ export const postImageUpload =
   };
 
 export const postEditGenerateVisualContent =
-  (data: any, onClose: CallbackFn) => async (dispatch: any) => {
+  (data: any, onClose: CallbackFn, id: string) => async (dispatch: any) => {
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/edit-visual", data);
@@ -134,11 +134,13 @@ export const postEditGenerateVisualContent =
         response?.data?.message || "Description updated successfully"
       );
       onClose(false);
+      dispatch(getGenerateVisualContentImage(id));
     } catch (error: any) {
       // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setGenerateVisualLoader(false));
+
     }
   };
 

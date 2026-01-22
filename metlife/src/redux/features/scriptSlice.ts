@@ -143,35 +143,27 @@ export const postDeleteScene =
   };
 
 export const postEditScene =
-  (
-    data: {
-      script_id?: string;
-      scene_id: string | number;
-      version?: number;
-      update_description: string;
-      update_on_screen_text: string;
-    },
-    setOpenDeletePopup: (v: boolean) => void,
-  ) =>
-  async (dispatch: AppDispatch) => {
+  (data: FormData, onClose: CallbackFn) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
       const res = await api.post("mongo/edit", data);
+      toast.success(
+        res?.data?.message || "Description updated successfully",
+      );
+      onClose(false);
 
-      if (res.status) {
-        dispatch(
-          setScriptData({
-            scene_id: data.scene_id,
-          }),
-        );
-        // successDelete();
-      }
+      // if (res.status) {
+      //   dispatch(
+      //     setScriptData({
+      //       scene_id: data.scene_id,
+      //     }),
+      //   );
+      // }
     } catch (error: any) {
-      // console.error(error);
+      console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
-      setOpenDeletePopup(false);
     }
   };
 

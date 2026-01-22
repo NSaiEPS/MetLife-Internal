@@ -59,7 +59,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
 
     // ✅ Either no unsaved changes, or user confirmed
     // setMakeChanges(true); // or false, depending on when you want to mark changes
-    if (pathname === "/dashboard" || pathname === "/") return;
+    // if (pathname === "/dashboard" || pathname === "/") return;
     navigate("/");
   };
 

@@ -27,7 +27,6 @@ import { navigateTo } from "../../utils/navigate";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import ButtonComp from "../../components/common/Buton/Button";
 
-
 // ---------- Types ----------
 interface VisualRow {
   "Scene_No.": number;
@@ -48,7 +47,7 @@ interface Column<T> {
     value: any,
     row: T,
     setPreviewImage?: React.Dispatch<React.SetStateAction<any>>,
-    setVisualImages?: React.Dispatch<React.SetStateAction<any>>
+    setVisualImages?: React.Dispatch<React.SetStateAction<any>>,
   ) => React.ReactNode;
 }
 
@@ -74,18 +73,18 @@ const GenerateVisualContentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const { generateVisualLoader, generateVisualContentData } = useSelector(
-    (store: RootState) => store.GenerateVisualContent
+    (store: RootState) => store.GenerateVisualContent,
   );
   const conversational =
     generateVisualContentData?.flow_type === "conversation" ||
     generateVisualContentData?.video_style === "conversational";
 
   const { audioAnimationLoader } = useSelector(
-    (store: RootState) => store.AudioAnimation
+    (store: RootState) => store.AudioAnimation,
   );
 
   const { saveLoader, saveTranslatedData } = useSelector(
-    (store) => store.SaveTranslatedData
+    (store) => store.SaveTranslatedData,
   );
 
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
@@ -184,18 +183,18 @@ const GenerateVisualContentPage: React.FC = () => {
   const closePopup = () => setPopup({ type: null, data: null });
 
   const actions = [
-    {
-      icon: (
-        <Tooltip title="Edit" placement="top" arrow>
-          <span>
-            <img src={copy} />
-          </span>
-        </Tooltip>
-      ),
-      onClick: (row: any) => {
-        handleVisualEdit(row);
-      },
-    },
+    // {
+    //   icon: (
+    //     <Tooltip title="Edit" placement="top" arrow>
+    //       <span>
+    //         <img src={copy} />
+    //       </span>
+    //     </Tooltip>
+    //   ),
+    //   onClick: (row: any) => {
+    //     handleVisualEdit(row);
+    //   },
+    // },
     {
       icon: (
         <Tooltip title="Regenerate" placement="top" arrow>
@@ -255,8 +254,8 @@ const GenerateVisualContentPage: React.FC = () => {
           item?.images?.length > 0
             ? item.images[item.images.length - 1]?.url
             : item?.videos?.length > 0
-            ? videoPreviewUrl
-            : "-",
+              ? videoPreviewUrl
+              : "-",
         scene_id: item?.scene_id ?? "",
         prompt_id: item?.prompt_id ?? "",
         new_prompt: item?.prompt,
@@ -300,15 +299,15 @@ const GenerateVisualContentPage: React.FC = () => {
               ...item,
               Visual_Description: data.new_prompt || item.Visual_Description,
             }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
   const updateImagesInRow = (
     sceneId: string | number,
     newFiles: { url: string }[],
-    type: "image" | "video"
+    type: "image" | "video",
   ) => {
     setRows((prev) =>
       prev.map((row) =>
@@ -324,8 +323,8 @@ const GenerateVisualContentPage: React.FC = () => {
                 video_uploaded_urls: newFiles,
                 Visual_Image: newFiles[newFiles.length - 1]?.url || "",
               }
-          : row
-      )
+          : row,
+      ),
     );
   };
 
@@ -336,9 +335,20 @@ const GenerateVisualContentPage: React.FC = () => {
     setRows((prev) =>
       prev.map((row) =>
         row.scene_id === data.scene_id
-          ? { ...row, new_prompt: data.new_prompt }
-          : row
-      )
+          ? {
+              ...row,
+              new_prompt: data.new_prompt,
+              // image_uploaded_urls: data?.image_uploaded_urls,
+              image_uploaded_urls:
+                data?.image_uploaded_urls ?? row?.image_uploaded_urls,
+
+              // Visual_Image: data.image_uploaded_urls?.length
+              //   ? data.image_uploaded_urls[data.image_uploaded_urls.length - 1]
+              //       ?.url
+              //   : row.Visual_Image,
+            }
+          : row,
+      ),
     );
   };
 
@@ -387,7 +397,9 @@ const GenerateVisualContentPage: React.FC = () => {
                   {/* <h2 className={styles.title}>
                     {generateVisualContentData?.title || "Visual Content"}
                   </h2> */}
-                  <Typography variant="h4">{generateVisualContentData?.title || "Visual Content"}</Typography>
+                  <Typography variant="h4">
+                    {generateVisualContentData?.title || "Visual Content"}
+                  </Typography>
                   <Button
                     className={styles.icon}
                     onClick={() =>
@@ -419,67 +431,7 @@ const GenerateVisualContentPage: React.FC = () => {
                   // handleImageUpdate={handleImageUpdate}
                 />
               )}
-            {popup.type === "video_upload" && (
-              <VideoUploadPopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                script_id={id!}
-                prompt_batch_id={prompt_batch_id}
-                title={title}
-              />
-            )}
-
-            {popup.type === "edit" && (
-              <EditVisualPopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                script_id={id!}
-                prompt_batch_id={prompt_batch_id}
-                handleUpdate={handleUpdate}
-              />
-            )}
-
-            {popup.type === "regenerate" && (
-              <RegenerateImagePopup
-                open
-                onClose={closePopup}
-                fieldData={popup.data}
-                prompt_batch_id={prompt_batch_id}
-              />
-            )}
-            {/* <div className={styles.footerButtons}> */}
-              {/* {conversational ? (
-                <>
-                  <ButtonComp
-                    variant="contained"
-                    className={styles.primaryBtn}
-                    onClick={handleNext}
-                  >
-                    Next
-                  </ButtonComp>
-                  <ButtonComp
-                    variant="contained"
-                    className={styles.primaryBtn}
-                    onClick={handleDownloadAssets}
-                    disabled={generateVisualLoader}
-                  >
-                    Download Assets
-                  </ButtonComp>
-                </>
-              ) : (
-                <ButtonComp
-                  variant="contained"
-                  className={styles.primaryBtn}
-                  onClick={handleAudioAndAnimation}
-                  disabled={generateVisualLoader}
-                >
-                  Audio & Animation Toolkit
-                </ButtonComp>
-              )} */}
-
-              {/* {popup.type === "video_upload" && (
+              {popup.type === "video_upload" && (
                 <VideoUploadPopup
                   open
                   onClose={closePopup}
@@ -508,7 +460,7 @@ const GenerateVisualContentPage: React.FC = () => {
                   fieldData={popup.data}
                   prompt_batch_id={prompt_batch_id}
                 />
-              )} */}
+              )}
               <div className={styles.footerButtons}>
                 {conversational ? (
                   <>
@@ -533,7 +485,9 @@ const GenerateVisualContentPage: React.FC = () => {
                       variant="contained"
                       // className={styles.primaryBtn}
                       onClick={handleDownloadAssets}
-                      disabled={generateVisualLoader || saveTranslatedData === null}
+                      disabled={
+                        generateVisualLoader || saveTranslatedData === null
+                      }
                     >
                       Download Assets
                     </ButtonComp>
@@ -553,7 +507,9 @@ const GenerateVisualContentPage: React.FC = () => {
                       variant="contained"
                       // className={styles.primaryBtn}
                       onClick={handleAudioAndAnimation}
-                      disabled={generateVisualLoader || saveTranslatedData === null}
+                      disabled={
+                        generateVisualLoader || saveTranslatedData === null
+                      }
                     >
                       Audio & Animation Toolkit
                     </ButtonComp>
