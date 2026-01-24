@@ -18,6 +18,7 @@ export interface AudioAnimationState {
   mediaAPILoader: boolean;
   audioAnimationData: Record<string, unknown> | null;
   audioPreviewData: Record<string, unknown> | null;
+  audioAzurePreviewData: Record<string, unknown> | null;
   labels: Record<string, unknown> | null;
   animationLabels: {
     entry_transitions?: string[];
@@ -48,6 +49,7 @@ const initialState: AudioAnimationState = {
   mediaAPILoader: false,
   audioAnimationData: null,
   audioPreviewData: null,
+  audioAzurePreviewData: null,
   labels: null,
   animationLabels: null,
   videoAnimationData: null,
@@ -70,27 +72,36 @@ const AudioAnimationSlice = createSlice({
     setMediaAPILoader: (state, action: PayloadAction<boolean>) => {
       state.mediaAPILoader = action.payload;
     },
+
     setAudioAnimationData: (
       state,
-      action: PayloadAction<Record<string, unknown> | null>
+      action: PayloadAction<Record<string, unknown> | null>,
     ) => {
       state.audioAnimationData = action.payload;
     },
+
     setAudioPreviewData: (
       state,
-      action: PayloadAction<Record<string, unknown> | null>
+      action: PayloadAction<Record<string, unknown> | null>,
     ) => {
       state.audioPreviewData = action.payload;
     },
+    setAzureAudioPreviewData: (
+      state,
+      action: PayloadAction<Record<string, unknown> | null>,
+    ) => {
+      state.audioAzurePreviewData = action.payload;
+    },
+
     setLabels: (
       state,
-      action: PayloadAction<Record<string, unknown> | null>
+      action: PayloadAction<Record<string, unknown> | null>,
     ) => {
       state.labels = action.payload;
     },
     setAnimationLabels: (
       state,
-      action: PayloadAction<Record<string, unknown> | null>
+      action: PayloadAction<Record<string, unknown> | null>,
     ) => {
       state.animationLabels = action.payload as any;
     },
@@ -99,19 +110,19 @@ const AudioAnimationSlice = createSlice({
     },
     setGeneratedVideoData: (
       state,
-      action: PayloadAction<Record<string, unknown> | null>
+      action: PayloadAction<Record<string, unknown> | null>,
     ) => {
       state.generatedVideoData = action.payload;
     },
     setSceneData: (
       state,
-      action: PayloadAction<AudioAnimationState["sceneData"]>
+      action: PayloadAction<AudioAnimationState["sceneData"]>,
     ) => {
       state.sceneData = action.payload;
     },
     setFullVideoGenerationData: (
       state,
-      action: PayloadAction<FullVideoGenerationState | null>
+      action: PayloadAction<FullVideoGenerationState | null>,
     ) => {
       state.fullVideoGeneration = action.payload;
     },
@@ -125,6 +136,7 @@ export const {
   setMediaAPILoader,
   setVideoAnimationLoader,
   setAudioPreviewData,
+  setAzureAudioPreviewData,
   setLabels,
   setAnimationLabels,
   setVideoAnimationData,
@@ -152,13 +164,34 @@ export const postAudioAnimationData =
     }
   };
 
+// Preview azure voices
+export const postPreviewAzureVoices =
+  (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
+    dispatch(setAudioAnimationLoader(true));
+    try {
+      const res: ApiResponse = await api.post(
+        "audio/preview-azure-voice",
+        data,
+      );
+      console.log(res, "check_res")
+      if (res.status) {
+        dispatch(setAzureAudioPreviewData(res.data));
+        toast.success("Preview generated successfully");
+      }
+    } catch (error) {
+      toast.error("Preview generation failed!");
+    } finally {
+      dispatch(setAudioAnimationLoader(false));
+    }
+  };
+
 export const postGenerateVoiceAndAudio =
   (data: Record<string, unknown>) => async (dispatch: AppDispatch) => {
     dispatch(setAudioAnimationLoader(true));
     try {
       const res: ApiResponse = await api.post(
         "audio/generate-voice-and-audio",
-        data
+        data,
       );
       if (res.status) {
         dispatch(setAudioAnimationData(res.data));
@@ -235,15 +268,15 @@ export const postGenerateVideoBatch =
     try {
       const res: ApiResponse = await api.post(
         "media/generate-video-batch",
-        data
+        data,
       );
       if (res.status) {
         dispatch(setVideoAnimationData(res.data));
         const seconds = convertToISTParts(res.data.estimated_completion_at);
         toast.success(
           `Please wait your videos are generating in ${Math.ceil(
-            seconds / 60
-          )} mins`
+            seconds / 60,
+          )} mins`,
         );
         if (successCallBack) {
           successCallBack();
@@ -279,7 +312,7 @@ export const postGenerateFullVideo =
     dispatch(setAudioAnimationLoader(true));
     try {
       const res: ApiResponse = await api.post(
-        `media/generate-video-full/${id}`
+        `media/generate-video-full/${id}`,
       );
       // console.log(res, "final_video_response");
 
@@ -372,7 +405,7 @@ export const downloadVideoWithUrl =
           headers: {
             Accept: "application/octet-stream", // IMPORTANT for mp4
           },
-        }
+        },
       );
 
       // Read filename from header if provided
@@ -413,16 +446,16 @@ export const downloadVideoWithUrl =
 export const downloadAudioWithUrl =
   (fileUrl: string, title: string) => async (dispatch: any) => {
     try {
-      dispatch(setAudioAnimationLoader(true)); 
+      dispatch(setAudioAnimationLoader(true));
 
       const response = await api.get(
         `download/download-file?file_url=${encodeURIComponent(fileUrl)}`,
         {
           responseType: "blob",
           headers: {
-            Accept: "audio/mpeg", 
+            Accept: "audio/mpeg",
           },
-        }
+        },
       );
 
       // Default filename

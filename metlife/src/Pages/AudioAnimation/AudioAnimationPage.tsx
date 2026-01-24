@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import styles from "./audioAnimation.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
-import {
-  Box,
-  Typography,
-  Grid,
-  Button,
-  TextField,
-  Slider,
-} from "@mui/material";
+import { Box, Typography, Grid, IconButton } from "@mui/material";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -22,6 +16,7 @@ import {
   setVideoAnimationData,
   setGeneratedVideoData,
   postGenerateVideoBatch,
+  postPreviewAzureVoices,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import { navigateTo } from "../../utils/navigate";
@@ -40,9 +35,64 @@ import voice8 from "../../assets/voice_preview_es-ES-ElviraNeural.wav";
 import voice9 from "../../assets/voice_preview_es-ES-ArnauNeural.wav";
 import voice10 from "../../assets/voice_preview_es-ES-AlvaroNeural.wav";
 import voice11 from "../../assets/voice_preview_es-ES-AbrilNeural.wav";
+// arabic male and female voice optios
+import voice12 from "../../assets/voice_preview_azure_ar-SA-ZariyahNeural.wav";
+import voice13 from "../../assets/voice_preview_azure_ar-SA-HamedNeural.wav";
+import voice14 from "../../assets/voice_preview_azure_ar-EG-SalmaNeural.wav";
+import voice15 from "../../assets/voice_preview_azure_ar-EG-ShakirNeural.wav";
+
+// Hindi male and female voice optios
+import voice16 from "../../assets/voice_preview_azure_hi-IN-SwaraNeural.wav";
+import voice17 from "../../assets/voice_preview_azure_hi-IN-MadhurNeural.wav";
+
+// Nepali male and Female voices
+import voice18 from "../../assets/voice_preview_azure_ne-NP-HemkalaNeural.wav";
+import voice19 from "../../assets/voice_preview_azure_ne-NP-SagarNeural.wav";
+
+// Portuguese male and Female voices
+import voice20 from "../../assets/voice_preview_azure_pt-PT-RaquelNeural.wav";
+import voice21 from "../../assets/voice_preview_azure_pt-PT-DuarteNeural.wav";
+import voice22 from "../../assets/voice_preview_azure_pt-BR-FranciscaNeural.wav";
+import voice23 from "../../assets/voice_preview_azure_pt-BR-AntonioNeural.wav";
+
+// Romanian male and Female voices
+import voice24 from "../../assets/voice_preview_azure_ro-RO-AlinaNeural.wav";
+import voice25 from "../../assets/voice_preview_azure_ro-RO-EmilNeural.wav";
+
+// Ukrainian
+import voice26 from "../../assets/voice_preview_azure_uk-UA-PolinaNeural.wav";
+import voice27 from "../../assets/voice_preview_azure_uk-UA-OstapNeural.wav";
+
+// Bangla
+import voice28 from "../../assets/voice_preview_azure_bn-IN-TanishaaNeural.wav";
+import voice29 from "../../assets/voice_preview_azure_bn-IN-BashkarNeural.wav";
+import voice30 from "../../assets/voice_preview_azure_bn-BD-NabanitaNeural.wav";
+import voice31 from "../../assets/voice_preview_azure_bn-BD-PradeepNeural.wav";
+
 // VoiceMaker Voices - English
 import voiceMaker1 from "../../assets/voice_preview_voicemaker_ai2-Stacy.wav";
 import voiceMaker2 from "../../assets/voice_preview_voicemaker_ai3-Jony.wav";
+
+//VoiceMaker voices bangla
+import voiceMakerBangla1 from "../../assets/voice_preview_voicemaker_ai2-bn-IN-Binod.wav";
+import voiceMakerBangla2 from "../../assets/voice_preview_voicemaker_ai2-bn-IN-Charu.wav";
+
+//VoiceMaker voices ukrainian
+import voiceMakerUkrainian from "../../assets/voice_preview_voicemaker_ai2-uk-UA-Aleksandra.wav";
+
+//VoiceMaker voices romannian
+import voiceMakerRomanian from "../../assets/voice_preview_voicemaker_ai2-ro-RO-Corina.wav";
+
+//VoiceMaker voices portugal
+import voiceMakerPortugal1 from "../../assets/voice_preview_voicemaker_ai2-pt-PT-Diogo.wav";
+import voiceMakerPortugal2 from "../../assets/voice_preview_voicemaker_ai2-pt-PT-Margarida.wav";
+
+//VoiceMaker voices hindi
+import voiceMakerHindi1 from "../../assets/voice_preview_voicemaker_ai2-hi-IN-Nikhil.wav";
+import voiceMakerHindi2 from "../../assets/voice_preview_voicemaker_ai2-hi-IN-Zoya.wav";
+
+import voiceMakerArabic1 from "../../assets/voice_preview_voicemaker_ai2-ar-XA-Nadir.wav";
+
 //Speechify voices - English
 import speechify1 from "../../assets/voice_preview_speechify_oliver.wav";
 import speechify2 from "../../assets/voice_preview_speechify_emily.wav";
@@ -53,6 +103,18 @@ import voiceMakerSpanish2 from "../../assets/voice_preview_voicemaker_ai3-es-ES-
 //Spanish voice options for speechify
 import speechifySpanish1 from "../../assets/voice_preview_speechify_alejandro.wav";
 import speechifySpanish2 from "../../assets/voice_preview_speechify_celia.wav";
+// Speechify options hindi
+import speechifyHindi1 from "../../assets/voice_preview_speechify_hemant.wav";
+import speechifyHindi2 from "../../assets/voice_preview_speechify_priya.wav";
+// Speechify options banngla
+import speechifyBangla1 from "../../assets/voice_preview_speechify_avik.wav";
+import speechifyBangla2 from "../../assets/voice_preview_speechify_brishti.wav";
+// Speechify options nepali
+import speechifyNepali1 from "../../assets/voice_preview_speechify_suman.wav";
+import speechifyNepali2 from "../../assets/voice_preview_speechify_anita.wav";
+// portuguese
+import speechifyPortuguese1 from "../../assets/voice_preview_speechify_joao.wav";
+
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 
 interface VoiceOption {
@@ -152,10 +214,11 @@ const allVoiceOptions = {
         s3_url: voice1,
       },
     ],
+
     spanish: [
       {
         label: "Spanish Voice Options",
-        disabled: true, // prevents clicking
+        disabled: true,
       },
       {
         label: "es-MX-JorgeNeural",
@@ -188,6 +251,155 @@ const allVoiceOptions = {
         s3_url: voice11,
       },
     ],
+
+    arabic: [
+      {
+        label: "Arabic Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AR-SA Zariyah Neural",
+        value: "ar-SA-ZariyahNeural",
+        s3_url: voice12,
+      },
+      {
+        label: "AR-SA Hamed Neural",
+        value: "ar-SA-HamedNeural",
+        s3_url: voice13,
+      },
+      {
+        label: "AR-EG Salma Neural",
+        value: "ar-EG-SalmaNeural",
+        s3_url: voice14,
+      },
+      {
+        label: "AR-EG Shakir Neural",
+        value: "ar-EG-ShakirNeural",
+        s3_url: voice15,
+      },
+    ],
+
+    hindi: [
+      {
+        label: "Hindi Voice Options",
+        disabled: true,
+      },
+      {
+        label: "HI-IN Swara Neural",
+        value: "hi-IN-SwaraNeural",
+        s3_url: voice16,
+      },
+      {
+        label: "HI-IN Madhur Neural",
+        value: "hi-IN-MadhurNeural",
+        s3_url: voice17,
+      },
+    ],
+
+    nepali: [
+      {
+        label: "Nepali Voice Options",
+        disabled: true,
+      },
+      {
+        label: "NE-NP Hemkala Neural",
+        value: "ne-NP-HemkalaNeural",
+        s3_url: voice18,
+      },
+      {
+        label: "NE-NP Sagar Neural",
+        value: "ne-NP-SagarNeural",
+        s3_url: voice19,
+      },
+    ],
+
+    portuguese: [
+      {
+        label: "Portuguese Voice Options",
+        disabled: true,
+      },
+      {
+        label: "PT-PT Raquel Neural",
+        value: "pt-PT-RaquelNeural",
+        s3_url: voice20,
+      },
+      {
+        label: "PT-PT Duarte Neural",
+        value: "pt-PT-DuarteNeural",
+        s3_url: voice21,
+      },
+      {
+        label: "PT-BR Francisca Neural",
+        value: "pt-BR-FranciscaNeural",
+        s3_url: voice22,
+      },
+      {
+        label: "PT-BR Antonio Neural",
+        value: "pt-BR-AntonioNeural",
+        s3_url: voice23,
+      },
+    ],
+
+    romanian: [
+      {
+        label: "Romanian Voice Options",
+        disabled: true,
+      },
+      {
+        label: "RO-RO Alina Neural",
+        value: "ro-RO-AlinaNeural",
+        s3_url: voice24,
+      },
+      {
+        label: "RO-RO Emil Neural",
+        value: "ro-RO-EmilNeural",
+        s3_url: voice25,
+      },
+    ],
+
+    ukrainian: [
+      {
+        label: "Ukrainian Voice Options",
+        disabled: true,
+      },
+      {
+        label: "UK-UA Polina Neural",
+        value: "uk-UA-PolinaNeural",
+        s3_url: voice26,
+      },
+      {
+        label: "UK-UA Ostap Neural",
+        value: "uk-UA-OstapNeural",
+        s3_url: voice27,
+      },
+    ],
+
+    bangla: [
+      {
+        label: "Bangla Voice Options",
+        disabled: true,
+      },
+      {
+        label: "BN-IN Tanishaa Neural",
+        value: "bn-IN-TanishaaNeural",
+        s3_url: voice28,
+      },
+      {
+        label: "BN-IN Bashkar Neural",
+        value: "bn-IN-BashkarNeural",
+        s3_url: voice29,
+      },
+      {
+        label: "BN-BD Nabanita Neural",
+        value: "bn-BD-NabanitaNeural",
+        s3_url: voice30,
+      },
+      {
+        label: "BN-BD Pradeep Neural",
+        value: "bn-BD-PradeepNeural",
+        s3_url: voice31,
+      },
+    ],
   },
   speechify: {
     english: [
@@ -205,6 +417,49 @@ const allVoiceOptions = {
         label: "Henry",
         value: "henry",
         s3_url: speechify3,
+      },
+    ],
+    portuguese: [
+      {
+        label: "Joao",
+        value: "joao",
+        s3_url: speechifyPortuguese1,
+      },
+    ],
+    hindi: [
+      {
+        label: "Hemant",
+        value: "hemant",
+        s3_url: speechifyHindi1,
+      },
+      {
+        label: "Priya",
+        value: "priya",
+        s3_url: speechifyHindi2,
+      },
+    ],
+    bangla: [
+      {
+        label: "Avik",
+        value: "avik",
+        s3_url: speechifyBangla1,
+      },
+      {
+        label: "Brishti",
+        value: "brishti",
+        s3_url: speechifyBangla2,
+      },
+    ],
+    nepali: [
+      {
+        label: "Suman",
+        value: "suman",
+        s3_url: speechifyNepali1,
+      },
+      {
+        label: "Anita",
+        value: "anita",
+        s3_url: speechifyNepali2,
       },
     ],
     spanish: [
@@ -253,6 +508,88 @@ const allVoiceOptions = {
         s3_url: voiceMakerSpanish2,
       },
     ],
+    bangla: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AI2-BN-IN-Binod",
+        value: "ai2-bn-IN-Binod",
+        s3_url: voiceMakerBangla1,
+      },
+      {
+        label: "AI2-BN-IN-Charu",
+        value: "ai2-bn-IN-Charu",
+        s3_url: voiceMakerBangla2,
+      },
+    ],
+    ukrainian: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AI2-UK-UA-Aleksandra",
+        value: "ai2-uk-UA-Aleksandra",
+        s3_url: voiceMakerUkrainian,
+      },
+    ],
+    romanian: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AI2-uk-RO-Corina",
+        value: "ai2-ro-RO-Corina",
+        s3_url: voiceMakerRomanian,
+      },
+    ],
+    portuguese: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AI2-pt-PT-Diogo",
+        value: "ai2-pt-PT-Diogo",
+        s3_url: voiceMakerPortugal1,
+      },
+      {
+        label: "AI2-pt-PT-Margarida",
+        value: "ai2-pt-PT-Margarida",
+        s3_url: voiceMakerPortugal2,
+      },
+    ],
+    hindi: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AI2-hi-IN-Nikhil",
+        value: "ai2-hi-IN-Nikhil",
+        s3_url: voiceMakerHindi1,
+      },
+      {
+        label: "AI2-HI-IN-Zoya",
+        value: "ai2-hi-IN-Zoya",
+        s3_url: voiceMakerHindi2,
+      },
+    ],
+     arabic: [
+      {
+        label: "Spanish Voice Options",
+        disabled: true,
+      },
+      {
+        label: "AI2-ar-XA-Nadir",
+        value: "ai2-ar-XA-Nadir",
+        s3_url: voiceMakerArabic1,
+      },
+    
+    ],
   },
 };
 
@@ -272,9 +609,9 @@ const voiceSpeedOptions = [
   { label: "0.75x", value: 0.75 },
   { label: "1x", value: 1 },
   { label: "1.25x", value: 1.25 },
-  { label: "1.5x", value: 1.5 },
-  { label: "1.75x", value: 1.75 },
-  { label: "2x", value: 2 },
+  // { label: "1.5x", value: 1.5 },
+  // { label: "1.75x", value: 1.75 },
+  // { label: "2x", value: 2 },
 ];
 
 const AudioAnimationPage: React.FC = () => {
@@ -318,14 +655,13 @@ const AudioAnimationPage: React.FC = () => {
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
-  
-
 
   const {
     audioAnimationLoader,
     audioAnimationData,
     videoAnimationLoader,
     labels,
+    audioAzurePreviewData,
   } = useSelector(
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation,
   );
@@ -333,6 +669,8 @@ const AudioAnimationPage: React.FC = () => {
   const { saveLoader, saveTranslatedData } = useSelector(
     (store) => store.SaveTranslatedData,
   );
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const characters =
     audioAnimationData?.voice_map?.characters ||
@@ -346,6 +684,17 @@ const AudioAnimationPage: React.FC = () => {
       ...characters.filter((c: string) => c !== "Narrator"),
     ];
   }
+
+  useEffect(() => {
+    if (audioAzurePreviewData?.s3_url) {
+      if (audioRef.current) {
+        audioRef.current.src = audioAzurePreviewData.s3_url;
+        audioRef.current.play().catch((err) => {
+          console.error("Audio play failed:", err);
+        });
+      }
+    }
+  }, [audioAzurePreviewData?.s3_url]);
 
   useEffect(() => {
     if (id) {
@@ -615,9 +964,46 @@ const AudioAnimationPage: React.FC = () => {
     dispatch(postTranslatedDataSave(data, id));
   };
 
+  const handlePreview = (charName: string) => {
+    const selectedVoice = voiceSelections?.[charName];
+    const selectedTone = voiceToneSelections?.[charName];
+    const selectedSpeed = voiceSpeedSelections?.[charName];
+
+    if (!selectedTone) {
+      showToast.error("Please select a voice tone");
+      return;
+    }
+
+    if (selectedSpeed === undefined || selectedSpeed === null) {
+      showToast.error("Please select voice speed");
+      return;
+    }
+
+    if (!selectedVoice) {
+      showToast.error("Please select a voice first");
+      return;
+    }
+
+    const payload = {
+      voice: voiceSelections?.[charName], // "en-US-GuyNeural"
+      voice_tone: voiceToneSelections?.[charName], // "calm"
+      voice_speed: voiceSpeedSelections?.[charName],
+      text: "This is a preview of selected tone",
+    };
+
+    if (!payload.voice) {
+      console.warn("Voice not selected for", charName);
+      return;
+    }
+
+    dispatch(postPreviewAzureVoices(payload));
+    console.log(payload, "preview_payload");
+  };
+
   return (
     <>
       {saveLoader && <FullScreenGradientLoader text="loading..." />}
+      <audio ref={audioRef} />
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
@@ -721,7 +1107,9 @@ const AudioAnimationPage: React.FC = () => {
                             }
                             placeholder="Select Voice Speed"
                             style={true}
-                             disabled={narrationSelections?.[charName] !== "azure"} 
+                            disabled={
+                              narrationSelections?.[charName] !== "azure"
+                            }
                           />
                         </Grid>
 
@@ -759,7 +1147,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid> */}
 
                         {/* Voice tone */}
-                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 1 }}>
                           <SelectComp
                             label="Voice Tone"
                             options={voiceToneOptions}
@@ -769,11 +1157,14 @@ const AudioAnimationPage: React.FC = () => {
                             }
                             placeholder="Select Voice Tone"
                             style={true}
-                             disabled={narrationSelections?.[charName] !== "azure"} 
+                            disabled={
+                              narrationSelections?.[charName] !== "azure"
+                            }
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                        {/* Voice options */}
+                        <Grid size={{ xs: 12, md: 6, lg: 2.5 }}>
                           <Typography
                             sx={{
                               fontSize: "1rem",
@@ -816,6 +1207,26 @@ const AudioAnimationPage: React.FC = () => {
                             }
                             customOption
                           />
+                        </Grid>
+
+                        {/* Voice  */}
+                        <Grid size={{ xs: 12, md: 6, lg: 0 }}>
+                          <IconButton
+                            onClick={() => handlePreview(charName)}
+                            sx={{
+                              transition: "transform 0.2s",
+                              "&:hover": {
+                                transform: "scale(1.1)",
+                              },
+                              marginBottom: "5px",
+                            }}
+                            disabled={
+                              narrationSelections?.[charName] !== "azure"
+                            }
+                          >
+                            <PlayArrowIcon />
+                            {/* <PlayCircleOutlineIcon /> */}
+                          </IconButton>
                         </Grid>
                       </Grid>
                     ))}
@@ -892,7 +1303,6 @@ const AudioAnimationPage: React.FC = () => {
                       disabled={
                         audioAnimationData?.scenes?.length > 0 ||
                         audioAnimationLoader
-                        //  ||saveTranslatedData === null
                       }
                     >
                       Submit
