@@ -51,7 +51,8 @@ export const postAuthLogin =
         apiErrorHandling(res);
       }
     } catch (e: any) {
-      toast.error(e?.response?.data?.message ?? "Error Try again!!");
+      console.log(e, "cc")
+      toast.error(e?.response?.data?.detail ?? "Error Try again!!");
     } finally {
       dispatch(setAuthLoader(false));
     }

@@ -311,6 +311,7 @@ const MyVideosDashboard: React.FC = () => {
                       alignItems: "center",
                       justifyContent: "space-between",
                       cursor: "pointer",
+                        boxShadow: "none",
                       border:
                         selectedFilter === s.filter
                           ? "2px solid #1976D2"

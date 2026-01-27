@@ -6,8 +6,8 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
-import { Box, Typography, Grid, IconButton } from "@mui/material";
-import { useParams } from "react-router";
+import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
@@ -17,6 +17,7 @@ import {
   setGeneratedVideoData,
   postGenerateVideoBatch,
   postPreviewAzureVoices,
+  getSceneDetails,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import { navigateTo } from "../../utils/navigate";
@@ -116,6 +117,7 @@ import speechifyNepali2 from "../../assets/voice_preview_speechify_anita.wav";
 import speechifyPortuguese1 from "../../assets/voice_preview_speechify_joao.wav";
 
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
 
 interface VoiceOption {
   label: string;
@@ -578,7 +580,7 @@ const allVoiceOptions = {
         s3_url: voiceMakerHindi2,
       },
     ],
-     arabic: [
+    arabic: [
       {
         label: "Spanish Voice Options",
         disabled: true,
@@ -588,7 +590,6 @@ const allVoiceOptions = {
         value: "ai2-ar-XA-Nadir",
         s3_url: voiceMakerArabic1,
       },
-    
     ],
   },
 };
@@ -655,6 +656,7 @@ const AudioAnimationPage: React.FC = () => {
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
 
   const {
     audioAnimationLoader,
@@ -662,6 +664,7 @@ const AudioAnimationPage: React.FC = () => {
     videoAnimationLoader,
     labels,
     audioAzurePreviewData,
+    sceneData,
   } = useSelector(
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation,
   );
@@ -671,7 +674,9 @@ const AudioAnimationPage: React.FC = () => {
   );
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
+  const videoExists = sceneData?.video_exists;
+  const language = sceneData?.language;
+  // console.log(language, "check_language")
   const characters =
     audioAnimationData?.voice_map?.characters ||
     audioAnimationData?.Characters ||
@@ -699,6 +704,7 @@ const AudioAnimationPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       // dispatch(getLabels(id));
+      dispatch(getSceneDetails(id));
       dispatch(getAudioDetails(id));
     }
   }, [id, dispatch]);
@@ -899,12 +905,6 @@ const AudioAnimationPage: React.FC = () => {
       const voiceTone = voiceToneSelections?.[charName];
       const voiceSpeed = voiceSpeedSelections?.[charName];
 
-      // if (voice && voiceTool) {
-      //   custom_voice_map[charName] = {
-      //     voice,
-      //     voice_tool: voiceTool,
-      //   };
-      // }
       if (voice && voiceTool) {
         custom_voice_map[charName] = {
           voice,
@@ -922,7 +922,7 @@ const AudioAnimationPage: React.FC = () => {
       script_id: id,
       custom_voice_map,
     };
-    console.log("FINAL_PAYLOAD", payload);
+    // console.log("FINAL_PAYLOAD", payload);
 
     dispatch(postGenerateVoiceAndAudio(payload));
   };
@@ -1018,6 +1018,26 @@ const AudioAnimationPage: React.FC = () => {
                   <Typography variant="h3">
                     Audio & Animation Toolkit
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Button
+                      className={styles.icon}
+                      onClick={() => navigate(`/generate-visual-page/${id}`)}
+                    >
+                      <IoArrowBackCircleOutline size={30} /> Back
+                    </Button>
+                    <Button
+                      className={styles.icon}
+                      disabled={!videoExists}
+                      onClick={() => navigate(`/animation-page/${id}`)}
+                    >
+                      Next <IoArrowForwardCircleOutline size={30} />
+                    </Button>
+                  </Box>
                 </div>
 
                 <div className={styles.insideContainer}>
@@ -1067,13 +1087,14 @@ const AudioAnimationPage: React.FC = () => {
                           <SelectComp
                             label="Language"
                             options={languageOptions}
-                            value={languageSelections[charName] || "english"}
+                            value={languageSelections[charName] || language}
                             onChange={(value) =>
                               handleLanguageChange(
                                 charName,
                                 value as "english" | "spanish",
                               )
                             }
+                            disabled={true}
                             placeholder="Select Language"
                             style={true}
                           />

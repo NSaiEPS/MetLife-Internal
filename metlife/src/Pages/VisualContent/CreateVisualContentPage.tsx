@@ -8,7 +8,14 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, MenuItem, Select, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Select,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -18,7 +25,10 @@ import {
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import PromptTable from "../../components/common/PromptTable/PromptTable";
 import { postGenerateVisualContentImage } from "../../redux/features/generateVisualSlice";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import {
+  IoArrowBackCircleOutline,
+  IoArrowForwardCircleOutline,
+} from "react-icons/io5";
 import type { AppDispatch, RootState } from "../../redux/store"; // adjust according to your setup
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -102,16 +112,19 @@ const CreateVisualContentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
-    (store: RootState) => store.CreateVisualContent
+    (store: RootState) => store.CreateVisualContent,
   );
 
   const { saveLoader, saveTranslatedData } = useSelector(
-    (store: RootState) => store.SaveTranslatedData
+    (store: RootState) => store.SaveTranslatedData,
   );
 
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
+  const visualExist = saveVisualContentData?.visual_exist
+  console.log(saveVisualContentData, "check__")
+
 
   useEffect(() => {
     if (id) {
@@ -132,8 +145,8 @@ const CreateVisualContentPage: React.FC = () => {
       Scene_Description: item?.description ?? "-",
       Visual_Description:
         item?.clip_visual_type === "clip"
-          ? item?.clip_prompt ?? "-"
-          : item?.prompt ?? "-",
+          ? (item?.clip_prompt ?? "-")
+          : (item?.prompt ?? "-"),
       scene_id: item?.scene_id ?? "",
       prompt_id: item?.prompt_id ?? "",
       prompt: item?.prompt ?? "",
@@ -158,7 +171,7 @@ const CreateVisualContentPage: React.FC = () => {
     const newData = rows.map((item) =>
       item.scene_id === data.fieldData!.scene_id
         ? { ...item, Visual_Description: data.prompt }
-        : item
+        : item,
     );
 
     setRows(newData);
@@ -175,7 +188,7 @@ const CreateVisualContentPage: React.FC = () => {
                 ? data.prompt || "Generating..."
                 : data.clip_prompt || "Generating...",
           }
-        : item
+        : item,
     );
     setRows(updatedRows);
 
@@ -235,6 +248,7 @@ const CreateVisualContentPage: React.FC = () => {
     dispatch(postTranslatedDataSave(data, id));
   };
 
+
   return (
     <>
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
@@ -245,13 +259,30 @@ const CreateVisualContentPage: React.FC = () => {
             <>
               <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                  <Typography variant="h4"> {saveVisualContentData?.title || "Visual Content"}</Typography>
-                  <Button
-                    className={styles.icon}
-                    onClick={() => navigate(`/scenes/${script_id}`)}
+                  <Typography variant="h4">
+                    {" "}
+                    {saveVisualContentData?.title || "Visual Content"}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
                   >
-                    <IoArrowBackCircleOutline size={30} /> Back
-                  </Button>
+                    <Button
+                      className={styles.icon}
+                      onClick={() => navigate(`/scenes/${script_id}`)}
+                    >
+                      <IoArrowBackCircleOutline size={30} /> Back
+                    </Button>
+                    <Button
+                      className={styles.icon}
+                      disabled={!visualExist}
+                      onClick={() => navigate(`/generate-visual-page/${script_id}`)}
+                    >
+                      Next <IoArrowForwardCircleOutline size={30} />
+                    </Button>
+                  </Box>
                 </div>
               </div>
 
@@ -282,7 +313,7 @@ const CreateVisualContentPage: React.FC = () => {
                   colorType="secondary"
                   // className={styles.largeOutline}
                   onClick={handleSave}
-                  disabled={saveLoader }
+                  disabled={saveLoader}
                 >
                   Save
                 </ButtonComp>
