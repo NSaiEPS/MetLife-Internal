@@ -196,9 +196,9 @@ const GenerateScript: React.FC = () => {
     }
   };
 
-  const apiCall = async () => {
+  const apiCall = async (success) => {
     const characterPayload = buildCharacterPayload(characters);
-    console.log("Character Payload:", characterPayload);
+    // console.log("Character Payload:", characterPayload);
     const new_payload: any = {
       title,
       brief: scriptText,
@@ -223,6 +223,11 @@ const GenerateScript: React.FC = () => {
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
           toast.error(result?.data?.detail || "Insufficient Internal Data!");
+        }
+
+        if (success) {
+          // console.log(result?.data?.script_id, "check");
+          successCallback(result?.data?.script_id);
         }
       } else {
         showToast.error("Some Issue In Generating");
@@ -272,10 +277,39 @@ const GenerateScript: React.FC = () => {
         showToast.error("Please add at least one valid character!");
         return;
       } else {
-        apiCall();
+        apiCall(successCallback);
       }
-    } 
-    else apiCall();
+    } else apiCall(successCallback);
+  };
+
+  const successCallback = async (id: string) => {
+    try {
+      setLoader(true);
+      const imageCharacters = characters.filter(
+        (c) => c.inputType === "image" && c.img,
+      );
+
+      for (const char of imageCharacters) {
+        const formData = new FormData();
+        // formData.append("script_id", id);
+        // formData.append("character_name", char.name);
+        formData.append("file", char.img);
+
+        await api.post("characters/upload-character-image", formData, {
+          params: {
+            script_id: id,
+            character_name: char.name,
+          },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoader(false);
+    }
   };
   // const buildCharacterPayload = (characters: CharacterType[] = []) => {
   //   return {
@@ -304,7 +338,7 @@ const GenerateScript: React.FC = () => {
           return {
             name: c.name || "",
             role: c.role || "",
-            file: c.img, 
+            file: c.img,
           };
         }
 
