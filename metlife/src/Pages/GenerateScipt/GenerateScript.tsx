@@ -160,7 +160,7 @@ const GenerateScript: React.FC = () => {
   const isMetlife = datasource === "metlife" || datasource === "metlife+openai";
 
   const { promptData, promtLoader } = useSelector(
-    (store: RootState) => store.Prompts
+    (store: RootState) => store.Prompts,
   );
 
   // Fetch prompts list
@@ -178,7 +178,7 @@ const GenerateScript: React.FC = () => {
 
   // ---------- Handlers ----------
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     switch (name) {
@@ -195,11 +195,10 @@ const GenerateScript: React.FC = () => {
         break;
     }
   };
-  
+
   const apiCall = async () => {
-    setLoader(true);
     const characterPayload = buildCharacterPayload(characters);
-    // console.log("Character Payload:", characterPayload);
+    console.log("Character Payload:", characterPayload);
     const new_payload: any = {
       title,
       brief: scriptText,
@@ -215,7 +214,7 @@ const GenerateScript: React.FC = () => {
     };
 
     if (datasource === "openai") delete new_payload.top_n;
-
+    setLoader(true);
     try {
       const result = await api.post("generate-script", new_payload);
       if (result?.status === 200) {
@@ -223,9 +222,7 @@ const GenerateScript: React.FC = () => {
           toast.success("Script generated successfully!");
           navigate(`/scenes/${result?.data?.script_id}`);
         } else {
-          toast.error(
-            result?.data?.detail || "Insufficient Internal Data!"
-          );
+          toast.error(result?.data?.detail || "Insufficient Internal Data!");
         }
       } else {
         showToast.error("Some Issue In Generating");
@@ -258,15 +255,15 @@ const GenerateScript: React.FC = () => {
             ? !!char.img
             : Boolean(
                 char.age ||
-                  char.gender ||
-                  char.skin_tone ||
-                  char.hair ||
-                  char.face ||
-                  char.build ||
-                  char.wardrobe ||
-                  char.accessories ||
-                  char.personality ||
-                  char.origin
+                char.gender ||
+                char.skin_tone ||
+                char.hair ||
+                char.face ||
+                char.build ||
+                char.wardrobe ||
+                char.accessories ||
+                char.personality ||
+                char.origin,
               );
 
         return Boolean(hasBasicInfo && hasValidInput);
@@ -277,25 +274,55 @@ const GenerateScript: React.FC = () => {
       } else {
         apiCall();
       }
-    } else apiCall();
+    } 
+    else apiCall();
   };
+  // const buildCharacterPayload = (characters: CharacterType[] = []) => {
+  //   return {
+  //     characters: characters?.map((c: CharacterType) => ({
+  //       name: c.name || "",
+  //       role: c.role || "",
+  //       gender: c.gender || "",
+  //       age: String(c.age || ""),
+  //       skin_tone: c.skin_tone || "",
+  //       hair: c.hair || "",
+  //       face: c.face || "",
+  //       build: c.build || "",
+  //       wardrobe: c.wardrobe || "",
+  //       accessories: c.accessories || "",
+  //       personality: c.personality || "",
+  //       origin: c.origin || "",
+  //       image_upload: c.img ? true : false,
+  //     })),
+  //   };
+  // };
+
   const buildCharacterPayload = (characters: CharacterType[] = []) => {
     return {
-      characters: characters?.map((c: CharacterType) => ({
-        name: c.name || "",
-        role: c.role || "",
-        gender: c.gender || "",
-        age: String(c.age || ""),
-        skin_tone: c.skin_tone || "",
-        hair: c.hair || "",
-        face: c.face || "",
-        build: c.build || "",
-        wardrobe: c.wardrobe || "",
-        accessories: c.accessories || "",
-        personality: c.personality || "",
-        origin: c.origin || "",
-        image_upload: c.img ? true : false,
-      })),
+      characters: characters.map((c: CharacterType) => {
+        if (c.inputType === "image") {
+          return {
+            name: c.name || "",
+            role: c.role || "",
+            file: c.img, 
+          };
+        }
+
+        return {
+          name: c.name || "",
+          role: c.role || "",
+          gender: c.gender || "",
+          age: String(c.age || ""),
+          skin_tone: c.skin_tone || "",
+          hair: c.hair || "",
+          face: c.face || "",
+          build: c.build || "",
+          wardrobe: c.wardrobe || "",
+          accessories: c.accessories || "",
+          personality: c.personality || "",
+          origin: c.origin || "",
+        };
+      }),
     };
   };
 
@@ -475,8 +502,8 @@ const GenerateScript: React.FC = () => {
                         !datasource
                           ? "Please select Data Source first"
                           : datasource === "openai"
-                          ? "Filter not available for openai!"
-                          : ""
+                            ? "Filter not available for openai!"
+                            : ""
                       }
                       placement="left"
                       arrow

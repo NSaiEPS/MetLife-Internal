@@ -167,6 +167,12 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
       err.img = !form.img;
     }
 
+    if(form.inputType === "image" ) {
+      const formDataWithImage = Object.assign(err, {
+        file: !form.img
+      })
+    }
+
     setErrors(err);
     return !Object.values(err).some(Boolean);
   };
