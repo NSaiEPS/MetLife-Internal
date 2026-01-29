@@ -30,7 +30,7 @@ import AddNewScriptPopup from "../popUps/addScripts";
 import { downloadScriptPdf, downloadScriptWord } from "../../utils";
 import { showToast } from "../../utils/toast";
 
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
@@ -122,15 +122,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const id: any = params?.id;
   const navigate = useNavigate();
   const { saveLoader, saveTranslatedData } = useSelector(
-    (store: RootState) => store.SaveTranslatedData
+    (store: RootState) => store.SaveTranslatedData,
   );
 
   const { characterData, promptData, scriptLoader } = useSelector(
-    (store) => store.Script
+    (store) => store.Script,
   );
   const { pathname } = useLocation();
   const { saveVisualContentLoader } = useSelector(
-    (store: RootState) => store.CreateVisualContent
+    (store: RootState) => store.CreateVisualContent,
   );
   // const { scriptLoader } = useSelector((store: RootState) => store.Script);
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
@@ -148,7 +148,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [openCharacterModal, setOpenCharacterModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [charImageExist, setCharImageExist] = useState(
-    extraDetails?.char_image_exist
+    extraDetails?.char_image_exist,
   );
   const [openFlowDialog, setOpenFlowDialog] = useState(false);
   const [flowStep, setFlowStep] = useState<FlowStep>(null);
@@ -204,13 +204,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         id ?? "",
         payload,
         () => setOpenSavePrompt(false),
-        setOperations
-      )
+        setOperations,
+      ),
     );
   };
 
   const filteredLanguages = languages.filter(
-    (lang) => lang !== tableExtraData?.language
+    (lang) => lang !== tableExtraData?.language,
   );
 
   const actions = [
@@ -348,7 +348,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               Type: data.type,
               id: data.fieldData?.id,
             }
-          : item
+          : item,
       );
       setRows(updated);
     } else {
@@ -442,7 +442,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
     if (sceneData?.id) {
       const updated = rows.map((item) =>
-        item["Scene No."] === sceneData["Scene No."] ? { ...data } : item
+        item["Scene No."] === sceneData["Scene No."] ? { ...data } : item,
       );
       setTableExtraData({ ...extraDetails, scenes: updated });
     } else {
@@ -471,7 +471,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         if (pathname === "/translated-script") {
           navigate(`/scenes/${id}`);
         }
-      })
+      }),
     );
     setMakeChanges(false);
   };
@@ -572,7 +572,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     dispatch(
       postExtractCharacters(id, () => {
         setCharImageExist(true);
-      })
+      }),
     );
   };
 
@@ -719,6 +719,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               onClick={() => navigate("/generate-script")}
             >
               <IoArrowBackCircleOutline size={30} /> Back
+            </Button>
+            <Button
+              className={styles1.icon}
+              onClick={() => navigate(`/create-visual-content/${tableExtraData?.prompt_batch_id}`)}
+              disabled={!tableExtraData?.prompt_batch_id}
+            >
+              Next <IoArrowForwardCircleOutline size={30} />
             </Button>
           </div>
         )}

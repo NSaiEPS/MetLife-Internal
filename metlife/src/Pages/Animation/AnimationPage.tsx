@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   FormControlLabel,
   Grid,
@@ -11,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ButtonComp from "../../components/common/Buton/Button";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
@@ -34,6 +35,7 @@ import MissingAnimationPopup from "../../components/common/popup/MissingAnimatio
 import { toast } from "react-toastify";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import { navigateTo } from "../../utils/navigate";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 /* ---------- TYPES ---------- */
 interface SceneItem {
   scene_id: string;
@@ -97,21 +99,25 @@ const AnimationPage: React.FC = () => {
   } = useSelector((store: RootState) => store.AudioAnimation);
 
   const { saveLoader, saveTranslatedData } = useSelector(
-    (store) => store.SaveTranslatedData
+    (store) => store.SaveTranslatedData,
   );
+
+  const navigate = useNavigate();
+
+  console.log(generatedVideoData?.audio_exists, "videoAnimationData")
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
   const waitingTime = convertToISTParts(
     videoAnimationData?.estimated_completion_at ||
-      sceneData?.estimated_completion_at
+      sceneData?.estimated_completion_at,
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
   const isWaitingVideoTime = convertToISTParts(
     sceneData?.final_video_estimated_completion_at ||
       generatedVideoData?.estimated_completion_at ||
-      videoAnimationData?.estimated_completion_at
+      videoAnimationData?.estimated_completion_at,
   );
   const finalVideoTime = Math.ceil(isWaitingVideoTime / 60);
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
@@ -234,8 +240,8 @@ const AnimationPage: React.FC = () => {
               start_transition: entry,
               end_transition: exit,
             }
-          : scene
-      )
+          : scene,
+      ),
     );
 
     toast.success("Animation applied to alternative scenes.");
@@ -245,7 +251,7 @@ const AnimationPage: React.FC = () => {
     const missing = animationData
       .filter(
         (scene) =>
-          scene.start_transition === "none" && scene.end_transition === "none"
+          scene.start_transition === "none" && scene.end_transition === "none",
       )
       .map((scene) => scene.scene_number);
 
@@ -313,7 +319,15 @@ const AnimationPage: React.FC = () => {
                 <Box className={styles.headerRow}>
                   <Typography variant="h4" className={styles.title}>
                     Animation Toolkit
-                  </Typography>   
+                  </Typography>
+
+                  <Button
+                    className={styles.icon}
+                    onClick={() => navigate(`/audio-animation-toolkit/${id}`)}
+                    disabled={!generatedVideoData?.audio_exists}
+                  >
+                    <IoArrowBackCircleOutline size={30} /> Back
+                  </Button>
                 </Box>
 
                 <Box className={styles.insideContainer}>
@@ -361,8 +375,6 @@ const AnimationPage: React.FC = () => {
                     onConfirm={handleMissingAnimationConfirm}
                     missingScenes={missingScenes}
                   />
-
-                 
 
                   {generatedVideoData?.final_video === null && (
                     <Box
@@ -476,8 +488,8 @@ const AnimationPage: React.FC = () => {
 
 export default AnimationPage;
 
-
- {/* {generatedVideoData?.final_video === null && (
+{
+  /* {generatedVideoData?.final_video === null && (
                     <>
                       <Typography variant="h5"
                         className={styles.audioSelectionTitle}
@@ -622,4 +634,5 @@ export default AnimationPage;
                         />
                       </div>
                     </>
-                  )} */}
+                  )} */
+}

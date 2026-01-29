@@ -89,7 +89,7 @@ const GenerateVisualContentPage: React.FC = () => {
   );
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
-  const audioExist = generateVisualContentData?.audio_exist;
+  const audioExist = generateVisualContentData?.audio_exist || generateVisualContentData?.conversation_video_exist;
   console.log(audioExist, "check__");
 
   // ---------- Columns & Actions ----------

@@ -190,14 +190,18 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     if (!file) return;
 
     const url = URL.createObjectURL(file);
-    setPreview(url);
-    setForm({ ...form, img: url });
+    setPreview(URL.createObjectURL(file));
+    setForm({ ...form, img: URL.createObjectURL(file) });
   };
+
 
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
+
+  console.log(form, "check_form_data");
+
 
   /* ================= RENDER ================= */
 
