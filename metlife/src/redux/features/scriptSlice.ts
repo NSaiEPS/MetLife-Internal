@@ -90,13 +90,13 @@ const ScriptDataSlice = createSlice({
         item.prompt = action.payload.prompt;
       }
     },
-
     setCharacterData(state, action: PayloadAction<CharacterData[]>) {
       state.characterData = action.payload;
     },
     setUploadVideoLoader(state, action: PayloadAction<boolean>) {
       state.uploadVideoData.uploadVideoLoader = action.payload;
     },
+
     setUploadVideoInfo(state, action: PayloadAction<any[]>) {
       state.uploadVideoData.uploadVideoInfo = action.payload;
     },

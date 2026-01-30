@@ -44,6 +44,13 @@ const videoTypeOptions = [
 const languageOptions = [
   { value: "English", label: "English" },
   { value: "Spanish", label: "Spanish" },
+  { value: "Romanian", label: "Romanian" },
+  { value: "Ukranian", label: "Ukranian" },
+  { value: "Bangla", label: "Bangla" },
+  { value: "Portugese", label: "Portugese" },
+  { value: "Hindi", label: "Hindi" },
+  { value: "Nepali", label: "Nepali" },
+
 ];
 
 const toneOptions = [

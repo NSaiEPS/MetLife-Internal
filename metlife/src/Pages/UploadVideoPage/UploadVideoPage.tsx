@@ -40,7 +40,7 @@ const UploadVideoPage = () => {
   const handleClick = () => {
     fileInputRef?.current?.click();
   };
-  const { uploadVideoLoader } = useSelector((store) => store.Script);
+  const  uploadVideoLoader  = useSelector((store) => store.Script.uploadVideoData.uploadVideoLoader);
 
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
@@ -144,12 +144,12 @@ const UploadVideoPage = () => {
     dispatch(postUploadVideo(scriptData?.project_id));
   };
 
-  console.log(uploadVideoLoader, "check_loader")
+  console.log(uploadVideoLoader, "check_loader");
   return (
     <>
       <OneFrameHeader />
       {(loader || uploadVideoLoader) && (
-        <FullScreenGradientLoader text="Uploading Script..." />
+        <FullScreenGradientLoader text="Uploading Video..." />
       )}
       <div className={styles.uploadPageContainer}>
         <div className={styles.uploadCard}>
