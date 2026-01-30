@@ -90,13 +90,13 @@ const ScriptDataSlice = createSlice({
         item.prompt = action.payload.prompt;
       }
     },
-
     setCharacterData(state, action: PayloadAction<CharacterData[]>) {
       state.characterData = action.payload;
     },
     setUploadVideoLoader(state, action: PayloadAction<boolean>) {
       state.uploadVideoData.uploadVideoLoader = action.payload;
     },
+
     setUploadVideoInfo(state, action: PayloadAction<any[]>) {
       state.uploadVideoData.uploadVideoInfo = action.payload;
     },
@@ -251,27 +251,22 @@ export const patchEditPromp =
 
 //Upload video
 export const postUploadVideo =
-  (scriptId: string, payload: FormData, callback?: () => void) =>
+  (projectId: string, 
+    //  callback?: () => void
+    ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setUploadVideoLoader(true));
-
     try {
       const res = await api.post(
-        `videos/upload?script_id=${scriptId}`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
+        `process-vid/localisation/process/${projectId}`
       );
-
+      console.log(res, "check_res")
       if (res?.status) {
         dispatch(setUploadVideoInfo(res?.data?.videos || []));
-
-        if (callback) {
-          callback();
-        }
+        toast.success(res?.data?.message || "Processing started successfully")
+        // if (callback) {
+        //   callback();
+        // }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");

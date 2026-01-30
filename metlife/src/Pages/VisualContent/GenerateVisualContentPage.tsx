@@ -21,7 +21,10 @@ import {
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import { postAudioAnimationData } from "../../redux/features/audioAnimationSlice";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import {
+  IoArrowBackCircleOutline,
+  IoArrowForwardCircleOutline,
+} from "react-icons/io5";
 import type { RootState } from "../../redux/store"; // adjust path if needed
 import { navigateTo } from "../../utils/navigate";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
@@ -78,17 +81,16 @@ const GenerateVisualContentPage: React.FC = () => {
   const conversational =
     generateVisualContentData?.flow_type === "conversation" ||
     generateVisualContentData?.video_style === "conversational";
-
   const { audioAnimationLoader } = useSelector(
     (store: RootState) => store.AudioAnimation,
   );
-
   const { saveLoader, saveTranslatedData } = useSelector(
     (store) => store.SaveTranslatedData,
   );
-
   const prompt_batch_id = generateVisualContentData?.prompt_batch_id;
   const title = generateVisualContentData?.title;
+  const audioExist = generateVisualContentData?.audio_exist || generateVisualContentData?.conversation_video_exist;
+  console.log(audioExist, "check__");
 
   // ---------- Columns & Actions ----------
   const columns: Column<VisualRow>[] = [
@@ -400,14 +402,28 @@ const GenerateVisualContentPage: React.FC = () => {
                   <Typography variant="h4">
                     {generateVisualContentData?.title || "Visual Content"}
                   </Typography>
-                  <Button
-                    className={styles.icon}
-                    onClick={() =>
-                      navigate(`/create-visual-content/${prompt_batch_id}`)
-                    }
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
                   >
-                    <IoArrowBackCircleOutline size={30} /> Back
-                  </Button>
+                    <Button
+                      className={styles.icon}
+                      onClick={() =>
+                        navigate(`/create-visual-content/${prompt_batch_id}`)
+                      }
+                    >
+                      <IoArrowBackCircleOutline size={30} /> Back
+                    </Button>
+                    <Button
+                      className={styles.icon}
+                      disabled={!audioExist}
+                      onClick={() => navigate(`/audio-animation-toolkit/${id}`)}
+                    >
+                      Next <IoArrowForwardCircleOutline size={30} />
+                    </Button>
+                  </Box>
                 </div>
               </div>
 

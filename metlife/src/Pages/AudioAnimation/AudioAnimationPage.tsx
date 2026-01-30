@@ -6,8 +6,8 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
-import { Box, Typography, Grid, IconButton } from "@mui/material";
-import { useParams } from "react-router";
+import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAudioDetails,
@@ -17,6 +17,7 @@ import {
   setGeneratedVideoData,
   postGenerateVideoBatch,
   postPreviewAzureVoices,
+  getSceneDetails,
 } from "../../redux/features/audioAnimationSlice";
 import { showToast } from "../../utils/toast";
 import { navigateTo } from "../../utils/navigate";
@@ -40,59 +41,45 @@ import voice12 from "../../assets/voice_preview_azure_ar-SA-ZariyahNeural.wav";
 import voice13 from "../../assets/voice_preview_azure_ar-SA-HamedNeural.wav";
 import voice14 from "../../assets/voice_preview_azure_ar-EG-SalmaNeural.wav";
 import voice15 from "../../assets/voice_preview_azure_ar-EG-ShakirNeural.wav";
-
 // Hindi male and female voice optios
 import voice16 from "../../assets/voice_preview_azure_hi-IN-SwaraNeural.wav";
 import voice17 from "../../assets/voice_preview_azure_hi-IN-MadhurNeural.wav";
-
 // Nepali male and Female voices
 import voice18 from "../../assets/voice_preview_azure_ne-NP-HemkalaNeural.wav";
 import voice19 from "../../assets/voice_preview_azure_ne-NP-SagarNeural.wav";
-
 // Portuguese male and Female voices
 import voice20 from "../../assets/voice_preview_azure_pt-PT-RaquelNeural.wav";
 import voice21 from "../../assets/voice_preview_azure_pt-PT-DuarteNeural.wav";
 import voice22 from "../../assets/voice_preview_azure_pt-BR-FranciscaNeural.wav";
 import voice23 from "../../assets/voice_preview_azure_pt-BR-AntonioNeural.wav";
-
 // Romanian male and Female voices
 import voice24 from "../../assets/voice_preview_azure_ro-RO-AlinaNeural.wav";
 import voice25 from "../../assets/voice_preview_azure_ro-RO-EmilNeural.wav";
-
 // Ukrainian
 import voice26 from "../../assets/voice_preview_azure_uk-UA-PolinaNeural.wav";
 import voice27 from "../../assets/voice_preview_azure_uk-UA-OstapNeural.wav";
-
 // Bangla
 import voice28 from "../../assets/voice_preview_azure_bn-IN-TanishaaNeural.wav";
 import voice29 from "../../assets/voice_preview_azure_bn-IN-BashkarNeural.wav";
 import voice30 from "../../assets/voice_preview_azure_bn-BD-NabanitaNeural.wav";
 import voice31 from "../../assets/voice_preview_azure_bn-BD-PradeepNeural.wav";
-
 // VoiceMaker Voices - English
 import voiceMaker1 from "../../assets/voice_preview_voicemaker_ai2-Stacy.wav";
 import voiceMaker2 from "../../assets/voice_preview_voicemaker_ai3-Jony.wav";
-
 //VoiceMaker voices bangla
 import voiceMakerBangla1 from "../../assets/voice_preview_voicemaker_ai2-bn-IN-Binod.wav";
 import voiceMakerBangla2 from "../../assets/voice_preview_voicemaker_ai2-bn-IN-Charu.wav";
-
 //VoiceMaker voices ukrainian
 import voiceMakerUkrainian from "../../assets/voice_preview_voicemaker_ai2-uk-UA-Aleksandra.wav";
-
 //VoiceMaker voices romannian
 import voiceMakerRomanian from "../../assets/voice_preview_voicemaker_ai2-ro-RO-Corina.wav";
-
 //VoiceMaker voices portugal
 import voiceMakerPortugal1 from "../../assets/voice_preview_voicemaker_ai2-pt-PT-Diogo.wav";
 import voiceMakerPortugal2 from "../../assets/voice_preview_voicemaker_ai2-pt-PT-Margarida.wav";
-
 //VoiceMaker voices hindi
 import voiceMakerHindi1 from "../../assets/voice_preview_voicemaker_ai2-hi-IN-Nikhil.wav";
 import voiceMakerHindi2 from "../../assets/voice_preview_voicemaker_ai2-hi-IN-Zoya.wav";
-
 import voiceMakerArabic1 from "../../assets/voice_preview_voicemaker_ai2-ar-XA-Nadir.wav";
-
 //Speechify voices - English
 import speechify1 from "../../assets/voice_preview_speechify_oliver.wav";
 import speechify2 from "../../assets/voice_preview_speechify_emily.wav";
@@ -114,8 +101,11 @@ import speechifyNepali1 from "../../assets/voice_preview_speechify_suman.wav";
 import speechifyNepali2 from "../../assets/voice_preview_speechify_anita.wav";
 // portuguese
 import speechifyPortuguese1 from "../../assets/voice_preview_speechify_joao.wav";
-
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import {
+  IoArrowBackCircleOutline,
+  IoArrowForwardCircleOutline,
+} from "react-icons/io5";
 
 interface VoiceOption {
   label: string;
@@ -578,7 +568,7 @@ const allVoiceOptions = {
         s3_url: voiceMakerHindi2,
       },
     ],
-     arabic: [
+    arabic: [
       {
         label: "Spanish Voice Options",
         disabled: true,
@@ -588,7 +578,6 @@ const allVoiceOptions = {
         value: "ai2-ar-XA-Nadir",
         s3_url: voiceMakerArabic1,
       },
-    
     ],
   },
 };
@@ -655,6 +644,7 @@ const AudioAnimationPage: React.FC = () => {
 
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
 
   const {
     audioAnimationLoader,
@@ -662,6 +652,7 @@ const AudioAnimationPage: React.FC = () => {
     videoAnimationLoader,
     labels,
     audioAzurePreviewData,
+    sceneData,
   } = useSelector(
     (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation,
   );
@@ -671,7 +662,9 @@ const AudioAnimationPage: React.FC = () => {
   );
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
+  const videoExists = sceneData?.video_exists;
+  const language = sceneData?.language;
+  // console.log(language, "check_language")
   const characters =
     audioAnimationData?.voice_map?.characters ||
     audioAnimationData?.Characters ||
@@ -699,6 +692,7 @@ const AudioAnimationPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       // dispatch(getLabels(id));
+      dispatch(getSceneDetails(id));
       dispatch(getAudioDetails(id));
     }
   }, [id, dispatch]);
@@ -899,12 +893,6 @@ const AudioAnimationPage: React.FC = () => {
       const voiceTone = voiceToneSelections?.[charName];
       const voiceSpeed = voiceSpeedSelections?.[charName];
 
-      // if (voice && voiceTool) {
-      //   custom_voice_map[charName] = {
-      //     voice,
-      //     voice_tool: voiceTool,
-      //   };
-      // }
       if (voice && voiceTool) {
         custom_voice_map[charName] = {
           voice,
@@ -922,7 +910,7 @@ const AudioAnimationPage: React.FC = () => {
       script_id: id,
       custom_voice_map,
     };
-    console.log("FINAL_PAYLOAD", payload);
+    // console.log("FINAL_PAYLOAD", payload);
 
     dispatch(postGenerateVoiceAndAudio(payload));
   };
@@ -1018,6 +1006,26 @@ const AudioAnimationPage: React.FC = () => {
                   <Typography variant="h3">
                     Audio & Animation Toolkit
                   </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Button
+                      className={styles.icon}
+                      onClick={() => navigate(`/generate-visual-page/${id}`)}
+                    >
+                      <IoArrowBackCircleOutline size={30} /> Back
+                    </Button>
+                    <Button
+                      className={styles.icon}
+                      disabled={!videoExists}
+                      onClick={() => navigate(`/animation-page/${id}`)}
+                    >
+                      Next <IoArrowForwardCircleOutline size={30} />
+                    </Button>
+                  </Box>
                 </div>
 
                 <div className={styles.insideContainer}>
@@ -1063,24 +1071,25 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
 
                         {/* Language */}
-                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                        {/* <Grid size={{ xs: 12, md: 6, lg: 2 }}>
                           <SelectComp
                             label="Language"
                             options={languageOptions}
-                            value={languageSelections[charName] || "english"}
+                            value={languageSelections[charName] || language}
                             onChange={(value) =>
                               handleLanguageChange(
                                 charName,
                                 value as "english" | "spanish",
                               )
                             }
+                            disabled={true}
                             placeholder="Select Language"
                             style={true}
                           />
-                        </Grid>
+                        </Grid> */}
 
                         {/* Gender */}
-                        <Grid size={{ xs: 12, md: 6, lg: 1 }}>
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
                           <SelectComp
                             label="Gender"
                             options={genderOptions}
@@ -1096,6 +1105,23 @@ const AudioAnimationPage: React.FC = () => {
                           />
                         </Grid>
 
+                        {/* Voice tone */}
+                        <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+                          <SelectComp
+                            label="Voice Tone"
+                            options={voiceToneOptions}
+                            value={voiceToneSelections[charName] || ""}
+                            onChange={(value) =>
+                              handleVoiceToneChange(charName, value as string)
+                            }
+                            placeholder="Select Voice Tone"
+                            style={true}
+                            disabled={
+                              narrationSelections?.[charName] !== "azure"
+                            }
+                          />
+                        </Grid>
+
                         {/* Voice speed */}
                         <Grid size={{ xs: 12, md: 6, lg: 1 }}>
                           <SelectComp
@@ -1106,56 +1132,6 @@ const AudioAnimationPage: React.FC = () => {
                               handleVoiceSpeedChange(charName, value as number)
                             }
                             placeholder="Select Voice Speed"
-                            style={true}
-                            disabled={
-                              narrationSelections?.[charName] !== "azure"
-                            }
-                          />
-                        </Grid>
-
-                        {/* <Grid size={{ xs: 12, md: 6, lg: 1 }}>
-                          <TextField
-                            label="Voice Speed"
-                            type="number"
-                            inputProps={{
-                              min: 0,
-                              max: 2,
-                              step: 0.1,
-                            }}
-                            value={voiceSpeedSelections[charName] ?? 1}
-                            onChange={(e) =>
-                              handleVoiceSpeedChange(
-                                charName,
-                                Number(e.target.value),
-                              )
-                            }
-                            fullWidth
-                          />
-                        </Grid> */}
-
-                        {/* <Grid size={{ xs: 12, md: 6, lg: 1 }}>
-                          <Slider
-                            value={voiceSpeedSelections[charName] ?? 1}
-                            min={0}
-                            max={2}
-                            step={0.1}
-                            onChange={(_, value) =>
-                              handleVoiceSpeedChange(charName, value as number)
-                            }
-                            valueLabelDisplay="auto"
-                          />
-                        </Grid> */}
-
-                        {/* Voice tone */}
-                        <Grid size={{ xs: 12, md: 6, lg: 1 }}>
-                          <SelectComp
-                            label="Voice Tone"
-                            options={voiceToneOptions}
-                            value={voiceToneSelections[charName] || ""}
-                            onChange={(value) =>
-                              handleVoiceToneChange(charName, value as string)
-                            }
-                            placeholder="Select Voice Tone"
                             style={true}
                             disabled={
                               narrationSelections?.[charName] !== "azure"

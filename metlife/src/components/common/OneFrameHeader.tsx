@@ -30,8 +30,9 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const token = secureLocalStorage.getItem("token") as string | null;
-  const {username} = secureLocalStorage.getItem("userDetails") as string | null;
-
+  const { username } = secureLocalStorage.getItem("userDetails") as
+    | string
+    | null;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -47,7 +48,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     if (sceneHandle && makeChanges) {
       const confirmLeave = window.confirm(
-        "⚠️ You have unsaved changes. Are you sure you want to leave this page?"
+        "⚠️ You have unsaved changes. Are you sure you want to leave this page?",
       );
 
       if (!confirmLeave) {
@@ -65,7 +66,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
 
   const handleLogout = () => {
     secureLocalStorage.clear();
-    // window.location.href = "/login"; 
+    // window.location.href = "/login";
     navigate("/login");
   };
 
@@ -113,8 +114,17 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             {token && (
               <>
                 <IconButton onClick={handleOpen}>
-                  <Avatar sx={{ bgcolor: "#1976d2" }}>
-                    {/* {username.charAt(0).toUpperCase()} */}
+                  <Avatar
+                    sx={{
+                      bgcolor: "#1976d2",
+                      fontSize: "18px",
+                      fontWeight: 600,
+                      paddingTop: "0.3rem"
+                      // lineHeight: 1,
+                      // fontFamily: "Inter, Roboto, sans-serif",
+                    }}
+                  >
+                    {username.charAt(0).toUpperCase()}
                   </Avatar>
                 </IconButton>
 

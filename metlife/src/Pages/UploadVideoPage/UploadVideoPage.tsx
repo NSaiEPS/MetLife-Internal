@@ -15,6 +15,9 @@ import { showToast } from "../../utils/toast";
 import BackButton from "../../components/common/Buton/BackButton";
 import { Box, FormControlLabel, Radio, Typography } from "@mui/material";
 import SelectComp from "../../components/common/select";
+import secureLocalStorage from "react-secure-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { postUploadVideo } from "../../redux/features/scriptSlice";
 
 const videoTypeOptions = [
   { value: "l1", label: "L1" },
@@ -37,18 +40,28 @@ const UploadVideoPage = () => {
   const handleClick = () => {
     fileInputRef?.current?.click();
   };
+  const  uploadVideoLoader  = useSelector((store) => store.Script.uploadVideoData.uploadVideoLoader);
+
+  const { email, user_id, username } =
+    secureLocalStorage.getItem("userDetails");
+  const dispatch = useDispatch();
 
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
-    // const doc = new jsPDF();
     if (!files || files.length === 0) {
       showToast.error("Please give input first");
       return;
     }
     const file = files[0];
+    const allowedVideoTypes = [
+      "video/mp4",
+      "video/webm",
+      "video/ogg",
+      "video/quicktime", // .mov
+    ];
 
-    if (file && file.type !== "application/pdf") {
-      showToast.error("Only PDF files are allowed");
+    if (!allowedVideoTypes.includes(file.type)) {
+      showToast.error("Only video files are allowed (mp4, webm, mov)");
       e.target.value = null;
       return;
     }
@@ -67,6 +80,13 @@ const UploadVideoPage = () => {
       return;
     }
 
+    const MAX_SIZE_MB = 200;
+
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      showToast.error(`Video must be under ${MAX_SIZE_MB}MB`);
+      return;
+    }
+
     setSelectedFile(file);
     setLoader(true);
     setUploadSuccess(false);
@@ -74,28 +94,30 @@ const UploadVideoPage = () => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("pdf_url", "");
       formData.append("title", title);
-      const response = await fetch(`${BASE_URL}upload-script`, {
-        method: "POST",
-        body: formData,
-      });
+      formData.append("lip_sync", lipSync);
+      formData.append("video_type", videoType);
+      formData.append("user_id", email);
+      const response = await fetch(
+        `${BASE_URL}upload-vid/localisation/upload-vid`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       if (response.status !== 200) {
-        toast.error("Error in script uploading");
+        toast.error("Error in video uploading");
         return;
       }
       const data = await response.json();
-      if (!data || !data.data) {
-        showToast.error("Invalid response from server");
-        return;
-      }
-      setScriptData(data?.data);
-      toast.success("Script uploaded successfully");
+      console.log(data, "check_data");
+      setScriptData(data);
+      toast.success(data?.message || "Video uploaded successfully");
       setUploadSuccess(true);
     } catch (error) {
       console.log(error);
-      toast.error("Error in script uploading!");
+      toast.error("Error in video uploading!");
     } finally {
       setLoader(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -109,8 +131,6 @@ const UploadVideoPage = () => {
     }
   };
 
-  console.log(selectedFile, "selectedFile")
-
   // const formData = new FormData();
   // formData.append("video", file);
 
@@ -120,10 +140,17 @@ const UploadVideoPage = () => {
   //   }),
   // );
 
+  const handleUploadVideo = () => {
+    dispatch(postUploadVideo(scriptData?.project_id));
+  };
+
+  console.log(uploadVideoLoader, "check_loader");
   return (
     <>
       <OneFrameHeader />
-      {loader && <FullScreenGradientLoader text="Uploading Script..." />}
+      {(loader || uploadVideoLoader) && (
+        <FullScreenGradientLoader text="Uploading Video..." />
+      )}
       <div className={styles.uploadPageContainer}>
         <div className={styles.uploadCard}>
           <div
@@ -228,16 +255,26 @@ const UploadVideoPage = () => {
           <div className={styles.uploadBox} onClick={handleClick}>
             <img src={UploadIcon} className={styles.uploadIcon} />
             <p className={styles.uploadText}>
-              {selectedFile ? selectedFile?.name : "Browse Files"}
+              {selectedFile ? selectedFile?.name : "Browse Video Files"}
             </p>
+            <span className={styles.uploadText}>
+              Maximum upload file size: 50MB
+            </span>
 
-            <input
+            {/* <input
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
               style={{ display: "none" }}
               accept=".pdf"
               // multiple
+            /> */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              accept="video/*"
             />
           </div>
 
@@ -258,11 +295,12 @@ const UploadVideoPage = () => {
                 gap: "8px",
               }}
               disabled={isDisabled}
-              action={() =>
-                navigate("/translated-script", {
-                  state: { data: scriptData, pdf: false },
-                })
-              }
+              // action={() =>
+              //   navigate("/translated-script", {
+              //     state: { data: scriptData, pdf: false },
+              //   })
+              // }
+              action={handleUploadVideo}
             >
               {!loader && (
                 <img
@@ -271,7 +309,7 @@ const UploadVideoPage = () => {
                   className={styles.uploadIcon}
                 />
               )}
-              {loader ? "Uploading" : "Upload a Script"}
+              {loader ? "Uploading" : "Upload a Video"}
             </ButtonComp>
           </div>
         </div>
