@@ -60,9 +60,16 @@ interface ClipData {
 //   scenes: Scene[];
 // }
 
+type SceneClips = {
+  files: File[];
+  previews: string[];
+  upload_urls: string[];
+};
+
 const UploadConversationalClipsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
-  const [clips, setClips] = useState<Record<number, ClipData>>({});
+  // const [clips, setClips] = useState<Record<number, ClipData>>({});
+  const [clips, setClips] = useState<Record<number, SceneClips>>({});
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { generateVisualLoader, scenesData } = useSelector(
@@ -77,14 +84,58 @@ const UploadConversationalClipsPage: React.FC = () => {
     uploadSceneClipResponse,
   } = useSelector((state: RootState) => state.Conversational);
   const [openConfirm, setOpenConfirm] = useState(false);
+  // const uploadedCount =
+  //   scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
+  //     ?.length || 0;
   const uploadedCount =
-    scenesData?.scenes?.filter((scene) => clips[scene.scene_id]?.upload_url)
-      ?.length || 0;
+    scenesData?.scenes?.filter(
+      (scene) => clips[scene.scene_id]?.upload_urls?.length > 0,
+    )?.length || 0;
+  // const remainingScenes =
+  //   scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
+  //   [];
   const remainingScenes =
-    scenesData?.scenes?.filter((scene) => !clips[scene.scene_id]?.upload_url) ||
-    [];
+    scenesData?.scenes?.filter(
+      (scene) => !clips[scene.scene_id]?.upload_urls?.length,
+    ) || [];
   const hasMissingScenes = remainingScenes.length > 0;
   const maxFileSize = 10 * 1024 * 1024;
+
+  // useEffect(() => {
+  //   if (scenesData?.scenes) {
+  //     const mapped: Record<number, SceneClips> = {};
+
+  //     scenesData.scenes.forEach((scene) => {
+  //       mapped[scene.scene_id] = {
+  //         files: [],
+  //         previews: [],
+  //         upload_urls: scene.upload_url ? [scene.upload_url] : [],
+  //       };
+  //     });
+
+  //     setClips(mapped);
+  //   }
+  // }, [scenesData?.scenes]);
+
+  useEffect(() => {
+    if (!scenesData?.scenes) return;
+
+    setClips((prev) => {
+      const updated = { ...prev };
+
+      scenesData.scenes.forEach((scene) => {
+        if (!updated[scene.scene_id]) {
+          updated[scene.scene_id] = {
+            files: [],
+            previews: [],
+            upload_urls: scene.upload_url ? [scene.upload_url] : [],
+          };
+        }
+      });
+
+      return updated;
+    });
+  }, [scenesData?.scenes]);
 
   useEffect(() => {
     if (uploadSceneClipResponse) {
@@ -94,42 +145,80 @@ const UploadConversationalClipsPage: React.FC = () => {
         ...prev,
         [scene_id]: {
           ...prev[scene_id],
-          upload_url: url,
+          // upload_url: url,
+          upload_urls: [...(prev[scene_id]?.upload_urls || []), url],
         },
       }));
     }
   }, [uploadSceneClipResponse]);
+
+  // const handleUpload = (scene: SceneType, e: ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+
+  //   if (file.size > maxFileSize) {
+  //     showToast.error("File size must be less than or equal to 10 MB");
+  //     e.target.value = "";
+  //     return;
+  //   }
+
+  //   setClips((prev) => ({
+  //     ...prev,
+  //     [scene.scene_id]: {
+  //       file,
+  //       preview: URL.createObjectURL(file),
+  //     },
+  //   }));
+
+  //   const formData = new FormData();
+  //   if (id) {
+  //     formData.append("script_id", id);
+  //   }
+  //   formData.append("scene_id", String(scene.scene_id));
+  //   formData.append("scene_number", String(scene.scene_number));
+  //   formData.append("file", file);
+  //   dispatch(uploadSceneClip(formData));
+  // };
 
   const handleUpload = (scene: SceneType, e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > maxFileSize) {
-      showToast.error("File size must be less than or equal to 10 MB");
+      showToast.error("File size must be ≤ 10 MB");
       e.target.value = "";
       return;
     }
 
+    const previewUrl = URL.createObjectURL(file);
+
     setClips((prev) => ({
       ...prev,
       [scene.scene_id]: {
-        file,
-        preview: URL.createObjectURL(file),
+        files: [...(prev[scene.scene_id]?.files || []), file],
+        previews: [...(prev[scene.scene_id]?.previews || []), previewUrl],
+        upload_urls: prev[scene.scene_id]?.upload_urls || [],
       },
     }));
 
     const formData = new FormData();
-    if (id) {
-      formData.append("script_id", id);
-    }
+    if (id) formData.append("script_id", id);
+
     formData.append("scene_id", String(scene.scene_id));
     formData.append("scene_number", String(scene.scene_number));
     formData.append("file", file);
+
     dispatch(uploadSceneClip(formData));
+
+    e.target.value = "";
   };
 
+  // const allUploaded = scenesData?.scenes?.every(
+  //   (scene) => clips[scene.scene_id],
+  // );
+
   const allUploaded = scenesData?.scenes?.every(
-    (scene) => clips[scene.scene_id],
+    (scene) => clips[scene.scene_id]?.upload_urls?.length > 0,
   );
 
   const handleDownloadAssets = () => {
@@ -159,27 +248,64 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   }, [scenesData?.scenes]);
 
+  // const handleStitchClick = () => {
+  //   if (uploadedCount) {
+  //     setOpenConfirm(true);
+  //     return;
+  //   }
+  //   if (uploadedCount === 0) {
+  //     showToast.error(
+  //       "No uploaded video found. Please upload at least one clip.",
+  //     );
+  //     return;
+  //   }
+  //   handleStichVideo();
+  // };
+
   const handleStitchClick = () => {
-    if (uploadedCount) {
-      setOpenConfirm(true);
-      return;
-    }
     if (uploadedCount === 0) {
       showToast.error(
         "No uploaded video found. Please upload at least one clip.",
       );
       return;
     }
+
+    // If some scenes are missing → show confirmation
+    if (!allUploaded) {
+      setOpenConfirm(true);
+      return;
+    }
+
     handleStichVideo();
   };
 
-  const handleStichVideo = () => {
-    if (id) {
-      dispatch(postStitchAllVideos(id, setOpenConfirm));
-    }
-  };
+  // const handleStichVideo = () => {
+  //   if (id) {
+  //     dispatch(postStitchAllVideos(id, setOpenConfirm));
+  //   }
+  // };
 
-  console.log(scenesData?.video_exist, "check");
+  // console.log(scenesData?.video_exist, "check");
+
+  const handleStichVideo = () => {
+    if (!id) return;
+
+    const scenesPayload = scenesData.scenes.map((scene) => ({
+      scene_id: scene.scene_id,
+      scene_number: scene.scene_number,
+      clips: clips[scene.scene_id]?.upload_urls || [],
+    }));
+
+    dispatch(
+      postStitchAllVideos(
+        {
+          script_id: id,
+          scenes: scenesPayload,
+        },
+        setOpenConfirm,
+      ),
+    );
+  };
 
   return (
     <>
@@ -257,16 +383,11 @@ const UploadConversationalClipsPage: React.FC = () => {
                             <ButtonComp
                               variant="contained"
                               component="label"
-                              disabled={
-                                uploadSceneClipLoader?.[scene?.scene_id] ||
-                                clips[scene.scene_id]?.upload_url
-                              }
-                              // sx={{
-                              //   borderRadius: "10px",
-                              //   textTransform: "none",
-                              //   padding: "10px 25px",
-                              //   minWidth: "140px",
-                              // }}
+                              // disabled={
+                              //   uploadSceneClipLoader?.[scene?.scene_id] ||
+                              //   clips[scene.scene_id]?.upload_url
+                              // }
+                              disabled={uploadSceneClipLoader?.[scene.scene_id]}
                             >
                               {uploadSceneClipLoader?.[scene?.scene_id] ? (
                                 <CircularProgress
@@ -290,7 +411,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                             </ButtonComp>
                           </Box>
 
-                          <Box
+                          {/* <Box
                             sx={{
                               borderRadius: "10px",
                               overflow: "hidden",
@@ -323,6 +444,54 @@ const UploadConversationalClipsPage: React.FC = () => {
                                 No clip uploaded
                               </Typography>
                             )}
+                          </Box> */}
+
+                          <Box
+                            sx={{
+                              borderRadius: "10px",
+                              overflow: "hidden",
+                              border: "1px solid #d3e6f9",
+                              mt: 1,
+                              p: 2,
+                            }}
+                          >
+                            {clips[scene.scene_id]?.upload_urls?.length > 0 ? (
+                              clips[scene.scene_id].upload_urls.map(
+                                (url, idx) => (
+                                  <video
+                                    key={idx}
+                                    src={url}
+                                    controls
+                                    style={{
+                                      width: "100%",
+                                      height: "30vh",
+                                      marginBottom: "12px",
+                                      borderRadius: "10px",
+                                    }}
+                                  />
+                                ),
+                              )
+                            ) : clips[scene.scene_id]?.previews?.length > 0 ? (
+                              clips[scene.scene_id].previews.map(
+                                (preview, idx) => (
+                                  <video
+                                    key={idx}
+                                    src={preview}
+                                    controls
+                                    style={{
+                                      width: "100%",
+                                      height: "30vh",
+                                      marginBottom: "12px",
+                                      borderRadius: "10px",
+                                    }}
+                                  />
+                                ),
+                              )
+                            ) : (
+                              <Typography color="gray">
+                                No clips uploaded
+                              </Typography>
+                            )}
                           </Box>
                         </Paper>
                       ))}
@@ -347,12 +516,6 @@ const UploadConversationalClipsPage: React.FC = () => {
 
                       <ButtonComp
                         variant="contained"
-                        // sx={{
-                        //   borderRadius: "10px",
-                        //   padding: "10px 25px",
-                        //   textTransform: "none",
-                        //   backgroundColor: allUploaded ? "#1976d2" : "#a8c8e8",
-                        // }}
                         onClick={handleDownloadAssets}
                         disabled={generateVisualLoader}
                       >
@@ -376,12 +539,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                           stitchedVideoUrl ||
                           scenesData?.stitched_video?.url
                         }
-                        // sx={{
-                        //   borderRadius: "10px",
-                        //   padding: "10px 25px",
-                        //   textTransform: "none",
-                        //   backgroundColor: allUploaded ? "#1976d2" : "#a8c8e8",
-                        // }}
                       >
                         Stitch My Video
                       </ButtonComp>
@@ -428,8 +585,10 @@ const UploadConversationalClipsPage: React.FC = () => {
                     {hasMissingScenes ? (
                       <>
                         <Typography variant="body2" color="text.secondary">
-                          You can still proceed, but the final video will
-                          include only the uploaded clip.
+                          {/* You can still proceed, but the final video will
+                          include only the uploaded clip. */}
+                          You can still proceed. The final video will include
+                          only the uploaded clips for each completed scene.
                         </Typography>
                       </>
                     ) : (

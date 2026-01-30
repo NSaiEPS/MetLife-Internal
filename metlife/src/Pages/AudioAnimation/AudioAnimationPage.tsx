@@ -141,10 +141,10 @@ const narrationVoiceOptions = [
   { label: "Voicemaker", value: "voicemaker" },
 ];
 
-const genderOptions = [
-  { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
-];
+// const genderOptions = [
+//   { label: "Male", value: "male" },
+//   { label: "Female", value: "female" },
+// ];
 
 const VOICE_GENDER_MAP: Record<string, "male" | "female"> = {
   //  Azure
@@ -153,26 +153,76 @@ const VOICE_GENDER_MAP: Record<string, "male" | "female"> = {
   "en-US-SaraNeural": "female",
   "en-US-GuyNeural": "male",
   "en-US-DavisNeural": "male",
-  // spanish options
+  "hi-IN-SwaraNeural": "female",
+  "hi-IN-MadhurNeural": "male",
   "es-MX-JorgeNeural": "male",
   "es-MX-DaliaNeural": "female",
   "es-ES-ElviraNeural": "female",
   "es-ES-ArnauNeural": "male",
   "es-ES-AlvaroNeural": "male",
   "es-ES-AbrilNeural": "female",
+  "ar-SA-ZariyahNeural": "female",
+  "ar-SA-HamedNeural": "male",
+  "ar-EG-SalmaNeural": "female",
+  "ar-EG-ShakirNeural": "male",
+  "ne-NP-HemkalaNeural": "female",
+  "ne-NP-SagarNeural": "male",
+  "pt-PT-RaquelNeural": "female",
+  "pt-PT-DuarteNeural": "male",
+  "pt-BR-FranciscaNeural": "female",
+  "pt-BR-AntonioNeural": "male",
+
+  "ro-RO-AlinaNeural": "female",
+  "ro-RO-EmilNeural": "male",
+  "uk-UA-PolinaNeural": "female",
+  "uk-UA-OstapNeural": "male",
+
+  "bn-IN-TanishaaNeural": "female",
+  "bn-IN-BashkarNeural": "male",
+  "bn-BD-NabanitaNeural": "female",
+  "bn-BD-PradeepNeural": "male",
+  // spanish options
+  // "es-MX-JorgeNeural": "male",
+  // "es-MX-DaliaNeural": "female",
+  // "es-ES-ElviraNeural": "female",
+  // "es-ES-ArnauNeural": "male",
+  // "es-ES-AlvaroNeural": "male",
+  // "es-ES-AbrilNeural": "female",
 
   //  Speechify
   oliver: "male",
-  henry: "male",
   emily: "female",
+  henry: "male",
+  joao: "male",
+  hemant: "male",
+  priya: "female",
+  avik: "male",
+  brishti: "female",
+  suman: "male",
+  anita: "female",
   alejandro: "male",
   celia: "female",
 
   //  Voicemaker
   "ai2-Stacy": "female",
   "ai3-Jony": "male",
+
   "ai3-es-ES-Alvaro": "male",
   "AI3-ES-ES-Elvira": "female",
+
+  "ai2-bn-IN-Binod": "male",
+  "ai2-bn-IN-Charu": "female",
+
+  "ai2-uk-UA-Aleksandra": "female",
+  "ai2-ro-RO-Corina": "female",
+
+  "ai2-pt-PT-Diogo": "male",
+  "ai2-pt-PT-Margarida": "female",
+
+  "ai2-hi-IN-Nikhil": "male",
+  "ai2-hi-IN-Zoya": "female",
+
+  "ai2-ar-XA-Nadir": "male",
 };
 
 const allVoiceOptions = {
@@ -181,26 +231,31 @@ const allVoiceOptions = {
       {
         label: "EN-US Jenny Neural",
         value: "en-US-JennyNeural",
+        gender: "female",
         s3_url: voice2,
       },
       {
         label: "EN-US Aria Neural",
         value: "en-US-AriaNeural",
+        gender: "female",
         s3_url: voice5,
       },
       {
         label: "EN-US Sara Neural",
         value: "en-US-SaraNeural",
+        gender: "female",
         s3_url: voice4,
       },
       {
         label: "EN-US Guy Neural",
         value: "en-US-GuyNeural",
+        gender: "male",
         s3_url: voice3,
       },
       {
         label: "EN-US Davis Neural",
         value: "en-US-DavisNeural",
+        gender: "male",
         s3_url: voice1,
       },
     ],
@@ -213,31 +268,37 @@ const allVoiceOptions = {
       {
         label: "es-MX-JorgeNeural",
         value: "es-MX-JorgeNeural",
+        gender: "male",
         s3_url: voice6,
       },
       {
         label: "es-MX-DaliaNeural",
         value: "es-MX-DaliaNeural",
+        gender: "female",
         s3_url: voice7,
       },
       {
         label: "es-ES-ElviraNeural",
         value: "es-ES-ElviraNeural",
+        gender: "female",
         s3_url: voice8,
       },
       {
         label: "es-ES-ArnauNeural",
         value: "es-ES-ArnauNeural",
+        gender: "male",
         s3_url: voice9,
       },
       {
         label: "es-ES-AlvaroNeural",
         value: "es-ES-AlvaroNeural",
+        gender: "male",
         s3_url: voice10,
       },
       {
         label: "es-ES-AbrilNeural",
         value: "es-ES-AbrilNeural",
+        gender: "male",
         s3_url: voice11,
       },
     ],
@@ -250,21 +311,25 @@ const allVoiceOptions = {
       {
         label: "AR-SA Zariyah Neural",
         value: "ar-SA-ZariyahNeural",
+        gender: "female",
         s3_url: voice12,
       },
       {
         label: "AR-SA Hamed Neural",
         value: "ar-SA-HamedNeural",
+        gender: "male",
         s3_url: voice13,
       },
       {
         label: "AR-EG Salma Neural",
         value: "ar-EG-SalmaNeural",
+        gender: "female",
         s3_url: voice14,
       },
       {
         label: "AR-EG Shakir Neural",
         value: "ar-EG-ShakirNeural",
+        gender: "male",
         s3_url: voice15,
       },
     ],
@@ -277,11 +342,13 @@ const allVoiceOptions = {
       {
         label: "HI-IN Swara Neural",
         value: "hi-IN-SwaraNeural",
+        gender: "female",
         s3_url: voice16,
       },
       {
         label: "HI-IN Madhur Neural",
         value: "hi-IN-MadhurNeural",
+        gender: "male",
         s3_url: voice17,
       },
     ],
@@ -294,11 +361,13 @@ const allVoiceOptions = {
       {
         label: "NE-NP Hemkala Neural",
         value: "ne-NP-HemkalaNeural",
+        gender: "female",
         s3_url: voice18,
       },
       {
         label: "NE-NP Sagar Neural",
         value: "ne-NP-SagarNeural",
+        gender: "male",
         s3_url: voice19,
       },
     ],
@@ -311,21 +380,28 @@ const allVoiceOptions = {
       {
         label: "PT-PT Raquel Neural",
         value: "pt-PT-RaquelNeural",
+        gender: "female",
         s3_url: voice20,
       },
       {
         label: "PT-PT Duarte Neural",
         value: "pt-PT-DuarteNeural",
+        gender: "male",
+
         s3_url: voice21,
       },
       {
         label: "PT-BR Francisca Neural",
         value: "pt-BR-FranciscaNeural",
+        gender: "female",
+
         s3_url: voice22,
       },
       {
         label: "PT-BR Antonio Neural",
         value: "pt-BR-AntonioNeural",
+        gender: "male",
+
         s3_url: voice23,
       },
     ],
@@ -338,11 +414,14 @@ const allVoiceOptions = {
       {
         label: "RO-RO Alina Neural",
         value: "ro-RO-AlinaNeural",
+        gender: "female",
+
         s3_url: voice24,
       },
       {
         label: "RO-RO Emil Neural",
         value: "ro-RO-EmilNeural",
+        gender: "male",
         s3_url: voice25,
       },
     ],
@@ -356,10 +435,13 @@ const allVoiceOptions = {
         label: "UK-UA Polina Neural",
         value: "uk-UA-PolinaNeural",
         s3_url: voice26,
+        gender: "female",
       },
       {
         label: "UK-UA Ostap Neural",
         value: "uk-UA-OstapNeural",
+        gender: "male",
+
         s3_url: voice27,
       },
     ],
@@ -372,21 +454,25 @@ const allVoiceOptions = {
       {
         label: "BN-IN Tanishaa Neural",
         value: "bn-IN-TanishaaNeural",
+        gender: "female",
         s3_url: voice28,
       },
       {
         label: "BN-IN Bashkar Neural",
         value: "bn-IN-BashkarNeural",
+        gender: "male",
         s3_url: voice29,
       },
       {
         label: "BN-BD Nabanita Neural",
         value: "bn-BD-NabanitaNeural",
+        gender: "female",
         s3_url: voice30,
       },
       {
         label: "BN-BD Pradeep Neural",
         value: "bn-BD-PradeepNeural",
+        gender: "male",
         s3_url: voice31,
       },
     ],
@@ -397,16 +483,19 @@ const allVoiceOptions = {
         label: "Oliver",
         value: "oliver",
         s3_url: speechify1,
+        gender: "male",
       },
       {
         label: "Emily",
         value: "emily",
         s3_url: speechify2,
+        gender: "female",
       },
       {
         label: "Henry",
         value: "henry",
         s3_url: speechify3,
+        gender: "male",
       },
     ],
     portuguese: [
@@ -414,17 +503,20 @@ const allVoiceOptions = {
         label: "Joao",
         value: "joao",
         s3_url: speechifyPortuguese1,
+        gender: "male",
       },
     ],
     hindi: [
       {
         label: "Hemant",
         value: "hemant",
+        gender: "male",
         s3_url: speechifyHindi1,
       },
       {
         label: "Priya",
         value: "priya",
+        gender: "female",
         s3_url: speechifyHindi2,
       },
     ],
@@ -433,10 +525,13 @@ const allVoiceOptions = {
         label: "Avik",
         value: "avik",
         s3_url: speechifyBangla1,
+        gender: "male",
       },
       {
         label: "Brishti",
         value: "brishti",
+        gender: "female",
+
         s3_url: speechifyBangla2,
       },
     ],
@@ -445,10 +540,12 @@ const allVoiceOptions = {
         label: "Suman",
         value: "suman",
         s3_url: speechifyNepali1,
+        gender: "female",
       },
       {
         label: "Anita",
         value: "anita",
+        gender: "female",
         s3_url: speechifyNepali2,
       },
     ],
@@ -460,11 +557,13 @@ const allVoiceOptions = {
       {
         label: "Alejandro",
         value: "alejandro",
+        gender: "male",
         s3_url: speechifySpanish1,
       },
       {
         label: "Celia",
         value: "celia",
+        gender: "female",
         s3_url: speechifySpanish2,
       },
     ],
@@ -474,11 +573,13 @@ const allVoiceOptions = {
       {
         label: "AI2-Stacy",
         value: "ai2-Stacy",
+        gender: "female",
         s3_url: voiceMaker1,
       },
       {
         label: "AI3-Jony",
         value: "ai3-Jony",
+        gender: "male",
         s3_url: voiceMaker2,
       },
     ],
@@ -490,11 +591,13 @@ const allVoiceOptions = {
       {
         label: "AI3-ES-ES-Alvaro",
         value: "ai3-es-ES-Alvaro",
+        gender: "male",
         s3_url: voiceMakerSpanish1,
       },
       {
         label: "AI3-ES-ES-Elvira",
         value: "AI3-ES-ES-Elvira",
+        gender: "female",
         s3_url: voiceMakerSpanish2,
       },
     ],
@@ -506,11 +609,15 @@ const allVoiceOptions = {
       {
         label: "AI2-BN-IN-Binod",
         value: "ai2-bn-IN-Binod",
+        gender: "male",
+
         s3_url: voiceMakerBangla1,
       },
       {
         label: "AI2-BN-IN-Charu",
         value: "ai2-bn-IN-Charu",
+        gender: "female",
+
         s3_url: voiceMakerBangla2,
       },
     ],
@@ -522,6 +629,7 @@ const allVoiceOptions = {
       {
         label: "AI2-UK-UA-Aleksandra",
         value: "ai2-uk-UA-Aleksandra",
+        gender: "female",
         s3_url: voiceMakerUkrainian,
       },
     ],
@@ -533,6 +641,7 @@ const allVoiceOptions = {
       {
         label: "AI2-uk-RO-Corina",
         value: "ai2-ro-RO-Corina",
+        gender: "female",
         s3_url: voiceMakerRomanian,
       },
     ],
@@ -545,11 +654,13 @@ const allVoiceOptions = {
         label: "AI2-pt-PT-Diogo",
         value: "ai2-pt-PT-Diogo",
         s3_url: voiceMakerPortugal1,
+        gender: "male",
       },
       {
         label: "AI2-pt-PT-Margarida",
         value: "ai2-pt-PT-Margarida",
         s3_url: voiceMakerPortugal2,
+        gender: "female",
       },
     ],
     hindi: [
@@ -560,11 +671,13 @@ const allVoiceOptions = {
       {
         label: "AI2-hi-IN-Nikhil",
         value: "ai2-hi-IN-Nikhil",
+        gender: "male",
         s3_url: voiceMakerHindi1,
       },
       {
         label: "AI2-HI-IN-Zoya",
         value: "ai2-hi-IN-Zoya",
+        gender: "female",
         s3_url: voiceMakerHindi2,
       },
     ],
@@ -577,6 +690,7 @@ const allVoiceOptions = {
         label: "AI2-ar-XA-Nadir",
         value: "ai2-ar-XA-Nadir",
         s3_url: voiceMakerArabic1,
+        gender: "male",
       },
     ],
   },
@@ -603,6 +717,18 @@ const voiceSpeedOptions = [
   // { label: "2x", value: 2 },
 ];
 
+const LANGUAGE_MAP: Record<string, string> = {
+  English: "english",
+  Hindi: "hindi",
+  Arabic: "arabic",
+  Spanish: "spanish",
+  Bangla: "bangla",
+  Nepali: "nepali",
+  Portuguese: "portuguese",
+  Romanian: "romanian",
+  Ukrainian: "ukrainian",
+};
+
 const AudioAnimationPage: React.FC = () => {
   const [narrationSelections, setNarrationSelections] =
     useState<NarrationSelectionType>({
@@ -618,17 +744,17 @@ const AudioAnimationPage: React.FC = () => {
     Record<string, string>
   >({});
 
-  const languageOptions = [
-    { label: "English", value: "english" },
-    { label: "Hindi", value: "hindi" },
-    { label: "Arabic", value: "arabic" },
-    { label: "Nepali", value: "nepali" },
-    { label: "Bangla", value: "bangla" },
-    { label: "Spanish", value: "spanish" },
-    { label: "Portuguese", value: "portuguese" },
-    { label: "Romanian", value: "romanian" },
-    { label: "Ukrainian", value: "ukrainian" },
-  ];
+  // const languageOptions = [
+  //   { label: "English", value: "english" },
+  //   { label: "Hindi", value: "hindi" },
+  //   { label: "Arabic", value: "arabic" },
+  //   { label: "Nepali", value: "nepali" },
+  //   { label: "Bangla", value: "bangla" },
+  //   { label: "Spanish", value: "spanish" },
+  //   { label: "Portuguese", value: "portuguese" },
+  //   { label: "Romanian", value: "romanian" },
+  //   { label: "Ukrainian", value: "ukrainian" },
+  // ];
 
   const [languageSelections, setLanguageSelections] = useState<
     Record<string, "english" | "spanish">
@@ -704,11 +830,12 @@ const AudioAnimationPage: React.FC = () => {
     }
 
     const sanitized: Record<string, string> = {};
+    const language = getVoiceLanguage();
 
     Object.entries(audioAnimationData.custom_voice_map).forEach(
       ([charName, voice]) => {
         const narrationType = narrationSelections[charName];
-        const language = languageSelections[charName] || "english";
+        // const language = languageSelections[charName] || "english";
 
         const validOptions = allVoiceOptions?.[narrationType]?.[language] || [];
 
@@ -719,7 +846,7 @@ const AudioAnimationPage: React.FC = () => {
     );
 
     setVoiceSelections(sanitized);
-  }, [audioAnimationData, narrationSelections, languageSelections]);
+  }, [audioAnimationData, narrationSelections, sceneData?.language]);
 
   useEffect(() => {
     if (!sortedLabels.length) return;
@@ -739,78 +866,188 @@ const AudioAnimationPage: React.FC = () => {
     });
   }, [sortedLabels]);
 
-  const handleLanguageChange = (
-    charName: string,
-    value: "english" | "spanish",
-    // option: { label: string; value: "english" | "spanish" }
-  ) => {
-    setLanguageSelections((prev) => ({
-      ...prev,
-      [charName]: value,
-    }));
+  const enrichVoicesWithGender = (voices = []) =>
+    voices
+      .filter((v) => !v.disabled)
+      .map((v) => ({
+        ...v,
+        gender: VOICE_GENDER_MAP[v.value],
+      }));
 
-    setVoiceSelections((prev) => ({
-      ...prev,
-      [charName]: "",
-    }));
+  // const getVoiceLanguage = () => {
+  //   const raw = sceneData?.language;
+  //   return raw ? LANGUAGE_MAP[raw] : undefined;
+  // };
+
+  const getVoiceLanguage = () => {
+    const raw = sceneData?.language;
+    return LANGUAGE_MAP[raw] || "english";
   };
 
-  const handleGenderChange = (
-    charName: string,
-    value: string,
-    // option: { label: string; value: "male" | "female" }
-  ) => {
-    const gender = value;
-    setGenderSelections((prevGender) => {
-      const updatedGender = {
-        ...prevGender,
-        [charName]: gender,
+  const getGenderOptions = (charName: string) => {
+    const narrationType = narrationSelections[charName];
+    const language = getVoiceLanguage();
+    const voices = allVoiceOptions?.[narrationType]?.[language] || [];
+
+    const hasMale = voices.some((v) => VOICE_GENDER_MAP[v.value] === "male");
+
+    const hasFemale = voices.some(
+      (v) => VOICE_GENDER_MAP[v.value] === "female",
+    );
+
+    return [
+      {
+        label: "Male",
+        value: "male",
+        disabled: !hasMale,
+      },
+      {
+        label: "Female",
+        value: "female",
+        disabled: !hasFemale,
+      },
+    ];
+  };
+
+  // const handleLanguageChange = (
+  //   charName: string,
+  //   value: "english" | "spanish",
+  //   // option: { label: string; value: "english" | "spanish" }
+  // ) => {
+  //   setLanguageSelections((prev) => ({
+  //     ...prev,
+  //     [charName]: value,
+  //   }));
+
+  //   setVoiceSelections((prev) => ({
+  //     ...prev,
+  //     [charName]: "",
+  //   }));
+  // };
+
+  // const handleGenderChange = (
+  //   charName: string,
+  //   value: string,
+  //   // option: { label: string; value: "male" | "female" }
+  // ) => {
+  //   const gender = value;
+  //   setGenderSelections((prevGender) => {
+  //     const updatedGender = {
+  //       ...prevGender,
+  //       [charName]: gender,
+  //     };
+
+  //     setVoiceSelections((prevVoice) => {
+  //       const currentVoice = prevVoice[charName];
+  //       if (!currentVoice) return prevVoice;
+
+  //       const narrationType = narrationSelections[charName];
+  //       // const language = languageSelections[charName] || "english";
+  //       const language = getVoiceLanguage();
+
+  //       const voices = allVoiceOptions?.[narrationType]?.[language] || [];
+
+  //       const validVoices = voices.filter(
+  //         (v) => v.value && !v.disabled && VOICE_GENDER_MAP[v.value] === gender,
+  //       );
+
+  //       const stillValid = validVoices.some((v) => v.value === currentVoice);
+
+  //       if (stillValid) return prevVoice;
+
+  //       return {
+  //         ...prevVoice,
+  //         [charName]: "",
+  //       };
+  //     });
+
+  //     return updatedGender;
+  //   });
+  // };
+
+  const handleGenderChange = (charName: string, gender: "male" | "female") => {
+    setGenderSelections((prevGender) => ({
+      ...prevGender,
+      [charName]: gender,
+    }));
+
+    setVoiceSelections((prevVoice) => {
+      const currentVoice = prevVoice[charName];
+      if (!currentVoice) return prevVoice;
+
+      const narrationType = narrationSelections[charName];
+      const language = getVoiceLanguage();
+
+      const voices = allVoiceOptions?.[narrationType]?.[language] || [];
+
+      const isStillValid = voices.some(
+        (v) => v.value === currentVoice && VOICE_GENDER_MAP[v.value] === gender,
+      );
+
+      if (isStillValid) return prevVoice;
+
+      return {
+        ...prevVoice,
+        [charName]: "",
       };
-
-      setVoiceSelections((prevVoice) => {
-        const currentVoice = prevVoice[charName];
-        if (!currentVoice) return prevVoice;
-
-        const narrationType = narrationSelections[charName];
-        const language = languageSelections[charName] || "english";
-
-        const voices = allVoiceOptions?.[narrationType]?.[language] || [];
-
-        const validVoices = voices.filter(
-          (v) => v.value && !v.disabled && VOICE_GENDER_MAP[v.value] === gender,
-        );
-
-        const stillValid = validVoices.some((v) => v.value === currentVoice);
-
-        if (stillValid) return prevVoice;
-
-        return {
-          ...prevVoice,
-          [charName]: "",
-        };
-      });
-
-      return updatedGender;
     });
   };
 
+  // const getFilteredVoiceOptions = (charName: string) => {
+  //   const narrationType = narrationSelections[charName];
+  //   if (!narrationType) return [];
+  //   const gender = genderSelections[charName];
+  //   // const language = languageSelections[charName] || "english";
+  //   const language = getVoiceLanguage();
+
+  //   if (!language) return [];
+
+  //   const voices = allVoiceOptions?.[narrationType]?.[language] || [];
+
+  //   // remove disabled items
+  //   const selectableVoices = voices.filter((v) => v.value && !v.disabled);
+
+  //   if (!gender) return selectableVoices;
+
+  //   return selectableVoices.filter(
+  //     (voice) => VOICE_GENDER_MAP[voice.value] === gender,
+  //   );
+  // };
+  // const getFilteredVoiceOptions = (charName: string) => {
+  //   const narrationType = narrationSelections[charName];
+  //   const language = getVoiceLanguage();
+  //   const gender = genderSelections[charName];
+    
+
+  //   // let voices = allVoiceOptions?.[narrationType]?.[language] || [];
+
+  //   // if (gender) {
+  //   //   voices = voices.filter((v) => VOICE_GENDER_MAP[v.value] === gender);
+  //   // }
+
+  //   if (gender) {
+  //     voices = voices.filter(
+  //       (v) =>
+  //         VOICE_GENDER_MAP[v.value] === gender ||
+  //         VOICE_GENDER_MAP[v.value] === undefined, // 👈 KEY FIX
+  //     );
+  //   }
+
+  //   return voices;
+  // };
+
   const getFilteredVoiceOptions = (charName: string) => {
-    const narrationType = narrationSelections[charName];
-    if (!narrationType) return [];
-    const gender = genderSelections[charName];
-    const language = languageSelections[charName] || "english";
+  const narrationType = narrationSelections[charName];
+  const language = getVoiceLanguage();
+  const gender = genderSelections[charName];
 
-    const voices = allVoiceOptions?.[narrationType]?.[language] || [];
+  const rawVoices = allVoiceOptions?.[narrationType]?.[language] || [];
+  const voices = enrichVoicesWithGender(rawVoices);
 
-    // remove disabled items
-    const selectableVoices = voices.filter((v) => v.value && !v.disabled);
-
-    if (!gender) return selectableVoices;
-
-    return selectableVoices.filter(
-      (voice) => VOICE_GENDER_MAP[voice.value] === gender,
-    );
-  };
+  return gender
+    ? voices.filter(v => v.gender === gender)
+    : voices;
+};
 
   const handleNarrationChange = (
     charName: string,
@@ -985,7 +1222,6 @@ const AudioAnimationPage: React.FC = () => {
     }
 
     dispatch(postPreviewAzureVoices(payload));
-    console.log(payload, "preview_payload");
   };
 
   return (
@@ -1092,7 +1328,9 @@ const AudioAnimationPage: React.FC = () => {
                         <Grid size={{ xs: 12, md: 6, lg: 2 }}>
                           <SelectComp
                             label="Gender"
-                            options={genderOptions}
+                            // options={genderOptions}
+                            options={getGenderOptions(charName)}
+                            // value={genderSelections[charName] || ""}
                             value={genderSelections[charName] || ""}
                             onChange={(value) =>
                               handleGenderChange(
@@ -1152,9 +1390,14 @@ const AudioAnimationPage: React.FC = () => {
                             Voice options
                           </Typography>
                           <SelectWithAudio
+                            // disabled={
+                            //   !languageSelections[charName] ||
+                            //   !narrationSelections[charName]
+                            // }
                             disabled={
-                              !languageSelections[charName] ||
-                              !narrationSelections[charName]
+                              !sceneData?.language ||
+                              !narrationSelections[charName] ||
+                              !genderSelections[charName]
                             }
                             label="Voice Options/Voice Name"
                             options={
@@ -1163,12 +1406,23 @@ const AudioAnimationPage: React.FC = () => {
                                 ? getFilteredVoiceOptions(charName).map(
                                     (opt) => ({
                                       ...opt,
-                                      disabled:
-                                        voiceSelections[charName] !== opt.value,
+                                      disabled: false,
                                     }),
                                   )
                                 : getFilteredVoiceOptions(charName)
                             }
+                            // options={
+                            //   Array.isArray(audioAnimationData?.scenes) &&
+                            //   audioAnimationData.scenes.length > 0
+                            //     ? getFilteredVoiceOptions(charName).map(
+                            //         (opt) => ({
+                            //           ...opt,
+                            //           disabled:
+                            //             voiceSelections[charName] !== opt.value,
+                            //         }),
+                            //       )
+                            //     : getFilteredVoiceOptions(charName)
+                            // }
                             placeholder="Select Voice"
                             value={voiceSelections[charName] || ""}
                             onChange={(value) =>
