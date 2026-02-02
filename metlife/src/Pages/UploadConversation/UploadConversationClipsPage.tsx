@@ -221,6 +221,8 @@ const UploadConversationalClipsPage: React.FC = () => {
     (scene) => clips[scene.scene_id]?.upload_urls?.length > 0,
   );
 
+  console.log(allUploaded, "all_uploaded");
+
   const handleDownloadAssets = () => {
     if (id && title) {
       dispatch(getDownloadAsset(id, title));
@@ -228,7 +230,7 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (id || stitchedVideoUrl) {
       dispatch(getClipsData(id));
     }
   }, [dispatch, id]);
@@ -279,34 +281,34 @@ const UploadConversationalClipsPage: React.FC = () => {
     handleStichVideo();
   };
 
-  // const handleStichVideo = () => {
-  //   if (id) {
-  //     dispatch(postStitchAllVideos(id, setOpenConfirm));
-  //   }
-  // };
+  const handleStichVideo = () => {
+    if (id) {
+      dispatch(postStitchAllVideos(id, setOpenConfirm));
+    }
+  };
 
   // console.log(scenesData?.video_exist, "check");
 
-  const handleStichVideo = () => {
-    if (!id) return;
+  // const handleStichVideo = () => {
+  //   if (!id) return;
 
-    const scenesPayload = scenesData.scenes.map((scene) => ({
-      scene_id: scene.scene_id,
-      scene_number: scene.scene_number,
-      clips: clips[scene.scene_id]?.upload_urls || [],
-    }));
+  //   const scenesPayload = scenesData.scenes.map((scene) => ({
+  //     scene_id: scene.scene_id,
+  //     scene_number: scene.scene_number,
+  //     clips: clips[scene.scene_id]?.upload_urls || [],
+  //   }));
 
-    dispatch(
-      postStitchAllVideos(
-        {
-          script_id: id,
-          scenes: scenesPayload,
-        },
-        setOpenConfirm,
-      ),
-    );
-  };
-
+  //   dispatch(
+  //     postStitchAllVideos(
+  //       {
+  //         script_id: id,
+  //         scenes: scenesPayload,
+  //       },
+  //       setOpenConfirm,
+  //     ),
+  //   );
+  // };
+  console.log(stitchedVideoUrl, "check_url");
   return (
     <>
       <div className={styles.container}>
@@ -447,18 +449,36 @@ const UploadConversationalClipsPage: React.FC = () => {
                           </Box> */}
 
                           <Box
+                            // sx={{
+                            //   borderRadius: "10px",
+                            //   overflow: "hidden",
+                            //   border: "1px solid #d3e6f9",
+                            //   mt: 1,
+                            //   p: 2,
+                            // }}
                             sx={{
                               borderRadius: "10px",
-                              overflow: "hidden",
                               border: "1px solid #d3e6f9",
                               mt: 1,
                               p: 2,
+                              display: "flex",
+                              gap: "16px",
+                              overflowX: "auto",
+                              scrollbarWidth: "thin",
+                              "&::-webkit-scrollbar": {
+                                height: "6px",
+                              },
+                              "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "#bce2f6",
+                                borderRadius: "4px",
+                              },
                             }}
                           >
                             {clips[scene.scene_id]?.upload_urls?.length > 0 ? (
                               clips[scene.scene_id].upload_urls.map(
                                 (url, idx) => (
-                                  <video
+                                  <>
+                                    {/* <video
                                     key={idx}
                                     src={url}
                                     controls
@@ -468,13 +488,37 @@ const UploadConversationalClipsPage: React.FC = () => {
                                       marginBottom: "12px",
                                       borderRadius: "10px",
                                     }}
-                                  />
+                                  /> */}
+                                    <Box
+                                      key={idx}
+                                      sx={{
+                                        minWidth: "320px",
+                                        maxWidth: "320px",
+                                        flexShrink: 0,
+                                        borderRadius: "10px",
+                                        border: "1px solid #d3e6f9",
+                                        overflow: "hidden",
+                                        background: "#f9fcff",
+                                      }}
+                                    >
+                                      <video
+                                        src={url}
+                                        controls
+                                        style={{
+                                          width: "100%",
+                                          height: "180px",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </Box>
+                                  </>
                                 ),
                               )
                             ) : clips[scene.scene_id]?.previews?.length > 0 ? (
                               clips[scene.scene_id].previews.map(
                                 (preview, idx) => (
-                                  <video
+                                  <>
+                                    {/* <video
                                     key={idx}
                                     src={preview}
                                     controls
@@ -484,7 +528,31 @@ const UploadConversationalClipsPage: React.FC = () => {
                                       marginBottom: "12px",
                                       borderRadius: "10px",
                                     }}
-                                  />
+                                  /> */}
+
+                                    <Box
+                                      key={idx}
+                                      sx={{
+                                        minWidth: "320px",
+                                        maxWidth: "320px",
+                                        flexShrink: 0,
+                                        borderRadius: "10px",
+                                        border: "1px solid #d3e6f9",
+                                        overflow: "hidden",
+                                        background: "#f9fcff",
+                                      }}
+                                    >
+                                      <video
+                                        src={preview}
+                                        controls
+                                        style={{
+                                          width: "100%",
+                                          height: "180px",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </Box>
+                                  </>
                                 ),
                               )
                             ) : (
@@ -534,11 +602,12 @@ const UploadConversationalClipsPage: React.FC = () => {
                       <ButtonComp
                         variant="contained"
                         onClick={handleStitchClick}
-                        disabled={
-                          !allUploaded ||
-                          stitchedVideoUrl ||
-                          scenesData?.stitched_video?.url
-                        }
+                        // disabled={
+                        //   !allUploaded ||
+                        //   stitchedVideoUrl ||
+                        //   scenesData?.stitched_video?.url
+                        // }
+                        disabled={scenesData?.video_exist}
                       >
                         Stitch My Video
                       </ButtonComp>
@@ -632,7 +701,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                     }}
                   >
                     <Typography fontSize="20px" fontWeight={600} mb={2}>
-                      Final Stitched Video
+                      Final Stitched Video - {scenesData?.title}
                     </Typography>
 
                     <video

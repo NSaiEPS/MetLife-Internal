@@ -1059,6 +1059,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       operations ||
                       // saveTranslatedData?.is_save_action === false
                       !saveTranslatedData?.saved_version
+                      || tableExtraData?.prompt_batch_id
                     }
                   >
                     Create Visual Content

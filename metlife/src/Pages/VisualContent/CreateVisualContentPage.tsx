@@ -33,6 +33,8 @@ import type { AppDispatch, RootState } from "../../redux/store"; // adjust accor
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import ButtonComp from "../../components/common/Buton/Button";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
+import upload from "../../assets/upload_icon.svg";
+import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
 
 // ---------- Types ----------
 interface RowData {
@@ -81,6 +83,42 @@ const CreateVisualContentPage: React.FC = () => {
   ];
 
   const actions = [
+    // image upload for footage
+
+    // {
+    //   icon: (
+    //     <Tooltip title="Upload Image" placement="top" arrow>
+    //       <span>
+    //         <img src={upload} />
+    //       </span>
+    //     </Tooltip>
+    //   ),
+    //   onClick: (row: any) => {
+    //     console.log(row, "check");
+    //     if (row.Visual_Type === "clip") {
+    //       handleVideoUpload(row);
+    //     }
+    //   },
+    // },
+    {
+      icon: (row: any) =>
+        row?.Visual_Type === "clip" ? (
+          <>
+            <Tooltip title="Upload Footage" placement="top" arrow>
+              <span>
+                <img src={upload} />
+              </span>
+            </Tooltip>
+          </>
+        ) : null,
+
+      onClick: (row: any) => {
+        if (row?.Visual_Type === "clip") {
+          handleVideoUpload(row);
+        }
+      },
+    },
+
     {
       icon: (
         <Tooltip title="Edit" palcement="top" arrow>
@@ -122,9 +160,8 @@ const CreateVisualContentPage: React.FC = () => {
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
-  const visualExist = saveVisualContentData?.visual_exist
-  console.log(saveVisualContentData, "check__")
-
+  const visualExist = saveVisualContentData?.visual_exist;
+  console.log(saveVisualContentData, "check__");
 
   useEffect(() => {
     if (id) {
@@ -158,6 +195,9 @@ const CreateVisualContentPage: React.FC = () => {
   const openEditPrompt = (data: RowData) => {
     setPopup({ type: "edit", data });
   };
+
+  const handleVideoUpload = (data: RowData) =>
+    setPopup({ type: "video_upload", data });
 
   const handlePromptRegenerate = (data: RowData) => {
     setPopup({ type: "regenerate", data });
@@ -248,7 +288,6 @@ const CreateVisualContentPage: React.FC = () => {
     dispatch(postTranslatedDataSave(data, id));
   };
 
-
   return (
     <>
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
@@ -278,7 +317,9 @@ const CreateVisualContentPage: React.FC = () => {
                     <Button
                       className={styles.icon}
                       disabled={!visualExist}
-                      onClick={() => navigate(`/generate-visual-page/${script_id}`)}
+                      onClick={() =>
+                        navigate(`/generate-visual-page/${script_id}`)
+                      }
                     >
                       Next <IoArrowForwardCircleOutline size={30} />
                     </Button>
@@ -304,6 +345,17 @@ const CreateVisualContentPage: React.FC = () => {
                   onClose={closePopup}
                   fieldData={popup.data}
                   id={id!}
+                />
+              )}
+
+              {popup.type === "video_upload" && (
+                <VideoUploadPopup
+                  open
+                  onClose={closePopup}
+                  fieldData={popup.data}
+                  script_id={saveVisualContentData?.script_id}
+                  prompt_batch_id={id}
+                  title={saveVisualContentData?.title}
                 />
               )}
 

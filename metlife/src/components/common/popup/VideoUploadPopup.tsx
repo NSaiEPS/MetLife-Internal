@@ -52,7 +52,7 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const scene_id = fieldData?.scene_id;
-  const scene_no = fieldData?.["Scene_No."];
+  const scene_no = fieldData?.["Scene_No."] || fieldData?.Scene_No;
 
   const dispatch = useDispatch<AppDispatch>();
 
