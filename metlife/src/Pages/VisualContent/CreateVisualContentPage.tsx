@@ -35,6 +35,7 @@ import ButtonComp from "../../components/common/Buton/Button";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import upload from "../../assets/upload_icon.svg";
 import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
+import { toast } from "react-toastify";
 
 // ---------- Types ----------
 interface RowData {
@@ -45,6 +46,8 @@ interface RowData {
   prompt_id: string;
   prompt?: string;
   clip_prompt?: string;
+  requiresVideo: boolean;
+  video_uploaded?: boolean;
 }
 
 interface PopupData {
@@ -84,44 +87,22 @@ const CreateVisualContentPage: React.FC = () => {
 
   const actions = [
     // image upload for footage
-
     {
-      icon: (
-        <Tooltip title="Upload Image" placement="top" arrow>
-          <span>
-            <img src={upload} />
-          </span>
-        </Tooltip>
-      ),
-      onClick: (row: any) => {
-        console.log(row, "check");
-        if (row.Visual_Type == "clip") {
+      icon: (row: RowData) =>
+        row.Visual_Type === "clip" ? (
+          <Tooltip title="Upload Footage" placement="top" arrow>
+            <span>
+              <img src={upload} />
+            </span>
+          </Tooltip>
+        ) : null,
+
+      onClick: (row: RowData) => {
+        if (row.Visual_Type === "clip") {
           handleVideoUpload(row);
         }
       },
     },
-
-  
-    // {
-    //   icon: (popup === "video_upload") ? (row: any) =>
-    //     row?.Visual_Type == "clip" ? (
-    //       <>
-    //         <Tooltip title="Upload Footage" placement="top" arrow>
-    //           <span style={{
-    //             display: "block"
-    //           }} >
-    //             <img src={upload} />
-    //           </span>
-    //         </Tooltip>
-    //       </>
-    //     ) : null,
-
-    //   onClick: (row: any) => {
-    //     if (row?.Visual_Type === "clip") {
-    //       handleVideoUpload(row);
-    //     }
-    //   },
-    // },
 
     {
       icon: (
@@ -161,11 +142,16 @@ const CreateVisualContentPage: React.FC = () => {
     (store: RootState) => store.SaveTranslatedData,
   );
 
+  const { generateVisualContentData } = useSelector(
+    (store: RootState) => store.GenerateVisualContent,
+  );
+
+  console.log(generateVisualContentData?.visuals, "check_visual_content");
+
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
   const visualExist = saveVisualContentData?.visual_exist;
-  console.log(saveVisualContentData, "check__");
 
   useEffect(() => {
     if (id) {
@@ -227,6 +213,8 @@ const CreateVisualContentPage: React.FC = () => {
         ? {
             ...item,
             Visual_Type: value,
+            // requiresVideo: value === "clip",
+            // video_uploaded: value === "clip" ? item.video_uploaded : false,
             Visual_Description:
               value === "image"
                 ? data.prompt || "Generating..."
@@ -291,6 +279,12 @@ const CreateVisualContentPage: React.FC = () => {
     };
     dispatch(postTranslatedDataSave(data, id));
   };
+
+  // const disableGenerate =
+  // generateVisualContentData?.visuals?.some((scene: any) => {
+  //   if (!Array.isArray(scene.videos)) return false;
+  //   return scene.status !== "uploaded" || scene.videos.length === 0;
+  // }) ?? false;
 
   return (
     <>

@@ -38,10 +38,10 @@ function PromptTable<T extends Record<string, any>>({
   actions = [],
 }: PromptTableProps<T>) {
   const { saveVisualContentLoader } = useSelector(
-    (store: RootState) => store.CreateVisualContent
+    (store: RootState) => store.CreateVisualContent,
   );
   const { generateVisualLoader } = useSelector(
-    (store: RootState) => store.GenerateVisualContent
+    (store: RootState) => store.GenerateVisualContent,
   );
 
   return (
@@ -104,7 +104,7 @@ function PromptTable<T extends Record<string, any>>({
                     }}
                   >
                     <div style={{ display: "flex", gap: 8 }}>
-                      {actions.map((act, aIdx) => (
+                      {/* {actions.map((act, aIdx) => (
                         <IconButton
                           key={aIdx}
                           size="small"
@@ -112,7 +112,26 @@ function PromptTable<T extends Record<string, any>>({
                         >
                           {act.icon}
                         </IconButton>
-                      ))}
+                      ))} */}
+
+                      {actions.map((act, aIdx) => {
+                        const Icon =
+                          typeof act.icon === "function"
+                            ? act.icon(row)
+                            : act.icon;
+
+                        if (!Icon) return null;
+
+                        return (
+                          <IconButton
+                            key={aIdx}
+                            size="small"
+                            onClick={() => act.onClick(row)}
+                          >
+                            {Icon}
+                          </IconButton>
+                        );
+                      })}
                     </div>
                   </TableCell>
                 )}
