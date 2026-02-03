@@ -33,12 +33,24 @@ export interface UploadVideoData {
   uploadVideoInfo: any[];
 }
 
+export interface LocalizationImageData {
+  localizationImageLoader: boolean;
+  localizationImageUrl: string;
+}
+
+export interface ImageCoordinatesData {
+  imageCoordinatesLoader: boolean;
+  // imageCoordinatesInfo: any[];
+}
+
 interface ScriptState {
   scriptLoader: boolean;
   scriptData: ScriptData;
   characterData: CharacterData[];
   promptData: PromptData[];
   uploadVideoData: UploadVideoData;
+  localizationImageData: LocalizationImageData;
+  imageCoordinatesData: ImageCoordinatesData;
 }
 
 const initialState: ScriptState = {
@@ -49,6 +61,14 @@ const initialState: ScriptState = {
   uploadVideoData: {
     uploadVideoLoader: false,
     uploadVideoInfo: [],
+  },
+  localizationImageData: {
+    localizationImageLoader: false,
+    localizationImageUrl: "",
+  },
+  imageCoordinatesData: {
+    imageCoordinatesLoader: false,
+    // imageCoordinatesInfo: [],
   },
 };
 
@@ -100,6 +120,18 @@ const ScriptDataSlice = createSlice({
     setUploadVideoInfo(state, action: PayloadAction<any[]>) {
       state.uploadVideoData.uploadVideoInfo = action.payload;
     },
+
+    setLocalizationImageLoader(state, action: PayloadAction<boolean>) {
+      state.localizationImageData.localizationImageLoader = action.payload;
+    },
+
+    setLocalizationImageInfo(state, action: PayloadAction<any[]>) {
+      state.localizationImageData.localizationImageUrl = action.payload;
+    },
+
+    setImageCoordinatesLoader(state, action: PayloadAction<boolean>) {
+      state.imageCoordinatesData.imageCoordinatesLoader = action.payload;
+    },
   },
 });
 
@@ -111,6 +143,9 @@ export const {
   updateCharacterPrompt,
   setUploadVideoInfo,
   setUploadVideoLoader,
+  setLocalizationImageLoader,
+  setLocalizationImageInfo,
+  setImageCoordinatesLoader,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
@@ -147,9 +182,7 @@ export const postEditScene =
     dispatch(setScriptLoader(true));
     try {
       const res = await api.post("mongo/edit", data);
-      toast.success(
-        res?.data?.message || "Description updated successfully",
-      );
+      toast.success(res?.data?.message || "Description updated successfully");
       onClose(false);
 
       // if (res.status) {
@@ -251,19 +284,20 @@ export const patchEditPromp =
 
 //Upload video
 export const postUploadVideo =
-  (projectId: string, 
+  (
+    projectId: string,
     //  callback?: () => void
-    ) =>
+  ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setUploadVideoLoader(true));
     try {
       const res = await api.post(
-        `process-vid/localisation/process/${projectId}`
+        `process-vid/localisation/process/${projectId}`,
       );
-      console.log(res, "check_res")
+      console.log(res, "check_res");
       if (res?.status) {
         dispatch(setUploadVideoInfo(res?.data?.videos || []));
-        toast.success(res?.data?.message || "Processing started successfully")
+        toast.success(res?.data?.message || "Processing started successfully");
         // if (callback) {
         //   callback();
         // }
@@ -272,5 +306,63 @@ export const postUploadVideo =
       toast.error(error?.response?.data?.message || "Video upload failed!");
     } finally {
       dispatch(setUploadVideoLoader(false));
+    }
+  };
+
+export const getLocalizationImageUrl =
+  (
+    projectId: string,
+    //  callback?: () => void
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setLocalizationImageLoader(true));
+    try {
+      const res = await api.get(`process-vid/localisation/${projectId}`);
+      if (res?.status) {
+        // console.log(res?.data?.scenes[0]?.base_scene_url, "image_res");
+        dispatch(
+          setLocalizationImageInfo(
+            res?.data?.scenes[0]?.base_scene_url ||
+              "https://images.unsplash.com/photo-1768834582204-3430797f89be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" ||
+              "",
+          ),
+        );
+        toast.success(res?.data?.message || "Processing started successfully");
+        // if (callback) {
+        //   callback();
+        // }
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Video upload failed!");
+    } finally {
+      dispatch(setLocalizationImageLoader(false));
+    }
+  };
+
+// Post Image coordinates
+export const postImageCoordinates =
+  (
+    projectId: string,
+    coordinates: [],
+    //  callback?: () => void
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setImageCoordinatesLoader(true));
+    try {
+      const res = await api.post(`localisation/${projectId}/propagate`, {
+        reference_scene_index: 0,
+        box: coordinates,
+      });
+      console.log(res, "localization");
+      if (res?.status) {
+        toast.success(res?.data?.message || "Processing started successfully");
+        // if (callback) {
+        //   callback();
+        // }
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Video upload failed!");
+    } finally {
+      dispatch(setImageCoordinatesLoader(false));
     }
   };
