@@ -85,43 +85,43 @@ const CreateVisualContentPage: React.FC = () => {
   const actions = [
     // image upload for footage
 
-    // {
-    //   icon: (
-    //     <Tooltip title="Upload Image" placement="top" arrow>
-    //       <span>
-    //         <img src={upload} />
-    //       </span>
-    //     </Tooltip>
-    //   ),
-    //   onClick: (row: any) => {
-    //     console.log(row, "check");
-    //     if (row.Visual_Type == "clip") {
-    //       handleVideoUpload(row);
-    //     }
-    //   },
-    // },
-
-  
     {
-      icon: (popup === "video_upload") ? (row: any) =>
-        row?.Visual_Type == "clip" ? (
-          <>
-            <Tooltip title="Upload Footage" placement="top" arrow>
-              <span style={{
-                display: "block"
-              }} >
-                <img src={upload} />
-              </span>
-            </Tooltip>
-          </>
-        ) : null,
-
+      icon: (
+        <Tooltip title="Upload Image" placement="top" arrow>
+          <span>
+            <img src={upload} />
+          </span>
+        </Tooltip>
+      ),
       onClick: (row: any) => {
-        if (row?.Visual_Type === "clip") {
+        console.log(row, "check");
+        if (row.Visual_Type == "clip") {
           handleVideoUpload(row);
         }
       },
     },
+
+  
+    // {
+    //   icon: (popup === "video_upload") ? (row: any) =>
+    //     row?.Visual_Type == "clip" ? (
+    //       <>
+    //         <Tooltip title="Upload Footage" placement="top" arrow>
+    //           <span style={{
+    //             display: "block"
+    //           }} >
+    //             <img src={upload} />
+    //           </span>
+    //         </Tooltip>
+    //       </>
+    //     ) : null,
+
+    //   onClick: (row: any) => {
+    //     if (row?.Visual_Type === "clip") {
+    //       handleVideoUpload(row);
+    //     }
+    //   },
+    // },
 
     {
       icon: (
