@@ -95,17 +95,21 @@ const CreateVisualContentPage: React.FC = () => {
     //   ),
     //   onClick: (row: any) => {
     //     console.log(row, "check");
-    //     if (row.Visual_Type === "clip") {
+    //     if (row.Visual_Type == "clip") {
     //       handleVideoUpload(row);
     //     }
     //   },
     // },
+
+  
     {
-      icon: (row: any) =>
-        row?.Visual_Type === "clip" ? (
+      icon: (popup === "video_upload") ? (row: any) =>
+        row?.Visual_Type == "clip" ? (
           <>
             <Tooltip title="Upload Footage" placement="top" arrow>
-              <span>
+              <span style={{
+                display: "block"
+              }} >
                 <img src={upload} />
               </span>
             </Tooltip>
