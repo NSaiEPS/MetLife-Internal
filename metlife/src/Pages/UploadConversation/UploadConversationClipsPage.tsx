@@ -287,27 +287,7 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
-  // console.log(scenesData?.video_exist, "check");
-
-  // const handleStichVideo = () => {
-  //   if (!id) return;
-
-  //   const scenesPayload = scenesData.scenes.map((scene) => ({
-  //     scene_id: scene.scene_id,
-  //     scene_number: scene.scene_number,
-  //     clips: clips[scene.scene_id]?.upload_urls || [],
-  //   }));
-
-  //   dispatch(
-  //     postStitchAllVideos(
-  //       {
-  //         script_id: id,
-  //         scenes: scenesPayload,
-  //       },
-  //       setOpenConfirm,
-  //     ),
-  //   );
-  // };
+ 
   console.log(stitchedVideoUrl, "check_url");
   return (
     <>
@@ -346,7 +326,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                     <IoArrowBackCircleOutline size={30} /> Back
                   </Button>
                 </Box>
-                {!scenesData?.video_exist && (
+                {(!stitchedVideoUrl) && (
                   <>
                     <Stack spacing={3}>
                       {scenesData?.scenes?.map((scene, index) => (

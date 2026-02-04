@@ -50,7 +50,6 @@ const languageOptions = [
   { value: "Portugese", label: "Portugese" },
   { value: "Hindi", label: "Hindi" },
   { value: "Nepali", label: "Nepali" },
-
 ];
 
 const toneOptions = [
@@ -306,6 +305,7 @@ const GenerateScript: React.FC = () => {
           params: {
             script_id: id,
             character_name: char.name,
+            role: char.role,
           },
           headers: {
             "Content-Type": "multipart/form-data",
@@ -442,7 +442,7 @@ const GenerateScript: React.FC = () => {
                 borderRadius: "10px",
                 boxShadow: "none",
                 "&::before": {
-                  display: "none", // removes divider line
+                  display: "none",
                 },
               }}
             >
