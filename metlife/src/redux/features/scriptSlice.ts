@@ -49,7 +49,8 @@ interface ScriptState {
   characterData: CharacterData[];
   promptData: PromptData[];
   uploadVideoData: UploadVideoData;
-  localizationImageData: LocalizationImageData;
+  localizationImageLoader: boolean;
+  localizationImageData: any[];
   imageCoordinatesData: ImageCoordinatesData;
 }
 
@@ -62,10 +63,8 @@ const initialState: ScriptState = {
     uploadVideoLoader: false,
     uploadVideoInfo: [],
   },
-  localizationImageData: {
-    localizationImageLoader: false,
-    localizationImageUrl: "",
-  },
+  localizationImageLoader: false,
+  localizationImageData: [],
   imageCoordinatesData: {
     imageCoordinatesLoader: false,
     // imageCoordinatesInfo: [],
@@ -122,11 +121,11 @@ const ScriptDataSlice = createSlice({
     },
 
     setLocalizationImageLoader(state, action: PayloadAction<boolean>) {
-      state.localizationImageData.localizationImageLoader = action.payload;
+      state.localizationImageLoader = action.payload;
     },
 
-    setLocalizationImageInfo(state, action: PayloadAction<any[]>) {
-      state.localizationImageData.localizationImageUrl = action.payload;
+    setLocalizationImageData(state, action: PayloadAction<any[]>) {
+      state.localizationImageData = action.payload;
     },
 
     setImageCoordinatesLoader(state, action: PayloadAction<boolean>) {
@@ -144,7 +143,7 @@ export const {
   setUploadVideoInfo,
   setUploadVideoLoader,
   setLocalizationImageLoader,
-  setLocalizationImageInfo,
+  setLocalizationImageData,
   setImageCoordinatesLoader,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
@@ -296,7 +295,7 @@ export const postUploadVideo =
       );
       console.log(res, "check_res");
       if (res?.status) {
-        dispatch(setUploadVideoInfo(res?.data?.videos || []));
+        dispatch(setUploadVideoInfo(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
         // if (callback) {
         //   callback();
@@ -320,13 +319,7 @@ export const getLocalizationImageUrl =
       const res = await api.get(`process-vid/localisation/${projectId}`);
       if (res?.status) {
         // console.log(res?.data?.scenes[0]?.base_scene_url, "image_res");
-        dispatch(
-          setLocalizationImageInfo(
-            res?.data?.scenes[0]?.base_scene_url ||
-              "https://images.unsplash.com/photo-1768834582204-3430797f89be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" ||
-              "",
-          ),
-        );
+        dispatch(setLocalizationImageData(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
         // if (callback) {
         //   callback();

@@ -42,22 +42,29 @@ const UploadVideoPage = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<any>(null);
   const isDisabled = !title.trim() || !uploadSuccess;
-  const [startTimer, setStartTimer] = useState<boolean>(false);
+  const [startTimer1, setStartTimer1] = useState<boolean>(false);
+  const [startTimer2, setStartTimer2] = useState<boolean>(false);
   const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
-  const [showRectangleCanvas, setShowRectangleCanvas] = useState<boolean>(false);
-  // const finalTime = Math.ceil(waitingTime / 60);
-  const finalTime = 0.5;
+  const [showRectangleCanvas, setShowRectangleCanvas] =
+    useState<boolean>(false);
+  // const finalTime = 0.5;
 
   const handleClick = () => {
     fileInputRef?.current?.click();
   };
-  const uploadVideoLoader = useSelector(
-    (store) => store.Script.uploadVideoData.uploadVideoLoader,
+  const { uploadVideoLoader, uploadVideoInfo } = useSelector(
+    (store) => store.Script.uploadVideoData,
   );
 
-  const { localizationImageLoader, localizationImageUrl } = useSelector(
-    (store) => store.Script.localizationImageData,
+  const { localizationImageLoader, localizationImageData } = useSelector(
+    (store) => store.Script,
   );
+
+  console.log(localizationImageData, "localizationImageData");
+  const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
+  const waitingTime2 = localizationImageData?.estimated_remaining_time;
+  const finalTime1 = Math.ceil(waitingTime1 / 60);
+  const finalTime2 = Math.ceil(waitingTime2 / 60);
 
   const localizationImageUrlStatic =
     "https://images.unsplash.com/photo-1768834582204-3430797f89be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -164,14 +171,22 @@ const UploadVideoPage = () => {
   // );
 
   const handleUploadVideo = () => {
-    setStartTimer(true);
+    setStartTimer1(true);
     dispatch(postUploadVideo(scriptData?.project_id));
+    // dispatch(getLocalizationImageUrl(scriptData?.project_id));
     setShowUploadVideo(false);
   };
 
   const handleTimerComplete = () => {
-    setStartTimer(false);
+    setStartTimer1(false);
     dispatch(getLocalizationImageUrl(scriptData?.project_id));
+    setStartTimer2(true);
+    // setShowRectangleCanvas(true);
+  };
+
+  const handleTimer2Complete = () => {
+    setStartTimer2(false);
+    // dispatch(getLocalizationImageUrl(scriptData?.project_id));
     setShowRectangleCanvas(true);
   };
 
@@ -353,10 +368,16 @@ const UploadVideoPage = () => {
         </div>
       )}
 
-      {/* {!startTimer && finalTime > 0 && !generatedVideoData?.final_video && ( */}
-      {startTimer && finalTime > 0 && (
+      {/* {!startTimer1 && finalTime > 0 && !generatedVideoData?.final_video && ( */}
+      {startTimer1 && finalTime1 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
-          <Timer time={finalTime} onComplete={handleTimerComplete} />
+          <Timer time={finalTime1} onComplete={handleTimerComplete} />
+        </Box>
+      )}
+
+      {startTimer2 && finalTime2 > 0 && (
+        <Box sx={{ width: "100%", padding: "30px" }}>
+          <Timer time={finalTime2} onComplete={handleTimer2Complete} />
         </Box>
       )}
 
