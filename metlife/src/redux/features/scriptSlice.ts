@@ -38,11 +38,6 @@ export interface LocalizationImageData {
   localizationImageUrl: string;
 }
 
-export interface ImageCoordinatesData {
-  imageCoordinatesLoader: boolean;
-  // imageCoordinatesInfo: any[];
-}
-
 interface ScriptState {
   scriptLoader: boolean;
   scriptData: ScriptData;
@@ -51,7 +46,8 @@ interface ScriptState {
   uploadVideoData: UploadVideoData;
   localizationImageLoader: boolean;
   localizationImageData: any[];
-  imageCoordinatesData: ImageCoordinatesData;
+  imageCoordinatesLoader: boolean;
+  imageCoordinatesData: {};
 }
 
 const initialState: ScriptState = {
@@ -65,10 +61,8 @@ const initialState: ScriptState = {
   },
   localizationImageLoader: false,
   localizationImageData: [],
-  imageCoordinatesData: {
-    imageCoordinatesLoader: false,
-    // imageCoordinatesInfo: [],
-  },
+  imageCoordinatesLoader: false,
+  imageCoordinatesData: {},
 };
 
 const ScriptDataSlice = createSlice({
@@ -129,7 +123,11 @@ const ScriptDataSlice = createSlice({
     },
 
     setImageCoordinatesLoader(state, action: PayloadAction<boolean>) {
-      state.imageCoordinatesData.imageCoordinatesLoader = action.payload;
+      state.imageCoordinatesLoader = action.payload;
+    },
+
+    setImageCoordinatesData(state, action: PayloadAction<any[]>) {
+      state.imageCoordinatesData = action.payload;
     },
   },
 });
@@ -145,6 +143,7 @@ export const {
   setLocalizationImageLoader,
   setLocalizationImageData,
   setImageCoordinatesLoader,
+  setImageCoordinatesData,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
@@ -343,12 +342,13 @@ export const postImageCoordinates =
     dispatch(setImageCoordinatesLoader(true));
     try {
       const res = await api.post(`localisation/${projectId}/propagate`, {
-        reference_scene_index: 0,
+        reference_scene_index: 1,
         box: coordinates,
       });
-      console.log(res, "localization");
+      console.log(res, "image_coordinates");
       if (res?.status) {
         toast.success(res?.data?.message || "Processing started successfully");
+        dispatch(setImageCoordinatesData(res?.data || []));
         // if (callback) {
         //   callback();
         // }

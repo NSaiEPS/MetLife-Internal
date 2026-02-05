@@ -44,6 +44,7 @@ const UploadVideoPage = () => {
   const isDisabled = !title.trim() || !uploadSuccess;
   const [startTimer1, setStartTimer1] = useState<boolean>(false);
   const [startTimer2, setStartTimer2] = useState<boolean>(false);
+  const [startTimer3, setStartTimer3] = useState<boolean>(false);
   const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
   const [showRectangleCanvas, setShowRectangleCanvas] =
     useState<boolean>(false);
@@ -56,15 +57,20 @@ const UploadVideoPage = () => {
     (store) => store.Script.uploadVideoData,
   );
 
-  const { localizationImageLoader, localizationImageData } = useSelector(
-    (store) => store.Script,
-  );
+  const {
+    localizationImageLoader,
+    localizationImageData,
+    imageCoordinatesLoader,
+    imageCoordinatesData,
+  } = useSelector((store) => store.Script);
 
   console.log(localizationImageData, "localizationImageData");
   const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
   const waitingTime2 = localizationImageData?.estimated_remaining_time;
+  const waitingTime3 = imageCoordinatesData?.estimated_time_seconds;
   const finalTime1 = Math.ceil(waitingTime1 / 60);
   const finalTime2 = Math.ceil(waitingTime2 / 60);
+  const finalTime3 = Math.ceil(waitingTime3 / 60);
 
   const localizationImageUrlStatic =
     "https://images.unsplash.com/photo-1768834582204-3430797f89be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -190,6 +196,13 @@ const UploadVideoPage = () => {
     setShowRectangleCanvas(true);
   };
 
+  const handleTimer3Complete = () => {
+    setStartTimer3(false);
+    navigate("/translated-script");
+    // dispatch(getLocalizationImageUrl(scriptData?.project_id));
+    // setShowRectangleCanvas(true);
+  };
+
   console.log(uploadVideoLoader, "check_loader");
   return (
     <>
@@ -200,6 +213,10 @@ const UploadVideoPage = () => {
 
       {localizationImageLoader && (
         <FullScreenGradientLoader text="Generating Image..." />
+      )}
+
+      {imageCoordinatesLoader && (
+        <FullScreenGradientLoader text="Propagating Image..." />
       )}
 
       {showUploadVideo && (
@@ -393,7 +410,7 @@ const UploadVideoPage = () => {
         >
           <Box
             sx={{
-              width: "50%",
+              width: "fit",
               // height: "100%",
               display: "flex",
               justifyContent: "center",
@@ -404,12 +421,19 @@ const UploadVideoPage = () => {
           >
             <RectangleDrawer
               projectId={scriptData?.project_id}
-              imgSrc={localizationImageUrlStatic}
+              setStartTimer3={setStartTimer3}
+              setShowRectangleCanvas={setShowRectangleCanvas}
+              imgSrc={localizationImageData?.scenes[0]?.original_frame_url}
             />
           </Box>
         </Box>
       )}
 
+      {startTimer3 && finalTime3 > 0 && (
+        <Box sx={{ width: "100%", padding: "30px" }}>
+          <Timer time={finalTime3} onComplete={handleTimer3Complete} />
+        </Box>
+      )}
       <Footer />
     </>
   );
