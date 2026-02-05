@@ -403,7 +403,7 @@ export const downloadVideoWithUrl =
         {
           responseType: "blob",
           headers: {
-            Accept: "application/octet-stream", // IMPORTANT for mp4
+            Accept: "application/octet-stream", 
           },
         },
       );

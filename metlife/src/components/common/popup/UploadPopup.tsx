@@ -1,5 +1,7 @@
 import { Divider, Menu, MenuItem } from "@mui/material";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import DownloadPopup from "../../common/popup/DownloadPopup";
 
 export const UploadPopup = ({
   open,
@@ -13,6 +15,7 @@ export const UploadPopup = ({
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const route = pathname === "/dashboard";
+  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
 
   return (
     <>
@@ -40,7 +43,10 @@ export const UploadPopup = ({
         {" "}
         {route
           ? [
-              <MenuItem key="download-script" onClick={handleCloseMenu}>
+              <MenuItem
+                key="download-script"
+                onClick={() => setOpenDownloadPopup(true)}
+              >
                 Download Script
               </MenuItem>,
               <Divider key="d1" sx={{ my: 0 }} />,
@@ -70,6 +76,12 @@ export const UploadPopup = ({
               </MenuItem>,
             ]}
       </Menu>
+
+      <DownloadPopup
+        open={openDownloadPopup}
+        onClose={() => setOpenDownloadPopup(false)}
+        // onSelect={handleDownloadType}
+      />
     </>
   );
 };

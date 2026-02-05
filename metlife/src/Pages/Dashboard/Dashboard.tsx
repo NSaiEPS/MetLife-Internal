@@ -14,7 +14,12 @@ import {
   Avatar,
   Chip,
 } from "@mui/material";
-import { PlayCircle, ErrorOutline, VideoLibrary } from "@mui/icons-material";
+import {
+  PlayCircle,
+  ErrorOutline,
+  VideoLibrary,
+  EventNote,
+} from "@mui/icons-material";
 import { FaFileDownload, FaRegPlayCircle } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router";
@@ -26,6 +31,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
+import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -251,13 +257,20 @@ const MyVideosDashboard: React.FC = () => {
     }
   });
 
-  const handleDownloadMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDownloadMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    finalVideo,
+    title,
+  ) => {
+    event.stopPropagation();
     setOpen(event.currentTarget);
+    console.log(finalVideo, title, "finalVidieop");
   };
 
   const handleCloseMenu = () => {
     setOpen(null);
   };
+
 
   return (
     <>
@@ -433,7 +446,11 @@ const MyVideosDashboard: React.FC = () => {
 
                       <TableCell align="center">
                         <Button onClick={() => handleView(video)}>👁️</Button>
-                        {/* <Button onClick={handleDownloadMenu}>
+                        {/* <Button
+                          onClick={(e) =>
+                            handleDownloadMenu(e, video?.final_video, video?.title)
+                          }
+                        >
                           <FaFileDownload size={18} />
                         </Button> */}
                       </TableCell>
@@ -443,7 +460,6 @@ const MyVideosDashboard: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-
           {/* <UploadPopup
             open={open}
             openPopup={openPopup}
