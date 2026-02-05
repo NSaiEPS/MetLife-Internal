@@ -40,6 +40,7 @@ const EditPromptPopup: React.FC<EditPromptPopupProps> = ({
   );
 
   const [description, setDescription] = useState("");
+  console.log(fieldData, "check__")
 
   // Load initial description when modal opens
   useEffect(() => {
@@ -55,8 +56,9 @@ const EditPromptPopup: React.FC<EditPromptPopupProps> = ({
 
     const payload = {
       script_id,
-      prompt: description,
+      value: description,
       scene_id: fieldData.scene_id,
+      prompt_type: fieldData?.Visual_Type === "clip" ? "clip_prompt" : "prompt",
     };
 
     dispatch(postEditVisualContent(payload, onClose));

@@ -385,6 +385,11 @@ const GenerateVisualContentPage: React.FC = () => {
     dispatch(postTranslatedDataSave(data, id));
   };
 
+  console.log(
+    generateVisualContentData?.video_style === "conversational",
+    "gennerate",
+  );
+
   // ---------- Render ----------
   return (
     <>
@@ -421,7 +426,16 @@ const GenerateVisualContentPage: React.FC = () => {
                     <Button
                       className={styles.icon}
                       disabled={!audioExist}
-                      onClick={() => navigate(`/audio-animation-toolkit/${id}`)}
+                      onClick={() => {
+                        if (
+                          generateVisualContentData?.video_style ===
+                          "conversational"
+                        ) {
+                          navigate(`/upload-conversational-clips/${id}`);
+                        } else {
+                          navigate(`/audio-animation-toolkit/${id}`);
+                        }
+                      }}
                     >
                       Next <IoArrowForwardCircleOutline size={30} />
                     </Button>

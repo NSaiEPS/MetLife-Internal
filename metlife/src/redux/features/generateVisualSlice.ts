@@ -15,6 +15,7 @@ interface GenerateVisualContentState {
   generateVisualLoader: boolean;
   generateVisualContentData: VisualContentType;
   scenesData: SceneDataType;
+  // uploadedMediaData: any[];
 }
 
 // interface GenerateVisualContentState {
@@ -29,6 +30,7 @@ type CallbackFn = (value: boolean) => void;
 const initialState: GenerateVisualContentState = {
   generateVisualLoader: false,
   generateVisualContentData: {},
+  // uploadedMediaData: [],
   scenesData: {
     scene_id: "",
     scene_number: 0,
@@ -48,7 +50,7 @@ const GenerateVisualContentSlice = createSlice({
     },
     setGenerateVisualContentData(
       state,
-      action: PayloadAction<VisualContentType>
+      action: PayloadAction<VisualContentType>,
     ) {
       state.generateVisualContentData = action.payload;
     },
@@ -61,6 +63,9 @@ const GenerateVisualContentSlice = createSlice({
     setScenesData(state, action: PayloadAction<SceneDataType>) {
       state.scenesData = action.payload;
     },
+    setUploadedMediaData(state, action: PayloadAction<any[]>) {
+      state.uploadedMediaData = action.payload;
+    },
   },
 });
 
@@ -70,6 +75,7 @@ export const {
   updateGenerateVisual,
   // removeDeletedImage,
   setScenesData,
+  // setUploadedMediaData,
 } = GenerateVisualContentSlice.actions;
 
 export default GenerateVisualContentSlice.reducer;
@@ -80,11 +86,34 @@ export const postGenerateVisualContentImage =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/generate-visuals", data);
+      console.log(response, "check_response");
       if (response?.status) {
         dispatch(setGenerateVisualContentData(response?.data?.visuals));
         navigateTo(`/generate-visual-page/${response?.data?.script_id}`);
         toast.success("Visual Image generated successfully");
       }
+    } catch (error) {
+      console.error(error, "errror_responnse");
+      const rawMessage = error?.response?.data?.detail;
+      const cleanMessage = rawMessage
+        ? rawMessage.split(":")[0] + ":"
+        : "Something went wrong!";
+      toast.error(cleanMessage || "Something went wrong!");
+    } finally {
+      dispatch(setGenerateVisualLoader(false));
+    }
+  };
+
+export const getUploadedMediaforVisualContent =
+  (script_id: string) => async (dispatch: any) => {
+    dispatch(setGenerateVisualLoader(true));
+    try {
+      const response = await api.get(`images/${script_id}`);
+      console.log(response, "check_response");
+      // if (response?.status) {
+      //   dispatch(setUploadedMediaData(response?.data?.visuals));
+      //   toast.success("Visual Image generated successfully");
+      // }
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong!");
@@ -113,8 +142,10 @@ export const postImageUpload =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/upload-media", data);
+      console.log(response, "check_response");
       toast.success(
-        response?.data?.message ?? "Image uploaded & scene updated successfully"
+        response?.data?.message ??
+          "Image uploaded & scene updated successfully",
       );
       dispatch(updateGenerateVisual({ visuals: response?.data?.visuals }));
       onClose(false);
@@ -131,7 +162,7 @@ export const postEditGenerateVisualContent =
     try {
       const response = await api.post("images/edit-visual", data);
       toast.success(
-        response?.data?.message || "Description updated successfully"
+        response?.data?.message || "Description updated successfully",
       );
       onClose(false);
       dispatch(getGenerateVisualContentImage(id));
@@ -140,7 +171,6 @@ export const postEditGenerateVisualContent =
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setGenerateVisualLoader(false));
-
     }
   };
 
@@ -165,7 +195,7 @@ export const postRegenerateImage =
     try {
       const response = await api.post("images/regenerate-visual", data);
       toast.success(
-        response?.data?.message || "Prompt regenerated successfully"
+        response?.data?.message || "Prompt regenerated successfully",
       );
       dispatch(updateGenerateVisual({ visuals: response?.data?.visuals }));
       onCloseTempData(false);
@@ -228,7 +258,7 @@ export const getClipsData = (id: string) => async (dispatch: any) => {
   dispatch(setGenerateVisualLoader(true));
   try {
     const response = await api.get(
-      `upload-clip/get-script-scenes?script_id=${id}`
+      `upload-clip/get-script-scenes?script_id=${id}`,
     );
     // console.log(response, "response__check");
     // dispatch(setScenesData(response?.data?.scenes));

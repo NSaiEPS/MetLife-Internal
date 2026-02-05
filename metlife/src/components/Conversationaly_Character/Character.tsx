@@ -167,10 +167,10 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
       err.img = !form.img;
     }
 
-    if(form.inputType === "image" ) {
-      const formDataWithImage = Object.assign(err, {
-        file: !form.img
-      })
+    if (form.inputType === "image") {
+      Object.assign(err, {
+        file: !form.img,
+      });
     }
 
     setErrors(err);
@@ -185,23 +185,27 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     closePrompt();
   };
 
+  console.log(form, "check_form_values");
+
   const handleImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const url = URL.createObjectURL(file);
-    setPreview(URL.createObjectURL(file));
-    setForm({ ...form, img: URL.createObjectURL(file) });
+    const previewUrl = URL.createObjectURL(file);
+    setPreview(previewUrl);
+    // setForm({ ...form, img: URL.createObjectURL(file) });
+    setForm({
+      ...form,
+      img: file, 
+    });
   };
-
 
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
 
-  console.log(form, "check_form_data");
-
+  console.log(form, "check_form_values");
 
   /* ================= RENDER ================= */
 
@@ -499,7 +503,12 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 
             {/* ACTIONS */}
             <Box display="flex" justifyContent="space-between" mt={4}>
-              <ButtonComp color="inherit" variant="outlined" onClick={closePrompt} colorType="secondary">
+              <ButtonComp
+                color="inherit"
+                variant="outlined"
+                onClick={closePrompt}
+                colorType="secondary"
+              >
                 Cancel
               </ButtonComp>
               <ButtonComp variant="contained" onClick={handleSave}>

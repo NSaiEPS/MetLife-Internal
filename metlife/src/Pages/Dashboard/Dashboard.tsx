@@ -15,7 +15,7 @@ import {
   Chip,
 } from "@mui/material";
 import { PlayCircle, ErrorOutline, VideoLibrary } from "@mui/icons-material";
-import { FaRegPlayCircle } from "react-icons/fa";
+import { FaFileDownload, FaRegPlayCircle } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +25,7 @@ import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
+import { UploadPopup } from "../../components/common/popup/UploadPopup";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -54,9 +55,11 @@ const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
+  const [open, setOpen] = React.useState<null | HTMLElement>(null);
+  const openPopup = Boolean(open);
 
   const { dashBoardInfo, dashboardLoader } = useSelector(
-    (store: RootState) => store.DashBoard
+    (store: RootState) => store.DashBoard,
   );
 
   const completed_result = dashBoardInfo.filter((item) => {
@@ -248,6 +251,14 @@ const MyVideosDashboard: React.FC = () => {
     }
   });
 
+  const handleDownloadMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
   return (
     <>
       <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
@@ -311,7 +322,7 @@ const MyVideosDashboard: React.FC = () => {
                       alignItems: "center",
                       justifyContent: "space-between",
                       cursor: "pointer",
-                        boxShadow: "none",
+                      boxShadow: "none",
                       border:
                         selectedFilter === s.filter
                           ? "2px solid #1976D2"
@@ -422,6 +433,9 @@ const MyVideosDashboard: React.FC = () => {
 
                       <TableCell align="center">
                         <Button onClick={() => handleView(video)}>👁️</Button>
+                        {/* <Button onClick={handleDownloadMenu}>
+                          <FaFileDownload size={18} />
+                        </Button> */}
                       </TableCell>
                     </TableRow>
                   ))
@@ -429,6 +443,12 @@ const MyVideosDashboard: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* <UploadPopup
+            open={open}
+            openPopup={openPopup}
+            handleCloseMenu={handleCloseMenu}
+          /> */}
         </Box>
       </Box>
     </>
@@ -436,30 +456,3 @@ const MyVideosDashboard: React.FC = () => {
 };
 
 export default MyVideosDashboard;
-
-// {/* {dashBoardInfo.map((video: any, i: number) => ( */}
-//                 {filteredDashboardInfo.map((video, i) => (
-//                   <TableRow key={i}>
-//                     <TableCell>{i + 1}</TableCell>
-//                     {/* <TableCell>
-//                       <Avatar
-//                         src={video.thumbnail}
-//                         variant="rounded"
-//                         sx={{ width: 60, height: 60 }}
-//                       />
-//                     </TableCell> */}
-//                     <TableCell>{`${
-//                       video.language === null
-//                         ? ""
-//                         : video.language.slice(0, 2) + "_"
-//                     }${video.title}`}</TableCell>
-//                     <TableCell>{video.suggested_duration_minutes}</TableCell>
-//                     <TableCell>
-//                       {formatRelativeTime(video.created_at)}
-//                     </TableCell>
-//                     <TableCell>{getStatusChip(video)}</TableCell>
-//                     <TableCell align="center">
-//                       <Button onClick={() => handleView(video)}>👁️</Button>
-//                     </TableCell>
-//                   </TableRow>
-//                 ))}

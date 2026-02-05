@@ -17,6 +17,7 @@ import { UploadPopup } from "../../components/common/popup/UploadPopup";
 // }
 
 const VideoCreationOptions: React.FC = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
   const openPopup = Boolean(open);
 
@@ -27,7 +28,6 @@ const VideoCreationOptions: React.FC = () => {
   const handleCloseMenu = () => {
     setOpen(null);
   };
-  const navigate = useNavigate();
 
   return (
     <>

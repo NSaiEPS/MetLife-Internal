@@ -13,7 +13,7 @@ import ButtonComp from "../common/Buton/Button";
 export type InputType = "prompt" | "image";
 
 // interface CharacterParentProps {
-//   characters: CharacterType[];
+//   characters: CharacterType[]; 
 //   setCharacters: React.Dispatch<React.SetStateAction<CharacterType[]>>;
 // }
 
