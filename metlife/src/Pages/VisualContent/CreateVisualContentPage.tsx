@@ -62,6 +62,9 @@ interface Column<T> {
 
 // ---------- Component ----------
 const CreateVisualContentPage: React.FC = () => {
+  const { saveVisualContentData, saveVisualContentLoader } = useSelector(
+    (store: RootState) => store.CreateVisualContent,
+  );
   const columns: Column<RowData>[] = [
     { label: "Scene No.", key: "Scene_No", width: "5%" },
     {
@@ -69,6 +72,7 @@ const CreateVisualContentPage: React.FC = () => {
       key: "Visual_Type",
       render: (value: RowData["Visual_Type"], row: RowData) => (
         <Select
+          disabled={saveVisualContentData?.video_style === "conversational" || saveVisualContentData?.flow_type === "conversation"}
           value={value}
           size="small"
           onChange={(e: SelectChangeEvent<string>) =>
@@ -133,10 +137,6 @@ const CreateVisualContentPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-
-  const { saveVisualContentData, saveVisualContentLoader } = useSelector(
-    (store: RootState) => store.CreateVisualContent,
-  );
 
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData,
@@ -285,6 +285,11 @@ const CreateVisualContentPage: React.FC = () => {
   //   if (!Array.isArray(scene.videos)) return false;
   //   return scene.status !== "uploaded" || scene.videos.length === 0;
   // }) ?? false;
+
+  console.log(
+    saveVisualContentData?.video_style === "conversational",
+    "check__",
+  );
 
   return (
     <>
