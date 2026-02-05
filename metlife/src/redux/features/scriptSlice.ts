@@ -311,18 +311,23 @@ export const getLocalizationImageUrl =
   (
     projectId: string,
     //  callback?: () => void
+    onSuccess?: () => void,
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setLocalizationImageLoader(true));
     try {
       const res = await api.get(`process-vid/localisation/${projectId}`);
+      console.log(res, "check_final_response");
       if (res?.status) {
-        // console.log(res?.data?.scenes[0]?.base_scene_url, "image_res");
         dispatch(setLocalizationImageData(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
         // if (callback) {
         //   callback();
         // }
+
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");

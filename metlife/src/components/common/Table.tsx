@@ -107,6 +107,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   features = true,
   visualContentTitle,
 }) => {
+  console.log(extraDetails, "chkeh")
   const [tableExtraData, setTableExtraData] = useState<any>({});
   const [rows, setRows] = useState<SceneRow[]>([]);
   const [openPopUp, setOpenPopup] = useState<boolean>(false);
@@ -285,8 +286,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const settingDataInRows = (data: any[]) => {
     const mapped: SceneRow[] = (data ?? []).map((item: any, idx: number) => ({
       "Scene No.": idx + 1,
-      Script: item?.description ?? item?.Script ?? "",
-      OST: item?.on_screen_text ?? item?.OST ?? "-",
+      Script: item?.description ?? item?.Script ?? item?.transcript ?? "-",
+      OST: item?.on_screen_text ?? item?.OST ?? item?.final_ost?.text ?? "-",
       Type: item?.scene_type ?? item?.Type ?? "",
       id: item?.scene_id ?? item?.id ?? "",
     }));

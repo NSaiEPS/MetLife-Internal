@@ -8,6 +8,9 @@ import Footer from "../../components/common/mainFooter";
 import DynamicTable from "../../components/common/Table";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { BASE_URL } from "../../api/axios";
+import { NoDataMessage } from "../../components/common/NoDataMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { getLocalizationImageUrl } from "../../redux/features/scriptSlice";
 
 // ---------- Types ----------
 interface SceneItem {
@@ -25,20 +28,25 @@ interface PdfViewData {
   [key: string]: any; // for any extra properties from API
 }
 
-interface LocationState {
-  state?: {
-    data?: {
-      file_id?: string | number;
-    };
-  };
-}
+// interface LocationState {
+//   state?: {
+//     data?: {
+//       file_id?: string | number;
+//     };
+//   };
+// }
 
 // ---------- Component ----------
 const TranslatedScript: React.FC = () => {
-  const { state } = useLocation() as LocationState;
+  const { state } = useLocation();
+  const dispatch = useDispatch();
+  console.log(state, "check_state");
 
   const [pdfViewData, setPdfViewData] = useState<PdfViewData | null>(null);
   const [columns] = useState<string[]>(["Scene No.", "Script", "OST", "Type"]);
+  const { localizationImageData } = useSelector((store) => store.Script);
+
+  console.log(localizationImageData, "check_this");
 
   useEffect(() => {
     const fileUploadData = async () => {
@@ -73,9 +81,18 @@ const TranslatedScript: React.FC = () => {
     fileUploadData();
   }, [state?.data?.file_id]);
 
+  useEffect(() => {
+    if (state) {
+      dispatch(getLocalizationImageUrl(state));
+    }
+  }, []);
+
   return (
     <div className={styles.container}>
       <OneFrameHeader />
+      {pdfViewData?.scenes?.length && (
+        <FullScreenGradientLoader text="Fetching details" />
+      )}
 
       <div className={styles.tableContainer}>
         {pdfViewData?.scenes?.length ? (
@@ -85,8 +102,18 @@ const TranslatedScript: React.FC = () => {
             showDragAndActions={false}
             pdfId={state?.data?.file_id}
           />
+        ) : localizationImageData?.scenes?.length > 0 ? (
+          <>
+            <DynamicTable
+              columns={columns}
+              extraDetails={localizationImageData}
+              showDragAndActions={false}
+              // pdfId={state?.data?.file_id}
+            />
+          </>
         ) : (
-          <FullScreenGradientLoader text="Fetching details" />
+          // <FullScreenGradientLoader text="Fetching details" />
+          <NoDataMessage />
         )}
       </div>
 

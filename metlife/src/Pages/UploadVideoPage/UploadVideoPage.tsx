@@ -198,8 +198,12 @@ const UploadVideoPage = () => {
 
   const handleTimer3Complete = () => {
     setStartTimer3(false);
-    navigate("/translated-script");
-    // dispatch(getLocalizationImageUrl(scriptData?.project_id));
+    navigate("/translated-script", {state: scriptData?.project_id});
+    // dispatch(
+    //   getLocalizationImageUrl(scriptData?.project_id, () => {
+    //     navigate("/translated-script", { state: localizationImageData });
+    //   }),
+    // );
     // setShowRectangleCanvas(true);
   };
 
@@ -388,13 +392,21 @@ const UploadVideoPage = () => {
       {/* {!startTimer1 && finalTime > 0 && !generatedVideoData?.final_video && ( */}
       {startTimer1 && finalTime1 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
-          <Timer time={finalTime1} onComplete={handleTimerComplete} />
+          <Timer
+            time={finalTime1}
+            onComplete={handleTimerComplete}
+            label="Waiting for processing"
+          />
         </Box>
       )}
 
       {startTimer2 && finalTime2 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
-          <Timer time={finalTime2} onComplete={handleTimer2Complete} />
+          <Timer
+            time={finalTime2}
+            onComplete={handleTimer2Complete}
+            label="Processing started"
+          />
         </Box>
       )}
 
@@ -431,7 +443,11 @@ const UploadVideoPage = () => {
 
       {startTimer3 && finalTime3 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
-          <Timer time={finalTime3} onComplete={handleTimer3Complete} />
+          <Timer
+            time={finalTime3}
+            onComplete={handleTimer3Complete}
+            label="Extracting meta-data"
+          />
         </Box>
       )}
       <Footer />

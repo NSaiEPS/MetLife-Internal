@@ -10,7 +10,7 @@ interface TimerProps {
   onComplete?: () => void;
 }
 
-const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
+const Timer: React.FC<TimerProps> = ({ time, onComplete, label }) => {
   const [open, setOpen] = useState(true);
 
   // Convert time to seconds
@@ -76,7 +76,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete }) => {
     >
       {/* Title */}
       <Typography fontSize={18} variant="h5" mb={2}>
-        Video Generation in Progress
+        {label || "Video Generation in Progress"}
       </Typography>
 
       {/* Progress Bar */}
