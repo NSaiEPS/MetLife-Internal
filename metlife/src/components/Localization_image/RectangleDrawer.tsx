@@ -8,8 +8,10 @@ import { postImageCoordinates } from "../../redux/features/scriptSlice";
 export default function RectangleDrawer({
   imgSrc,
   projectId,
-  setStartTimer3,
-  setShowRectangleCanvas,
+  setStep,
+  STEPS,
+  // setStartTimer3,
+  // setShowRectangleCanvas,
 }) {
   const canvasRef = useRef(null);
   const [imageObj, setImageObj] = useState(null);
@@ -67,8 +69,10 @@ export default function RectangleDrawer({
     console.log(result, "=> [x, y, width, height]");
 
     dispatch(postImageCoordinates(projectId, result));
-    setStartTimer3(true);
-    setShowRectangleCanvas(false);
+    setStep(STEPS.TIMER3);
+
+    // setStartTimer3(true);
+    // setShowRectangleCanvas(false);
     setRect(null);
   };
 

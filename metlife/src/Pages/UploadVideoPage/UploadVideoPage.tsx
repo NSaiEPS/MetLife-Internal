@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./UploadVideo.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -31,6 +31,15 @@ const videoTypeOptions = [
   { value: "l4", label: "L4" },
 ];
 
+enum STEPS {
+  UPLOAD = 1,
+  TIMER1 = 2,
+  TIMER2 = 3,
+  RECTANGLE = 4,
+  TIMER3 = 5,
+  DONE = 6,
+}
+
 const UploadVideoPage = () => {
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<any>(null);
@@ -42,12 +51,18 @@ const UploadVideoPage = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<any>(null);
   const isDisabled = !title.trim() || !uploadSuccess;
-  const [startTimer1, setStartTimer1] = useState<boolean>(false);
-  const [startTimer2, setStartTimer2] = useState<boolean>(false);
-  const [startTimer3, setStartTimer3] = useState<boolean>(false);
-  const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
-  const [showRectangleCanvas, setShowRectangleCanvas] =
-    useState<boolean>(false);
+  // const [startTimer1, setStartTimer1] = useState<boolean>(false);
+  // const [startTimer2, setStartTimer2] = useState<boolean>(false);
+  // const [startTimer3, setStartTimer3] = useState<boolean>(false);
+  // const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
+  // const [showRectangleCanvas, setShowRectangleCanvas] =
+  //   useState<boolean>(false);
+
+  const [step, setStep] = useState<number>(() => {
+    const savedStep = localStorage.getItem("video_process_step");
+    return savedStep ? Number(savedStep) : STEPS.UPLOAD;
+  });
+
   // const finalTime = 0.5;
 
   const handleClick = () => {
@@ -72,10 +87,6 @@ const UploadVideoPage = () => {
   const finalTime2 = Math.ceil(waitingTime2 / 60);
   const finalTime3 = Math.ceil(waitingTime3 / 60);
 
-  const localizationImageUrlStatic =
-    "https://images.unsplash.com/photo-1768834582204-3430797f89be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
-  // console.log({ localizationImageLoader, localizationImageUrl });
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
   const dispatch = useDispatch();
@@ -177,28 +188,32 @@ const UploadVideoPage = () => {
   // );
 
   const handleUploadVideo = () => {
-    setStartTimer1(true);
+    // setStartTimer1(true);
     dispatch(postUploadVideo(scriptData?.project_id));
+    setStep(STEPS.TIMER1);
+    // setShowUploadVideo(false);
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setShowUploadVideo(false);
   };
 
   const handleTimerComplete = () => {
-    setStartTimer1(false);
+    // setStartTimer1(false);
     dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setStartTimer2(true);
+    setStep(STEPS.TIMER2);
+    // setStartTimer2(true);
     // setShowRectangleCanvas(true);
   };
 
   const handleTimer2Complete = () => {
-    setStartTimer2(false);
+    setStep(STEPS.RECTANGLE);
+    // setStartTimer2(false);
+    // setShowRectangleCanvas(true);
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setShowRectangleCanvas(true);
   };
 
   const handleTimer3Complete = () => {
-    setStartTimer3(false);
-    navigate("/translated-script", {state: scriptData?.project_id});
+    // setStartTimer3(false);
+    localStorage.removeItem("video_process_step"); // cleanup
+    navigate("/translated-script", { state: scriptData?.project_id });
     // dispatch(
     //   getLocalizationImageUrl(scriptData?.project_id, () => {
     //     navigate("/translated-script", { state: localizationImageData });
@@ -206,6 +221,17 @@ const UploadVideoPage = () => {
     // );
     // setShowRectangleCanvas(true);
   };
+
+  useEffect(() => {
+    localStorage.setItem("video_process_step", step.toString());
+  }, [step]);
+
+  // useEffect(() => {
+  //   const savedStep = localStorage.getItem("video_process_step");
+  //   if (savedStep) {
+  //     setStep(Number(savedStep));
+  //   }
+  // }, []);
 
   console.log(uploadVideoLoader, "check_loader");
   return (
@@ -223,7 +249,8 @@ const UploadVideoPage = () => {
         <FullScreenGradientLoader text="Propagating Image..." />
       )}
 
-      {showUploadVideo && (
+      {/* {showUploadVideo && ( */}
+      {step === STEPS.UPLOAD && (
         <div className={styles.uploadPageContainer}>
           <div className={styles.uploadCard}>
             <div
@@ -390,7 +417,8 @@ const UploadVideoPage = () => {
       )}
 
       {/* {!startTimer1 && finalTime > 0 && !generatedVideoData?.final_video && ( */}
-      {startTimer1 && finalTime1 > 0 && (
+      {/* {startTimer1 && finalTime1 > 0 && ( */}
+      {step === STEPS.TIMER1 && finalTime1 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
             time={finalTime1}
@@ -400,7 +428,8 @@ const UploadVideoPage = () => {
         </Box>
       )}
 
-      {startTimer2 && finalTime2 > 0 && (
+      {/* {startTimer2 && finalTime2 > 0 && ( */}
+      {step === STEPS.TIMER2 && finalTime2 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
             time={finalTime2}
@@ -410,7 +439,8 @@ const UploadVideoPage = () => {
         </Box>
       )}
 
-      {showRectangleCanvas && (
+      {/* {showRectangleCanvas && ( */}
+      {step === STEPS.RECTANGLE && (
         <Box
           sx={{
             width: "100%",
@@ -432,16 +462,19 @@ const UploadVideoPage = () => {
             }}
           >
             <RectangleDrawer
+              setStep={setStep}
+              STEPS={STEPS}
               projectId={scriptData?.project_id}
-              setStartTimer3={setStartTimer3}
-              setShowRectangleCanvas={setShowRectangleCanvas}
+              // setStartTimer3={setStartTimer3}
+              // setShowRectangleCanvas={setShowRectangleCanvas}
               imgSrc={localizationImageData?.scenes[0]?.original_frame_url}
             />
           </Box>
         </Box>
       )}
 
-      {startTimer3 && finalTime3 > 0 && (
+      {/* {startTimer3 && finalTime3 > 0 && ( */}
+      {step === STEPS.TIMER3 && finalTime3 > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
             time={finalTime3}
