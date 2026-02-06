@@ -53,6 +53,7 @@ export interface DashboardItem {
   audio?: boolean;
   visuals?: boolean;
   failed?: boolean;
+  has_final_video?: boolean;
 }
 
 type DashboardFilter = "ALL" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
@@ -69,33 +70,35 @@ const MyVideosDashboard: React.FC = () => {
   );
 
   const completed_result = dashBoardInfo.filter((item) => {
-    if (item.videos) {
+    // if (item.videos) {
+    if (item.has_final_video) {
       return item;
     }
   });
 
   const inprogress_video = dashBoardInfo.filter((item) => {
-    if (item.audio && !item.videos) {
+    if ( !item.has_final_video && item.audio && !item.videos) {
       return item;
     }
   });
 
   const inprogress_visuals = dashBoardInfo.filter((item) => {
-    if (item.visuals && !item.videos && !item.audio) {
+    if (!item.has_final_video && item.visuals && !item.videos && !item.audio) {
       return item;
     }
   });
 
   const inprogress_script = dashBoardInfo.filter((item) => {
-    if (!item.visuals && !item.videos && !item.audio) {
+    if (!item.has_final_video && !item.visuals && !item.videos && !item.audio) {
       return item;
     }
   });
 
+
   const total_progress =
     inprogress_video?.length +
     inprogress_visuals?.length +
-    inprogress_script?.length;
+    inprogress_script?.length
 
   const stats = [
     {
@@ -134,11 +137,10 @@ const MyVideosDashboard: React.FC = () => {
 
   const getStatusChip = (status: DashboardItem) => {
     if (!status) return <Chip label="Unknown" />;
-
     if (status.failed)
       return <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
 
-    if (status.videos)
+    if (status.has_final_video) {
       return (
         <Chip
           label="Completed"
@@ -151,7 +153,7 @@ const MyVideosDashboard: React.FC = () => {
           }}
         />
       );
-
+    }
     if (status.audio && !status.videos)
       return (
         <Chip
@@ -229,13 +231,14 @@ const MyVideosDashboard: React.FC = () => {
     navigate(`/scenes/${video.script_id}`);
   };
 
-  const isCompleted = (item: DashboardItem) => !!item.videos;
+  const isCompleted = (item: DashboardItem) =>
+    item.has_final_video === true || Boolean(item.final_video);
 
   const isInProgress = (item: DashboardItem) => {
+    if (item.has_final_video) return false;
     if (item.audio && !item.videos) return true;
     if (item.visuals && !item.videos && !item.audio) return true;
     if (!item.visuals && !item.videos && !item.audio) return true;
-
     return false;
   };
 
@@ -270,7 +273,6 @@ const MyVideosDashboard: React.FC = () => {
   const handleCloseMenu = () => {
     setOpen(null);
   };
-
 
   return (
     <>
