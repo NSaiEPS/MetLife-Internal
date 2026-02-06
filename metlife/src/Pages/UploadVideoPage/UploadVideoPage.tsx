@@ -206,6 +206,8 @@ const UploadVideoPage = () => {
       setIntroSeconds(value);
     }
   };
+
+  console.log(intro, "check_value")
   return (
     <>
       <OneFrameHeader />
@@ -312,7 +314,7 @@ const UploadVideoPage = () => {
               variant="subtitle1"
               color="text.primary"
             >
-              Do you want Intro?
+              Does the uploaded video include the MetLife intro?
             </Typography>
 
             <Box display="flex" gap={2} mb={1}>
