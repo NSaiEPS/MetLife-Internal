@@ -13,7 +13,16 @@ import { BASE_URL } from "../../api/axios";
 import { toast } from "react-toastify";
 import { showToast } from "../../utils/toast";
 import BackButton from "../../components/common/Buton/BackButton";
-import { Box, FormControlLabel, Radio, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  MenuItem,
+  Radio,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import SelectComp from "../../components/common/select";
 import secureLocalStorage from "react-secure-storage";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +40,11 @@ const videoTypeOptions = [
   { value: "l4", label: "L4" },
 ];
 
+const introOptions = [
+  { value: "no", label: "No" },
+  { value: "yes", label: "Yes" },
+];
+
 const UploadVideoPage = () => {
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<any>(null);
@@ -38,6 +52,8 @@ const UploadVideoPage = () => {
   const [scriptData, setScriptData] = useState(null);
   const [loader, setLoader] = useState(false);
   const [lipSync, setLipSync] = useState<"yes" | "no">("no");
+  const [intro, setIntro] = useState<"yes" | "no">("no");
+  const [introSeconds, setIntroSeconds] = useState("");
   const [videoType, setVideoType] = useState<string>("l1");
   const [startTimer1, setStartTimer1] = useState<boolean>(false);
   const [startTimer2, setStartTimer2] = useState<boolean>(false);
@@ -124,8 +140,8 @@ const UploadVideoPage = () => {
       formData.append("lip_sync", lipSync);
       formData.append("video_type", videoType);
       formData.append("user_id", email);
-      // formData.append("intro_present", True);
-      // formData.append("intro_duration", 5);
+      formData.append("intro_present", intro === "yes" ? true : false);
+      formData.append("intro_duration", intro === "yes" ? introSeconds : "");
       const response = await fetch(
         `${BASE_URL}upload-vid/localisation/upload-vid`,
         {
@@ -184,6 +200,12 @@ const UploadVideoPage = () => {
   };
 
   console.log(uploadVideoLoader, "check_loader");
+  const handleSeconds = (e: any) => {
+    const { name, value } = e.target;
+    if (name == "seconds") {
+      setIntroSeconds(value);
+    }
+  };
   return (
     <>
       <OneFrameHeader />
@@ -281,6 +303,42 @@ const UploadVideoPage = () => {
                   sx={{ m: 0 }}
                 />
               </Box>
+            </Box>
+
+            <Typography
+              sx={{
+                fontSize: "16px",
+              }}
+              variant="subtitle1"
+              color="text.primary"
+            >
+              Do you want Intro?
+            </Typography>
+
+            <Box display="flex" gap={2} mb={1}>
+              <Box sx={{ flex: 1 }}>
+                <SelectComp
+                  options={introOptions}
+                  value={intro}
+                  onChange={setIntro}
+                  placeholder="Select Intro"
+                />
+              </Box>
+              {intro === "yes" && (
+                <Box sx={{ flex: 1 }}>
+                  <Input
+                    type="number"
+                    name="seconds"
+                    placeholder="Enter the seconds"
+                    className={styles.input}
+                    value={introSeconds}
+                    handleChange={handleSeconds}
+                    max="10"
+                    min="2"
+                    // marginStyle={true}
+                  />
+                </Box>
+              )}
             </Box>
 
             <Box sx={{ flex: 1, mb: 3 }}>

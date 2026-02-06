@@ -24,6 +24,8 @@ const Input: React.FC<InputProps> = ({
   errors,
   errorClass,
   marginStyle = true,
+  max,
+  min,
 }) => {
   const marginBottomStyle = marginStyle ? "5px" : "15px";
   return (
@@ -44,6 +46,9 @@ const Input: React.FC<InputProps> = ({
         className={className}
         value={value}
         onChange={handleChange}
+        max={max ? max : null}
+        min={min ? min : null}
+
       />
       {errors && <p className={errorClass}>{errors}</p>}
     </div>
