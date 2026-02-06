@@ -82,17 +82,17 @@ const TranslatedScript: React.FC = () => {
   }, [state?.data?.file_id]);
 
   useEffect(() => {
-    if (state) {
+    if (state && !state?.data?.file_id) {
       dispatch(getLocalizationImageUrl(state));
     }
-  }, []);
+  }, [dispatch, state]);
 
   return (
     <div className={styles.container}>
       <OneFrameHeader />
-      {pdfViewData?.scenes?.length && (
+      {/* {pdfViewData?.scenes?.length && (
         <FullScreenGradientLoader text="Fetching details" />
-      )}
+      )} */}
 
       <div className={styles.tableContainer}>
         {pdfViewData?.scenes?.length ? (

@@ -104,7 +104,7 @@ const AnimationPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  console.log(generatedVideoData?.audio_exists, "videoAnimationData")
+  // console.log(generatedVideoData?.final_video_status==="completed", "videoAnimationData");
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -317,9 +317,19 @@ const AnimationPage: React.FC = () => {
             <main className={styles.cardWrap}>
               <Box className={styles.card}>
                 <Box className={styles.headerRow}>
-                  <Typography variant="h4" className={styles.title}>
-                    Animation Toolkit
-                  </Typography>
+                  {generatedVideoData?.final_video_status === "completed" ? (
+                    <>
+                      <Typography variant="h4" className={styles.title}>
+                        Final Generated Video
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant="h4" className={styles.title}>
+                        Animation Toolkit
+                      </Typography>
+                    </>
+                  )}
 
                   <Button
                     className={styles.icon}
@@ -394,7 +404,7 @@ const AnimationPage: React.FC = () => {
 
                       <ButtonComp
                         sx={{ textTransform: "none", width: "200px" }}
-                        label={"Generate Video"}
+                        label={"Generate Final Video"}
                         action={generateVideo}
                         disabled={
                           audioAnimationLoader ||

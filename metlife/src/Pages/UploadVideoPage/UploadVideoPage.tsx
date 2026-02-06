@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./UploadVideo.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -39,31 +39,25 @@ const UploadVideoPage = () => {
   const [loader, setLoader] = useState(false);
   const [lipSync, setLipSync] = useState<"yes" | "no">("no");
   const [videoType, setVideoType] = useState<string>("l1");
-  const navigate = useNavigate();
-  const fileInputRef = useRef<any>(null);
-  const isDisabled = !title.trim() || !uploadSuccess;
   const [startTimer1, setStartTimer1] = useState<boolean>(false);
   const [startTimer2, setStartTimer2] = useState<boolean>(false);
   const [startTimer3, setStartTimer3] = useState<boolean>(false);
   const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
   const [showRectangleCanvas, setShowRectangleCanvas] =
     useState<boolean>(false);
-  // const finalTime = 0.5;
-
-  const handleClick = () => {
-    fileInputRef?.current?.click();
-  };
+  const isDisabled = !title.trim() || !uploadSuccess;
+  const navigate = useNavigate();
+  const fileInputRef = useRef<any>(null);
+  const dispatch = useDispatch();
   const { uploadVideoLoader, uploadVideoInfo } = useSelector(
     (store) => store.Script.uploadVideoData,
   );
-
   const {
     localizationImageLoader,
     localizationImageData,
     imageCoordinatesLoader,
     imageCoordinatesData,
   } = useSelector((store) => store.Script);
-
   console.log(localizationImageData, "localizationImageData");
   const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
   const waitingTime2 = localizationImageData?.estimated_remaining_time;
@@ -71,14 +65,12 @@ const UploadVideoPage = () => {
   const finalTime1 = Math.ceil(waitingTime1 / 60);
   const finalTime2 = Math.ceil(waitingTime2 / 60);
   const finalTime3 = Math.ceil(waitingTime3 / 60);
-
-  const localizationImageUrlStatic =
-    "https://images.unsplash.com/photo-1768834582204-3430797f89be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
-  // console.log({ localizationImageLoader, localizationImageUrl });
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
-  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    fileInputRef?.current?.click();
+  };
 
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
@@ -147,7 +139,6 @@ const UploadVideoPage = () => {
         return;
       }
       const data = await response.json();
-      console.log(data, "check_data");
       setScriptData(data);
       toast.success(data?.message || "Video uploaded successfully");
       setUploadSuccess(true);
@@ -166,15 +157,6 @@ const UploadVideoPage = () => {
       setTitle(value);
     }
   };
-
-  // const formData = new FormData();
-  // formData.append("video", file);
-
-  // dispatch(
-  //   postUploadVideo(scriptId, formData, () => {
-  //     console.log("Upload complete");
-  //   }),
-  // );
 
   const handleUploadVideo = () => {
     setStartTimer1(true);
@@ -198,13 +180,7 @@ const UploadVideoPage = () => {
 
   const handleTimer3Complete = () => {
     setStartTimer3(false);
-    navigate("/translated-script", {state: scriptData?.project_id});
-    // dispatch(
-    //   getLocalizationImageUrl(scriptData?.project_id, () => {
-    //     navigate("/translated-script", { state: localizationImageData });
-    //   }),
-    // );
-    // setShowRectangleCanvas(true);
+    navigate("/translated-script", { state: scriptData?.project_id });
   };
 
   console.log(uploadVideoLoader, "check_loader");
