@@ -80,12 +80,31 @@ const UploadVideoPage = () => {
   } = useSelector((store) => store.Script);
 
   console.log(localizationImageData, "localizationImageData");
-  const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
-  const waitingTime2 = localizationImageData?.estimated_remaining_time;
-  const waitingTime3 = imageCoordinatesData?.estimated_time_seconds;
-  const finalTime1 = Math.ceil(waitingTime1 / 60);
-  const finalTime2 = Math.ceil(waitingTime2 / 60);
-  const finalTime3 = Math.ceil(waitingTime3 / 60);
+  // const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
+  // const waitingTime2 = localizationImageData?.estimated_remaining_time;
+  // const waitingTime3 = imageCoordinatesData?.estimated_time_seconds;
+  // const finalTime1 = Math.ceil(waitingTime1 / 60);
+  // const finalTime2 = Math.ceil(waitingTime2 / 60);
+  // const finalTime3 = Math.ceil(waitingTime3 / 60);
+
+  // const waitingTime = uploadVideoInfo?.estimated_remaining_time;
+  const getRemainingSeconds = () => {
+    const stored = localStorage.getItem("estimated_remaining_time");
+
+    if (!stored) return 0;
+
+    const { endTime } = JSON.parse(stored);
+
+    const remaining = Math.floor((endTime - Date.now()) / 1000);
+
+    return remaining > 0 ? remaining : 0;
+  };
+
+  const remainingSeconds = getRemainingSeconds();
+  const finalTime = Math.floor((remainingSeconds / 60) * 10) / 10;
+  // ✅ minutes
+
+  console.log({ remainingSeconds, finalTime });
 
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
@@ -187,18 +206,49 @@ const UploadVideoPage = () => {
   //   }),
   // );
 
+  const uploadVideoSuccessCallback = (data) => {
+    if (data?.status) {
+      const duration = Number(data.estimated_remaining_time); // seconds
+      const endTime = Date.now() + duration * 1000; // ✅ future timestamp
+
+      localStorage.setItem(
+        "estimated_remaining_time",
+        JSON.stringify({ endTime }),
+      );
+
+      setStep(STEPS.TIMER1);
+    }
+  };
+
   const handleUploadVideo = () => {
     // setStartTimer1(true);
-    dispatch(postUploadVideo(scriptData?.project_id));
-    setStep(STEPS.TIMER1);
+    dispatch(
+      postUploadVideo(scriptData?.project_id, uploadVideoSuccessCallback),
+    );
+    // setStep(STEPS.TIMER1);
     // setShowUploadVideo(false);
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
   };
 
+  const timer1SuccessCallback = (data) => {
+    localStorage.setItem(
+      "original_frame_url",
+      data?.scenes?.[0]?.original_frame_url,
+    );
+    console.log(data, "check_timer1_success_callback");
+    if (data?.status === "awaiting_user_rule") {
+      setStep(STEPS.RECTANGLE);
+    } else {
+      setStep(STEPS.TIMER2);
+    }
+  };
+
   const handleTimerComplete = () => {
     // setStartTimer1(false);
-    dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setStep(STEPS.TIMER2);
+    dispatch(
+      getLocalizationImageUrl(scriptData?.project_id, timer1SuccessCallback),
+    );
+    // setStep(STEPS.TIMER2);
     // setStartTimer2(true);
     // setShowRectangleCanvas(true);
   };
@@ -418,10 +468,11 @@ const UploadVideoPage = () => {
 
       {/* {!startTimer1 && finalTime > 0 && !generatedVideoData?.final_video && ( */}
       {/* {startTimer1 && finalTime1 > 0 && ( */}
-      {step === STEPS.TIMER1 && finalTime1 > 0 && (
+      {/* {step === STEPS.TIMER1 && finalTime > 0 && ( */}
+      {step === STEPS.TIMER1 && remainingSeconds > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
-            time={finalTime1}
+            time={finalTime}
             onComplete={handleTimerComplete}
             label="Waiting for processing"
           />
@@ -429,10 +480,10 @@ const UploadVideoPage = () => {
       )}
 
       {/* {startTimer2 && finalTime2 > 0 && ( */}
-      {step === STEPS.TIMER2 && finalTime2 > 0 && (
+      {step === STEPS.TIMER2 && finalTime > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
-            time={finalTime2}
+            time={finalTime}
             onComplete={handleTimer2Complete}
             label="Processing started"
           />
@@ -467,17 +518,18 @@ const UploadVideoPage = () => {
               projectId={scriptData?.project_id}
               // setStartTimer3={setStartTimer3}
               // setShowRectangleCanvas={setShowRectangleCanvas}
-              imgSrc={localizationImageData?.scenes[0]?.original_frame_url}
+              // imgSrc={localizationImageData?.scenes?.[0]?.original_frame_url}
+              imgSrc={localStorage.getItem("original_frame_url")}
             />
           </Box>
         </Box>
       )}
 
       {/* {startTimer3 && finalTime3 > 0 && ( */}
-      {step === STEPS.TIMER3 && finalTime3 > 0 && (
+      {step === STEPS.TIMER3 && finalTime > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
-            time={finalTime3}
+            time={finalTime}
             onComplete={handleTimer3Complete}
             label="Extracting meta-data"
           />
