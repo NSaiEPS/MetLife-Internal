@@ -31,7 +31,6 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
-import { downloadVideoWithUrl } from "../../redux/features/audioAnimationSlice";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -273,7 +272,8 @@ const MyVideosDashboard: React.FC = () => {
     setMenuData(prev => {
       return {
         ...prev,
-        downloadVideo: video
+        downloadVideo: video,
+        downloadScript: video,
       }
     })
   };

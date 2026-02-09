@@ -321,6 +321,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleDownloadType = (type: string) => {
+    console.log(tableExtraData, rows, "tableExtraData")
     try {
       if (type === "pdf") {
         downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
