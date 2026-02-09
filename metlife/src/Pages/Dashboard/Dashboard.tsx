@@ -63,6 +63,10 @@ const MyVideosDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
+  const [menuData, setMenuData] = useState({
+    downloadScript: "",
+    downloadVideo: "",
+  })
   const openPopup = Boolean(open);
 
   const { dashBoardInfo, dashboardLoader } = useSelector(
@@ -93,7 +97,6 @@ const MyVideosDashboard: React.FC = () => {
       return item;
     }
   });
-
 
   const total_progress =
     inprogress_video?.length +
@@ -262,13 +265,20 @@ const MyVideosDashboard: React.FC = () => {
 
   const handleDownloadMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
-    finalVideo,
-    title,
+    video,
   ) => {
     event.stopPropagation();
     setOpen(event.currentTarget);
-    console.log(finalVideo, title, "finalVidieop");
+    console.log(video?.final_video, video?.title, "finalVidieop");
+    setMenuData(prev => {
+      return {
+        ...prev,
+        downloadVideo: video
+      }
+    })
   };
+
+  console.log(menuData, "check_menu_data")
 
   const handleCloseMenu = () => {
     setOpen(null);
@@ -448,13 +458,13 @@ const MyVideosDashboard: React.FC = () => {
 
                       <TableCell align="center">
                         <Button onClick={() => handleView(video)}>👁️</Button>
-                        {/* <Button
+                        <Button
                           onClick={(e) =>
-                            handleDownloadMenu(e, video?.final_video, video?.title)
+                            handleDownloadMenu(e, video)
                           }
                         >
                           <FaFileDownload size={18} />
-                        </Button> */}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
@@ -462,11 +472,12 @@ const MyVideosDashboard: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          {/* <UploadPopup
+          <UploadPopup
             open={open}
             openPopup={openPopup}
             handleCloseMenu={handleCloseMenu}
-          /> */}
+            menuData={menuData}
+          />
         </Box>
       </Box>
     </>

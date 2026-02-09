@@ -393,7 +393,7 @@ export const getSceneDetails =
 //   };
 
 export const downloadVideoWithUrl =
-  (fileUrl: string, title: string) => async (dispatch: any) => {
+  (fileUrl: string, title: string ) => async (dispatch: any) => {
     try {
       dispatch(setVideoAnimationLoader(true));
 
@@ -436,9 +436,10 @@ export const downloadVideoWithUrl =
 
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error("Download error:", error);
+      console.error("Download_error_video", error);
     } finally {
       dispatch(setVideoAnimationLoader(false));
+      // handleCloseMenu();
     }
   };
 
