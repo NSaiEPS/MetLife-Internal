@@ -25,12 +25,17 @@ import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { getDashboardInfo } from "../../redux/features/dashBoardSlice";
+import {
+  getDashboardInfo,
+  getUsersList,
+} from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
+import { FaShareSquare } from "react-icons/fa";
+import UsersListPopup from "../../components/common/popup/UsersListPopup";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -61,14 +66,16 @@ const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
+  const [scriptId, setScriptId] = useState("");
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
   const [menuData, setMenuData] = useState({
     downloadScript: "",
     downloadVideo: "",
-  })
+  });
+  const [openUsersDialog, setOpenUsersDialog] = useState(false);
   const openPopup = Boolean(open);
 
-  const { dashBoardInfo, dashboardLoader } = useSelector(
+  const { dashBoardInfo, dashboardLoader, usersList } = useSelector(
     (store: RootState) => store.DashBoard,
   );
 
@@ -80,7 +87,7 @@ const MyVideosDashboard: React.FC = () => {
   });
 
   const inprogress_video = dashBoardInfo.filter((item) => {
-    if ( !item.has_final_video && item.audio && !item.videos) {
+    if (!item.has_final_video && item.audio && !item.videos) {
       return item;
     }
   });
@@ -100,7 +107,7 @@ const MyVideosDashboard: React.FC = () => {
   const total_progress =
     inprogress_video?.length +
     inprogress_visuals?.length +
-    inprogress_script?.length
+    inprogress_script?.length;
 
   const stats = [
     {
@@ -269,20 +276,28 @@ const MyVideosDashboard: React.FC = () => {
     event.stopPropagation();
     setOpen(event.currentTarget);
     console.log(video?.final_video, video?.title, "finalVidieop");
-    setMenuData(prev => {
+    setMenuData((prev) => {
       return {
         ...prev,
         downloadVideo: video,
         downloadScript: video,
-      }
-    })
+      };
+    });
   };
 
-  console.log(menuData, "check_menu_data")
+  console.log(menuData, "check_menu_data");
 
   const handleCloseMenu = () => {
     setOpen(null);
   };
+
+  const handleUsers = (video) => {
+    setOpenUsersDialog(true);
+    setScriptId(video?.script_id);
+    dispatch(getUsersList());
+  };
+
+  console.log(scriptId, "scriptId")
 
   return (
     <>
@@ -435,7 +450,7 @@ const MyVideosDashboard: React.FC = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredDashboardInfo.map((video, i) => (
+                  filteredDashboardInfo?.map((video, i) => (
                     <TableRow key={i}>
                       <TableCell>{i + 1}</TableCell>
 
@@ -458,12 +473,11 @@ const MyVideosDashboard: React.FC = () => {
 
                       <TableCell align="center">
                         <Button onClick={() => handleView(video)}>👁️</Button>
-                        <Button
-                          onClick={(e) =>
-                            handleDownloadMenu(e, video)
-                          }
-                        >
+                        {/* <Button onClick={(e) => handleDownloadMenu(e, video)}>
                           <FaFileDownload size={18} />
+                        </Button> */}
+                        <Button onClick={() => handleUsers(video)}>
+                          <FaShareSquare size={18} />
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -477,6 +491,12 @@ const MyVideosDashboard: React.FC = () => {
             openPopup={openPopup}
             handleCloseMenu={handleCloseMenu}
             menuData={menuData}
+          />
+
+          <UsersListPopup
+            open={openUsersDialog}
+            onClose={() => setOpenUsersDialog(false)}
+            scriptId={scriptId}
           />
         </Box>
       </Box>
