@@ -45,7 +45,7 @@ const UsersListPopup = ({ open, onClose, scriptId }) => {
 
   const transferOwnership = () => {
     const data = {
-      scriptId: scriptId,
+      script_id: scriptId,
       new_user_email: selectedUserData?.new_user_email,
     };
     dispatch(postShareToUser(data, onClose));
