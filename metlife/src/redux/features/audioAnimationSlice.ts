@@ -173,7 +173,6 @@ export const postPreviewAzureVoices =
         "audio/preview-azure-voice",
         data,
       );
-      console.log(res, "check_res")
       if (res.status) {
         dispatch(setAzureAudioPreviewData(res.data));
         toast.success("Preview generated successfully");

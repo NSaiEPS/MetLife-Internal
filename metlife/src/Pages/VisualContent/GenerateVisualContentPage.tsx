@@ -92,7 +92,6 @@ const GenerateVisualContentPage: React.FC = () => {
   const audioExist =
     generateVisualContentData?.audio_exist ||
     generateVisualContentData?.conversation_video_exist;
-  console.log(audioExist, "check__");
 
   // ---------- Columns & Actions ----------
   const columns: Column<VisualRow>[] = [
@@ -384,11 +383,6 @@ const GenerateVisualContentPage: React.FC = () => {
     };
     dispatch(postTranslatedDataSave(data, id));
   };
-
-  console.log(
-    generateVisualContentData?.video_style === "conversational",
-    "gennerate",
-  );
 
   // ---------- Render ----------
   return (

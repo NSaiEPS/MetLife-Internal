@@ -146,8 +146,6 @@ const CreateVisualContentPage: React.FC = () => {
     (store: RootState) => store.GenerateVisualContent,
   );
 
-  console.log(generateVisualContentData?.visuals, "check_visual_content");
-
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
@@ -285,11 +283,6 @@ const CreateVisualContentPage: React.FC = () => {
   //   if (!Array.isArray(scene.videos)) return false;
   //   return scene.status !== "uploaded" || scene.videos.length === 0;
   // }) ?? false;
-
-  console.log(
-    saveVisualContentData?.video_style === "conversational",
-    "check__",
-  );
 
   return (
     <>

@@ -61,13 +61,11 @@ const EditVisualPopup: React.FC<EditVisualPopupProps> = ({
   }, [fieldData, open]);
 
   const handleSave = () => {
-    console.log(description, "check")
     const formData = new FormData();
     formData.append("script_id", script_id);
     formData.append("scene_id", fieldData?.scene_id);
     formData.append("version", "1");
     formData.append("update_description", description);
-    // console.log(formData, "formData")
     // const payload = {
     //   script_id,
     //   scene_id: fieldData?.scene_id,

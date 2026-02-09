@@ -37,8 +37,6 @@ export const postAuthLogin =
 
     try {
       const res = await api.post("login", data);
-      console.log(res, "res__loginn");
-
       if (res?.status) {
         dispatch(setLoginInfo(res?.data));
         secureLocalStorage.setItem("token", res?.data?.access_token);
@@ -51,7 +49,7 @@ export const postAuthLogin =
         apiErrorHandling(res);
       }
     } catch (e: any) {
-      console.log(e, "cc")
+      // console.log(e, "cc")
       toast.error(e?.response?.data?.detail ?? "Error Try again!!");
     } finally {
       dispatch(setAuthLoader(false));

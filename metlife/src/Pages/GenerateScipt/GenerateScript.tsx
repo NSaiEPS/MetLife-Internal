@@ -204,7 +204,6 @@ const GenerateScript: React.FC = () => {
 
   const apiCall = async (success) => {
     const characterPayload = buildCharacterPayload(characters);
-    // console.log("Character Payload:", characterPayload);
     const new_payload: any = {
       title,
       brief: scriptText,
@@ -239,7 +238,6 @@ const GenerateScript: React.FC = () => {
         showToast.error("Some Issue In Generating");
       }
     } catch (err) {
-      console.error("Video creation failed:", err);
       showToast.error("Some Issue In Generating");
     } finally {
       setLoader(false);

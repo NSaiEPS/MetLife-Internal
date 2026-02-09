@@ -40,7 +40,6 @@ const EditPromptPopup: React.FC<EditPromptPopupProps> = ({
   );
 
   const [description, setDescription] = useState("");
-  console.log(fieldData, "check__")
 
   // Load initial description when modal opens
   useEffect(() => {

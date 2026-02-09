@@ -86,14 +86,12 @@ export const postGenerateVisualContentImage =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/generate-visuals", data);
-      console.log(response, "check_response");
       if (response?.status) {
         dispatch(setGenerateVisualContentData(response?.data?.visuals));
         navigateTo(`/generate-visual-page/${response?.data?.script_id}`);
         toast.success("Visual Image generated successfully");
       }
     } catch (error) {
-      console.error(error, "errror_responnse");
       const rawMessage = error?.response?.data?.detail;
       const cleanMessage = rawMessage
         ? rawMessage.split(":")[0] + ":"
@@ -109,7 +107,6 @@ export const getUploadedMediaforVisualContent =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.get(`images/${script_id}`);
-      console.log(response, "check_response");
       // if (response?.status) {
       //   dispatch(setUploadedMediaData(response?.data?.visuals));
       //   toast.success("Visual Image generated successfully");
@@ -142,7 +139,6 @@ export const postImageUpload =
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/upload-media", data);
-      console.log(response, "check_response");
       toast.success(
         response?.data?.message ??
           "Image uploaded & scene updated successfully",

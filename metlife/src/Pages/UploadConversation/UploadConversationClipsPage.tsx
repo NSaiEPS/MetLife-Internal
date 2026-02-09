@@ -221,8 +221,6 @@ const UploadConversationalClipsPage: React.FC = () => {
     (scene) => clips[scene.scene_id]?.upload_urls?.length > 0,
   );
 
-  console.log(allUploaded, "all_uploaded");
-
   const handleDownloadAssets = () => {
     if (id && title) {
       dispatch(getDownloadAsset(id, title));
@@ -287,8 +285,6 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
- 
-  console.log(stitchedVideoUrl, "check_url");
   return (
     <>
       <div className={styles.container}>

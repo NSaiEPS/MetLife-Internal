@@ -40,13 +40,9 @@ interface PdfViewData {
 const TranslatedScript: React.FC = () => {
   const { state } = useLocation();
   const dispatch = useDispatch();
-  console.log(state, "check_state");
-
   const [pdfViewData, setPdfViewData] = useState<PdfViewData | null>(null);
   const [columns] = useState<string[]>(["Scene No.", "Script", "OST", "Type"]);
   const { localizationImageData } = useSelector((store) => store.Script);
-
-  console.log(localizationImageData, "check_this");
 
   useEffect(() => {
     const fileUploadData = async () => {

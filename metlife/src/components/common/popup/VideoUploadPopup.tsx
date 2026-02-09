@@ -65,8 +65,6 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   //     (store) => store.GenerateVisualContent,
   //   );
 
-  //   console.log(generateVisualContentData, "check")
-
 
   // Load last uploaded video on open
   useEffect(() => {

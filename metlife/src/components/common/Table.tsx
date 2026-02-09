@@ -107,7 +107,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   features = true,
   visualContentTitle,
 }) => {
-  console.log(extraDetails, "chkeh")
   const [tableExtraData, setTableExtraData] = useState<any>({});
   const [rows, setRows] = useState<SceneRow[]>([]);
   const [openPopUp, setOpenPopup] = useState<boolean>(false);
@@ -383,7 +382,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         setShowSourceData(data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("Something went wrong!");
     } finally {
       setShowSourceLoader(false);

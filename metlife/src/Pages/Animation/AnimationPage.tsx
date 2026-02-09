@@ -104,7 +104,6 @@ const AnimationPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // console.log(generatedVideoData?.final_video_status==="completed", "videoAnimationData");
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -219,7 +218,7 @@ const AnimationPage: React.FC = () => {
   // };
 
   const handleAllSubmit = (entry: string, exit: string) => {
-    console.log({ entry, exit });
+    // console.log({ entry, exit });
     const updated = videoAnimationData?.map((scene) => ({
       scene_number: scene.scene_number,
       scene_id: scene.scene_id,

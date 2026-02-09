@@ -81,7 +81,6 @@ export default function Bottom({
     ost: "",
   });
 
-  // console.log(videosData, "videosData");
 
   const downloadVideo = (s3_url: string, name: string) => {
     // const link = document.createElement("a");
@@ -133,13 +132,12 @@ export default function Bottom({
   //     exit: v.applied_animation?.exit,
   //   }));
 
-  //   console.log("FINAL SUBMIT PAYLOAD", payload);
   //   // await api.finalSubmit(payload);
 
   //   toast.success("All animations submitted successfully");
   // };
 
-  // console.log(videosData);
+
 
   const handleModalSubmit = async () => {
     if (modalIndex === null) return;

@@ -185,8 +185,6 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     closePrompt();
   };
 
-  console.log(form, "check_form_values");
-
   const handleImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -204,8 +202,6 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
-
-  console.log(form, "check_form_values");
 
   /* ================= RENDER ================= */
 

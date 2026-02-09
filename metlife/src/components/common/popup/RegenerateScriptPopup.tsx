@@ -97,7 +97,7 @@ const RegenerateScriptPopup = ({
       }
     } catch (err) {
       showToast?.error("Some Issue In Re-Generating");
-      console.error("Video creation failed:", err);
+      // console.error("Video creation failed:", err);
     } finally {
       setLoader(false);
       onCloseFun(true);

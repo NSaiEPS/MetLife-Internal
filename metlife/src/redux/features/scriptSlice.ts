@@ -292,7 +292,7 @@ export const postUploadVideo =
       const res = await api.post(
         `process-vid/localisation/process/${projectId}`,
       );
-      console.log(res, "check_res");
+      // console.log(res, "check_res");
       if (res?.status) {
         dispatch(setUploadVideoInfo(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
@@ -317,7 +317,7 @@ export const getLocalizationImageUrl =
     dispatch(setLocalizationImageLoader(true));
     try {
       const res = await api.get(`process-vid/localisation/${projectId}`);
-      console.log(res, "check_final_response");
+      // console.log(res, "check_final_response");
       if (res?.status) {
         dispatch(setLocalizationImageData(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
@@ -350,7 +350,7 @@ export const postImageCoordinates =
         reference_scene_index: 1,
         box: coordinates,
       });
-      console.log(res, "image_coordinates");
+      // console.log(res, "image_coordinates");
       if (res?.status) {
         toast.success(res?.data?.message || "Processing started successfully");
         dispatch(setImageCoordinatesData(res?.data || []));
