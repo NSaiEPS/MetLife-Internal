@@ -58,9 +58,12 @@ const UsersListPopup = ({ open, onClose, scriptId }) => {
 
         <DialogContent>
           {dashboardLoader ? (
-            <Box display="flex" justifyContent="center" py={3}>
-              <CircularProgress />
-            </Box>
+            <>
+              {/* <Box display="flex" justifyContent="center" py={3}>
+                <CircularProgress />
+              </Box> */}
+              <Typography>Loading...</Typography>
+            </>
           ) : usersList?.data?.length > 0 ? (
             usersList?.data?.map((user: any) => {
               const isSelected = selectedUserData.new_user_email === user.email;
