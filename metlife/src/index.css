@@ -1,3 +1,29 @@
+@font-face {
+  font-family: "Metlife_Circular";
+  src: url("./assets/Metlife_Circular/106ccd1b14f16971c332e309cec7d90b.eot");
+  src: url("./assets/Metlife_Circular/106ccd1b14f16971c332e309cec7d90b.eot?#iefix")
+      format("embedded-opentype"),
+    url("./assets/Metlife_Circular/106ccd1b14f16971c332e309cec7d90b.woff")
+      format("woff"),
+    url("./assets/Metlife_Circular/106ccd1b14f16971c332e309cec7d90b.woff2")
+      format("woff2"),
+    url("./assets/Metlife_Circular/106ccd1b14f16971c332e309cec7d90b.ttf")
+      format("truetype"),
+    url("./assets/Metlife_Circular/106ccd1b14f16971c332e309cec7d90b.svg#Font")
+      format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto_Sans";
+  src: url("./assets/NotoSans-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Make toast a flexbox and vertically center its content + close icon */
 .Toastify__toast {
   display: flex !important;

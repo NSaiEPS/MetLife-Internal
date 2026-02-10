@@ -2,6 +2,11 @@
   width: 100% !important;
   /* padding: 60px 80px; */
 
+  .innerContainer {
+    max-width: 1220px;
+    margin: auto;
+  }
+
   .tableContainer {
     width: 100%;
     margin: 8px auto 20px;
@@ -20,9 +25,15 @@
       font-size: 30px;
       font-weight: 600;
       color: #111827;
-      font-family: "Poppins", sans-serif;
+      /* font-family: "Poppins", sans-serif; */
       text-transform: capitalize;
-      padding-left: 120px;
+      /* padding-left: 120px; */
+    }
+
+    .icon {
+      display: flex;
+      gap: 5px;
+      align-items: center;
     }
   }
 }
@@ -46,7 +57,7 @@
   font-weight: 600;
   padding: 16px 20px;
   border-bottom: 1px solid #e6e9ef;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
   color: #111827;
 }
 
@@ -89,6 +100,7 @@
   padding-bottom: 70px;
   display: flex;
   justify-content: end;
+  gap: 10px;
 }
 
 .primaryBtn {
