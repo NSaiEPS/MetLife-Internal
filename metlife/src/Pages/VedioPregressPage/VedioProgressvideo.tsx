@@ -4,15 +4,14 @@ import styles from "./VedioProgressVideo.module.css";
 import ProgressBar from "../../components/common/progressBar";
 import ButtonComp from "../../components/common/Buton/Button";
 import SelectComp from "../../components/common/select"; // ✅ using your SelectComp
-import video from "../../assets/dummy.mp4"
+import video from "../../assets/dummy.mp4";
 import { Box } from "@mui/material";
-import OneFrameHeader from "../../components/common/OneFrameHeader"
+import OneFrameHeader from "../../components/common/OneFrameHeader";
 
 const VideoProgressPage = () => {
   const [progress, setProgress] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
-const [resolution, setResolution] = useState<string | number>("");
-
+  const [resolution, setResolution] = useState<string | number>("");
 
   // ✅ Static Resolution Options
   const resolutionOptions = [
@@ -43,47 +42,44 @@ const [resolution, setResolution] = useState<string | number>("");
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      <OneFrameHeader />
-  <div className={styles.page}>
-  <div className={styles.wrapper}>
-    
-    <h2 className={styles.title}>Finalization & Download</h2>
-    
-    <p className={styles.subTitle}>Video Generation in Progress</p>
-    
-    <ProgressBar progress={progress} />
-    <p className={styles.progressText}>{progress}%</p>
-    
-    {videoReady && (
-      <div className={styles.readySection}>
-        <h3>Your video is ready</h3>
-        
-        <video controls className={styles.video}>
-          <source src={video} type="video/mp4" />
-        </video>
-        
-        <div className={styles.actionsRow}>
-          <div className={styles.resolutionWrap}>
-            <SelectComp
-              label="Resolution"
-              options={resolutionOptions}
-              value={resolution}
-              onChange={setResolution}
-            />
-          </div>
+      <div className={styles.page}>
+        <div className={styles.wrapper}>
+          <h2 className={styles.title}>Finalization & Download</h2>
 
-          <ButtonComp
-            label="Download Video"
-            variant="contained"
-            className={styles.downloadBtn}
-            action={handleDownload}
-          />
+          <p className={styles.subTitle}>Video Generation in Progress</p>
+
+          <ProgressBar progress={progress} />
+          <p className={styles.progressText}>{progress}%</p>
+
+          {videoReady && (
+            <div className={styles.readySection}>
+              <h3>Your video is ready</h3>
+
+              <video controls className={styles.video}>
+                <source src={video} type="video/mp4" />
+              </video>
+
+              <div className={styles.actionsRow}>
+                <div className={styles.resolutionWrap}>
+                  <SelectComp
+                    label="Resolution"
+                    options={resolutionOptions}
+                    value={resolution}
+                    onChange={setResolution}
+                  />
+                </div>
+
+                <ButtonComp
+                  label="Download Video"
+                  variant="contained"
+                  className={styles.downloadBtn}
+                  action={handleDownload}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    )}
-  </div>
-</div>
-
     </Box>
   );
 };

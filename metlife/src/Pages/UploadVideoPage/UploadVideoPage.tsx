@@ -303,7 +303,6 @@ const UploadVideoPage = () => {
   console.log(uploadVideoLoader, "check_loader");
   return (
     <>
-      <OneFrameHeader />
       {(loader || uploadVideoLoader) && (
         <FullScreenGradientLoader text="Uploading Video..." />
       )}

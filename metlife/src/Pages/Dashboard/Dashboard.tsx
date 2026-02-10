@@ -271,11 +271,9 @@ const MyVideosDashboard: React.FC = () => {
     setOpen(null);
   };
 
-
   return (
     <>
       <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
-        <OneFrameHeader />
         {dashboardLoader && <FullScreenGradientLoader text="Loading..." />}
 
         <Box sx={{ p: 4 }}>

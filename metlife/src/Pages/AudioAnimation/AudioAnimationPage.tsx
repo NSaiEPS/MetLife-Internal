@@ -1017,7 +1017,6 @@ const AudioAnimationPage: React.FC = () => {
   //   const narrationType = narrationSelections[charName];
   //   const language = getVoiceLanguage();
   //   const gender = genderSelections[charName];
-    
 
   //   // let voices = allVoiceOptions?.[narrationType]?.[language] || [];
 
@@ -1037,17 +1036,15 @@ const AudioAnimationPage: React.FC = () => {
   // };
 
   const getFilteredVoiceOptions = (charName: string) => {
-  const narrationType = narrationSelections[charName];
-  const language = getVoiceLanguage();
-  const gender = genderSelections[charName];
+    const narrationType = narrationSelections[charName];
+    const language = getVoiceLanguage();
+    const gender = genderSelections[charName];
 
-  const rawVoices = allVoiceOptions?.[narrationType]?.[language] || [];
-  const voices = enrichVoicesWithGender(rawVoices);
+    const rawVoices = allVoiceOptions?.[narrationType]?.[language] || [];
+    const voices = enrichVoicesWithGender(rawVoices);
 
-  return gender
-    ? voices.filter(v => v.gender === gender)
-    : voices;
-};
+    return gender ? voices.filter((v) => v.gender === gender) : voices;
+  };
 
   const handleNarrationChange = (
     charName: string,
@@ -1229,7 +1226,6 @@ const AudioAnimationPage: React.FC = () => {
       {saveLoader && <FullScreenGradientLoader text="loading..." />}
       <audio ref={audioRef} />
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-        <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
             {(audioAnimationLoader || videoAnimationLoader) && (

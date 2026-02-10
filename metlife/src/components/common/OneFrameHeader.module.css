@@ -2,7 +2,6 @@
   background-color: #fff !important;
   /* box-shadow: none !important; */
   box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(196, 195, 195, 0.627) !important;
 }
 
 .toolbar {
@@ -12,6 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(196, 195, 195, 0.627) !important;
 }
 
 .title {

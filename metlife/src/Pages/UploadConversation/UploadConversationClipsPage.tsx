@@ -287,12 +287,10 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
- 
   console.log(stitchedVideoUrl, "check_url");
   return (
     <>
       <div className={styles.container}>
-        <OneFrameHeader />
         {conversationalLoader && <FullScreenGradientLoader text="loading..." />}
         {scenesData?.scenes?.length && scenesData?.scenes?.length > 0 ? (
           <>
@@ -326,7 +324,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                     <IoArrowBackCircleOutline size={30} /> Back
                   </Button>
                 </Box>
-                {(!stitchedVideoUrl) && (
+                {!stitchedVideoUrl && (
                   <>
                     <Stack spacing={3}>
                       {scenesData?.scenes?.map((scene, index) => (

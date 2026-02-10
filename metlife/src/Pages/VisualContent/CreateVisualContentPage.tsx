@@ -72,7 +72,10 @@ const CreateVisualContentPage: React.FC = () => {
       key: "Visual_Type",
       render: (value: RowData["Visual_Type"], row: RowData) => (
         <Select
-          disabled={saveVisualContentData?.video_style === "conversational" || saveVisualContentData?.flow_type === "conversation"}
+          disabled={
+            saveVisualContentData?.video_style === "conversational" ||
+            saveVisualContentData?.flow_type === "conversation"
+          }
           value={value}
           size="small"
           onChange={(e: SelectChangeEvent<string>) =>
@@ -295,7 +298,6 @@ const CreateVisualContentPage: React.FC = () => {
     <>
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
       <div className={styles.container}>
-        <OneFrameHeader />
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length ? (
             <>

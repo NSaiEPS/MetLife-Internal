@@ -43,7 +43,7 @@ const GenerateVisualsPage = () => {
   // derived
   const selectedScene = useMemo(
     () => scenes.find((s) => s.id === selectedSceneId) || scenes[0],
-    [scenes, selectedSceneId]
+    [scenes, selectedSceneId],
   );
 
   // handlers
@@ -91,14 +91,14 @@ const GenerateVisualsPage = () => {
     // placeholder: just append " (regenerated)"
     setScenes((prev) =>
       prev.map((s) =>
-        s.id === id ? { ...s, text: s.text + " (regenerated)" } : s
-      )
+        s.id === id ? { ...s, text: s.text + " (regenerated)" } : s,
+      ),
     );
   };
 
   const handleUpdateSceneText = (text) => {
     setScenes((prev) =>
-      prev.map((s) => (s.id === selectedScene.id ? { ...s, text } : s))
+      prev.map((s) => (s.id === selectedScene.id ? { ...s, text } : s)),
     );
   };
 
@@ -124,8 +124,6 @@ const GenerateVisualsPage = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      <OneFrameHeader />
-
       {/* content */}
       <main className={styles.container}>
         {/* left column */}

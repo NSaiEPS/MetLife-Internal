@@ -396,7 +396,6 @@ const GenerateVisualContentPage: React.FC = () => {
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
 
       <div className={styles.container}>
-        <OneFrameHeader />
         <div className={styles.tableContainer}>
           {generateVisualContentData?.visuals?.length &&
           generateVisualContentData?.visuals?.length > 0 ? (
