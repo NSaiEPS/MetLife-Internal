@@ -102,7 +102,6 @@ const UploadVideoPage = () => {
 
   const remainingSeconds = getRemainingSeconds();
   const finalTime = Math.floor((remainingSeconds / 60) * 10) / 10;
-  // ✅ minutes
 
   console.log({ remainingSeconds, finalTime });
 
@@ -177,6 +176,7 @@ const UploadVideoPage = () => {
         return;
       }
       const data = await response.json();
+      localStorage.setItem("project_id", data?.project_id);
       console.log(data, "check_data");
       setScriptData(data);
       toast.success(data?.message || "Video uploaded successfully");
@@ -208,8 +208,8 @@ const UploadVideoPage = () => {
 
   const uploadVideoSuccessCallback = (data) => {
     if (data?.status) {
-      const duration = Number(data.estimated_remaining_time); // seconds
-      const endTime = Date.now() + duration * 1000; // ✅ future timestamp
+      const duration = Number(data.estimated_remaining_time);
+      const endTime = Date.now() + duration * 1000;
 
       localStorage.setItem(
         "estimated_remaining_time",
@@ -222,9 +222,12 @@ const UploadVideoPage = () => {
 
   const handleUploadVideo = () => {
     // setStartTimer1(true);
-    dispatch(
-      postUploadVideo(scriptData?.project_id, uploadVideoSuccessCallback),
-    );
+    const project_id =
+      scriptData?.project_id || localStorage.getItem("project_id");
+
+    if (project_id) {
+      dispatch(postUploadVideo(project_id, uploadVideoSuccessCallback));
+    }
     // setStep(STEPS.TIMER1);
     // setShowUploadVideo(false);
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
@@ -235,19 +238,29 @@ const UploadVideoPage = () => {
       "original_frame_url",
       data?.scenes?.[0]?.original_frame_url,
     );
-    console.log(data, "check_timer1_success_callback");
+
     if (data?.status === "awaiting_user_rule") {
       setStep(STEPS.RECTANGLE);
     } else {
+      const duration = Number(data.estimated_remaining_time);
+      const endTime = Date.now() + duration * 1000;
+
+      localStorage.setItem(
+        "estimated_remaining_time",
+        JSON.stringify({ endTime }),
+      );
       setStep(STEPS.TIMER2);
     }
   };
 
   const handleTimerComplete = () => {
     // setStartTimer1(false);
-    dispatch(
-      getLocalizationImageUrl(scriptData?.project_id, timer1SuccessCallback),
-    );
+    const project_id =
+      scriptData?.project_id || localStorage.getItem("project_id");
+
+    if (project_id) {
+      dispatch(getLocalizationImageUrl(project_id, timer1SuccessCallback));
+    }
     // setStep(STEPS.TIMER2);
     // setStartTimer2(true);
     // setShowRectangleCanvas(true);
@@ -263,7 +276,11 @@ const UploadVideoPage = () => {
   const handleTimer3Complete = () => {
     // setStartTimer3(false);
     localStorage.removeItem("video_process_step"); // cleanup
-    navigate("/translated-script", { state: scriptData?.project_id });
+    const project_id =
+      scriptData?.project_id || localStorage.getItem("project_id");
+    if (project_id) {
+      navigate("/translated-script", { state: project_id });
+    }
     // dispatch(
     //   getLocalizationImageUrl(scriptData?.project_id, () => {
     //     navigate("/translated-script", { state: localizationImageData });
@@ -480,7 +497,8 @@ const UploadVideoPage = () => {
       )}
 
       {/* {startTimer2 && finalTime2 > 0 && ( */}
-      {step === STEPS.TIMER2 && finalTime > 0 && (
+      {/* {step === STEPS.TIMER2 && finalTime > 0 && ( */}
+      {step === STEPS.TIMER2 && remainingSeconds > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
             time={finalTime}
