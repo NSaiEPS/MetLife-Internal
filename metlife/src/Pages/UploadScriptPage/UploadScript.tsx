@@ -392,7 +392,7 @@ const UploadScript = () => {
                   className={styles.uploadIcon}
                 />
               )}
-              {loader ? "Uploading" : "Upload a Script"}
+              {loader ? "Uploading" : "Submit"}
             </ButtonComp>
           </div>
         </div>

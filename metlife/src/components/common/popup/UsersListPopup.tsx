@@ -11,11 +11,11 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../redux/store";
-import { postShareToUser } from "../../../redux/features/dashBoardSlice";
+import { getDashboardInfo, postShareToUser } from "../../../redux/features/dashBoardSlice";
 
 const UsersListPopup = ({ open, onClose, scriptId }) => {
   const { dashboardLoader, usersList } = useSelector(
-    (store: RootState) => store.DashBoard,
+    (store: RootState) => store.DashBoard, 
   );
 
   const [selectedUserData, setSelectedUserData] = useState({
@@ -28,10 +28,10 @@ const UsersListPopup = ({ open, onClose, scriptId }) => {
   const shareToNewUser = (user) => {
     console.log(user, "check_stored_value");
     if (!scriptId) return;
-    const payload = {
-      script_id: scriptId,
-      new_user_email: user?.email,
-    };
+    // const payload = {
+    //   script_id: scriptId,
+    //   new_user_email: user?.email,
+    // };
 
     setSelectedUserData((prev) => {
       return {
@@ -40,7 +40,6 @@ const UsersListPopup = ({ open, onClose, scriptId }) => {
         new_user_email: user?.email,
       };
     });
-    // dispatch(postShareToUser(data));
   };
 
   const transferOwnership = () => {
@@ -48,8 +47,12 @@ const UsersListPopup = ({ open, onClose, scriptId }) => {
       script_id: scriptId,
       new_user_email: selectedUserData?.new_user_email,
     };
-    dispatch(postShareToUser(data, onClose));
+    dispatch(postShareToUser(data, onClose, successCallback));
   };
+
+  const successCallback = () => {
+    dispatch(getDashboardInfo());
+  }
 
   return (
     <>

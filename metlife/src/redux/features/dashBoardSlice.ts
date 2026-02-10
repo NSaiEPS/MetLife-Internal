@@ -79,7 +79,7 @@ export const getUsersList = () => async (dispatch:AppDispatch) => {
 }
 
 
-export const postShareToUser = (data, onClose) => async (dispatch:AppDispatch) => {
+export const postShareToUser = (data, onClose, successCallback) => async (dispatch:AppDispatch) => {
   dispatch(setDashboardLoader(true));
     try {
     const res = await api.post("transfer-script-ownership", data);
@@ -90,6 +90,10 @@ export const postShareToUser = (data, onClose) => async (dispatch:AppDispatch) =
     // } else {
     //   apiErrorHandling(res);
     // }
+
+    if(successCallback) {
+      successCallback();
+    }
   } catch (e: any) {
     toast.error(e?.response?.data?.message ?? "Error Try again!!");
   } finally {
