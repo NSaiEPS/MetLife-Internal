@@ -54,7 +54,7 @@ export const postTranslatedDataSave =
     try {
       const response = await api.post("mongo/write", data);
       if (response?.status) {
-        dispatch(setSaveTranslatedData(response.data));
+        dispatch(setSaveTranslatedData(response?.data));
         if (successfully) {
           successfully(response.data?.script_id);
         }

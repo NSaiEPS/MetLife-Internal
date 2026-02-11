@@ -326,11 +326,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleDownloadType = (type: string) => {
     console.log(tableExtraData, rows, "tableExtraData");
+    const filteredScenes = tableExtraData?.scenes?.filter(scene => scene?.is_deleted !== true);
+
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
+        downloadScriptPdf({ ...tableExtraData,
+            // scenes: rows
+            scenes: filteredScenes
+           }, true);
       } else if (type === "word") {
-        downloadScriptWord({ ...tableExtraData, scenes: rows });
+        downloadScriptWord({ ...tableExtraData, 
+          // scenes: rows
+          scenes: filteredScenes,
+         });
       }
       setOpenDownloadPopup(false);
     } catch (err) {
@@ -496,9 +504,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       is_save_action: true,
     };
 
-    // let updatedData=[...scenes]?.map((parentItem)=>{
-
-    // })
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {
@@ -557,8 +562,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  console.log(targetVersion, "targetVersion");
-
   const successDelete = (scene: SceneRow) => {
     const updated = rows
       .filter((item) => item.id !== scene.id)
@@ -589,7 +592,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleCreateVisualContent = (flowType) => {
-    const payload = { ...tableExtraData };
+    console.log(tableExtraData?.scenes, "check_table_extra_data");
+
+    const filteredScenes = tableExtraData?.scenes?.filter(scene => scene?.is_deleted !== true)
+    const payload = { ...tableExtraData,
+      scenes: filteredScenes,
+     };
     if (tableExtraData?.video_style === "mixed") {
       payload.flow_type = flowType;
     }
@@ -638,8 +646,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       handleSetupPrompt();
     }
   };
-
-  console.log(extraDetails, tableExtraData, "jjjs");
 
   return (
     <>
@@ -1080,6 +1086,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               variant="contained"
               // className={styles.successBtn}
               onClick={() => setOpenDownloadPopup(true)}
+              disabled={ !saveTranslatedData?.saved_version}
             >
               Download Script
             </ButtonComp>

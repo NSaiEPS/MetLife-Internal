@@ -72,7 +72,10 @@ const CreateVisualContentPage: React.FC = () => {
       key: "Visual_Type",
       render: (value: RowData["Visual_Type"], row: RowData) => (
         <Select
-          disabled={saveVisualContentData?.video_style === "conversational" || saveVisualContentData?.flow_type === "conversation"}
+          disabled={
+            saveVisualContentData?.video_style === "conversational" ||
+            saveVisualContentData?.flow_type === "conversation"
+          }
           value={value}
           size="small"
           onChange={(e: SelectChangeEvent<string>) =>
@@ -222,29 +225,35 @@ const CreateVisualContentPage: React.FC = () => {
     );
     setRows(updatedRows);
 
+    const payload = {
+      prompt_batch_id: id,
+      prompt_id: data?.prompt_id,
+      visual_type: value,
+    };
+    console.log(value, "value");
+
     if (value === "clip") {
-      const payload = {
-        prompt_batch_id: id,
-        prompt_id: data?.prompt_id,
-        visual_type: value,
-      };
       dispatch(postVisualTypeUpdate(payload));
     }
   };
 
   const handleGenerate = () => {
-    const prompts = saveVisualContentData?.prompts ?? [];
+    // const prompts = saveVisualContentData?.prompts ?? [];
+    const prompts = rows ?? [];
+
     const manipulatedPrompts = prompts.map((item) => {
       const obj = {
         ...item,
-        scene_type: item?.scene_type ?? item?.scene_type,
+        // scene_type: item?.scene_type ?? item?.scene_type,
       };
       if (item.clip_visual_type === "clip") {
+        obj.clip_visual_type = "clip";
         delete obj?.prompt;
-        delete obj.visual_type;
-      } else if (item.visual_type === "image") {
-        delete obj.clip_prompt;
-        delete obj.clip_visual_type;
+        delete obj?.visual_type;
+      } else if (item?.visual_type === "image") {
+        obj.visual_type = "image";
+        delete obj?.clip_prompt;
+        delete obj?.clip_visual_type;
       }
       return obj;
     });
@@ -259,7 +268,7 @@ const CreateVisualContentPage: React.FC = () => {
       video_style: saveVisualContentData?.video_style,
       flow_type: saveVisualContentData?.flow_type,
     };
-    // console.log(finalPayload, "check_final_payload")
+    console.log(finalPayload, "check_final")
     dispatch(postGenerateVisualContentImage(finalPayload));
   };
 
@@ -283,6 +292,8 @@ const CreateVisualContentPage: React.FC = () => {
   //   if (!Array.isArray(scene.videos)) return false;
   //   return scene.status !== "uploaded" || scene.videos.length === 0;
   // }) ?? false;
+
+  console.log(saveVisualContentData?.prompts , "chekc")
 
   return (
     <>
