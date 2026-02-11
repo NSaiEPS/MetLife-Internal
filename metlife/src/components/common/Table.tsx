@@ -326,11 +326,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleDownloadType = (type: string) => {
     console.log(tableExtraData, rows, "tableExtraData");
+    const filteredScenes = tableExtraData?.scenes?.filter(scene => scene?.is_deleted !== true);
+
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
+        downloadScriptPdf({ ...tableExtraData,
+            // scenes: rows
+            scenes: filteredScenes
+           }, true);
       } else if (type === "word") {
-        downloadScriptWord({ ...tableExtraData, scenes: rows });
+        downloadScriptWord({ ...tableExtraData, 
+          // scenes: rows
+          scenes: filteredScenes,
+         });
       }
       setOpenDownloadPopup(false);
     } catch (err) {
@@ -1078,6 +1086,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               variant="contained"
               // className={styles.successBtn}
               onClick={() => setOpenDownloadPopup(true)}
+              disabled={ !saveTranslatedData?.saved_version}
             >
               Download Script
             </ButtonComp>
@@ -1105,13 +1114,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     variant="contained"
                     colorType="secondary"
                     // className={styles.primaryBtn}
-                    // disabled={
-                    //   saveTranslatedData === null ||
-                    //   operations ||
-                    //   // saveTranslatedData?.is_save_action === false
-                    //   !saveTranslatedData?.saved_version ||
-                    //   tableExtraData?.prompt_batch_id
-                    // }
+                    disabled={
+                      saveTranslatedData === null ||
+                      operations ||
+                      // saveTranslatedData?.is_save_action === false
+                      !saveTranslatedData?.saved_version ||
+                      tableExtraData?.prompt_batch_id
+                    }
                   >
                     Create Visual Content
                   </ButtonComp>
