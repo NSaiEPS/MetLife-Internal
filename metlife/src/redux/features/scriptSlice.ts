@@ -147,6 +147,34 @@ export const {
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
+export const postAddScene =
+  (
+    data: { script_id?: string; scene_id: string | number; version?: number },
+    // setOpenDeletePopup: (v: boolean) => void,
+
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await api.post("mongo/add_scene", data);
+      // console.log(res, "check_delter");
+      if (res.status) {
+        dispatch(
+          setScriptData({
+            scene_id: data.scene_id,
+          }),
+        );
+
+      }
+    } catch (error: any) {
+      // console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+      // setOpenDeletePopup(false);
+    }
+  };
+
 export const postDeleteScene =
   (
     data: { script_id?: string; scene_id: string | number; version?: number },

@@ -14,6 +14,9 @@ import {
 } from "@mui/material";
 import styles from "./addScripts.module.css";
 import ButtonComp from "../common/Buton/Button";
+import { useDispatch } from "react-redux";
+import { postAddScene } from "../../redux/features/scriptSlice";
+import { useParams } from "react-router";
 
 interface ScriptData {
   Script?: string;
@@ -42,9 +45,12 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   handleUpdate,
   tableExtraData,
 }) => {
+  const {id } = useParams();
+  console.log(fieldData, id, "fieldData")
+  const dispatch = useDispatch();
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("narrator");
 
   useEffect(() => {
     if (fieldData) {
@@ -63,7 +69,18 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
     }
   }, [fieldData, open]);
 
+  console.log(type, "chexk_type")
+
   const handleSave = () => {
+    if(title === "Add New Scene") {
+      const formData = new FormData();
+      formData.append("script_id", id)
+      formData.append("version", "1")
+      formData.append("scene_type", "narrator")
+      formData.append("description", script)
+      formData.append("on_screen_text", ost)
+      dispatch(postAddScene(formData))
+    }
     const payload = {
       script,
       ost,
