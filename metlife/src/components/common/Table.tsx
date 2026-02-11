@@ -496,9 +496,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       is_save_action: true,
     };
 
-    // let updatedData=[...scenes]?.map((parentItem)=>{
-
-    // })
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {
@@ -557,8 +554,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  console.log(targetVersion, "targetVersion");
-
   const successDelete = (scene: SceneRow) => {
     const updated = rows
       .filter((item) => item.id !== scene.id)
@@ -589,7 +584,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleCreateVisualContent = (flowType) => {
-    const payload = { ...tableExtraData };
+    console.log(tableExtraData?.scenes, "check_table_extra_data");
+
+    const filteredScenes = tableExtraData?.scenes?.filter(scene => scene?.is_deleted !== true)
+    const payload = { ...tableExtraData,
+      scenes: filteredScenes,
+     };
     if (tableExtraData?.video_style === "mixed") {
       payload.flow_type = flowType;
     }
@@ -638,8 +638,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       handleSetupPrompt();
     }
   };
-
-  console.log(extraDetails, tableExtraData, "jjjs");
 
   return (
     <>
@@ -1107,13 +1105,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     variant="contained"
                     colorType="secondary"
                     // className={styles.primaryBtn}
-                    disabled={
-                      saveTranslatedData === null ||
-                      operations ||
-                      // saveTranslatedData?.is_save_action === false
-                      !saveTranslatedData?.saved_version ||
-                      tableExtraData?.prompt_batch_id
-                    }
+                    // disabled={
+                    //   saveTranslatedData === null ||
+                    //   operations ||
+                    //   // saveTranslatedData?.is_save_action === false
+                    //   !saveTranslatedData?.saved_version ||
+                    //   tableExtraData?.prompt_batch_id
+                    // }
                   >
                     Create Visual Content
                   </ButtonComp>
