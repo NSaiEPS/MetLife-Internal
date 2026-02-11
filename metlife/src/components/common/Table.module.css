@@ -48,7 +48,7 @@
   align-items: center;
   margin-top: 16px;
   padding-left: 20px;
-  gap:20px;
+  gap: 20px;
 }
 
 .downloadBtn {
@@ -73,6 +73,13 @@
 
 .bodyRow {
   background: #ffffff;
+}
+
+.deletedRow {
+  /* background-color: rgba(255, 230, 230, 0.505) !important; */
+  opacity: 0.4;
+  user-select: none;
+  pointer-events: none;
 }
 
 .bodyCell {
@@ -100,6 +107,15 @@
 /* small override for IconButton to reduce padding */
 .iconBtn {
   padding: 6px;
+}
+
+.smallIconBtn {
+  padding: 3px 15px !important;
+  border-radius: 30px !important;
+  font-size: 14px !important;
+  background-color: #fcecec !important;
+  border: 2px solid #efaaaa !important;
+  color: #d50e0e !important;
 }
 
 /* Responsive adjustments */

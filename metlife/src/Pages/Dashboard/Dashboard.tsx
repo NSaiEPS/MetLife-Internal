@@ -167,7 +167,13 @@ const MyVideosDashboard: React.FC = () => {
       return (
         <Chip
           label="Audio Progress"
-          sx={{ bgcolor: "#2196F3", color: "#fff" }}
+          sx={{
+            bgcolor: "#dde7ffff",
+            fontWeight: "bold",
+            lineHeight: "normal",
+            color: "#0d30aeff",
+            border: "2px solid #aab5efff",
+          }}
         />
       );
 
@@ -297,7 +303,7 @@ const MyVideosDashboard: React.FC = () => {
     dispatch(getUsersList());
   };
 
-  console.log(scriptId, "scriptId")
+  console.log(scriptId, "scriptId");
 
   return (
     <>
