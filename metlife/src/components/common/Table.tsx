@@ -135,6 +135,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
   );
+
+  console.log(rows, "tableRowssss");
   // const { scriptLoader } = useSelector((store: RootState) => store.Script);
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const [openShowPopup, setOpenShowPopup] = useState(false);
@@ -326,19 +328,26 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleDownloadType = (type: string) => {
     console.log(tableExtraData, rows, "tableExtraData");
-    const filteredScenes = tableExtraData?.scenes?.filter(scene => scene?.is_deleted !== true);
+    const filteredScenes = tableExtraData?.scenes?.filter(
+      (scene) => scene?.is_deleted !== true,
+    );
 
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...tableExtraData,
+        downloadScriptPdf(
+          {
+            ...tableExtraData,
             // scenes: rows
-            scenes: filteredScenes
-           }, true);
+            scenes: filteredScenes,
+          },
+          true,
+        );
       } else if (type === "word") {
-        downloadScriptWord({ ...tableExtraData, 
+        downloadScriptWord({
+          ...tableExtraData,
           // scenes: rows
           scenes: filteredScenes,
-         });
+        });
       }
       setOpenDownloadPopup(false);
     } catch (err) {
@@ -594,10 +603,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleCreateVisualContent = (flowType) => {
     console.log(tableExtraData?.scenes, "check_table_extra_data");
 
-    const filteredScenes = tableExtraData?.scenes?.filter(scene => scene?.is_deleted !== true)
-    const payload = { ...tableExtraData,
-      scenes: filteredScenes,
-     };
+    const filteredScenes = tableExtraData?.scenes?.filter(
+      (scene) => scene?.is_deleted !== true,
+    );
+    const payload = { ...tableExtraData, scenes: filteredScenes };
     if (tableExtraData?.video_style === "mixed") {
       payload.flow_type = flowType;
     }
@@ -820,71 +829,81 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </TableHead>
 
                 <TableBody>
-                  {rows?.map(
-                    (row, rIdx) =>
-                      !row?.is_deleted && (
-                        <Draggable
-                          key={String(row.id)}
-                          draggableId={String(row.id)}
-                          index={rIdx}
-                          isDragDisabled={!showDragAndActions}
+                  {rows?.map((row, rIdx) => (
+                    // !row?.is_deleted && (
+                    <Draggable
+                      key={String(row.id)}
+                      draggableId={String(row.id)}
+                      index={rIdx}
+                      isDragDisabled={!showDragAndActions || row?.is_deleted}
+                    >
+                      {(providedDraggable) => (
+                        <TableRow
+                          ref={providedDraggable.innerRef}
+                          {...providedDraggable.draggableProps}
+                          className={`${styles.bodyRow} ${row?.is_deleted && styles.deletedRow}`}
                         >
-                          {(providedDraggable) => (
-                            <TableRow
-                              ref={providedDraggable.innerRef}
-                              {...providedDraggable.draggableProps}
-                              className={styles.bodyRow}
-                            >
-                              {showDragAndActions && (
-                                <TableCell className={styles.bodyCell}>
+                          {showDragAndActions && (
+                            <TableCell className={styles.bodyCell}>
+                              <Tooltip
+                                title="Drag & Drop"
+                                placement="top"
+                                arrow
+                              >
+                                <span>
+                                  <IconButton
+                                    {...providedDraggable.dragHandleProps} // ✅ FIXED HERE
+                                    size="small"
+                                    className={styles.dragHandle}
+                                  >
+                                    <DragIndicatorIcon />
+                                  </IconButton>
+                                </span>
+                              </Tooltip>
+                            </TableCell>
+                          )}
+
+                          {columns.map((col, cIdx) => (
+                            <TableCell key={cIdx} className={styles.bodyCell}>
+                              {row[col as keyof SceneRow]}
+                            </TableCell>
+                          ))}
+
+                          {showDragAndActions && (
+                            <TableCell className={styles.bodyCell}>
+                              <div className={styles.actionsWrap}>
+                                {row?.is_deleted ? (
                                   <Tooltip
-                                    title="Drag & Drop"
+                                    title="Restore"
                                     placement="top"
                                     arrow
                                   >
-                                    <span>
-                                      <IconButton
-                                        {...providedDraggable.dragHandleProps} // ✅ FIXED HERE
-                                        size="small"
-                                        className={styles.dragHandle}
-                                      >
-                                        <DragIndicatorIcon />
-                                      </IconButton>
-                                    </span>
+                                    <IconButton
+                                      className={styles.smallIconBtn}
+                                      size="small"
+                                    >
+                                      Deleted
+                                    </IconButton>
                                   </Tooltip>
-                                </TableCell>
-                              )}
-
-                              {columns.map((col, cIdx) => (
-                                <TableCell
-                                  key={cIdx}
-                                  className={styles.bodyCell}
-                                >
-                                  {row[col as keyof SceneRow]}
-                                </TableCell>
-                              ))}
-
-                              {showDragAndActions && (
-                                <TableCell className={styles.bodyCell}>
-                                  <div className={styles.actionsWrap}>
-                                    {actions.map((act, aIdx) => (
-                                      <IconButton
-                                        key={aIdx}
-                                        className={styles.iconBtn}
-                                        size="small"
-                                        onClick={() => act.onClick(row)}
-                                      >
-                                        {act.icon}
-                                      </IconButton>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                              )}
-                            </TableRow>
+                                ) : (
+                                  actions.map((act, aIdx) => (
+                                    <IconButton
+                                      key={aIdx}
+                                      className={styles.iconBtn}
+                                      size="small"
+                                      onClick={() => act.onClick(row)}
+                                    >
+                                      {act.icon}
+                                    </IconButton>
+                                  ))
+                                )}
+                              </div>
+                            </TableCell>
                           )}
-                        </Draggable>
-                      ),
-                  )}
+                        </TableRow>
+                      )}
+                    </Draggable>
+                  ))}
 
                   {/*
                     `provided.placeholder` belongs to Droppable's render-props.
@@ -1086,7 +1105,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               variant="contained"
               // className={styles.successBtn}
               onClick={() => setOpenDownloadPopup(true)}
-              disabled={ !saveTranslatedData?.saved_version}
+              disabled={!saveTranslatedData?.saved_version}
             >
               Download Script
             </ButtonComp>
