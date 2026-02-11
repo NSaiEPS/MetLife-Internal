@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   AppBar,
   Avatar,
+  Box,
   Button,
   Divider,
   IconButton,
@@ -73,80 +74,82 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   return (
     <>
       <AppBar position="static" className={styles.appBar}>
-        <Toolbar className={styles.toolbar}>
-          {/* Left spacer to keep title centered */}
-          <img
-            src={logo}
-            alt="MetLife logo"
-            onClick={handleImageClick}
-            className={styles.logo}
-          />
-          <Typography variant="h6" className={styles.title}>
-            OneFrame
-          </Typography>
-          <div>
-            <Button
-              disableRipple
-              disableTouchRipple
-              onClick={() => navigateTo("/dashboard")}
-              sx={{
-                fontSize: "24px",
-                lineHeight: "30px",
-                color: "#000000",
-                fontWeight: 600,
-                padding: "11px",
-                marginBottom: "-9px",
-                borderRadius: 0,
-                textTransform: "none",
-                borderBottom: "4px solid transparent",
-                minWidth: "auto",
-                ":hover": {
-                  borderBottom: "4px solid #0079bb",
-                  backgroundColor: "transparent",
-                },
-                ":active": {
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              Dashboard
-            </Button>
-            {token && (
-              <>
-                <IconButton onClick={handleOpen}>
-                  <Avatar
-                    sx={{
-                      bgcolor: "#1976d2",
-                      fontSize: "18px",
-                      fontWeight: 600,
-                      paddingTop: "0.3rem"
-                      // lineHeight: 1,
-                      // fontFamily: "Inter, Roboto, sans-serif",
-                    }}
+        <Box className={styles.appBarBox}>
+          <Toolbar className={styles.toolbar}>
+            {/* Left spacer to keep title centered */}
+            <img
+              src={logo}
+              alt="MetLife logo"
+              onClick={handleImageClick}
+              className={styles.logo}
+            />
+            <Typography variant="h6" className={styles.title}>
+              OneFrame
+            </Typography>
+            <div>
+              <Button
+                disableRipple
+                disableTouchRipple
+                onClick={() => navigateTo("/dashboard")}
+                sx={{
+                  fontSize: "24px",
+                  lineHeight: "30px",
+                  color: "#000000",
+                  fontWeight: 600,
+                  padding: "11px",
+                  marginBottom: "-9px",
+                  borderRadius: 0,
+                  textTransform: "none",
+                  borderBottom: "4px solid transparent",
+                  minWidth: "auto",
+                  ":hover": {
+                    borderBottom: "4px solid #0079bb",
+                    backgroundColor: "transparent",
+                  },
+                  ":active": {
+                    backgroundColor: "transparent",
+                  },
+                }}
+              >
+                Dashboard
+              </Button>
+              {token && (
+                <>
+                  <IconButton onClick={handleOpen}>
+                    <Avatar
+                      sx={{
+                        bgcolor: "#1976d2",
+                        fontSize: "18px",
+                        fontWeight: 600,
+                        paddingTop: "0.3rem",
+                        // lineHeight: 1,
+                        // fontFamily: "Inter, Roboto, sans-serif",
+                      }}
+                    >
+                      {username.charAt(0).toUpperCase()}
+                    </Avatar>
+                  </IconButton>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
                   >
-                    {username.charAt(0).toUpperCase()}
-                  </Avatar>
-                </IconButton>
+                    <MenuItem disabled>
+                      <Typography variant="subtitle2">{username}</Typography>
+                    </MenuItem>
 
-                <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  transformOrigin={{ vertical: "top", horizontal: "right" }}
-                >
-                  <MenuItem disabled>
-                    <Typography variant="subtitle2">{username}</Typography>
-                  </MenuItem>
+                    <Divider />
 
-                  <Divider />
-
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
-              </>
-            )}
-          </div>
-        </Toolbar>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  </Menu>
+                </>
+              )}
+            </div>
+          </Toolbar>
+        </Box>
       </AppBar>
     </>
   );

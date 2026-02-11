@@ -71,11 +71,11 @@ const ScriptPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <OneFrameHeader
+      {/* <OneFrameHeader
         // setMakeChanges={setMakeChanges}
         makeChanges={makeChanges}
         sceneHandle={true}
-      />
+      /> */}
 
       <div className={styles.tableContainer}>
         {sceneData?.scenes?.length && !loading && sceneData.status ? (
