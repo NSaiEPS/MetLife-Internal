@@ -65,6 +65,7 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
   );
+  console.log(saveVisualContentData, "check")
   const columns: Column<RowData>[] = [
     { label: "Scene No.", key: "Scene_No", width: "5%" },
     {
@@ -238,8 +239,8 @@ const CreateVisualContentPage: React.FC = () => {
   };
 
   const handleGenerate = () => {
-    // const prompts = saveVisualContentData?.prompts ?? [];
-    const prompts = rows ?? [];
+    const prompts = saveVisualContentData?.prompts ?? [];
+    // const prompts = rows ?? [];
 
     const manipulatedPrompts = prompts.map((item) => {
       const obj = {

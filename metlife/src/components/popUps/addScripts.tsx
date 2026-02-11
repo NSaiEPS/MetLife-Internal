@@ -15,7 +15,7 @@ import {
 import styles from "./addScripts.module.css";
 import ButtonComp from "../common/Buton/Button";
 import { useDispatch } from "react-redux";
-import { postAddScene } from "../../redux/features/scriptSlice";
+import { postAddScene, postEditScene } from "../../redux/features/scriptSlice";
 import { useParams } from "react-router";
 
 interface ScriptData {
@@ -43,14 +43,16 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   fieldData,
   title,
   handleUpdate,
-  tableExtraData,
+  tableData,
 }) => {
-  const {id } = useParams();
-  console.log(fieldData, id, "fieldData")
+  const { id } = useParams();
   const dispatch = useDispatch();
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
   const [type, setType] = useState("narrator");
+
+  console.log(tableData?.video_style === "narrative", "check");
+  
 
   useEffect(() => {
     if (fieldData) {
@@ -69,18 +71,28 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
     }
   }, [fieldData, open]);
 
-  console.log(type, "chexk_type")
+  console.log(fieldData, "field");
 
   const handleSave = () => {
-    if(title === "Add New Scene") {
+    if (title === "Add New Scene") {
       const formData = new FormData();
-      formData.append("script_id", id)
-      formData.append("version", "1")
-      formData.append("scene_type", "narrator")
-      formData.append("description", script)
-      formData.append("on_screen_text", ost)
-      dispatch(postAddScene(formData))
+      formData.append("script_id", id);
+      formData.append("version", tableData?.version);
+      formData.append("scene_type", tableData?.video_style === "narrative" ? "narrator" : "");
+      formData.append("description", script);
+      formData.append("on_screen_text", ost);
+      dispatch(postAddScene(formData));
     }
+    if (title === "Edit Scene") {
+      const formData = new FormData();
+      formData.append("script_id", id);
+      formData.append("version", tableData?.version);
+      formData.append("scene_id", fieldData?.id);
+      formData.append("update_description", script);
+      formData.append("update_on_screen_text", ost);
+      dispatch(postEditScene(formData));
+    }
+
     const payload = {
       script,
       ost,

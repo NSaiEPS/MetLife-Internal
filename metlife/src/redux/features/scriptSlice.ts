@@ -156,7 +156,7 @@ export const postAddScene =
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
-      const res = await api.post("mongo/add_scene", data);
+      const res = await api.post("add_scene", data);
       // console.log(res, "check_delter");
       if (res.status) {
         dispatch(
@@ -211,16 +211,16 @@ export const postEditScene =
       toast.success(res?.data?.message || "Description updated successfully");
       onClose(false);
 
-      // if (res.status) {
-      //   dispatch(
-      //     setScriptData({
-      //       scene_id: data.scene_id,
-      //     }),
-      //   );
-      // }
+      if (res.status) {
+        dispatch(
+          setScriptData({
+            scene_id: data.scene_id,
+          }),
+        );
+      }
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.response?.data?.message || "Something went wrong!");
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
     }

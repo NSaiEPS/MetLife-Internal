@@ -375,7 +375,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       setRows((prev) => [...prev, newScene]);
     }
 
-    showToast.success("Scene saved successfully");
+    // showToast.success("Scene saved successfully");
     setOpenPopup(false);
   };
 
@@ -646,6 +646,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       handleSetupPrompt();
     }
   };
+
+  console.log(tableExtraData?.version, "tableExtraData")
 
   return (
     <>
