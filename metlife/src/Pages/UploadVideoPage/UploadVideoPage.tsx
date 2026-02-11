@@ -44,6 +44,14 @@ const introOptions = [
   { value: "no", label: "No" },
   { value: "yes", label: "Yes" },
 ];
+enum STEPS {
+  UPLOAD = 1,
+  TIMER1 = 2,
+  TIMER2 = 3,
+  RECTANGLE = 4,
+  TIMER3 = 5,
+  DONE = 6,
+}
 
 const UploadVideoPage = () => {
   const [title, setTitle] = useState("");
@@ -61,10 +69,27 @@ const UploadVideoPage = () => {
   const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
   const [showRectangleCanvas, setShowRectangleCanvas] =
     useState<boolean>(false);
-  const isDisabled = !title.trim() || !uploadSuccess;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const fileInputRef = useRef<any>(null);
-  const dispatch = useDispatch();
+  const isDisabled = !title.trim() || !uploadSuccess;
+  // const [startTimer1, setStartTimer1] = useState<boolean>(false);
+  // const [startTimer2, setStartTimer2] = useState<boolean>(false);
+  // const [startTimer3, setStartTimer3] = useState<boolean>(false);
+  // const [showUploadVideo, setShowUploadVideo] = useState<boolean>(true);
+  // const [showRectangleCanvas, setShowRectangleCanvas] =
+  //   useState<boolean>(false);
+
+  const [step, setStep] = useState<number>(() => {
+    const savedStep = localStorage.getItem("video_process_step");
+    return savedStep ? Number(savedStep) : STEPS.UPLOAD;
+  });
+
+  // const finalTime = 0.5;
+
+  const handleClick = () => {
+    fileInputRef?.current?.click();
+  };
   const { uploadVideoLoader, uploadVideoInfo } = useSelector(
     (store) => store.Script.uploadVideoData,
   );
@@ -75,18 +100,34 @@ const UploadVideoPage = () => {
     imageCoordinatesData,
   } = useSelector((store) => store.Script);
   console.log(localizationImageData, "localizationImageData");
-  const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
-  const waitingTime2 = localizationImageData?.estimated_remaining_time;
-  const waitingTime3 = imageCoordinatesData?.estimated_time_seconds;
-  const finalTime1 = Math.ceil(waitingTime1 / 60);
-  const finalTime2 = Math.ceil(waitingTime2 / 60);
-  const finalTime3 = Math.ceil(waitingTime3 / 60);
+  // const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
+  // const waitingTime2 = localizationImageData?.estimated_remaining_time;
+  // const waitingTime3 = imageCoordinatesData?.estimated_time_seconds;
+  // const finalTime1 = Math.ceil(waitingTime1 / 60);
+  // const finalTime2 = Math.ceil(waitingTime2 / 60);
+  // const finalTime3 = Math.ceil(waitingTime3 / 60);
+
+  // const waitingTime = uploadVideoInfo?.estimated_remaining_time;
+  const getRemainingSeconds = () => {
+    const stored = localStorage.getItem("estimated_remaining_time");
+
+    if (!stored) return 0;
+
+    const { endTime } = JSON.parse(stored);
+
+    const remaining = Math.floor((endTime - Date.now()) / 1000);
+
+    return remaining > 0 ? remaining : 0;
+  };
+
+  const remainingSeconds = getRemainingSeconds();
+  const finalTime = Math.floor((remainingSeconds / 60) * 10) / 10;
+
+  console.log({ remainingSeconds, finalTime });
+
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
 
-  const handleClick = () => {
-    fileInputRef?.current?.click();
-  };
 
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
@@ -155,6 +196,8 @@ const UploadVideoPage = () => {
         return;
       }
       const data = await response.json();
+      localStorage.setItem("project_id", data?.project_id);
+      console.log(data, "check_data");
       setScriptData(data);
       toast.success(data?.message || "Video uploaded successfully");
       setUploadSuccess(true);
@@ -174,30 +217,108 @@ const UploadVideoPage = () => {
     }
   };
 
+  // const formData = new FormData();
+  // formData.append("video", file);
+
+  // dispatch(
+  //   postUploadVideo(scriptId, formData, () => {
+  //     console.log("Upload complete");
+  //   }),
+  // );
+
+  const uploadVideoSuccessCallback = (data) => {
+    if (data?.status) {
+      const duration = Number(data.estimated_remaining_time);
+      const endTime = Date.now() + duration * 1000;
+
+      localStorage.setItem(
+        "estimated_remaining_time",
+        JSON.stringify({ endTime }),
+      );
+
+      setStep(STEPS.TIMER1);
+    }
+  };
+
   const handleUploadVideo = () => {
-    setStartTimer1(true);
-    dispatch(postUploadVideo(scriptData?.project_id));
+    // setStartTimer1(true);
+    const project_id =
+      scriptData?.project_id || localStorage.getItem("project_id");
+
+    if (project_id) {
+      dispatch(postUploadVideo(project_id, uploadVideoSuccessCallback));
+    }
+    // setStep(STEPS.TIMER1);
+    // setShowUploadVideo(false);
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setShowUploadVideo(false);
+  };
+
+  const timer1SuccessCallback = (data) => {
+    localStorage.setItem(
+      "original_frame_url",
+      data?.scenes?.[0]?.original_frame_url,
+    );
+
+    if (data?.status === "awaiting_user_rule") {
+      setStep(STEPS.RECTANGLE);
+    } else {
+      const duration = Number(data.estimated_remaining_time);
+      const endTime = Date.now() + duration * 1000;
+
+      localStorage.setItem(
+        "estimated_remaining_time",
+        JSON.stringify({ endTime }),
+      );
+      setStep(STEPS.TIMER2);
+    }
   };
 
   const handleTimerComplete = () => {
-    setStartTimer1(false);
-    dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setStartTimer2(true);
+    // setStartTimer1(false);
+    const project_id =
+      scriptData?.project_id || localStorage.getItem("project_id");
+
+    if (project_id) {
+      dispatch(getLocalizationImageUrl(project_id, timer1SuccessCallback));
+    }
+    // setStep(STEPS.TIMER2);
+    // setStartTimer2(true);
     // setShowRectangleCanvas(true);
   };
 
   const handleTimer2Complete = () => {
-    setStartTimer2(false);
+    setStep(STEPS.RECTANGLE);
+    // setStartTimer2(false);
+    // setShowRectangleCanvas(true);
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
-    setShowRectangleCanvas(true);
   };
 
   const handleTimer3Complete = () => {
-    setStartTimer3(false);
-    navigate("/translated-script", { state: scriptData?.project_id });
+    // setStartTimer3(false);
+    localStorage.removeItem("video_process_step"); // cleanup
+    const project_id =
+      scriptData?.project_id || localStorage.getItem("project_id");
+    if (project_id) {
+      navigate("/translated-script", { state: project_id });
+    }
+    // dispatch(
+    //   getLocalizationImageUrl(scriptData?.project_id, () => {
+    //     navigate("/translated-script", { state: localizationImageData });
+    //   }),
+    // );
+    // setShowRectangleCanvas(true);
   };
+
+  useEffect(() => {
+    localStorage.setItem("video_process_step", step.toString());
+  }, [step]);
+
+  // useEffect(() => {
+  //   const savedStep = localStorage.getItem("video_process_step");
+  //   if (savedStep) {
+  //     setStep(Number(savedStep));
+  //   }
+  // }, []);
 
   console.log(uploadVideoLoader, "check_loader");
   const handleSeconds = (e: any) => {
@@ -210,7 +331,6 @@ const UploadVideoPage = () => {
   console.log(intro, "check_value")
   return (
     <>
-      <OneFrameHeader />
       {(loader || uploadVideoLoader) && (
         <FullScreenGradientLoader text="Uploading Video..." />
       )}
@@ -223,7 +343,8 @@ const UploadVideoPage = () => {
         <FullScreenGradientLoader text="Propagating Image..." />
       )}
 
-      {showUploadVideo && (
+      {/* {showUploadVideo && ( */}
+      {step === STEPS.UPLOAD && (
         <div className={styles.uploadPageContainer}>
           <div className={styles.uploadCard}>
             <div
@@ -426,27 +547,32 @@ const UploadVideoPage = () => {
       )}
 
       {/* {!startTimer1 && finalTime > 0 && !generatedVideoData?.final_video && ( */}
-      {startTimer1 && finalTime1 > 0 && (
+      {/* {startTimer1 && finalTime1 > 0 && ( */}
+      {/* {step === STEPS.TIMER1 && finalTime > 0 && ( */}
+      {step === STEPS.TIMER1 && remainingSeconds > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
-            time={finalTime1}
+            time={finalTime}
             onComplete={handleTimerComplete}
             label="Waiting for processing"
           />
         </Box>
       )}
 
-      {startTimer2 && finalTime2 > 0 && (
+      {/* {startTimer2 && finalTime2 > 0 && ( */}
+      {/* {step === STEPS.TIMER2 && finalTime > 0 && ( */}
+      {step === STEPS.TIMER2 && remainingSeconds > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
-            time={finalTime2}
+            time={finalTime}
             onComplete={handleTimer2Complete}
             label="Processing started"
           />
         </Box>
       )}
 
-      {showRectangleCanvas && (
+      {/* {showRectangleCanvas && ( */}
+      {step === STEPS.RECTANGLE && (
         <Box
           sx={{
             width: "100%",
@@ -468,19 +594,23 @@ const UploadVideoPage = () => {
             }}
           >
             <RectangleDrawer
+              setStep={setStep}
+              STEPS={STEPS}
               projectId={scriptData?.project_id}
-              setStartTimer3={setStartTimer3}
-              setShowRectangleCanvas={setShowRectangleCanvas}
-              imgSrc={localizationImageData?.scenes[0]?.original_frame_url}
+              // setStartTimer3={setStartTimer3}
+              // setShowRectangleCanvas={setShowRectangleCanvas}
+              // imgSrc={localizationImageData?.scenes?.[0]?.original_frame_url}
+              imgSrc={localStorage.getItem("original_frame_url")}
             />
           </Box>
         </Box>
       )}
 
-      {startTimer3 && finalTime3 > 0 && (
+      {/* {startTimer3 && finalTime3 > 0 && ( */}
+      {step === STEPS.TIMER3 && finalTime > 0 && (
         <Box sx={{ width: "100%", padding: "30px" }}>
           <Timer
-            time={finalTime3}
+            time={finalTime}
             onComplete={handleTimer3Complete}
             label="Extracting meta-data"
           />

@@ -87,6 +87,7 @@ const TranslatedScript: React.FC = () => {
     <div className={styles.container}>
       <OneFrameHeader />
       {/* {pdfViewData?.scenes?.length && (
+      {pdfViewData?.scenes?.length && (
         <FullScreenGradientLoader text="Fetching details" />
       )} */}
 

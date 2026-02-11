@@ -310,10 +310,7 @@ export const patchEditPromp =
 
 //Upload video
 export const postUploadVideo =
-  (
-    projectId: string,
-    //  callback?: () => void
-  ) =>
+  (projectId: string, callback?: () => void) =>
   async (dispatch: AppDispatch) => {
     dispatch(setUploadVideoLoader(true));
     try {
@@ -324,9 +321,9 @@ export const postUploadVideo =
       if (res?.status) {
         dispatch(setUploadVideoInfo(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
-        // if (callback) {
-        //   callback();
-        // }
+        if (callback) {
+          callback(res?.data);
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");
@@ -349,12 +346,9 @@ export const getLocalizationImageUrl =
       if (res?.status) {
         dispatch(setLocalizationImageData(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
-        // if (callback) {
-        //   callback();
-        // }
 
         if (onSuccess) {
-          onSuccess();
+          onSuccess(res?.data);
         }
       }
     } catch (error: any) {

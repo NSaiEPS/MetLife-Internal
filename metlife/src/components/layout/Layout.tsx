@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <>
       {/* Header */}
-      {/* <OneFrameHeader /> */}
+      <OneFrameHeader />
       <main>
         <Outlet />
       </main>

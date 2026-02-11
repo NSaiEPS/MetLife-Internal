@@ -299,7 +299,6 @@ const CreateVisualContentPage: React.FC = () => {
     <>
       {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
       <div className={styles.container}>
-        <OneFrameHeader />
         <div className={styles.tableContainer}>
           {saveVisualContentData?.prompts?.length ? (
             <>

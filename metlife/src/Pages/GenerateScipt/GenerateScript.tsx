@@ -367,7 +367,6 @@ const GenerateScript: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      <OneFrameHeader />
       {loader && <FullScreenGradientLoader />}
       <main className={styles.cardWrap}>
         <div className={styles.card}>
