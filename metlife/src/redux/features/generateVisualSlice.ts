@@ -171,12 +171,13 @@ export const postEditGenerateVisualContent =
   };
 
 export const deleteGenerateVisualContent =
-  (data: any, onClose: CallbackFn) => async (dispatch: any) => {
+  (data: any, id:string, onClose: CallbackFn) => async (dispatch: any) => {
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.delete("images/delete-image", { data });
       toast.success(response?.data?.message || "Deleted successfully");
       onClose(false);
+      dispatch(getGenerateVisualContentImage(id));
     } catch (error: any) {
       // console.error(error);
       toast.error(error?.response?.data?.message || "Something went wrong!");

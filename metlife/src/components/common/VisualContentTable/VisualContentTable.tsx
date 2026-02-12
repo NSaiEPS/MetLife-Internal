@@ -128,9 +128,13 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
     };
 
     dispatch(
-      postEditGenerateVisualContent(payload, () => {
-        setOpenPromptModal(false);
-      }, id) as any,
+      postEditGenerateVisualContent(
+        payload,
+        () => {
+          setOpenPromptModal(false);
+        },
+        id,
+      ) as any,
     );
 
     updatePromptInRow({
@@ -156,7 +160,7 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
       };
 
       dispatch(
-        deleteGenerateVisualContent(payload, () => {
+        deleteGenerateVisualContent(payload,id, () => {
           const updatedImages = visuaiImages.image_uploaded_urls.filter(
             (img: any) => img.url !== currentImage,
           );
@@ -180,11 +184,12 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
       const payload = {
         script_id: id,
         scene_id: visuaiImages.scene_id,
-        video_url: currentVideo,
+        // video_url: currentVideo,
+        image_url: currentVideo,
       };
 
       dispatch(
-        deleteGenerateVisualContent(payload, () => {
+        deleteGenerateVisualContent(payload, id, () => {
           const updatedVideos = visuaiImages.video_uploaded_urls.filter(
             (vid: any) => vid.url !== currentVideo,
           );
@@ -209,8 +214,6 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
 
   return (
     <>
-      {/* {generateVisualLoader && <FullScreenGradientLoader text={conversational ? "Downloading..." : "loading..."} />}
-       */}
       {generateVisualLoader && <FullScreenGradientLoader text="loading..." />}
       {audioAnimationLoader && (
         <FullScreenGradientLoader text="extracting..." />
