@@ -764,7 +764,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 // className={styles1.BtnSavePrompt}
                 onClick={() => setOpenSavePrompt(true)}
               >
-                Save Prompt
+                Show Prompt
               </ButtonComp>
             )}
             <ShowSourcePopup
@@ -1139,8 +1139,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       saveTranslatedData === null ||
                       operations ||
                       // saveTranslatedData?.is_save_action === false
-                      !saveTranslatedData?.saved_version ||
-                      tableExtraData?.prompt_batch_id
+                      !saveTranslatedData?.saved_version  
+                      // tableExtraData?.prompt_batch_id
                     }
                   >
                     Create Visual Content

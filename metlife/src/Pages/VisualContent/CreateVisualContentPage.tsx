@@ -65,7 +65,7 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
   );
-  console.log(saveVisualContentData, "check")
+  console.log(saveVisualContentData, "check");
   const columns: Column<RowData>[] = [
     { label: "Scene No.", key: "Scene_No", width: "5%" },
     {
@@ -180,6 +180,8 @@ const CreateVisualContentPage: React.FC = () => {
       prompt_id: item?.prompt_id ?? "",
       prompt: item?.prompt ?? "",
       clip_prompt: item?.clip_prompt ?? "",
+      scene_type: item?.scene_type ?? "",
+      clip_generated_at: item?.clip_generated_at ?? null,
     }));
     setRows(newdata);
   };
@@ -238,25 +240,73 @@ const CreateVisualContentPage: React.FC = () => {
     }
   };
 
+  // const handleGenerate = () => {
+  //   // const prompts = saveVisualContentData?.prompts ?? [];
+  //   const prompts = rows ?? [];
+
+  //   const manipulatedPrompts = prompts.map((item) => {
+  //     const obj = {
+  //       ...item,
+  //       // scene_type: item?.scene_type ?? item?.scene_type,
+  //     };
+  //     if (item.clip_visual_type === "clip") {
+  //       obj.clip_visual_type = "clip";
+  //       delete obj?.prompt;
+  //       delete obj?.visual_type;
+  //     } else if (item?.visual_type === "image") {
+  //       obj.visual_type = "image";
+  //       delete obj?.clip_prompt;
+  //       delete obj?.clip_visual_type;
+  //     }
+  //     return obj;
+  //   });
+
+  //   const finalPayload = {
+  //     script_id: saveVisualContentData?.script_id,
+  //     prompt_batch_id: saveVisualContentData?.prompt_batch_id,
+  //     title: saveVisualContentData?.title,
+  //     total_scenes: saveVisualContentData?.total_scenes,
+  //     processed_scenes: saveVisualContentData?.processed_scenes,
+  //     prompts: manipulatedPrompts,
+  //     video_style: saveVisualContentData?.video_style,
+  //     flow_type: saveVisualContentData?.flow_type,
+  //   };
+  //   console.log(finalPayload, "check_final")
+  //   // dispatch(postGenerateVisualContentImage(finalPayload));
+  // };
+
   const handleGenerate = () => {
-    const prompts = saveVisualContentData?.prompts ?? [];
-    // const prompts = rows ?? [];
+    const prompts = rows ?? [];
+    console.log(prompts, "check_prompts");
 
     const manipulatedPrompts = prompts.map((item) => {
-      const obj = {
-        ...item,
-        // scene_type: item?.scene_type ?? item?.scene_type,
+      const baseObj = {
+        scene_id: item.scene_id,
+        scene_number: item.Scene_No,
+        scene_type: item?.scene_type,
+        prompt_id: item.prompt_id,
+        description: item.Scene_Description,
       };
-      if (item.clip_visual_type === "clip") {
-        obj.clip_visual_type = "clip";
-        delete obj?.prompt;
-        delete obj?.visual_type;
-      } else if (item?.visual_type === "image") {
-        obj.visual_type = "image";
-        delete obj?.clip_prompt;
-        delete obj?.clip_visual_type;
+
+      if (item.Visual_Type === "image") {
+        return {
+          ...baseObj,
+          visual_type: "image",
+          clip_generated_at: null,
+          prompt: item.prompt,
+        };
       }
-      return obj;
+
+      if (item.Visual_Type === "clip") {
+        return {
+          ...baseObj,
+          clip_visual_type: "clip",
+          clip_prompt: item.clip_prompt,
+          clip_generated_at: item?.clip_generated_at,
+        };
+      }
+
+      return baseObj;
     });
 
     const finalPayload = {
@@ -269,7 +319,8 @@ const CreateVisualContentPage: React.FC = () => {
       video_style: saveVisualContentData?.video_style,
       flow_type: saveVisualContentData?.flow_type,
     };
-    console.log(finalPayload, "check_final")
+
+    console.log(finalPayload, "check_final");
     dispatch(postGenerateVisualContentImage(finalPayload));
   };
 
@@ -294,7 +345,7 @@ const CreateVisualContentPage: React.FC = () => {
   //   return scene.status !== "uploaded" || scene.videos.length === 0;
   // }) ?? false;
 
-  console.log(saveVisualContentData?.prompts , "chekc")
+  console.log(saveVisualContentData?.prompts, "chekc");
 
   return (
     <>
