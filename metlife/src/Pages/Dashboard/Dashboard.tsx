@@ -488,9 +488,9 @@ const MyVideosDashboard: React.FC = () => {
                         {/* <Button onClick={(e) => handleDownloadMenu(e, video)}>
                           <FaFileDownload size={18} />
                         </Button> */}
-                        {/* <Button onClick={() => handleUsers(video)}>
+                        <Button onClick={() => handleUsers(video)}>
                           <FaShareSquare size={18} />
-                        </Button> */}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
