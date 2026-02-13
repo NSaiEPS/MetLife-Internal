@@ -79,30 +79,36 @@ const MyVideosDashboard: React.FC = () => {
     (store: RootState) => store.DashBoard,
   );
 
-  const completed_result = dashBoardInfo.filter((item) => {
+  const completed_result = dashBoardInfo?.filter((item) => {
     // if (item.videos) {
     if (item.has_final_video) {
       return item;
     }
   });
 
-  const inprogress_video = dashBoardInfo.filter((item) => {
-    if (!item.has_final_video && item.audio && !item.videos) {
+  const inprogress_video = dashBoardInfo?.filter((item) => {
+    if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
       return item;
     }
   });
 
-  const inprogress_visuals = dashBoardInfo.filter((item) => {
-    if (!item.has_final_video && item.visuals && !item.videos && !item.audio) {
+  const inprogress_visuals = dashBoardInfo?.filter((item) => {
+    if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
       return item;
     }
   });
 
-  const inprogress_script = dashBoardInfo.filter((item) => {
-    if (!item.has_final_video && !item.visuals && !item.videos && !item.audio) {
+  const inprogress_script = dashBoardInfo?.filter((item) => {
+    if (!item.failed && !item.has_final_video && !item.visuals && !item.videos && !item.audio) {
       return item;
     }
   });
+
+  const failed_script = dashBoardInfo?.filter(item => {
+    if(item.failed === true) {
+      return item;
+    }
+  })
 
   const total_progress =
     inprogress_video?.length +
@@ -136,7 +142,7 @@ const MyVideosDashboard: React.FC = () => {
     },
     {
       title: "Failed / Error",
-      value: 0,
+      value: failed_script?.length || 0,
       color: "#FDECEA",
       icon: <ErrorOutline fontSize="large" sx={{ color: "#D32F2F" }} />,
       iconColor: "#D32F2F",
@@ -147,7 +153,7 @@ const MyVideosDashboard: React.FC = () => {
   const getStatusChip = (status: DashboardItem) => {
     if (!status) return <Chip label="Unknown" />;
     if (status.failed)
-      return <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
+      return <Chip label="Failed" sx={{ bgcolor: "#e53935", color: "#fff" }} />;
 
     if (status.has_final_video) {
       return (
@@ -250,6 +256,7 @@ const MyVideosDashboard: React.FC = () => {
     item.has_final_video === true || Boolean(item.final_video);
 
   const isInProgress = (item: DashboardItem) => {
+     if (item.failed) return false; 
     if (item.has_final_video) return false;
     if (item.audio && !item.videos) return true;
     if (item.visuals && !item.videos && !item.audio) return true;
@@ -257,7 +264,11 @@ const MyVideosDashboard: React.FC = () => {
     return false;
   };
 
-  const isFailed = (item: DashboardItem) => !!item.failed;
+  const isFailed = (item: DashboardItem) => {
+    console.log(item, "check_item")
+    return item.failed;
+  };
+  
 
   const filteredDashboardInfo = dashBoardInfo.filter((item) => {
     switch (selectedFilter) {
@@ -291,8 +302,6 @@ const MyVideosDashboard: React.FC = () => {
     });
   };
 
-  console.log(menuData, "check_menu_data");
-
   const handleCloseMenu = () => {
     setOpen(null);
   };
@@ -302,8 +311,6 @@ const MyVideosDashboard: React.FC = () => {
     setScriptId(video?.script_id);
     dispatch(getUsersList());
   };
-
-  console.log(scriptId, "scriptId");
 
   return (
     <>
