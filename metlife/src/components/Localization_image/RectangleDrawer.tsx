@@ -13,6 +13,7 @@ export default function RectangleDrawer({
   // setStartTimer3,
   // setShowRectangleCanvas,
 }) {
+  console.log(projectId, "projectId");
   const canvasRef = useRef(null);
   const [imageObj, setImageObj] = useState(null);
   const [rect, setRect] = useState(null);
@@ -67,13 +68,27 @@ export default function RectangleDrawer({
     const result = [x, y, width, height];
 
     console.log(result, "=> [x, y, width, height]");
+    if (!projectId) return;
 
-    dispatch(postImageCoordinates(projectId, result));
+    if (projectId) {
+      dispatch(postImageCoordinates(projectId, result, successCallback));
+    }
     setStep(STEPS.TIMER3);
-
     // setStartTimer3(true);
     // setShowRectangleCanvas(false);
     setRect(null);
+  };
+
+  const successCallback = (data) => {
+    if (data?.status) {
+      const duration = Number(data.estimated_time_seconds);
+      const endTime = Date.now() + duration * 1000;
+
+      localStorage.setItem(
+        "estimated_remaining_time",
+        JSON.stringify({ endTime }),
+      );
+    }
   };
 
   return (

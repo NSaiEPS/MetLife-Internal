@@ -128,7 +128,6 @@ const UploadVideoPage = () => {
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
 
-
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
     if (!files || files.length === 0) {
@@ -328,7 +327,7 @@ const UploadVideoPage = () => {
     }
   };
 
-  console.log(intro, "check_value")
+  console.log(intro, "check_value");
   return (
     <>
       {(loader || uploadVideoLoader) && (
@@ -596,7 +595,9 @@ const UploadVideoPage = () => {
             <RectangleDrawer
               setStep={setStep}
               STEPS={STEPS}
-              projectId={scriptData?.project_id}
+              projectId={
+                scriptData?.project_id || localStorage.getItem("project_id")
+              }
               // setStartTimer3={setStartTimer3}
               // setShowRectangleCanvas={setShowRectangleCanvas}
               // imgSrc={localizationImageData?.scenes?.[0]?.original_frame_url}

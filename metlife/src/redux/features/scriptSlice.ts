@@ -363,7 +363,7 @@ export const postImageCoordinates =
   (
     projectId: string,
     coordinates: [],
-    //  callback?: () => void
+     callback?: () => void
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setImageCoordinatesLoader(true));
@@ -376,9 +376,9 @@ export const postImageCoordinates =
       if (res?.status) {
         toast.success(res?.data?.message || "Processing started successfully");
         dispatch(setImageCoordinatesData(res?.data || []));
-        // if (callback) {
-        //   callback();
-        // }
+        if (callback) {
+          callback(res?.data);
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");
