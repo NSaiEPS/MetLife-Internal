@@ -51,9 +51,6 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   const [ost, setOst] = useState("");
   const [type, setType] = useState("narrator");
 
-  console.log(tableData?.video_style === "narrative", "check");
-  
-
   useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
@@ -93,10 +90,6 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
       dispatch(postEditScene(formData));
     }
 
-    const payload = {
-      script,
-      ost,
-    };
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };
