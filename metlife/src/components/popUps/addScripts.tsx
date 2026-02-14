@@ -51,6 +51,9 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   const [ost, setOst] = useState("");
   const [type, setType] = useState("narrator");
 
+
+  console.log(type, "check_typre")
+
   useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");

@@ -361,6 +361,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleUpdate = (data: any) => {
     setMakeChanges(true);
     setOperations(true);
+    console.log(data, "check_data")
 
     if (data?.fieldData) {
       const updated = rows.map((item) =>
