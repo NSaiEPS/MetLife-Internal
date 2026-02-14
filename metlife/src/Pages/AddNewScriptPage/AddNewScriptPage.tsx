@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
-import DynamicTable from "../../components/common/Table";
+import DynamicTable from "../../components/common/Table/DynamicTable";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import api from "../../api/axios";
 import styles from "./AddNewScript.module.css";
@@ -41,7 +41,8 @@ const ScriptPage: React.FC = () => {
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (makeChanges) {
-        const message = "You have unsaved changes. Are you sure you want to leave?";
+        const message =
+          "You have unsaved changes. Are you sure you want to leave?";
         event.preventDefault();
         event.returnValue = message; // For modern browsers
         return message; // For older browsers
@@ -59,11 +60,11 @@ const ScriptPage: React.FC = () => {
     setLoading(true);
     try {
       const result = await api.get(`scripts/${id}`);
-      if (result?.status === 200 )  {
+      if (result?.status === 200) {
         setSceneData(result?.data);
       }
     } catch (e: any) {
-        showToast.error(e?.detail);
+      showToast.error(e?.detail);
     } finally {
       setLoading(false);
     }
@@ -83,7 +84,7 @@ const ScriptPage: React.FC = () => {
             setMakeChanges={setMakeChanges}
             columns={columns}
             extraDetails={sceneData}
-          //  makeChanges={makeChanges}
+            //  makeChanges={makeChanges}
           />
         ) : (
           <NoDataMessage filter={false} loading={loading} />

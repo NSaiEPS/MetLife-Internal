@@ -26,46 +26,48 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import type { DropResult } from "@hello-pangea/dnd";
 
 import styles from "./Table.module.css";
-import AddNewScriptPopup from "../popUps/addScripts";
-import { downloadScriptPdf, downloadScriptWord } from "../../utils";
-import { showToast } from "../../utils/toast";
+import AddNewScriptPopup from "../../popUps/addScripts";
+import { downloadScriptPdf, downloadScriptWord } from "../../../utils";
+import { showToast } from "../../../utils/toast";
 
 import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router";
-import copy from "../../assets/copy.svg";
-import reuse from "../../assets/reuse.svg";
-import deleteIcon from "../../assets/Group_Delete.svg";
+import copy from "../../../assets/copy.svg";
+import reuse from "../../../assets/reuse.svg";
+import deleteIcon from "../../../assets/Group_Delete.svg";
 
-import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
-import DownloadPopup from "./popup/DownloadPopup";
-import ShowSourcePopup from "./popup/ShowSourcePopup";
-import RegenerateScriptPopup from "./popup/RegenerateScriptPopup";
-import ButtonComp from "./Buton/Button";
-import PopupModal from "../popUps/LanguagePopup";
+import styles1 from "../../../Pages/AddNewScriptPage/AddNewScript.module.css";
+import DownloadPopup from "../popup/DownloadPopup";
+import ShowSourcePopup from "../popup/ShowSourcePopup";
+import RegenerateScriptPopup from "../popup/RegenerateScriptPopup";
+import ButtonComp from "../Buton/Button";
+import PopupModal from "../../popUps/LanguagePopup";
 
 import { toast } from "react-toastify";
-import api, { BASE_URL } from "../../api/axios";
-import FullScreenGradientLoader from "./GradientLoader";
+import api, { BASE_URL } from "../../../api/axios";
+import FullScreenGradientLoader from "../GradientLoader";
 import { MdDone } from "react-icons/md";
 
 import { useDispatch, useSelector } from "react-redux";
-import { postTranslatedDataSave } from "../../redux/features/saveSlice";
-import DeleteScenePopup from "./popup/DeleteScenePopup";
-import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
+import { postTranslatedDataSave } from "../../../redux/features/saveSlice";
+import DeleteScenePopup from "../popup/DeleteScenePopup";
+import { postCreateVisualContent } from "../../../redux/features/createVisualSlice";
 
-import { languages } from "../../utils/languageOptions";
-import SinglePromptModal from "./SinglePromptModal";
-import { postSavePrompt } from "../../redux/features/promptSlice";
+import { languages } from "../../../utils/languageOptions";
+import SinglePromptModal from "../SinglePromptModal";
+import { postSavePrompt } from "../../../redux/features/promptSlice";
 import {
   getExtractCharacters,
   postDeleteScene,
   postExtractCharacters,
   postPromptSetupCharacters,
-} from "../../redux/features/scriptSlice";
-import { CharacterCarousel } from "./carousel/CharacterCarousel";
+} from "../../../redux/features/scriptSlice";
+import { CharacterCarousel } from "../carousel/CharacterCarousel";
+import TableRowComp from "./TableRowComp";
+import TableComp from "./TableComp";
 
 export interface SceneRow {
   id: string | number;
@@ -656,7 +658,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  console.log(tableExtraData?.version, "tableExtraData")
+  console.log(tableExtraData?.version, "tableExtraData");
 
   return (
     <>
@@ -778,7 +780,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               className={styles1.icon}
               onClick={() => navigate("/generate-script")}
             >
-              <IoArrowBackCircleOutline size={30} /> Back
+              <IoArrowBackCircleOutline size={30} />
+              <span style={{ lineHeight: "normal" }}>Back</span>
             </Button>
             <Button
               className={styles1.icon}
@@ -789,7 +792,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               }
               disabled={!tableExtraData?.prompt_batch_id}
             >
-              Next <IoArrowForwardCircleOutline size={30} />
+              <span style={{ lineHeight: "normal" }}>Next</span>{" "}
+              <IoArrowForwardCircleOutline size={30} />
             </Button>
           </div>
         )}
@@ -803,121 +807,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       {scriptLoader && <FullScreenGradientLoader text="Loading..." />}
 
       {/* ---------------- TABLE ---------------- */}
-      <TableContainer component={Paper} className={styles.tablePaper}>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
-            {(provided) => (
-              <Table
-                className={styles.tableRoot}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <TableHead>
-                  <TableRow className={styles.headRow}>
-                    {showDragAndActions && (
-                      <TableCell className={styles.headCell}></TableCell>
-                    )}
-
-                    {columns.map((col, idx) => (
-                      <TableCell key={idx} className={styles.headCell}>
-                        {col}
-                      </TableCell>
-                    ))}
-
-                    {showDragAndActions && actions?.length > 0 && (
-                      <TableCell className={styles.headCell}>Action</TableCell>
-                    )}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {rows?.map((row, rIdx) => (
-                    // !row?.is_deleted && (
-                    <Draggable
-                      key={String(row.id)}
-                      draggableId={String(row.id)}
-                      index={rIdx}
-                      isDragDisabled={!showDragAndActions || row?.is_deleted}
-                    >
-                      {(providedDraggable) => (
-                        <TableRow
-                          ref={providedDraggable.innerRef}
-                          {...providedDraggable.draggableProps}
-                          className={`${styles.bodyRow} ${row?.is_deleted && styles.deletedRow}`}
-                        >
-                          {showDragAndActions && (
-                            <TableCell className={styles.bodyCell}>
-                              <Tooltip
-                                title="Drag & Drop"
-                                placement="top"
-                                arrow
-                              >
-                                <span>
-                                  <IconButton
-                                    {...providedDraggable.dragHandleProps} // ✅ FIXED HERE
-                                    size="small"
-                                    className={styles.dragHandle}
-                                  >
-                                    <DragIndicatorIcon />
-                                  </IconButton>
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                          )}
-
-                          {columns.map((col, cIdx) => (
-                            <TableCell key={cIdx} className={styles.bodyCell}>
-                              {row[col as keyof SceneRow]}
-                            </TableCell>
-                          ))}
-
-                          {showDragAndActions && (
-                            <TableCell className={styles.bodyCell}>
-                              <div className={styles.actionsWrap}>
-                                {row?.is_deleted ? (
-                                  <Tooltip
-                                    title="Restore"
-                                    placement="top"
-                                    arrow
-                                  >
-                                    <IconButton
-                                      className={styles.smallIconBtn}
-                                      size="small"
-                                    >
-                                      Deleted
-                                    </IconButton>
-                                  </Tooltip>
-                                ) : (
-                                  actions.map((act, aIdx) => (
-                                    <IconButton
-                                      key={aIdx}
-                                      className={styles.iconBtn}
-                                      size="small"
-                                      onClick={() => act.onClick(row)}
-                                    >
-                                      {act.icon}
-                                    </IconButton>
-                                  ))
-                                )}
-                              </div>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      )}
-                    </Draggable>
-                  ))}
-
-                  {/*
-                    `provided.placeholder` belongs to Droppable's render-props.
-                    We render it below by using the `provided` variable from Droppable.
-                  */}
-                  {provided.placeholder}
-                </TableBody>
-              </Table>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </TableContainer>
+      <TableComp
+        handleDragEnd={handleDragEnd}
+        columns={columns}
+        rows={rows}
+        showDragAndActions={showDragAndActions}
+        actions={actions}
+      />
 
       {/* ---------------- POPUPS ---------------- */}
       <AddNewScriptPopup
@@ -1417,3 +1313,119 @@ export default DynamicTable;
 //     </Dialog>
 //   </>
 // )
+
+{
+  /* <TableContainer component={Paper} className={styles.tablePaper}>
+  <DragDropContext onDragEnd={handleDragEnd}>
+    <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
+      {(provided) => (
+        <Table
+          className={styles.tableRoot}
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+        >
+          <TableHead>
+            <TableRow className={styles.headRow}>
+              {showDragAndActions && (
+                <TableCell className={styles.headCell}></TableCell>
+              )}
+
+              {columns.map((col, idx) => (
+                <TableCell key={idx} className={styles.headCell}>
+                  {col}
+                </TableCell>
+              ))}
+
+              {showDragAndActions && actions?.length > 0 && (
+                <TableCell className={styles.headCell}>Action</TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {rows?.map((row, rIdx) => (
+              <TableRowComp
+                row={row}
+                rIdx={rIdx}
+                columns={columns}
+                actions={actions}
+                showDragAndActions={showDragAndActions}
+              />
+            ))}
+            {rows?.map((row, rIdx) => (
+              // !row?.is_deleted && (
+              <Draggable
+                key={String(row.id)}
+                draggableId={String(row.id)}
+                index={rIdx}
+                isDragDisabled={!showDragAndActions || row?.is_deleted}
+              >
+                {(providedDraggable) => (
+                  <TableRow
+                    ref={providedDraggable.innerRef}
+                    {...providedDraggable.draggableProps}
+                    className={`${styles.bodyRow} ${row?.is_deleted && styles.deletedRow}`}
+                  >
+                    {showDragAndActions && (
+                      <TableCell className={styles.bodyCell}>
+                        <Tooltip title="Drag & Drop" placement="top" arrow>
+                          <span>
+                            <IconButton
+                              {...providedDraggable.dragHandleProps} // ✅ FIXED HERE
+                              size="small"
+                              className={styles.dragHandle}
+                            >
+                              <DragIndicatorIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      </TableCell>
+                    )}
+
+                    {columns.map((col, cIdx) => (
+                      <TableCell key={cIdx} className={styles.bodyCell}>
+                        {row[col as keyof SceneRow]}
+                      </TableCell>
+                    ))}
+
+                    {showDragAndActions && (
+                      <TableCell className={styles.bodyCell}>
+                        <div className={styles.actionsWrap}>
+                          {row?.is_deleted ? (
+                            <Tooltip title="Restore" placement="top" arrow>
+                              <IconButton
+                                className={styles.smallIconBtn}
+                                size="small"
+                              >
+                                Deleted
+                              </IconButton>
+                            </Tooltip>
+                          ) : (
+                            actions.map((act, aIdx) => (
+                              <IconButton
+                                key={aIdx}
+                                className={styles.iconBtn}
+                                size="small"
+                                onClick={() => act.onClick(row)}
+                              >
+                                {act.icon}
+                              </IconButton>
+                            ))
+                          )}
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )}
+              </Draggable>
+            ))}
+            `provided.placeholder` belongs to Droppable's render-props. We
+            render it below by using the `provided` variable from Droppable.
+            {provided.placeholder}
+          </TableBody>
+        </Table>
+      )}
+    </Droppable>
+  </DragDropContext>
+</TableContainer>; */
+}
