@@ -947,7 +947,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         // backgroundColor: "#239DE0"
                       }
                     }
-                    action={() => setOpen(true)}
+                    // action={() => setOpen(true)}
+                    action={() =>
+                      setUiState((prev) => ({ ...prev, open: true }))
+                    }
                     disabled={!saveTranslatedData?.saved_version}
                   >
                     {loader ? "Translating" : "Translate Script"}
