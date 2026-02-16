@@ -231,7 +231,16 @@ const RegenerateScriptPopup = ({
           </Stack>
         </DialogContent>
 
-        <DialogActions sx={{ justifyContent: "center", mt: 2 }}>
+        <DialogActions sx={{ justifyContent: "end", mt: 2 }}>
+          <ButtonComp
+            onClick={onCloseFun}
+            color="inherit"
+            variant="outlined"
+            colorType="secondary"
+          >
+            Cancel
+          </ButtonComp>
+
           <ButtonComp
             disabled={loader}
             label={loader ? "Submitting" : "Submit"}
@@ -242,10 +251,6 @@ const RegenerateScriptPopup = ({
             // }}
             action={handleRegenerate}
           />
-
-          <ButtonComp onClick={onCloseFun} color="inherit" variant="outlined" colorType="secondary">
-            Cancel
-          </ButtonComp>
         </DialogActions>
       </Dialog>
     </>

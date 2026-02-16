@@ -114,7 +114,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 }) => {
   const [tableExtraData, setTableExtraData] = useState<any>({});
   const [rows, setRows] = useState<SceneRow[]>([]);
-  const [openPopUp, setOpenPopup] = useState<boolean>(false);
+  // const [openPopUp, setOpenPopup] = useState<boolean>(false);
   const [popUpData, setPopUpdata] = useState<any>(null);
   const [popupTitle, setPopupTitle] = useState("Add New Script");
   const [loaderText, setLoaderText] = useState("");
@@ -140,26 +140,43 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   console.log(rows, "tableRowssss");
   // const { scriptLoader } = useSelector((store: RootState) => store.Script);
-  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
-  const [openShowPopup, setOpenShowPopup] = useState(false);
-  const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [selectedScene, setSelectedScene] = useState<SceneRow | null>(null);
-  const [regenerateDisabled, setRegenerateDisabled] = useState(false);
-  const [operations, setOperations] = useState(false);
-  const [openSavePrompt, setOpenSavePrompt] = useState(false);
   const latestPrompt = tableExtraData?.latest_prompt;
-  const [showSourceLoader, setShowSourceLoader] = useState(false);
-  const [deleteLoader, setDeleteLoader] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openCharacterModal, setOpenCharacterModal] = useState(false);
+
+  // const [operations, setOperations] = useState(false);
+  // const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
+  // const [openShowPopup, setOpenShowPopup] = useState(false);
+  // const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
+  // const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  // const [regenerateDisabled, setRegenerateDisabled] = useState(false);
+  // const [openSavePrompt, setOpenSavePrompt] = useState(false);
+  // const [showSourceLoader, setShowSourceLoader] = useState(false);
+  // const [deleteLoader, setDeleteLoader] = useState(false);
+  // const [open, setOpen] = useState(false);
+  // const [openCharacterModal, setOpenCharacterModal] = useState(false);
+
+  const [uiState, setUiState] = useState({
+    openPopup: false,
+    openDownloadPopup: false,
+    openShowPopup: false,
+    openRegeneratePopup: false,
+    openDeletePopup: false,
+    regenerateDisabled: false,
+    operations: false,
+    openSavePrompt: false,
+    showSourceLoader: false,
+    deleteLoader: false,
+    open: false,
+    openCharacterModal: false,
+  });
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [charImageExist, setCharImageExist] = useState(
     extraDetails?.char_image_exist,
   );
   const [openFlowDialog, setOpenFlowDialog] = useState(false);
-  const [flowStep, setFlowStep] = useState<FlowStep>(null);
-  const [targetVersion, setTargetVersion] = useState("");
+  // const [flowStep, setFlowStep] = useState<FlowStep>(null);
+  // const [targetVersion, setTargetVersion] = useState("");
   const PROVIDERS = ["google", "azure", "gpt"] as const;
   type ProviderType = (typeof PROVIDERS)[number];
   const PROVIDER_LABELS: Record<ProviderType, string> = {
@@ -185,7 +202,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   useEffect(() => {
     if (saveTranslatedData && !saveLoader) {
-      setRegenerateDisabled(false);
+      setUiState((prev) => ({ ...prev, regenerateDisabled: false }));
+      // setRegenerateDisabled(false);
     }
   }, [saveTranslatedData, saveLoader]);
 
@@ -211,8 +229,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       postSavePrompt(
         id ?? "",
         payload,
-        () => setOpenSavePrompt(false),
-        setOperations,
+        () => setUiState((prev) => ({ ...prev, openSavePrompt: false })),
+        (value: boolean) =>
+          setUiState((prev) => ({ ...prev, operations: value })),
+        // setOperations,
       ),
     );
   };
@@ -239,7 +259,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       icon: (
         <Tooltip
           title={
-            regenerateDisabled
+            // regenerateDisabled
+            uiState?.regenerateDisabled
               ? "Please save before regenerating again"
               : "Regenerate"
           }
@@ -254,11 +275,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 // opacity: regenerateDisabled ? 0.5 : 1,
                 // cursor: regenerateDisabled ? "not-allowed" : "pointer",
                 opacity:
-                  regenerateDisabled || pathname?.startsWith("SCRIPT-")
+                  uiState?.regenerateDisabled || pathname?.startsWith("SCRIPT-")
                     ? 0.5
                     : 1,
                 cursor:
-                  regenerateDisabled || pathname?.startsWith("SCRIPT-")
+                  uiState?.regenerateDisabled || pathname?.startsWith("SCRIPT-")
                     ? "not-allowed"
                     : "pointer",
               }}
@@ -267,9 +288,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </Tooltip>
       ),
       onClick: (row: any) => {
-        if (!regenerateDisabled) {
+        if (!uiState?.regenerateDisabled) {
           setSceneData(row);
-          setOpenRegeneratePopup(true);
+          setUiState((prev) => ({ ...prev, openRegeneratePopup: true }));
           setMakeChanges(true);
         }
       },
@@ -304,16 +325,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const addScene = (data?: any) => {
     setPopUpdata(data ?? null);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
     setPopupTitle(data?.OST ? "Edit Scene" : "Add New Scene");
-    setOpenPopup(true);
+    setUiState((prev) => ({ ...prev, openPopup: true }));
   };
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     setMakeChanges(true);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
 
     const updated = Array.from(rows);
     const [moved] = updated.splice(result.source.index, 1);
@@ -351,7 +374,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           scenes: filteredScenes,
         });
       }
-      setOpenDownloadPopup(false);
+      setUiState((prev) => ({ ...prev, openDownloadPopup: false }));
     } catch (err) {
       console.error("Error generating file:", err);
     }
@@ -360,7 +383,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleUpdate = (data: any) => {
     setMakeChanges(true);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
 
     if (data?.fieldData) {
       const updated = rows.map((item) =>
@@ -387,12 +411,17 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
 
     // showToast.success("Scene saved successfully");
-    setOpenPopup(false);
+    setUiState((prev) => ({ ...prev, openPopup: false }));
   };
 
   const handleShowSource = async () => {
-    setOpenShowPopup(true);
-    setShowSourceLoader(true);
+    // setOpenShowPopup(true);
+    setUiState((prev) => ({
+      ...prev,
+      openShowPopup: true,
+    }));
+    setUiState((prev) => ({ ...prev, showSourceLoader: true }));
+    // setShowSourceLoader(true);
     try {
       const response = await fetch(`${BASE_URL}show-source/${id}`, {
         method: "GET",
@@ -409,7 +438,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       // console.log(error);
       toast.error("Something went wrong!");
     } finally {
-      setShowSourceLoader(false);
+      setUiState((prev) => ({ ...prev, showSourceLoader: false }));
+      // setShowSourceLoader(false);
     }
     // setMakeChanges(true);
   };
@@ -418,7 +448,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (!pdfId && !id) return;
     if (!selectedLang || !selectedProvider) return;
 
-    setOperations(true);
+    // setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
     setLoader(true);
     setLoaderText("Translating script...");
 
@@ -461,8 +492,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleSetData = (data: any) => {
-    setOperations(true);
-    setRegenerateDisabled(true);
+    // setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    setUiState((prev) => ({ ...prev, regenerateDisabled: true }));
+    // setRegenerateDisabled(true);
 
     if (sceneData?.id) {
       const updated = rows.map((item) =>
@@ -477,7 +510,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleSave = () => {
-    setOperations(false);
+    // setOperations(false);
+    setUiState((prev) => ({ ...prev, operations: false }));
     const { script_status, saved_version, scenes, ...rest } = tableExtraData;
     let updatedData = [...rows]?.map((parentItem) => {
       let data = [...scenes].filter((item) => item?.scene_id == parentItem?.id);
@@ -527,8 +561,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleDeleteScene = (scene: SceneRow) => {
     setSelectedScene(scene);
-    setOperations(true);
-    setOpenDeletePopup(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
+    setUiState((prev) => ({ ...prev, openDeletePopup: true }));
+    // setOpenDeletePopup(true);
     setMakeChanges(true);
   };
 
@@ -551,7 +587,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       scene_id: scene.id,
       version: tableExtraData?.version,
     };
-    setDeleteLoader(true);
+    setUiState((prev) => ({ ...prev, deleteLoader: true }));
+    // setDeleteLoader(true);
 
     try {
       const response = await api.post("mongo/delete_scene", payload);
@@ -565,11 +602,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         return item;
       });
       setRows([...newRows]);
-      setOpenDeletePopup(false);
+      setUiState((prev) => ({ ...prev, openDeletePopup: false }));
+      // setOpenDeletePopup(false);
     } catch (error) {
       console.error(error);
     } finally {
-      setDeleteLoader(false);
+      setUiState((prev) => ({ ...prev, deleteLoader: false }));
+      // setDeleteLoader(false);
     }
   };
 
@@ -586,13 +625,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleOpenFlowDialog = () => {
     if (tableExtraData?.video_style === "conversational") {
-      setFlowStep("characters");
+      // setFlowStep("characters");
       setOpenFlowDialog(true);
       return;
     }
 
     if (tableExtraData?.video_style === "mixed") {
-      setFlowStep("characters");
+      // setFlowStep("characters");
       setOpenFlowDialog(true);
       return;
     }
@@ -638,11 +677,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleOpenCharacterModal = (index = 0) => {
     setCurrentIndex(index);
-    setOpenCharacterModal(true);
+    setUiState((prev) => ({ ...prev, openCharacterModal: true }));
+    // setOpenCharacterModal(true);
   };
 
   const handleCloseCharacterModal = () => {
-    setOpenCharacterModal(false);
+    setUiState((prev) => ({ ...prev, openCharacterModal: false }));
+    // setOpenCharacterModal(false);
   };
 
   const handleSetupPrompt = () => {
@@ -764,16 +805,22 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <ButtonComp
                 variant="contained"
                 // className={styles1.BtnSavePrompt}
-                onClick={() => setOpenSavePrompt(true)}
+                onClick={() =>
+                  setUiState((prev) => ({ ...prev, openSavePrompt: true }))
+                }
               >
                 Save Prompt
               </ButtonComp>
             )}
             <ShowSourcePopup
-              open={openShowPopup}
-              onClose={() => setOpenShowPopup(false)}
+              open={uiState?.openShowPopup}
+              // open={openShowPopup}
+              onClose={() =>
+                setUiState((prev) => ({ ...prev, openShowPopup: false }))
+              }
+              // onClose={() => setOpenShowPopup(false)}
               data={showSourceData}
-              loader={showSourceLoader}
+              loader={uiState?.showSourceLoader}
             />
             {/* Back Button */}
             <Button
@@ -817,8 +864,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
       {/* ---------------- POPUPS ---------------- */}
       <AddNewScriptPopup
-        open={openPopUp}
-        onClose={() => setOpenPopup(false)}
+        open={uiState?.openPopup}
+        onClose={() => setUiState((prev) => ({ ...prev, openPopup: false }))}
         fieldData={popUpData}
         title={popupTitle}
         handleUpdate={handleUpdate}
@@ -826,12 +873,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       />
 
       <DeleteScenePopup
-        open={openDeletePopup}
-        onClose={() => setOpenDeletePopup(false)}
+        open={uiState?.openDeletePopup}
+        onClose={() =>
+          setUiState((prev) => ({ ...prev, openDeletePopup: false }))
+        }
         onConfirm={confirmDeleteScene}
         rowData={selectedScene}
         id={id}
-        loader={deleteLoader}
+        loader={uiState?.deleteLoader}
       />
 
       {/* FOOTER BUTTONS */}
@@ -846,7 +895,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           {features && (
             <>
               <CharacterCarousel
-                open={openCharacterModal}
+                open={uiState?.openCharacterModal}
+                // open={openCharacterModal}
                 onClose={handleCloseCharacterModal}
                 characterData={characterData}
                 promptData={promptData}
@@ -865,15 +915,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     // backgroundColor: "#239DE0"
                   }
                 }
-                action={() => setOpen(true)}
+                action={() => setUiState((prev) => ({ ...prev, open: true }))}
+                // action={() => setOpen(true)}
               >
                 {loader ? "Translating" : "Translate Script"}
               </ButtonComp>
 
               {/* Language Popup */}
               <PopupModal
-                open={open}
-                onClose={() => setOpen(false)}
+                open={uiState?.open}
+                onClose={() => setUiState((prev) => ({ ...prev, open: false }))}
                 title="Select Language"
               >
                 <div className={styles.languageList}>
@@ -946,7 +997,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     // className={styles.downloadBtn}
                     action={() => {
                       handleTranslateScript();
-                      setOpen(false);
+                      setUiState((prev) => ({ ...prev, open: false }));
+                      // setOpen(false);
                     }}
                   >
                     Translate Script
@@ -965,7 +1017,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               onClick={() => {
                 setMakeChanges(true);
                 setSceneData({});
-                setOpenRegeneratePopup(true);
+                setUiState((prev) => ({ ...prev, openRegeneratePopup: true }));
               }}
             >
               Regenerate Script
@@ -974,9 +1026,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
           {/* Regenerate Popup */}
           <RegenerateScriptPopup
-            open={openRegeneratePopup}
+            open={uiState?.openRegeneratePopup}
+            // open={openRegeneratePopup}
             onClose={() => {
-              setOpenRegeneratePopup(false);
+              setUiState((prev) => ({ ...prev, openRegeneratePopup: false }));
               setSceneData({});
             }}
             id={id}
@@ -1002,7 +1055,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               colorType="download"
               variant="contained"
               // className={styles.successBtn}
-              onClick={() => setOpenDownloadPopup(true)}
+              onClick={() =>
+                setUiState((prev) => ({ ...prev, openDownloadPopup: true }))
+              }
               disabled={!saveTranslatedData?.saved_version}
             >
               Download Script
@@ -1033,7 +1088,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     // className={styles.primaryBtn}
                     disabled={
                       saveTranslatedData === null ||
-                      operations ||
+                      uiState?.operations ||
+                      // operations ||
                       // saveTranslatedData?.is_save_action === false
                       !saveTranslatedData?.saved_version ||
                       tableExtraData?.prompt_batch_id
@@ -1215,18 +1271,24 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </Stack>
 
         <SinglePromptModal
-          open={openSavePrompt}
-          onClose={() => setOpenSavePrompt(false)}
+          open={uiState?.openSavePrompt}
+          onClose={() =>
+            setUiState((prev) => ({ ...prev, openSavePrompt: false }))
+          }
           prompt={latestPrompt}
           onSave={handleSavePrompt}
           size="md"
           extraDetails={tableExtraData}
-          operations={operations}
+          operations={uiState?.operations}
+          // operations={operations}
         />
 
         <DownloadPopup
-          open={openDownloadPopup}
-          onClose={() => setOpenDownloadPopup(false)}
+          open={uiState?.openDownloadPopup}
+          // open={openDownloadPopup}
+          onClose={() =>
+            setUiState((prev) => ({ ...prev, openDownloadPopup: false }))
+          }
           onSelect={handleDownloadType}
         />
       </div>
