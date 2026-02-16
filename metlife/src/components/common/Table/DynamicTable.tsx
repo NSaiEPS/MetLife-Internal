@@ -384,7 +384,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleUpdate = (data: any) => {
     setMakeChanges(true);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
 
     if (data?.fieldData) {
       const updated = rows.map((item) =>
@@ -934,7 +935,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     // backgroundColor: "#239DE0"
                   }
                 }
-                action={() => setOpen(true)}
+                action={() => setUiState((prev) => ({ ...prev, open: true }))}
+                // action={() => setOpen(true)}
               >
                 {loader ? "Translating" : "Translate Script"}
               </ButtonComp>
