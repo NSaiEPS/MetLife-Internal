@@ -353,9 +353,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleDownloadType = (type: string) => {
     console.log(tableExtraData, rows, "tableExtraData");
-    const filteredScenes = tableExtraData?.scenes?.filter(
+    const filteredScenes = [...rows]?.filter(
       (scene) => scene?.is_deleted !== true,
     );
+    console.log(filteredScenes, "filteredScenes");
 
     try {
       if (type === "pdf") {
@@ -370,7 +371,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       } else if (type === "word") {
         downloadScriptWord({
           ...tableExtraData,
-          // scenes: rows
+          // scenes: rows,
           scenes: filteredScenes,
         });
       }
@@ -513,29 +514,52 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     // setOperations(false);
     setUiState((prev) => ({ ...prev, operations: false }));
     const { script_status, saved_version, scenes, ...rest } = tableExtraData;
-    let updatedData = [...rows]?.map((parentItem) => {
-      let data = [...scenes].filter((item) => item?.scene_id == parentItem?.id);
-      if (data[0]) {
-        data[0].description = parentItem?.Script;
-        data[0].on_screen_text = parentItem?.OST;
-        data[0].scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
-        data[0].scene_number = parentItem?.["Scene No."];
-        data[0].is_deleted = parentItem?.is_deleted;
-        // data[0].scene_id=parentItem?.Script
+    // let updatedData = [...rows]?.map((parentItem) => {
+    //   let data = [...scenes].filter((item) => item?.scene_id == parentItem?.id);
+    //   if (data[0]) {
+    //     data[0].description = parentItem?.Script;
+    //     data[0].on_screen_text = parentItem?.OST;
+    //     data[0].scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
+    //     data[0].scene_number = parentItem?.["Scene No."];
+    //     data[0].is_deleted = parentItem?.is_deleted;
+    //     // data[0].scene_id=parentItem?.Script
 
-        return data[0];
-      } else {
-        let data = {};
-        data.description = parentItem?.Script;
-        data.on_screen_text = parentItem?.OST;
-        data.scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
-        data.scene_number = parentItem?.["Scene No."];
-        // if (parentItem?.id || parentItem?.scene_id) {
-        //   data.scene_id = parentItem.scene_id ?? parentItem.id;
-        // }
-        return data;
-      }
-    });
+    //     return data[0];
+    //   } else {
+    //     let data = {};
+    //     data.description = parentItem?.Script;
+    //     data.on_screen_text = parentItem?.OST;
+    //     data.scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
+    //     data.scene_number = parentItem?.["Scene No."];
+    //     // if (parentItem?.id || parentItem?.scene_id) {
+    //     //   data.scene_id = parentItem.scene_id ?? parentItem.id;
+    //     // }
+    //     return data;
+    //   }
+    // });
+    let updatedData = [...rows]
+      .filter((parentItem) => !parentItem?.is_deleted) // ✅ skip deleted rows
+      .map((parentItem) => {
+        let existing = scenes.find((item) => item?.scene_id == parentItem?.id);
+
+        if (existing) {
+          return {
+            ...existing,
+            description: parentItem?.Script,
+            on_screen_text: parentItem?.OST,
+            scene_type: parentItem?.Type ? parentItem?.Type : "narrator",
+            scene_number: parentItem?.["Scene No."],
+            is_deleted: parentItem?.is_deleted,
+          };
+        } else {
+          return {
+            description: parentItem?.Script,
+            on_screen_text: parentItem?.OST,
+            scene_type: parentItem?.Type ? parentItem?.Type : "narrator",
+            scene_number: parentItem?.["Scene No."],
+          };
+        }
+      });
 
     const data = {
       data: {
@@ -699,18 +723,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  console.log(tableExtraData?.version, "tableExtraData");
+  // console.log(
+  //   !saveTranslatedData?.saved_version,
+  //   "tableExtraData",
+  // );
 
   return (
     <>
       <div className={styles1.header}>
-        {/* <h2 className={styles1.title}>
-          {tableExtraData?.title ||
-            visualContentTitle ||
-            tableExtraData?.upload_info?.title ||
-            "Your Script"}
-        </h2> */}
-
         <Typography variant="h4">
           {tableExtraData?.title ||
             visualContentTitle ||
@@ -809,7 +829,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   setUiState((prev) => ({ ...prev, openSavePrompt: true }))
                 }
               >
-                Save Prompt
+                Show Prompt
               </ButtonComp>
             )}
             <ShowSourcePopup
@@ -906,20 +926,34 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 tableExtraData={tableExtraData}
                 setOpenFlowDialog={setOpenFlowDialog}
               />
-
-              <ButtonComp
-                label={loader ? "Translating" : "Translate Script"}
-                variant="contained"
-                sx={
-                  {
-                    // backgroundColor: "#239DE0"
-                  }
+              <Tooltip
+                title={
+                  // !saveTranslatedData
+                  !saveTranslatedData?.saved_version
+                    ? "Please save before creating visual content."
+                    : ""
                 }
                 action={() => setUiState((prev) => ({ ...prev, open: true }))}
                 // action={() => setOpen(true)}
+                placement="top"
+                arrow
               >
-                {loader ? "Translating" : "Translate Script"}
-              </ButtonComp>
+                <span>
+                  <ButtonComp
+                    label={loader ? "Translating" : "Translate Script"}
+                    variant="contained"
+                    sx={
+                      {
+                        // backgroundColor: "#239DE0"
+                      }
+                    }
+                    action={() => setOpen(true)}
+                    disabled={!saveTranslatedData?.saved_version}
+                  >
+                    {loader ? "Translating" : "Translate Script"}
+                  </ButtonComp>
+                </span>
+              </Tooltip>
 
               {/* Language Popup */}
               <PopupModal
@@ -1091,8 +1125,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       uiState?.operations ||
                       // operations ||
                       // saveTranslatedData?.is_save_action === false
-                      !saveTranslatedData?.saved_version ||
-                      tableExtraData?.prompt_batch_id
+                      !saveTranslatedData?.saved_version
+                      // tableExtraData?.prompt_batch_id
                     }
                   >
                     Create Visual Content

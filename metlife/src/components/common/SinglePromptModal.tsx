@@ -103,7 +103,7 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
           </ButtonComp>
 
           <Tooltip
-            title={extraDetails?.is_saved ? "Cannot use this prompt!" : ""}
+            title={extraDetails?.is_saved ? "Prompt is already saved!" : ""}
             placement="top"
             arrow
           >

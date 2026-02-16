@@ -51,9 +51,6 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   const [ost, setOst] = useState("");
   const [type, setType] = useState("narrator");
 
-  console.log(tableData?.video_style === "narrative", "check");
-  
-
   useEffect(() => {
     if (fieldData) {
       setScript(fieldData.Script || "");
@@ -67,11 +64,11 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
     } else {
       setScript("");
       setOst("");
-      setType("");
+      // setType("");
+      setType("narrator");
+
     }
   }, [fieldData, open]);
-
-  console.log(fieldData, "field");
 
   const handleSave = () => {
     if (title === "Add New Scene") {
@@ -79,6 +76,7 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
       formData.append("script_id", id);
       formData.append("version", tableData?.version);
       formData.append("scene_type", tableData?.video_style === "narrative" ? "narrator" : "");
+      // formData.append("scene_type", type || "narrator");
       formData.append("description", script);
       formData.append("on_screen_text", ost);
       dispatch(postAddScene(formData));
@@ -93,10 +91,6 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
       dispatch(postEditScene(formData));
     }
 
-    const payload = {
-      script,
-      ost,
-    };
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };
