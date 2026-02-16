@@ -926,20 +926,37 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 tableExtraData={tableExtraData}
                 setOpenFlowDialog={setOpenFlowDialog}
               />
-
-              <ButtonComp
-                label={loader ? "Translating" : "Translate Script"}
-                variant="contained"
-                sx={
-                  {
-                    // backgroundColor: "#239DE0"
-                  }
+              <Tooltip
+                title={
+                  // !saveTranslatedData
+                  !saveTranslatedData?.saved_version
+                    ? "Please save before creating visual content."
+                    : ""
                 }
                 action={() => setUiState((prev) => ({ ...prev, open: true }))}
                 // action={() => setOpen(true)}
+                placement="top"
+                arrow
               >
-                {loader ? "Translating" : "Translate Script"}
-              </ButtonComp>
+                <span>
+                  <ButtonComp
+                    label={loader ? "Translating" : "Translate Script"}
+                    variant="contained"
+                    sx={
+                      {
+                        // backgroundColor: "#239DE0"
+                      }
+                    }
+                    // action={() => setOpen(true)}
+                    action={() =>
+                      setUiState((prev) => ({ ...prev, open: true }))
+                    }
+                    disabled={!saveTranslatedData?.saved_version}
+                  >
+                    {loader ? "Translating" : "Translate Script"}
+                  </ButtonComp>
+                </span>
+              </Tooltip>
 
               {/* Language Popup */}
               <PopupModal
