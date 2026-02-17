@@ -96,7 +96,8 @@ const MyVideosDashboard: React.FC = () => {
   });
 
   const inprogress_visuals = dashBoardInfo?.filter((item) => {
-    if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
+    // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
+    if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
       return item;
     }
   });
