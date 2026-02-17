@@ -233,7 +233,9 @@ const MyVideosDashboard: React.FC = () => {
   }, [dispatch]);
 
   const handleView = (video: DashboardItem) => {
-    if (video.videos) {
+    // if (video.videos) {
+    if (video?.final_video?.url) {
+
       navigate(`/animation-page/${video.script_id}`);
       return;
     }
