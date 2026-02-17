@@ -432,12 +432,6 @@ const MyVideosDashboard: React.FC = () => {
               colorType="secondary"
               label="+ Create New Video"
               transform="none"
-              sx={
-                {
-                  // bgcolor: "#2f91c7",
-                  // borderRadius: "8px",
-                }
-              }
               onClick={handleClick}
             >
               {" "}
