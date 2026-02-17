@@ -26,43 +26,48 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import type { DropResult } from "@hello-pangea/dnd";
 
 import styles from "./Table.module.css";
-import AddNewScriptPopup from "../popUps/addScripts";
-import { downloadScriptPdf, downloadScriptWord } from "../../utils";
-import { showToast } from "../../utils/toast";
+import AddNewScriptPopup from "../../popUps/addScripts";
+import { downloadScriptPdf, downloadScriptWord } from "../../../utils";
+import { showToast } from "../../../utils/toast";
 
-import { IoArrowBackCircleOutline, IoArrowForwardCircleOutline } from "react-icons/io5";
+import {
+  IoArrowBackCircleOutline,
+  IoArrowForwardCircleOutline,
+} from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router";
-import copy from "../../assets/copy.svg";
-import reuse from "../../assets/reuse.svg";
-import deleteIcon from "../../assets/Group_Delete.svg";
+import copy from "../../../assets/copy.svg";
+import reuse from "../../../assets/reuse.svg";
+import deleteIcon from "../../../assets/Group_Delete.svg";
 
-import styles1 from "../../Pages/AddNewScriptPage/AddNewScript.module.css";
-import DownloadPopup from "./popup/DownloadPopup";
-import ShowSourcePopup from "./popup/ShowSourcePopup";
-import RegenerateScriptPopup from "./popup/RegenerateScriptPopup";
-import ButtonComp from "./Buton/Button";
-import PopupModal from "../popUps/LanguagePopup";
+import styles1 from "../../../Pages/AddNewScriptPage/AddNewScript.module.css";
+import DownloadPopup from "../popup/DownloadPopup";
+import ShowSourcePopup from "../popup/ShowSourcePopup";
+import RegenerateScriptPopup from "../popup/RegenerateScriptPopup";
+import ButtonComp from "../Buton/Button";
+import PopupModal from "../../popUps/LanguagePopup";
 
 import { toast } from "react-toastify";
-import api, { BASE_URL } from "../../api/axios";
-import FullScreenGradientLoader from "./GradientLoader";
+import api, { BASE_URL } from "../../../api/axios";
+import FullScreenGradientLoader from "../GradientLoader";
 import { MdDone } from "react-icons/md";
 
 import { useDispatch, useSelector } from "react-redux";
-import { postTranslatedDataSave } from "../../redux/features/saveSlice";
-import DeleteScenePopup from "./popup/DeleteScenePopup";
-import { postCreateVisualContent } from "../../redux/features/createVisualSlice";
+import { postTranslatedDataSave } from "../../../redux/features/saveSlice";
+import DeleteScenePopup from "../popup/DeleteScenePopup";
+import { postCreateVisualContent } from "../../../redux/features/createVisualSlice";
 
-import { languages } from "../../utils/languageOptions";
-import SinglePromptModal from "./SinglePromptModal";
-import { postSavePrompt } from "../../redux/features/promptSlice";
+import { languages } from "../../../utils/languageOptions";
+import SinglePromptModal from "../SinglePromptModal";
+import { postSavePrompt } from "../../../redux/features/promptSlice";
 import {
   getExtractCharacters,
   postDeleteScene,
   postExtractCharacters,
   postPromptSetupCharacters,
-} from "../../redux/features/scriptSlice";
-import { CharacterCarousel } from "./carousel/CharacterCarousel";
+} from "../../../redux/features/scriptSlice";
+import { CharacterCarousel } from "../carousel/CharacterCarousel";
+import TableRowComp from "./TableRowComp";
+import TableComp from "./TableComp";
 
 export interface SceneRow {
   id: string | number;
@@ -109,7 +114,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 }) => {
   const [tableExtraData, setTableExtraData] = useState<any>({});
   const [rows, setRows] = useState<SceneRow[]>([]);
-  const [openPopUp, setOpenPopup] = useState<boolean>(false);
+  // const [openPopUp, setOpenPopup] = useState<boolean>(false);
   const [popUpData, setPopUpdata] = useState<any>(null);
   const [popupTitle, setPopupTitle] = useState("Add New Script");
   const [loaderText, setLoaderText] = useState("");
@@ -132,26 +137,46 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
   );
+
+  console.log(rows, "tableRowssss");
   // const { scriptLoader } = useSelector((store: RootState) => store.Script);
-  const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
-  const [openShowPopup, setOpenShowPopup] = useState(false);
-  const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [selectedScene, setSelectedScene] = useState<SceneRow | null>(null);
-  const [regenerateDisabled, setRegenerateDisabled] = useState(false);
-  const [operations, setOperations] = useState(false);
-  const [openSavePrompt, setOpenSavePrompt] = useState(false);
   const latestPrompt = tableExtraData?.latest_prompt;
-  const [showSourceLoader, setShowSourceLoader] = useState(false);
-  const [deleteLoader, setDeleteLoader] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openCharacterModal, setOpenCharacterModal] = useState(false);
+
+  // const [operations, setOperations] = useState(false);
+  // const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
+  // const [openShowPopup, setOpenShowPopup] = useState(false);
+  // const [openRegeneratePopup, setOpenRegeneratePopup] = useState(false);
+  // const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  // const [regenerateDisabled, setRegenerateDisabled] = useState(false);
+  // const [openSavePrompt, setOpenSavePrompt] = useState(false);
+  // const [showSourceLoader, setShowSourceLoader] = useState(false);
+  // const [deleteLoader, setDeleteLoader] = useState(false);
+  // const [open, setOpen] = useState(false);
+  // const [openCharacterModal, setOpenCharacterModal] = useState(false);
+
+  const [uiState, setUiState] = useState({
+    openPopup: false,
+    openDownloadPopup: false,
+    openShowPopup: false,
+    openRegeneratePopup: false,
+    openDeletePopup: false,
+    regenerateDisabled: false,
+    operations: false,
+    openSavePrompt: false,
+    showSourceLoader: false,
+    deleteLoader: false,
+    open: false,
+    openCharacterModal: false,
+  });
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [charImageExist, setCharImageExist] = useState(
     extraDetails?.char_image_exist,
   );
   const [openFlowDialog, setOpenFlowDialog] = useState(false);
-  const [flowStep, setFlowStep] = useState<FlowStep>(null);
+  // const [flowStep, setFlowStep] = useState<FlowStep>(null);
+  // const [targetVersion, setTargetVersion] = useState("");
   const PROVIDERS = ["google", "azure", "gpt"] as const;
   type ProviderType = (typeof PROVIDERS)[number];
   const PROVIDER_LABELS: Record<ProviderType, string> = {
@@ -177,7 +202,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   useEffect(() => {
     if (saveTranslatedData && !saveLoader) {
-      setRegenerateDisabled(false);
+      setUiState((prev) => ({ ...prev, regenerateDisabled: false }));
+      // setRegenerateDisabled(false);
     }
   }, [saveTranslatedData, saveLoader]);
 
@@ -203,8 +229,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       postSavePrompt(
         id ?? "",
         payload,
-        () => setOpenSavePrompt(false),
-        setOperations,
+        () => setUiState((prev) => ({ ...prev, openSavePrompt: false })),
+        (value: boolean) =>
+          setUiState((prev) => ({ ...prev, operations: value })),
+        // setOperations,
       ),
     );
   };
@@ -231,7 +259,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       icon: (
         <Tooltip
           title={
-            regenerateDisabled
+            // regenerateDisabled
+            uiState?.regenerateDisabled
               ? "Please save before regenerating again"
               : "Regenerate"
           }
@@ -246,11 +275,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 // opacity: regenerateDisabled ? 0.5 : 1,
                 // cursor: regenerateDisabled ? "not-allowed" : "pointer",
                 opacity:
-                  regenerateDisabled || pathname?.startsWith("SCRIPT-")
+                  uiState?.regenerateDisabled || pathname?.startsWith("SCRIPT-")
                     ? 0.5
                     : 1,
                 cursor:
-                  regenerateDisabled || pathname?.startsWith("SCRIPT-")
+                  uiState?.regenerateDisabled || pathname?.startsWith("SCRIPT-")
                     ? "not-allowed"
                     : "pointer",
               }}
@@ -259,9 +288,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </Tooltip>
       ),
       onClick: (row: any) => {
-        if (!regenerateDisabled) {
+        if (!uiState?.regenerateDisabled) {
           setSceneData(row);
-          setOpenRegeneratePopup(true);
+          setUiState((prev) => ({ ...prev, openRegeneratePopup: true }));
           setMakeChanges(true);
         }
       },
@@ -296,16 +325,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const addScene = (data?: any) => {
     setPopUpdata(data ?? null);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
     setPopupTitle(data?.OST ? "Edit Scene" : "Add New Scene");
-    setOpenPopup(true);
+    setUiState((prev) => ({ ...prev, openPopup: true }));
   };
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     setMakeChanges(true);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
 
     const updated = Array.from(rows);
     const [moved] = updated.splice(result.source.index, 1);
@@ -321,14 +352,30 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleDownloadType = (type: string) => {
-    console.log(tableExtraData, rows, "tableExtraData")
+    console.log(tableExtraData, rows, "tableExtraData");
+    const filteredScenes = [...rows]?.filter(
+      (scene) => scene?.is_deleted !== true,
+    );
+    console.log(filteredScenes, "filteredScenes");
+
     try {
       if (type === "pdf") {
-        downloadScriptPdf({ ...tableExtraData, scenes: rows }, true);
+        downloadScriptPdf(
+          {
+            ...tableExtraData,
+            // scenes: rows
+            scenes: filteredScenes,
+          },
+          true,
+        );
       } else if (type === "word") {
-        downloadScriptWord({ ...tableExtraData, scenes: rows });
+        downloadScriptWord({
+          ...tableExtraData,
+          // scenes: rows,
+          scenes: filteredScenes,
+        });
       }
-      setOpenDownloadPopup(false);
+      setUiState((prev) => ({ ...prev, openDownloadPopup: false }));
     } catch (err) {
       console.error("Error generating file:", err);
     }
@@ -337,7 +384,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleUpdate = (data: any) => {
     setMakeChanges(true);
-    setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
 
     if (data?.fieldData) {
       const updated = rows.map((item) =>
@@ -363,13 +411,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       setRows((prev) => [...prev, newScene]);
     }
 
-    showToast.success("Scene saved successfully");
-    setOpenPopup(false);
+    // showToast.success("Scene saved successfully");
+    setUiState((prev) => ({ ...prev, openPopup: false }));
   };
 
   const handleShowSource = async () => {
-    setOpenShowPopup(true);
-    setShowSourceLoader(true);
+    // setOpenShowPopup(true);
+    setUiState((prev) => ({
+      ...prev,
+      openShowPopup: true,
+    }));
+    setUiState((prev) => ({ ...prev, showSourceLoader: true }));
+    // setShowSourceLoader(true);
     try {
       const response = await fetch(`${BASE_URL}show-source/${id}`, {
         method: "GET",
@@ -386,7 +439,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       // console.log(error);
       toast.error("Something went wrong!");
     } finally {
-      setShowSourceLoader(false);
+      setUiState((prev) => ({ ...prev, showSourceLoader: false }));
+      // setShowSourceLoader(false);
     }
     // setMakeChanges(true);
   };
@@ -395,7 +449,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (!pdfId && !id) return;
     if (!selectedLang || !selectedProvider) return;
 
-    setOperations(true);
+    // setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
     setLoader(true);
     setLoaderText("Translating script...");
 
@@ -438,8 +493,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleSetData = (data: any) => {
-    setOperations(true);
-    setRegenerateDisabled(true);
+    // setOperations(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    setUiState((prev) => ({ ...prev, regenerateDisabled: true }));
+    // setRegenerateDisabled(true);
 
     if (sceneData?.id) {
       const updated = rows.map((item) =>
@@ -454,19 +511,68 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleSave = () => {
-    setOperations(false);
-    const { script_status, saved_version, ...rest } = tableExtraData;
+    // setOperations(false);
+    setUiState((prev) => ({ ...prev, operations: false }));
+    const { script_status, saved_version, scenes, ...rest } = tableExtraData;
+    // let updatedData = [...rows]?.map((parentItem) => {
+    //   let data = [...scenes].filter((item) => item?.scene_id == parentItem?.id);
+    //   if (data[0]) {
+    //     data[0].description = parentItem?.Script;
+    //     data[0].on_screen_text = parentItem?.OST;
+    //     data[0].scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
+    //     data[0].scene_number = parentItem?.["Scene No."];
+    //     data[0].is_deleted = parentItem?.is_deleted;
+    //     // data[0].scene_id=parentItem?.Script
+
+    //     return data[0];
+    //   } else {
+    //     let data = {};
+    //     data.description = parentItem?.Script;
+    //     data.on_screen_text = parentItem?.OST;
+    //     data.scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
+    //     data.scene_number = parentItem?.["Scene No."];
+    //     // if (parentItem?.id || parentItem?.scene_id) {
+    //     //   data.scene_id = parentItem.scene_id ?? parentItem.id;
+    //     // }
+    //     return data;
+    //   }
+    // });
+    let updatedData = [...rows]
+      .filter((parentItem) => !parentItem?.is_deleted) // ✅ skip deleted rows
+      .map((parentItem) => {
+        let existing = scenes.find((item) => item?.scene_id == parentItem?.id);
+
+        if (existing) {
+          return {
+            ...existing,
+            description: parentItem?.Script,
+            on_screen_text: parentItem?.OST,
+            scene_type: parentItem?.Type ? parentItem?.Type : "narrator",
+            scene_number: parentItem?.["Scene No."],
+            is_deleted: parentItem?.is_deleted,
+          };
+        } else {
+          return {
+            description: parentItem?.Script,
+            on_screen_text: parentItem?.OST,
+            scene_type: parentItem?.Type ? parentItem?.Type : "narrator",
+            scene_number: parentItem?.["Scene No."],
+          };
+        }
+      });
 
     const data = {
       data: {
         ...rest,
         script_id: id,
+        scenes: updatedData,
         title: tableExtraData?.title,
         version: tableExtraData?.version,
         page: "script",
       },
       is_save_action: true,
     };
+
     dispatch(
       postTranslatedDataSave(data, (id) => {
         if (pathname === "/translated-script") {
@@ -479,12 +585,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleDeleteScene = (scene: SceneRow) => {
     setSelectedScene(scene);
-    setOperations(true);
-    setOpenDeletePopup(true);
+    setUiState((prev) => ({ ...prev, operations: true }));
+    // setOperations(true);
+    setUiState((prev) => ({ ...prev, openDeletePopup: true }));
+    // setOpenDeletePopup(true);
     setMakeChanges(true);
   };
-
-  // const editSceneForScript = () => {};
 
   const confirmDeleteScene = async (scene: SceneRow) => {
     if (!id) return;
@@ -505,17 +611,28 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       scene_id: scene.id,
       version: tableExtraData?.version,
     };
-    setDeleteLoader(true);
+    setUiState((prev) => ({ ...prev, deleteLoader: true }));
+    // setDeleteLoader(true);
 
     try {
-      await api.post("mongo/delete_scene", payload);
+      const response = await api.post("mongo/delete_scene", payload);
+      console.log(response?.data?.target_version, "response");
       successDelete(scene);
-      setRows((prev) => prev.filter((item) => item.id !== scene.id));
-      setOpenDeletePopup(false);
+      // setRows((prev) => prev.filter((item) => item.id !== scene.id));
+      let newRows = [...rows].map((item) => {
+        if (item?.id == scene.id) {
+          item.is_deleted = true;
+        }
+        return item;
+      });
+      setRows([...newRows]);
+      setUiState((prev) => ({ ...prev, openDeletePopup: false }));
+      // setOpenDeletePopup(false);
     } catch (error) {
       console.error(error);
     } finally {
-      setDeleteLoader(false);
+      setUiState((prev) => ({ ...prev, deleteLoader: false }));
+      // setDeleteLoader(false);
     }
   };
 
@@ -532,13 +649,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleOpenFlowDialog = () => {
     if (tableExtraData?.video_style === "conversational") {
-      setFlowStep("characters");
+      // setFlowStep("characters");
       setOpenFlowDialog(true);
       return;
     }
 
     if (tableExtraData?.video_style === "mixed") {
-      setFlowStep("characters");
+      // setFlowStep("characters");
       setOpenFlowDialog(true);
       return;
     }
@@ -549,7 +666,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleCreateVisualContent = (flowType) => {
-    const payload = { ...tableExtraData };
+    console.log(tableExtraData?.scenes, "check_table_extra_data");
+
+    const filteredScenes = tableExtraData?.scenes?.filter(
+      (scene) => scene?.is_deleted !== true,
+    );
+    const payload = { ...tableExtraData, scenes: filteredScenes };
     if (tableExtraData?.video_style === "mixed") {
       payload.flow_type = flowType;
     }
@@ -579,11 +701,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const handleOpenCharacterModal = (index = 0) => {
     setCurrentIndex(index);
-    setOpenCharacterModal(true);
+    setUiState((prev) => ({ ...prev, openCharacterModal: true }));
+    // setOpenCharacterModal(true);
   };
 
   const handleCloseCharacterModal = () => {
-    setOpenCharacterModal(false);
+    setUiState((prev) => ({ ...prev, openCharacterModal: false }));
+    // setOpenCharacterModal(false);
   };
 
   const handleSetupPrompt = () => {
@@ -599,16 +723,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
+  // console.log(
+  //   !saveTranslatedData?.saved_version,
+  //   "tableExtraData",
+  // );
+
   return (
     <>
       <div className={styles1.header}>
-        {/* <h2 className={styles1.title}>
-          {tableExtraData?.title ||
-            visualContentTitle ||
-            tableExtraData?.upload_info?.title ||
-            "Your Script"}
-        </h2> */}
-
         <Typography variant="h4">
           {tableExtraData?.title ||
             visualContentTitle ||
@@ -703,30 +825,42 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <ButtonComp
                 variant="contained"
                 // className={styles1.BtnSavePrompt}
-                onClick={() => setOpenSavePrompt(true)}
+                onClick={() =>
+                  setUiState((prev) => ({ ...prev, openSavePrompt: true }))
+                }
               >
-                Save Prompt
+                Show Prompt
               </ButtonComp>
             )}
             <ShowSourcePopup
-              open={openShowPopup}
-              onClose={() => setOpenShowPopup(false)}
+              open={uiState?.openShowPopup}
+              // open={openShowPopup}
+              onClose={() =>
+                setUiState((prev) => ({ ...prev, openShowPopup: false }))
+              }
+              // onClose={() => setOpenShowPopup(false)}
               data={showSourceData}
-              loader={showSourceLoader}
+              loader={uiState?.showSourceLoader}
             />
             {/* Back Button */}
             <Button
               className={styles1.icon}
               onClick={() => navigate("/generate-script")}
             >
-              <IoArrowBackCircleOutline size={30} /> Back
+              <IoArrowBackCircleOutline size={30} />
+              <span style={{ lineHeight: "normal" }}>Back</span>
             </Button>
             <Button
               className={styles1.icon}
-              onClick={() => navigate(`/create-visual-content/${tableExtraData?.prompt_batch_id}`)}
+              onClick={() =>
+                navigate(
+                  `/create-visual-content/${tableExtraData?.prompt_batch_id}`,
+                )
+              }
               disabled={!tableExtraData?.prompt_batch_id}
             >
-              Next <IoArrowForwardCircleOutline size={30} />
+              <span style={{ lineHeight: "normal" }}>Next</span>{" "}
+              <IoArrowForwardCircleOutline size={30} />
             </Button>
           </div>
         )}
@@ -740,110 +874,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       {scriptLoader && <FullScreenGradientLoader text="Loading..." />}
 
       {/* ---------------- TABLE ---------------- */}
-      <TableContainer component={Paper} className={styles.tablePaper}>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
-            {(provided) => (
-              <Table
-                className={styles.tableRoot}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <TableHead>
-                  <TableRow className={styles.headRow}>
-                    {showDragAndActions && (
-                      <TableCell className={styles.headCell}></TableCell>
-                    )}
-
-                    {columns.map((col, idx) => (
-                      <TableCell key={idx} className={styles.headCell}>
-                        {col}
-                      </TableCell>
-                    ))}
-
-                    {showDragAndActions && actions?.length > 0 && (
-                      <TableCell className={styles.headCell}>Action</TableCell>
-                    )}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {rows.map((row, rIdx) => (
-                    <Draggable
-                      key={String(row.id)}
-                      draggableId={String(row.id)}
-                      index={rIdx}
-                      isDragDisabled={!showDragAndActions}
-                    >
-                      {(providedDraggable) => (
-                        <TableRow
-                          ref={providedDraggable.innerRef}
-                          {...providedDraggable.draggableProps}
-                          className={styles.bodyRow}
-                        >
-                          {showDragAndActions && (
-                            <TableCell className={styles.bodyCell}>
-                              <Tooltip
-                                title="Drag & Drop"
-                                placement="top"
-                                arrow
-                              >
-                                <span>
-                                  <IconButton
-                                    {...providedDraggable.dragHandleProps} // ✅ FIXED HERE
-                                    size="small"
-                                    className={styles.dragHandle}
-                                  >
-                                    <DragIndicatorIcon />
-                                  </IconButton>
-                                </span>
-                              </Tooltip>
-                            </TableCell>
-                          )}
-
-                          {columns.map((col, cIdx) => (
-                            <TableCell key={cIdx} className={styles.bodyCell}>
-                              {row[col as keyof SceneRow]}
-                            </TableCell>
-                          ))}
-
-                          {showDragAndActions && (
-                            <TableCell className={styles.bodyCell}>
-                              <div className={styles.actionsWrap}>
-                                {actions.map((act, aIdx) => (
-                                  <IconButton
-                                    key={aIdx}
-                                    className={styles.iconBtn}
-                                    size="small"
-                                    onClick={() => act.onClick(row)}
-                                  >
-                                    {act.icon}
-                                  </IconButton>
-                                ))}
-                              </div>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      )}
-                    </Draggable>
-                  ))}
-
-                  {/*
-                    `provided.placeholder` belongs to Droppable's render-props.
-                    We render it below by using the `provided` variable from Droppable.
-                  */}
-                  {provided.placeholder}
-                </TableBody>
-              </Table>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </TableContainer>
+      <TableComp
+        handleDragEnd={handleDragEnd}
+        columns={columns}
+        rows={rows}
+        showDragAndActions={showDragAndActions}
+        actions={actions}
+      />
 
       {/* ---------------- POPUPS ---------------- */}
       <AddNewScriptPopup
-        open={openPopUp}
-        onClose={() => setOpenPopup(false)}
+        open={uiState?.openPopup}
+        onClose={() => setUiState((prev) => ({ ...prev, openPopup: false }))}
         fieldData={popUpData}
         title={popupTitle}
         handleUpdate={handleUpdate}
@@ -851,12 +893,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       />
 
       <DeleteScenePopup
-        open={openDeletePopup}
-        onClose={() => setOpenDeletePopup(false)}
+        open={uiState?.openDeletePopup}
+        onClose={() =>
+          setUiState((prev) => ({ ...prev, openDeletePopup: false }))
+        }
         onConfirm={confirmDeleteScene}
         rowData={selectedScene}
         id={id}
-        loader={deleteLoader}
+        loader={uiState?.deleteLoader}
       />
 
       {/* FOOTER BUTTONS */}
@@ -871,7 +915,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           {features && (
             <>
               <CharacterCarousel
-                open={openCharacterModal}
+                open={uiState?.openCharacterModal}
+                // open={openCharacterModal}
                 onClose={handleCloseCharacterModal}
                 characterData={characterData}
                 promptData={promptData}
@@ -881,24 +926,42 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 tableExtraData={tableExtraData}
                 setOpenFlowDialog={setOpenFlowDialog}
               />
-
-              <ButtonComp
-                label={loader ? "Translating" : "Translate Script"}
-                variant="contained"
-                sx={
-                  {
-                    // backgroundColor: "#239DE0"
-                  }
+              <Tooltip
+                title={
+                  // !saveTranslatedData
+                  !saveTranslatedData?.saved_version
+                    ? "Please save before creating visual content."
+                    : ""
                 }
-                action={() => setOpen(true)}
+                action={() => setUiState((prev) => ({ ...prev, open: true }))}
+                // action={() => setOpen(true)}
+                placement="top"
+                arrow
               >
-                {loader ? "Translating" : "Translate Script"}
-              </ButtonComp>
+                <span>
+                  <ButtonComp
+                    label={loader ? "Translating" : "Translate Script"}
+                    variant="contained"
+                    sx={
+                      {
+                        // backgroundColor: "#239DE0"
+                      }
+                    }
+                    // action={() => setOpen(true)}
+                    action={() =>
+                      setUiState((prev) => ({ ...prev, open: true }))
+                    }
+                    disabled={!saveTranslatedData?.saved_version}
+                  >
+                    {loader ? "Translating" : "Translate Script"}
+                  </ButtonComp>
+                </span>
+              </Tooltip>
 
               {/* Language Popup */}
               <PopupModal
-                open={open}
-                onClose={() => setOpen(false)}
+                open={uiState?.open}
+                onClose={() => setUiState((prev) => ({ ...prev, open: false }))}
                 title="Select Language"
               >
                 <div className={styles.languageList}>
@@ -971,7 +1034,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     // className={styles.downloadBtn}
                     action={() => {
                       handleTranslateScript();
-                      setOpen(false);
+                      setUiState((prev) => ({ ...prev, open: false }));
+                      // setOpen(false);
                     }}
                   >
                     Translate Script
@@ -990,7 +1054,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               onClick={() => {
                 setMakeChanges(true);
                 setSceneData({});
-                setOpenRegeneratePopup(true);
+                setUiState((prev) => ({ ...prev, openRegeneratePopup: true }));
               }}
             >
               Regenerate Script
@@ -999,9 +1063,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
           {/* Regenerate Popup */}
           <RegenerateScriptPopup
-            open={openRegeneratePopup}
+            open={uiState?.openRegeneratePopup}
+            // open={openRegeneratePopup}
             onClose={() => {
-              setOpenRegeneratePopup(false);
+              setUiState((prev) => ({ ...prev, openRegeneratePopup: false }));
               setSceneData({});
             }}
             id={id}
@@ -1027,7 +1092,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               colorType="download"
               variant="contained"
               // className={styles.successBtn}
-              onClick={() => setOpenDownloadPopup(true)}
+              onClick={() =>
+                setUiState((prev) => ({ ...prev, openDownloadPopup: true }))
+              }
+              disabled={!saveTranslatedData?.saved_version}
             >
               Download Script
             </ButtonComp>
@@ -1057,10 +1125,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     // className={styles.primaryBtn}
                     disabled={
                       saveTranslatedData === null ||
-                      operations ||
+                      uiState?.operations ||
+                      // operations ||
                       // saveTranslatedData?.is_save_action === false
                       !saveTranslatedData?.saved_version
-                      || tableExtraData?.prompt_batch_id
+                      // tableExtraData?.prompt_batch_id
                     }
                   >
                     Create Visual Content
@@ -1239,18 +1308,24 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </Stack>
 
         <SinglePromptModal
-          open={openSavePrompt}
-          onClose={() => setOpenSavePrompt(false)}
+          open={uiState?.openSavePrompt}
+          onClose={() =>
+            setUiState((prev) => ({ ...prev, openSavePrompt: false }))
+          }
           prompt={latestPrompt}
           onSave={handleSavePrompt}
           size="md"
           extraDetails={tableExtraData}
-          operations={operations}
+          operations={uiState?.operations}
+          // operations={operations}
         />
 
         <DownloadPopup
-          open={openDownloadPopup}
-          onClose={() => setOpenDownloadPopup(false)}
+          open={uiState?.openDownloadPopup}
+          // open={openDownloadPopup}
+          onClose={() =>
+            setUiState((prev) => ({ ...prev, openDownloadPopup: false }))
+          }
           onSelect={handleDownloadType}
         />
       </div>
@@ -1337,3 +1412,119 @@ export default DynamicTable;
 //     </Dialog>
 //   </>
 // )
+
+{
+  /* <TableContainer component={Paper} className={styles.tablePaper}>
+  <DragDropContext onDragEnd={handleDragEnd}>
+    <Droppable droppableId="table" isDropDisabled={!showDragAndActions}>
+      {(provided) => (
+        <Table
+          className={styles.tableRoot}
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+        >
+          <TableHead>
+            <TableRow className={styles.headRow}>
+              {showDragAndActions && (
+                <TableCell className={styles.headCell}></TableCell>
+              )}
+
+              {columns.map((col, idx) => (
+                <TableCell key={idx} className={styles.headCell}>
+                  {col}
+                </TableCell>
+              ))}
+
+              {showDragAndActions && actions?.length > 0 && (
+                <TableCell className={styles.headCell}>Action</TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {rows?.map((row, rIdx) => (
+              <TableRowComp
+                row={row}
+                rIdx={rIdx}
+                columns={columns}
+                actions={actions}
+                showDragAndActions={showDragAndActions}
+              />
+            ))}
+            {rows?.map((row, rIdx) => (
+              // !row?.is_deleted && (
+              <Draggable
+                key={String(row.id)}
+                draggableId={String(row.id)}
+                index={rIdx}
+                isDragDisabled={!showDragAndActions || row?.is_deleted}
+              >
+                {(providedDraggable) => (
+                  <TableRow
+                    ref={providedDraggable.innerRef}
+                    {...providedDraggable.draggableProps}
+                    className={`${styles.bodyRow} ${row?.is_deleted && styles.deletedRow}`}
+                  >
+                    {showDragAndActions && (
+                      <TableCell className={styles.bodyCell}>
+                        <Tooltip title="Drag & Drop" placement="top" arrow>
+                          <span>
+                            <IconButton
+                              {...providedDraggable.dragHandleProps} // ✅ FIXED HERE
+                              size="small"
+                              className={styles.dragHandle}
+                            >
+                              <DragIndicatorIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      </TableCell>
+                    )}
+
+                    {columns.map((col, cIdx) => (
+                      <TableCell key={cIdx} className={styles.bodyCell}>
+                        {row[col as keyof SceneRow]}
+                      </TableCell>
+                    ))}
+
+                    {showDragAndActions && (
+                      <TableCell className={styles.bodyCell}>
+                        <div className={styles.actionsWrap}>
+                          {row?.is_deleted ? (
+                            <Tooltip title="Restore" placement="top" arrow>
+                              <IconButton
+                                className={styles.smallIconBtn}
+                                size="small"
+                              >
+                                Deleted
+                              </IconButton>
+                            </Tooltip>
+                          ) : (
+                            actions.map((act, aIdx) => (
+                              <IconButton
+                                key={aIdx}
+                                className={styles.iconBtn}
+                                size="small"
+                                onClick={() => act.onClick(row)}
+                              >
+                                {act.icon}
+                              </IconButton>
+                            ))
+                          )}
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )}
+              </Draggable>
+            ))}
+            `provided.placeholder` belongs to Droppable's render-props. We
+            render it below by using the `provided` variable from Droppable.
+            {provided.placeholder}
+          </TableBody>
+        </Table>
+      )}
+    </Droppable>
+  </DragDropContext>
+</TableContainer>; */
+}

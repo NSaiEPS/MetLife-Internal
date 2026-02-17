@@ -14,6 +14,9 @@ import {
 } from "@mui/material";
 import styles from "./addScripts.module.css";
 import ButtonComp from "../common/Buton/Button";
+import { useDispatch } from "react-redux";
+import { postAddScene, postEditScene } from "../../redux/features/scriptSlice";
+import { useParams } from "react-router";
 
 interface ScriptData {
   Script?: string;
@@ -40,11 +43,13 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
   fieldData,
   title,
   handleUpdate,
-  tableExtraData,
+  tableData,
 }) => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const [script, setScript] = useState("");
   const [ost, setOst] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("narrator");
 
   useEffect(() => {
     if (fieldData) {
@@ -59,15 +64,33 @@ const AddNewScriptPopup: React.FC<AddNewScriptPopupProps> = ({
     } else {
       setScript("");
       setOst("");
-      setType("");
+      // setType("");
+      setType("narrator");
+
     }
   }, [fieldData, open]);
 
   const handleSave = () => {
-    const payload = {
-      script,
-      ost,
-    };
+    if (title === "Add New Scene") {
+      const formData = new FormData();
+      formData.append("script_id", id);
+      formData.append("version", tableData?.version);
+      formData.append("scene_type", tableData?.video_style === "narrative" ? "narrator" : "");
+      // formData.append("scene_type", type || "narrator");
+      formData.append("description", script);
+      formData.append("on_screen_text", ost);
+      dispatch(postAddScene(formData));
+    }
+    if (title === "Edit Scene") {
+      const formData = new FormData();
+      formData.append("script_id", id);
+      formData.append("version", tableData?.version);
+      formData.append("scene_id", fieldData?.id);
+      formData.append("update_description", script);
+      formData.append("update_on_screen_text", ost);
+      dispatch(postEditScene(formData));
+    }
+
     handleUpdate({ script, ost, type, fieldData });
     onClose();
   };

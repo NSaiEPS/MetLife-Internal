@@ -53,6 +53,9 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
           bgcolor: "background.paper",
           borderRadius: 3,
           boxShadow: 24,
+          maxHeight: "80vh",
+          display: "flex",
+          flexDirection: "column",
           p: 3,
         }}
       >
@@ -75,6 +78,8 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
             lineHeight: 1.5,
             color: "text.secondary",
             whiteSpace: "pre-wrap",
+            overflowY: "auto",
+            flex: 1,
           }}
         >
           {prompt}
@@ -86,17 +91,19 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
             variant="outlined"
             colorType="secondary"
             onClick={onClose}
-            sx={{
-              // textTransform: "none",
-              // borderRadius: 2,
-              // px: 3,
-            }}
+            sx={
+              {
+                // textTransform: "none",
+                // borderRadius: 2,
+                // px: 3,
+              }
+            }
           >
             Close
           </ButtonComp>
 
           <Tooltip
-            title={extraDetails?.is_saved ? "Cannot use this prompt!" : ""}
+            title={extraDetails?.is_saved ? "Prompt is already saved!" : ""}
             placement="top"
             arrow
           >
@@ -104,15 +111,13 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
               <ButtonComp
                 variant="contained"
                 onClick={() => onSave(prompt)}
-                 disabled={extraDetails?.is_saved || operations}
+                disabled={extraDetails?.is_saved || operations}
                 sx={{
                   // textTransform: "none",
                   // borderRadius: 2,
                   // px: 3,
                   // opacity: extraDetails?.is_saved ? 0.5 : 1,
-                  cursor: extraDetails?.is_saved
-                    ? "not-allowed"
-                    : "pointer",
+                  cursor: extraDetails?.is_saved ? "not-allowed" : "pointer",
                 }}
               >
                 SAVE THIS PROMPT

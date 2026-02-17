@@ -28,6 +28,7 @@ import type { AppDispatch, RootState } from "../../redux/store";
 import {
   getDashboardInfo,
   getUsersList,
+  setSelectedFilter,
 } from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
@@ -65,7 +66,8 @@ type DashboardFilter = "ALL" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
 const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
+  // const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
+
   const [scriptId, setScriptId] = useState("");
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
   const [menuData, setMenuData] = useState({
@@ -75,34 +77,42 @@ const MyVideosDashboard: React.FC = () => {
   const [openUsersDialog, setOpenUsersDialog] = useState(false);
   const openPopup = Boolean(open);
 
-  const { dashBoardInfo, dashboardLoader, usersList } = useSelector(
+  const { dashBoardInfo, dashboardLoader, usersList, selectedFilter, } = useSelector(
     (store: RootState) => store.DashBoard,
   );
 
-  const completed_result = dashBoardInfo.filter((item) => {
+  // count length
+  const completed_result = dashBoardInfo?.filter((item) => {
     // if (item.videos) {
     if (item.has_final_video) {
       return item;
     }
   });
 
-  const inprogress_video = dashBoardInfo.filter((item) => {
-    if (!item.has_final_video && item.audio && !item.videos) {
+  const inprogress_video = dashBoardInfo?.filter((item) => {
+    if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
       return item;
     }
   });
 
-  const inprogress_visuals = dashBoardInfo.filter((item) => {
-    if (!item.has_final_video && item.visuals && !item.videos && !item.audio) {
+  const inprogress_visuals = dashBoardInfo?.filter((item) => {
+    // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
+    if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
       return item;
     }
   });
 
-  const inprogress_script = dashBoardInfo.filter((item) => {
-    if (!item.has_final_video && !item.visuals && !item.videos && !item.audio) {
+  const inprogress_script = dashBoardInfo?.filter((item) => {
+    if (!item.failed && !item.has_final_video && !item.visuals && !item.videos && !item.audio) {
       return item;
     }
   });
+
+  const failed_script = dashBoardInfo?.filter(item => {
+    if(item.failed === true) {
+      return item;
+    }
+  })
 
   const total_progress =
     inprogress_video?.length +
@@ -136,7 +146,7 @@ const MyVideosDashboard: React.FC = () => {
     },
     {
       title: "Failed / Error",
-      value: 0,
+      value: failed_script?.length || 0,
       color: "#FDECEA",
       icon: <ErrorOutline fontSize="large" sx={{ color: "#D32F2F" }} />,
       iconColor: "#D32F2F",
@@ -144,10 +154,11 @@ const MyVideosDashboard: React.FC = () => {
     },
   ];
 
+  // showing in table column
   const getStatusChip = (status: DashboardItem) => {
     if (!status) return <Chip label="Unknown" />;
     if (status.failed)
-      return <Chip label="Failed" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
+      return <Chip label="Failed" sx={{ bgcolor: "#e53935", color: "#fff" }} />;
 
     if (status.has_final_video) {
       return (
@@ -167,7 +178,13 @@ const MyVideosDashboard: React.FC = () => {
       return (
         <Chip
           label="Audio Progress"
-          sx={{ bgcolor: "#2196F3", color: "#fff" }}
+          sx={{
+            bgcolor: "#dde7ffff",
+            fontWeight: "bold",
+            lineHeight: "normal",
+            color: "#0d30aeff",
+            border: "2px solid #aab5efff",
+          }}
         />
       );
 
@@ -221,8 +238,14 @@ const MyVideosDashboard: React.FC = () => {
   }, [dispatch]);
 
   const handleView = (video: DashboardItem) => {
-    if (video.videos) {
+    // if (video.videos) {
+    if (video?.final_video?.url && !video?.stitched_video_exists) {
       navigate(`/animation-page/${video.script_id}`);
+      return;
+    }
+    // For conversational
+    if (video?.stitched_video_exists) {
+      navigate(`/upload-conversational-clips/${video.script_id}`);
       return;
     }
     if (video.audio) {
@@ -244,6 +267,7 @@ const MyVideosDashboard: React.FC = () => {
     item.has_final_video === true || Boolean(item.final_video);
 
   const isInProgress = (item: DashboardItem) => {
+     if (item.failed) return false; 
     if (item.has_final_video) return false;
     if (item.audio && !item.videos) return true;
     if (item.visuals && !item.videos && !item.audio) return true;
@@ -251,9 +275,13 @@ const MyVideosDashboard: React.FC = () => {
     return false;
   };
 
-  const isFailed = (item: DashboardItem) => !!item.failed;
-
-  const filteredDashboardInfo = dashBoardInfo.filter((item) => {
+  const isFailed = (item: DashboardItem) => {
+    console.log(item, "check_item")
+    return item.failed;
+  };
+  
+// main function logic which filters the table based on status
+  const filteredDashboardInfo = dashBoardInfo?.filter((item) => {
     switch (selectedFilter) {
       case "COMPLETED":
         return isCompleted(item);
@@ -285,8 +313,6 @@ const MyVideosDashboard: React.FC = () => {
     });
   };
 
-  console.log(menuData, "check_menu_data");
-
   const handleCloseMenu = () => {
     setOpen(null);
   };
@@ -297,12 +323,9 @@ const MyVideosDashboard: React.FC = () => {
     dispatch(getUsersList());
   };
 
-  console.log(scriptId, "scriptId")
-
   return (
     <>
       <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
-        <OneFrameHeader />
         {dashboardLoader && <FullScreenGradientLoader text="Loading..." />}
 
         <Box sx={{ p: 4 }}>
@@ -353,7 +376,8 @@ const MyVideosDashboard: React.FC = () => {
                 >
                   <Paper
                     elevation={selectedFilter === s.filter ? 6 : 0}
-                    onClick={() => setSelectedFilter(s.filter)}
+                    // onClick={() => setSelectedFilter(s.filter)}
+                    onClick={() => dispatch(setSelectedFilter(s.filter))}
                     sx={{
                       p: 3,
                       borderRadius: 4,
@@ -476,9 +500,9 @@ const MyVideosDashboard: React.FC = () => {
                         {/* <Button onClick={(e) => handleDownloadMenu(e, video)}>
                           <FaFileDownload size={18} />
                         </Button> */}
-                        <Button onClick={() => handleUsers(video)}>
+                        {/* <Button onClick={() => handleUsers(video)}>
                           <FaShareSquare size={18} />
-                        </Button>
+                        </Button> */}
                       </TableCell>
                     </TableRow>
                   ))

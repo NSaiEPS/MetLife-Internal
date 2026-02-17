@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import styles from "./translateScript.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
-import DynamicTable from "../../components/common/Table";
+import DynamicTable from "../../components/common/Table/DynamicTable";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import { BASE_URL } from "../../api/axios";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
@@ -85,8 +85,9 @@ const TranslatedScript: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <OneFrameHeader />
+      {/* <OneFrameHeader /> */}
       {/* {pdfViewData?.scenes?.length && (
+      {pdfViewData?.scenes?.length && (
         <FullScreenGradientLoader text="Fetching details" />
       )} */}
 

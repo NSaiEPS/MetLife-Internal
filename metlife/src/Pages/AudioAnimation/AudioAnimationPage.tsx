@@ -804,6 +804,16 @@ const AudioAnimationPage: React.FC = () => {
     ];
   }
 
+  // const [voiceSpeedSelections, setVoiceSpeedSelections] = useState<
+  //   Record<string, number>
+  // >(() => {
+  //   const initial: Record<string, number> = {};
+  //   characters.forEach((char) => {
+  //     initial[char.name] = 1;
+  //   });
+  //   return initial;
+  // });
+
   useEffect(() => {
     if (audioAzurePreviewData?.s3_url) {
       if (audioRef.current) {
@@ -1017,7 +1027,6 @@ const AudioAnimationPage: React.FC = () => {
   //   const narrationType = narrationSelections[charName];
   //   const language = getVoiceLanguage();
   //   const gender = genderSelections[charName];
-    
 
   //   // let voices = allVoiceOptions?.[narrationType]?.[language] || [];
 
@@ -1037,17 +1046,15 @@ const AudioAnimationPage: React.FC = () => {
   // };
 
   const getFilteredVoiceOptions = (charName: string) => {
-  const narrationType = narrationSelections[charName];
-  const language = getVoiceLanguage();
-  const gender = genderSelections[charName];
+    const narrationType = narrationSelections[charName];
+    const language = getVoiceLanguage();
+    const gender = genderSelections[charName];
 
-  const rawVoices = allVoiceOptions?.[narrationType]?.[language] || [];
-  const voices = enrichVoicesWithGender(rawVoices);
+    const rawVoices = allVoiceOptions?.[narrationType]?.[language] || [];
+    const voices = enrichVoicesWithGender(rawVoices);
 
-  return gender
-    ? voices.filter(v => v.gender === gender)
-    : voices;
-};
+    return gender ? voices.filter((v) => v.gender === gender) : voices;
+  };
 
   const handleNarrationChange = (
     charName: string,
@@ -1192,7 +1199,7 @@ const AudioAnimationPage: React.FC = () => {
   const handlePreview = (charName: string) => {
     const selectedVoice = voiceSelections?.[charName];
     const selectedTone = voiceToneSelections?.[charName];
-    const selectedSpeed = voiceSpeedSelections?.[charName];
+    const selectedSpeed = voiceSpeedSelections?.[charName] ?? 1;
 
     if (!selectedTone) {
       showToast.error("Please select a voice tone");
@@ -1229,7 +1236,6 @@ const AudioAnimationPage: React.FC = () => {
       {saveLoader && <FullScreenGradientLoader text="loading..." />}
       <audio ref={audioRef} />
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-        <OneFrameHeader />
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
             {(audioAnimationLoader || videoAnimationLoader) && (
@@ -1365,7 +1371,7 @@ const AudioAnimationPage: React.FC = () => {
                           <SelectComp
                             label="Voice Speed"
                             options={voiceSpeedOptions}
-                            value={voiceSpeedSelections[charName] ?? ""}
+                            value={voiceSpeedSelections[charName] ?? "1"}
                             onChange={(value) =>
                               handleVoiceSpeedChange(charName, value as number)
                             }

@@ -367,7 +367,6 @@ const GenerateScript: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      <OneFrameHeader />
       {loader && <FullScreenGradientLoader />}
       <main className={styles.cardWrap}>
         <div className={styles.card}>
@@ -436,8 +435,8 @@ const GenerateScript: React.FC = () => {
           <div className={styles.accordionGroup}>
             <Accordion
               sx={{
-                border: "none",
-                borderRadius: "10px",
+                border: "1px solid #dfdfdf",
+                borderRadius: "8px !important",
                 boxShadow: "none",
                 "&::before": {
                   display: "none",
@@ -502,8 +501,8 @@ const GenerateScript: React.FC = () => {
             </Accordion>
             <Accordion
               sx={{
-                border: "none",
-                borderRadius: "10px",
+                border: "1px solid #dfdfdf",
+                borderRadius: "8px !important",
                 boxShadow: "none",
                 "&::before": {
                   display: "none", // removes divider line
@@ -568,7 +567,7 @@ const GenerateScript: React.FC = () => {
               disabled={!isMetlife} // disables interaction
               sx={{
                 border: "none",
-                borderRadius: "10px",
+                borderRadius: "8px !important",
                 boxShadow: "none",
                 "&::before": {
                   display: "none",

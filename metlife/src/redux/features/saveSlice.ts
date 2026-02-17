@@ -54,7 +54,7 @@ export const postTranslatedDataSave =
     try {
       const response = await api.post("mongo/write", data);
       if (response?.status) {
-        dispatch(setSaveTranslatedData(response.data));
+        dispatch(setSaveTranslatedData(response?.data));
         if (successfully) {
           successfully(response.data?.script_id);
         }
@@ -62,7 +62,7 @@ export const postTranslatedDataSave =
       }
     } catch (error) {
       console.error(error);
-      // toast.error("Something went wrong");
+      // toast.error("Data not saved!");
     } finally {
       dispatch(setSaveLoader(false));
     }

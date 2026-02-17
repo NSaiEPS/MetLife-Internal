@@ -75,7 +75,6 @@ const UploadConversationalClipsPage: React.FC = () => {
   const { generateVisualLoader, scenesData } = useSelector(
     (store: RootState) => store.GenerateVisualContent,
   );
-
   const title = scenesData?.title;
   const {
     stitchedVideoUrl,
@@ -184,11 +183,11 @@ const UploadConversationalClipsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > maxFileSize) {
-      showToast.error("File size must be ≤ 10 MB");
-      e.target.value = "";
-      return;
-    }
+    // if (file.size > maxFileSize) {
+    //   showToast.error("File size must be ≤ 10 MB");
+    //   e.target.value = "";
+    //   return;
+    // }
 
     const previewUrl = URL.createObjectURL(file);
 
@@ -226,9 +225,9 @@ const UploadConversationalClipsPage: React.FC = () => {
       dispatch(getDownloadAsset(id, title));
     }
   };
-
+  // console.log(scenesData, "check")
   useEffect(() => {
-    if (id || stitchedVideoUrl) {
+    if (id || stitchedVideoUrl || scenesData?.stitched_video_exists) {
       dispatch(getClipsData(id));
     }
   }, [dispatch, id]);
@@ -285,10 +284,13 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
+  // console.log(stitchedVideoUrl, "check_url");
+  // console.log(scenesData, "check_url");
+  console.log(scenesData?.stitched_video?.url && stitchedVideoUrl, "check_scennes_data");
+
   return (
     <>
       <div className={styles.container}>
-        <OneFrameHeader />
         {conversationalLoader && <FullScreenGradientLoader text="loading..." />}
         {scenesData?.scenes?.length && scenesData?.scenes?.length > 0 ? (
           <>
@@ -312,7 +314,10 @@ const UploadConversationalClipsPage: React.FC = () => {
                   }}
                 >
                   <Typography variant="h1" fontSize="32px">
-                    Upload Conversational Clips
+                    {!scenesData?.stitched_video?.url && !stitchedVideoUrl
+                      ? "Upload Conversational Clips"
+                      : "Final Stitched Video"
+                      }
                   </Typography>
                   <Button
                     className={styles.icon}
@@ -322,7 +327,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                     <IoArrowBackCircleOutline size={30} /> Back
                   </Button>
                 </Box>
-                {(!stitchedVideoUrl) && (
+                {!scenesData?.stitched_video?.url && !stitchedVideoUrl && (
                   <>
                     <Stack spacing={3}>
                       {scenesData?.scenes?.map((scene, index) => (
@@ -454,17 +459,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                               clips[scene.scene_id].upload_urls.map(
                                 (url, idx) => (
                                   <>
-                                    {/* <video
-                                    key={idx}
-                                    src={url}
-                                    controls
-                                    style={{
-                                      width: "100%",
-                                      height: "30vh",
-                                      marginBottom: "12px",
-                                      borderRadius: "10px",
-                                    }}
-                                  /> */}
                                     <Box
                                       key={idx}
                                       sx={{
@@ -494,18 +488,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                               clips[scene.scene_id].previews.map(
                                 (preview, idx) => (
                                   <>
-                                    {/* <video
-                                    key={idx}
-                                    src={preview}
-                                    controls
-                                    style={{
-                                      width: "100%",
-                                      height: "30vh",
-                                      marginBottom: "12px",
-                                      borderRadius: "10px",
-                                    }}
-                                  /> */}
-
                                     <Box
                                       key={idx}
                                       sx={{

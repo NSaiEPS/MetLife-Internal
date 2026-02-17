@@ -147,6 +147,34 @@ export const {
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
+export const postAddScene =
+  (
+    data: { script_id?: string; scene_id: string | number; version?: number },
+    // setOpenDeletePopup: (v: boolean) => void,
+
+  ) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await api.post("add_scene", data);
+      // console.log(res, "check_delter");
+      if (res.status) {
+        dispatch(
+          setScriptData({
+            scene_id: data.scene_id,
+          }),
+        );
+
+      }
+    } catch (error: any) {
+      // console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+      // setOpenDeletePopup(false);
+    }
+  };
+
 export const postDeleteScene =
   (
     data: { script_id?: string; scene_id: string | number; version?: number },
@@ -183,16 +211,16 @@ export const postEditScene =
       toast.success(res?.data?.message || "Description updated successfully");
       onClose(false);
 
-      // if (res.status) {
-      //   dispatch(
-      //     setScriptData({
-      //       scene_id: data.scene_id,
-      //     }),
-      //   );
-      // }
+      if (res.status) {
+        dispatch(
+          setScriptData({
+            scene_id: data.scene_id,
+          }),
+        );
+      }
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.response?.data?.message || "Something went wrong!");
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       dispatch(setScriptLoader(false));
     }
@@ -282,10 +310,7 @@ export const patchEditPromp =
 
 //Upload video
 export const postUploadVideo =
-  (
-    projectId: string,
-    //  callback?: () => void
-  ) =>
+  (projectId: string, callback?: () => void) =>
   async (dispatch: AppDispatch) => {
     dispatch(setUploadVideoLoader(true));
     try {
@@ -296,9 +321,9 @@ export const postUploadVideo =
       if (res?.status) {
         dispatch(setUploadVideoInfo(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
-        // if (callback) {
-        //   callback();
-        // }
+        if (callback) {
+          callback(res?.data);
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");
@@ -321,12 +346,9 @@ export const getLocalizationImageUrl =
       if (res?.status) {
         dispatch(setLocalizationImageData(res?.data || []));
         toast.success(res?.data?.message || "Processing started successfully");
-        // if (callback) {
-        //   callback();
-        // }
 
         if (onSuccess) {
-          onSuccess();
+          onSuccess(res?.data);
         }
       }
     } catch (error: any) {

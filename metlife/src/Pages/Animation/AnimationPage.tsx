@@ -104,6 +104,7 @@ const AnimationPage: React.FC = () => {
 
   const navigate = useNavigate();
 
+  // console.log(generatedVideoData?.audio_exists, "videoAnimationData");
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -299,7 +300,6 @@ const AnimationPage: React.FC = () => {
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-        <OneFrameHeader />
         {saveLoader && <FullScreenGradientLoader text="loading..." />}
         {(animationLabels?.entry_transitions ||
           animationLabels?.exit_transitions) &&

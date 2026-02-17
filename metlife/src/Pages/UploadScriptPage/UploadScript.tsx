@@ -87,7 +87,7 @@ const UploadScript = () => {
       const response = await fetch(`${BASE_URL}upload-script`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
@@ -276,7 +276,6 @@ const UploadScript = () => {
 
   return (
     <>
-      <OneFrameHeader />
       {loader && <FullScreenGradientLoader text="Uploading Script..." />}
       <div className={styles.uploadPageContainer}>
         <div className={styles.uploadCard}>
@@ -392,7 +391,7 @@ const UploadScript = () => {
                   className={styles.uploadIcon}
                 />
               )}
-              {loader ? "Uploading" : "Upload a Script"}
+              {loader ? "Uploading" : "Submit"}
             </ButtonComp>
           </div>
         </div>
