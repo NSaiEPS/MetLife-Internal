@@ -75,7 +75,6 @@ const UploadConversationalClipsPage: React.FC = () => {
   const { generateVisualLoader, scenesData } = useSelector(
     (store: RootState) => store.GenerateVisualContent,
   );
-
   const title = scenesData?.title;
   const {
     stitchedVideoUrl,
@@ -226,9 +225,9 @@ const UploadConversationalClipsPage: React.FC = () => {
       dispatch(getDownloadAsset(id, title));
     }
   };
-
+  // console.log(scenesData, "check")
   useEffect(() => {
-    if (id || stitchedVideoUrl) {
+    if (id || stitchedVideoUrl || scenesData?.stitched_video_exists) {
       dispatch(getClipsData(id));
     }
   }, [dispatch, id]);
@@ -286,6 +285,8 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   console.log(stitchedVideoUrl, "check_url");
+  // console.log(scenesData?.stitched_video?.url, "check_scennes_data");
+
   return (
     <>
       <div className={styles.container}>
@@ -322,7 +323,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                     <IoArrowBackCircleOutline size={30} /> Back
                   </Button>
                 </Box>
-                {!stitchedVideoUrl && (
+                {!scenesData?.stitched_video?.url && !stitchedVideoUrl && (
                   <>
                     <Stack spacing={3}>
                       {scenesData?.scenes?.map((scene, index) => (
@@ -454,17 +455,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                               clips[scene.scene_id].upload_urls.map(
                                 (url, idx) => (
                                   <>
-                                    {/* <video
-                                    key={idx}
-                                    src={url}
-                                    controls
-                                    style={{
-                                      width: "100%",
-                                      height: "30vh",
-                                      marginBottom: "12px",
-                                      borderRadius: "10px",
-                                    }}
-                                  /> */}
                                     <Box
                                       key={idx}
                                       sx={{
@@ -494,18 +484,6 @@ const UploadConversationalClipsPage: React.FC = () => {
                               clips[scene.scene_id].previews.map(
                                 (preview, idx) => (
                                   <>
-                                    {/* <video
-                                    key={idx}
-                                    src={preview}
-                                    controls
-                                    style={{
-                                      width: "100%",
-                                      height: "30vh",
-                                      marginBottom: "12px",
-                                      borderRadius: "10px",
-                                    }}
-                                  /> */}
-
                                     <Box
                                       key={idx}
                                       sx={{

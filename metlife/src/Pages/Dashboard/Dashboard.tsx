@@ -28,6 +28,7 @@ import type { AppDispatch, RootState } from "../../redux/store";
 import {
   getDashboardInfo,
   getUsersList,
+  setSelectedFilter,
 } from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
@@ -65,7 +66,8 @@ type DashboardFilter = "ALL" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
 const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
+  // const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
+
   const [scriptId, setScriptId] = useState("");
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
   const [menuData, setMenuData] = useState({
@@ -75,7 +77,7 @@ const MyVideosDashboard: React.FC = () => {
   const [openUsersDialog, setOpenUsersDialog] = useState(false);
   const openPopup = Boolean(open);
 
-  const { dashBoardInfo, dashboardLoader, usersList } = useSelector(
+  const { dashBoardInfo, dashboardLoader, usersList, selectedFilter, } = useSelector(
     (store: RootState) => store.DashBoard,
   );
 
@@ -273,7 +275,7 @@ const MyVideosDashboard: React.FC = () => {
     return item.failed;
   };
   
-
+// main function logic which filters the table based on status
   const filteredDashboardInfo = dashBoardInfo?.filter((item) => {
     switch (selectedFilter) {
       case "COMPLETED":
@@ -369,7 +371,8 @@ const MyVideosDashboard: React.FC = () => {
                 >
                   <Paper
                     elevation={selectedFilter === s.filter ? 6 : 0}
-                    onClick={() => setSelectedFilter(s.filter)}
+                    // onClick={() => setSelectedFilter(s.filter)}
+                    onClick={() => dispatch(setSelectedFilter(s.filter))}
                     sx={{
                       p: 3,
                       borderRadius: 4,
@@ -492,9 +495,9 @@ const MyVideosDashboard: React.FC = () => {
                         {/* <Button onClick={(e) => handleDownloadMenu(e, video)}>
                           <FaFileDownload size={18} />
                         </Button> */}
-                        <Button onClick={() => handleUsers(video)}>
+                        {/* <Button onClick={() => handleUsers(video)}>
                           <FaShareSquare size={18} />
-                        </Button>
+                        </Button> */}
                       </TableCell>
                     </TableRow>
                   ))

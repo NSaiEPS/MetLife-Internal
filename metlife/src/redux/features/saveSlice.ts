@@ -62,7 +62,7 @@ export const postTranslatedDataSave =
       }
     } catch (error) {
       console.error(error);
-      toast.error("Data not saved!");
+      // toast.error("Data not saved!");
     } finally {
       dispatch(setSaveLoader(false));
     }
