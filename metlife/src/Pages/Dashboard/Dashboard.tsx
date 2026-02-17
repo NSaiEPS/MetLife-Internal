@@ -238,9 +238,13 @@ const MyVideosDashboard: React.FC = () => {
 
   const handleView = (video: DashboardItem) => {
     // if (video.videos) {
-    if (video?.final_video?.url) {
-
+    if (video?.final_video?.url && !video?.stitched_video_exists) {
       navigate(`/animation-page/${video.script_id}`);
+      return;
+    }
+    // For conversational
+    if (video?.stitched_video_exists) {
+      navigate(`/upload-conversational-clips/${video.script_id}`);
       return;
     }
     if (video.audio) {

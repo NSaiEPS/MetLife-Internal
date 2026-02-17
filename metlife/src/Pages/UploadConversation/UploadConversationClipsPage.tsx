@@ -284,8 +284,9 @@ const UploadConversationalClipsPage: React.FC = () => {
     }
   };
 
-  console.log(stitchedVideoUrl, "check_url");
-  // console.log(scenesData?.stitched_video?.url, "check_scennes_data");
+  // console.log(stitchedVideoUrl, "check_url");
+  // console.log(scenesData, "check_url");
+  console.log(scenesData?.stitched_video?.url && stitchedVideoUrl, "check_scennes_data");
 
   return (
     <>
@@ -313,7 +314,10 @@ const UploadConversationalClipsPage: React.FC = () => {
                   }}
                 >
                   <Typography variant="h1" fontSize="32px">
-                    Upload Conversational Clips
+                    {!scenesData?.stitched_video?.url && !stitchedVideoUrl
+                      ? "Upload Conversational Clips"
+                      : "Final Stitched Video"
+                      }
                   </Typography>
                   <Button
                     className={styles.icon}

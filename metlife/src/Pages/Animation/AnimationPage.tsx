@@ -104,7 +104,7 @@ const AnimationPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  console.log(generatedVideoData?.audio_exists, "videoAnimationData");
+  // console.log(generatedVideoData?.audio_exists, "videoAnimationData");
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
