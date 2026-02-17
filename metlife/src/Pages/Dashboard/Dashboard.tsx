@@ -79,6 +79,7 @@ const MyVideosDashboard: React.FC = () => {
     (store: RootState) => store.DashBoard,
   );
 
+  // count length
   const completed_result = dashBoardInfo?.filter((item) => {
     // if (item.videos) {
     if (item.has_final_video) {
@@ -150,6 +151,7 @@ const MyVideosDashboard: React.FC = () => {
     },
   ];
 
+  // showing in table column
   const getStatusChip = (status: DashboardItem) => {
     if (!status) return <Chip label="Unknown" />;
     if (status.failed)
@@ -272,7 +274,7 @@ const MyVideosDashboard: React.FC = () => {
   };
   
 
-  const filteredDashboardInfo = dashBoardInfo.filter((item) => {
+  const filteredDashboardInfo = dashBoardInfo?.filter((item) => {
     switch (selectedFilter) {
       case "COMPLETED":
         return isCompleted(item);

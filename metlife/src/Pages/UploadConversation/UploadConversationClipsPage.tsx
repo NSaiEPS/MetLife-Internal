@@ -184,11 +184,11 @@ const UploadConversationalClipsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > maxFileSize) {
-      showToast.error("File size must be ≤ 10 MB");
-      e.target.value = "";
-      return;
-    }
+    // if (file.size > maxFileSize) {
+    //   showToast.error("File size must be ≤ 10 MB");
+    //   e.target.value = "";
+    //   return;
+    // }
 
     const previewUrl = URL.createObjectURL(file);
 
