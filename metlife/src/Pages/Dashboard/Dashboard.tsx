@@ -62,7 +62,7 @@ export interface DashboardItem {
   has_final_video?: boolean;
 }
 
-type DashboardFilter = "ALL" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
+// type DashboardFilter = "ALL" | "IN_PROGRESS" | "COMPLETED" | "FAILED";
 
 const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const MyVideosDashboard: React.FC = () => {
     searchQuery,
   } = useSelector((store: RootState) => store.DashBoard);
 
-  // count length
+  // count length for statistics
   const completed_result = dashBoardInfo?.filter((item) => {
     // if (item.videos) {
     if (item.has_final_video) {
