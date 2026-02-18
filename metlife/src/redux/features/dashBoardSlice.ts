@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import type { AppDispatch,} from "../store";
+import type { AppDispatch } from "../store";
 import { toast } from "react-toastify";
 import api from "../../api/axios.ts";
 import { apiErrorHandling } from "../../utils/index.ts";
@@ -11,13 +11,17 @@ export interface DashboardState {
   dashBoardInfo: any[];
   dashboardLoader: boolean;
   usersList: any[];
+  selectedFilter: string;
+  searchQuery: string;
 }
 
 // ---------- Initial State ----------
 const initialState: DashboardState = {
   dashBoardInfo: [],
   dashboardLoader: false,
-  usersList:[]
+  usersList: [],
+  selectedFilter: "ALL",
+  searchQuery: "",
 };
 
 // ---------- Slice ----------
@@ -34,10 +38,19 @@ const DashBoardSlice = createSlice({
     setUsersList(state, action: PayloadAction<any[]>) {
       state.usersList = action.payload;
     },
+
+    setSelectedFilter(state, action: PayloadAction<string>) {
+      state.selectedFilter = action.payload;
+    },
+
+    setSearchQuery(state, action: PayloadAction<string>) {
+      state.searchQuery = action.payload;
+    },
   },
 });
 
-export const { setDashboardInfo, setDashboardLoader, setUsersList } = DashBoardSlice.actions;
+export const { setDashboardInfo, setDashboardLoader, setUsersList,setSelectedFilter, setSearchQuery,  } =
+  DashBoardSlice.actions;
 export default DashBoardSlice.reducer;
 
 // ---------- Async Thunk ----------
@@ -59,12 +72,11 @@ export const getDashboardInfo = () => async (dispatch: AppDispatch) => {
   }
 };
 
-
-export const getUsersList = () => async (dispatch:AppDispatch) => {
+export const getUsersList = () => async (dispatch: AppDispatch) => {
   dispatch(setDashboardLoader(true));
-    try {
+  try {
     const res = await api.get("users");
-    console.log(res, "checkx")
+    console.log(res, "checkx");
 
     if (res?.status) {
       dispatch(setUsersList(res?.data));
@@ -76,28 +88,28 @@ export const getUsersList = () => async (dispatch:AppDispatch) => {
   } finally {
     dispatch(setDashboardLoader(false));
   }
-}
+};
 
-
-export const postShareToUser = (data, onClose, successCallback) => async (dispatch:AppDispatch) => {
-  dispatch(setDashboardLoader(true));
+export const postShareToUser =
+  (data, onClose, successCallback) => async (dispatch: AppDispatch) => {
+    dispatch(setDashboardLoader(true));
     try {
-    const res = await api.post("transfer-script-ownership", data);
-    console.log(res, "checkpost");
+      const res = await api.post("transfer-script-ownership", data);
+      console.log(res, "checkpost");
 
-    // if (res?.status) {
-    //   dispatch(setUsersList(res?.data));
-    // } else {
-    //   apiErrorHandling(res);
-    // }
+      // if (res?.status) {
+      //   dispatch(setUsersList(res?.data));
+      // } else {
+      //   apiErrorHandling(res);
+      // }
 
-    if(successCallback) {
-      successCallback();
+      if (successCallback) {
+        successCallback();
+      }
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message ?? "Error Try again!!");
+    } finally {
+      dispatch(setDashboardLoader(false));
+      onClose(true);
     }
-  } catch (e: any) {
-    toast.error(e?.response?.data?.message ?? "Error Try again!!");
-  } finally {
-    dispatch(setDashboardLoader(false));
-    onClose(true);
-  }
-}
+  };
