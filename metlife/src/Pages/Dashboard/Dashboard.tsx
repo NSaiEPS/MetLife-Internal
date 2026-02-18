@@ -11,7 +11,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Avatar,
+  // Avatar,
   Chip,
   TextField,
   InputAdornment,
@@ -20,10 +20,8 @@ import {
   PlayCircle,
   ErrorOutline,
   VideoLibrary,
-  EventNote,
 } from "@mui/icons-material";
 import { FaFileDownload, FaRegPlayCircle } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
@@ -35,7 +33,6 @@ import {
 } from "../../redux/features/dashBoardSlice";
 import { formatRelativeTime } from "../../utils";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
 import { FaShareSquare } from "react-icons/fa";
@@ -81,8 +78,13 @@ const MyVideosDashboard: React.FC = () => {
   const [openUsersDialog, setOpenUsersDialog] = useState(false);
   const openPopup = Boolean(open);
 
-  const { dashBoardInfo, dashboardLoader, usersList, selectedFilter, searchQuery, } =
-    useSelector((store: RootState) => store.DashBoard);
+  const {
+    dashBoardInfo,
+    dashboardLoader,
+    usersList,
+    selectedFilter,
+    searchQuery,
+  } = useSelector((store: RootState) => store.DashBoard);
 
   // count length
   const completed_result = dashBoardInfo?.filter((item) => {
@@ -249,6 +251,17 @@ const MyVideosDashboard: React.FC = () => {
     );
   };
 
+  const getStatusLabel = (status: DashboardItem): string => {
+    if (!status) return "Unknown";
+    if (status.failed) return "Failed";
+    if (status.has_final_video) return "Completed";
+    if (status.audio && !status.videos) return "Audio Progress";
+    if (status.visuals) return "Visuals in Progress";
+    if (status.script_id) return "Script Completed";
+    if (status.prompt_batch_id) return "Visuals Progress";
+    return "In Progress";
+  };
+
   const handleClick = () => {
     navigate("/video-frame");
   };
@@ -301,29 +314,34 @@ const MyVideosDashboard: React.FC = () => {
   };
 
   // main function logic which filters the table based on status
-  const filteredDashboardInfo = dashBoardInfo?.filter((item) => {
-    switch (selectedFilter) {
-      case "COMPLETED":
-        return isCompleted(item);
+  const filteredDashboardInfo = dashBoardInfo
+    ?.filter((item) => {
+      switch (selectedFilter) {
+        case "COMPLETED":
+          return isCompleted(item);
 
-      case "IN_PROGRESS":
-        return isInProgress(item);
+        case "IN_PROGRESS":
+          return isInProgress(item);
 
-      case "FAILED":
-        return isFailed(item);
+        case "FAILED":
+          return isFailed(item);
 
-      default:
-        return true;
-    }
-  })?.filter(item => {
-    if(!searchQuery) return true;
-    return( 
-      item?.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      item?.language?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      item?.suggested_duration_minutes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item?.created_at?.toLowerCase().includes(searchQuery.toLowerCase()) 
-    )
-  })
+        default:
+          return true;
+      }
+    })
+    ?.filter((item) => {
+      if (!searchQuery) return true;
+      return (
+        item?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item?.language?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item?.suggested_duration_minutes
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        item?.created_at?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        getStatusLabel(item)?.toLowerCase()?.includes(searchQuery.toLowerCase())
+      );
+    });
 
   const handleDownloadMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -453,16 +471,14 @@ const MyVideosDashboard: React.FC = () => {
 
           {/* ===================== VIDEO LIST ====================== */}
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-            <Box
-              sx={{ display: "flex", alignItems: "center", gap:2 }}
-            >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography variant="h6">Video List</Typography>
               <TextField
                 placeholder="Search by video Name"
                 variant="outlined"
                 size="small"
                 value={searchQuery}
-                onChange={e => dispatch(setSearchQuery(e.target.value))}
+                onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                 sx={{
                   width: 280,
                   "& .MuiOutlinedInput-root": {
