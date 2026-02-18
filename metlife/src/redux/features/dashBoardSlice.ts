@@ -12,6 +12,7 @@ export interface DashboardState {
   dashboardLoader: boolean;
   usersList: any[];
   selectedFilter: string;
+  searchQuery: string;
 }
 
 // ---------- Initial State ----------
@@ -20,6 +21,7 @@ const initialState: DashboardState = {
   dashboardLoader: false,
   usersList: [],
   selectedFilter: "ALL",
+  searchQuery: "",
 };
 
 // ---------- Slice ----------
@@ -40,10 +42,14 @@ const DashBoardSlice = createSlice({
     setSelectedFilter(state, action: PayloadAction<string>) {
       state.selectedFilter = action.payload;
     },
+
+    setSearchQuery(state, action: PayloadAction<string>) {
+      state.searchQuery = action.payload;
+    },
   },
 });
 
-export const { setDashboardInfo, setDashboardLoader, setUsersList,setSelectedFilter  } =
+export const { setDashboardInfo, setDashboardLoader, setUsersList,setSelectedFilter, setSearchQuery,  } =
   DashBoardSlice.actions;
 export default DashBoardSlice.reducer;
 
