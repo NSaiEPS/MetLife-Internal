@@ -194,7 +194,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     // setForm({ ...form, img: URL.createObjectURL(file) });
     setForm({
       ...form,
-      img: file, 
+      img: file,
     });
   };
 
@@ -304,7 +304,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         value={form.age}
                         error={!!errors.age}
                         helperText={errors.age && "Required"}
-                        inputProps={{ min: 0, max: 120 }}
+                        inputProps={{ min: 18, max: 120 }}
                         onChange={(e) =>
                           setForm({ ...form, age: Number(e.target.value) })
                         }
@@ -494,6 +494,183 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                     Image required
                   </Typography>
                 )}
+                <Box textAlign="center" mt={4}>
+                  {/* BASIC INFO */}
+                  <Accordion
+                    sx={{ mb: 2, boxShadow: "none", background: "aliceblue" }}
+                    expanded={expanded === "basic"}
+                    onChange={handleChange("basic")}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography variant="subtitle2" sx={{ fontSize: "16px" }}>
+                        Basic Info
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, 1fr)",
+                          gap: 2,
+                          mb: 3,
+                          background: "#fff",
+                          padding: "16px",
+                        }}
+                      >
+                        <TextField
+                          fullWidth
+                          label="Age"
+                          type="number"
+                          value={form.age}
+                          error={!!errors.age}
+                          helperText={errors.age && "Required"}
+                          inputProps={{ min: 18, max: 120 }}
+                          onChange={(e) =>
+                            setForm({ ...form, age: Number(e.target.value) })
+                          }
+                        />
+
+                        <FormControl fullWidth error={!!errors.gender}>
+                          <InputLabel>Gender</InputLabel>
+                          <Select
+                            label="Gender"
+                            value={form.gender}
+                            onChange={(e) =>
+                              setForm({ ...form, gender: e.target.value })
+                            }
+                          >
+                            {GENDER_OPTIONS.map((g) => (
+                              <MenuItem key={g} value={g}>
+                                {g}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {errors.gender && (
+                            <Typography fontSize={12} color="error">
+                              Required
+                            </Typography>
+                          )}
+                        </FormControl>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+
+                  {/* APPEARANCE */}
+                  <Accordion
+                    sx={{
+                      mb: 2,
+                      boxShadow: "none",
+                      border: "none",
+                      background: "aliceblue",
+                      "&:before": {
+                        display: "none",
+                      },
+                    }}
+                    expanded={expanded === "appearance"}
+                    onChange={handleChange("appearance")}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography
+                        sx={{
+                          fontSize: "16px",
+                        }}
+                        variant="subtitle2"
+                      >
+                        Appearance
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, 1fr)",
+                          gap: 2,
+                          mb: 3,
+                          background: "#fff",
+                          padding: "16px",
+                        }}
+                      >
+                        {(
+                          [
+                            ["Skin Tone", "skin_tone"],
+                            ["Hair", "hair"],
+                            ["Face", "face"],
+                            ["Build", "build"],
+                          ] as Array<[string, keyof CharacterType]>
+                        ).map(([label, key]) => (
+                          <TextField
+                            key={key}
+                            fullWidth
+                            label={label}
+                            value={form[key]}
+                            error={!!errors[key]}
+                            helperText={errors[key] && "Required"}
+                            onChange={(e) =>
+                              setForm({ ...form, [key]: e.target.value })
+                            }
+                          />
+                        ))}
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+
+                  {/* STYLE & PERSONALITY */}
+                  <Accordion
+                    sx={{
+                      boxShadow: "none",
+                      background: "aliceblue",
+                      "&:before": {
+                        display: "none",
+                      },
+                    }}
+                    expanded={expanded === "style"}
+                    onChange={handleChange("style")}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography
+                        sx={{
+                          fontSize: "16px",
+                          fontWeight: 500,
+                        }}
+                        variant="subtitle2"
+                      >
+                        Style & Personality
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, 1fr)",
+                          gap: 2,
+                          background: "#fff",
+                          padding: "16px",
+                        }}
+                      >
+                        {(
+                          [
+                            ["Attire", "wardrobe"],
+                            ["Accessories", "accessories"],
+                            ["Personality", "personality"],
+                            ["Origin / Ethnicity", "origin"],
+                          ] as Array<[string, keyof CharacterType]>
+                        ).map(([label, key]) => (
+                          <TextField
+                            key={key}
+                            fullWidth
+                            label={label}
+                            value={form[key]}
+                            error={!!errors[key]}
+                            helperText={errors[key] && "Required"}
+                            onChange={(e) =>
+                              setForm({ ...form, [key]: e.target.value })
+                            }
+                          />
+                        ))}
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
               </Box>
             )}
 
