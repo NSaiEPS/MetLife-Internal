@@ -246,6 +246,27 @@ export const postExtractCharacters =
     }
   };
 
+  // Regenerate character images
+export const postRegenerateCharacterImages =
+  (id: string, characterName: string,) => async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await api.post(`characters/regenerate-character?script_id=${id}&character_name=${characterName}`);
+      console.log(res, "response_regenerate");
+      if (res.status) {
+        dispatch(setCharacterData(res?.data?.character));
+        // if (callback) {
+        //   callback();
+        // }
+        // dispatch(getExtractCharacters(id));
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+    }
+  };
+
 // get characters
 export const getExtractCharacters =
   (id: string) => async (dispatch: AppDispatch) => {

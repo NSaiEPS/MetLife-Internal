@@ -11,10 +11,14 @@ import {
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { patchEditPromp } from "../../../redux/features/scriptSlice";
+import {
+  patchEditPromp,
+  postRegenerateCharacterImages,
+} from "../../../redux/features/scriptSlice";
 import { postCreateVisualContent } from "../../../redux/features/createVisualSlice";
 import ButtonComp from "../Buton/Button";
-
+import { RiUploadCloud2Line } from "react-icons/ri";
+import reuse from "../../../assets/reuse.svg";
 export const CharacterCarousel = ({
   open,
   onClose,
@@ -26,10 +30,15 @@ export const CharacterCarousel = ({
   tableExtraData,
   setOpenFlowDialog,
 }) => {
-  const current = characterData[currentIndex];
+  console.log(characterData, "characterData");
+  const current =
+    characterData[currentIndex] ||
+    characterData[currentIndex]?.image_url ||
+    characterData?.image_url;
+  console.log(current, "checkCurrent");
   // const [stage, setStage] = useState<"prompt" | "images">("prompt");
   const [stage, setStage] = useState<"prompt" | "images">(
-    tableExtraData?.char_image_exist ? "images" : "prompt"
+    tableExtraData?.char_image_exist ? "images" : "prompt",
   );
   const [prompts, setPrompts] = useState<Record<string, string>>({});
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -77,6 +86,11 @@ export const CharacterCarousel = ({
     }
   };
 
+  const handleRegenerateCharacterImage = (characterName: string) => {
+    console.log(characterName, "charcaterName");
+    dispatch(postRegenerateCharacterImages(id, characterName));
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box
@@ -96,7 +110,7 @@ export const CharacterCarousel = ({
           alignItems: "center",
           gap: 2,
           position: "relative",
-          overflowY: "scroll !important"
+          overflowY: "scroll !important",
         }}
       >
         <IconButton
@@ -160,7 +174,7 @@ export const CharacterCarousel = ({
                         onClick={() =>
                           handleEditPrompt(
                             char.character_name,
-                            char.character_id
+                            char.character_id,
                           )
                         }
                       >
@@ -191,9 +205,8 @@ export const CharacterCarousel = ({
             <ButtonComp
               variant="contained"
               sx={{
-                 mt: 2 
-                }
-              }
+                mt: 2,
+              }}
               disabled={
                 scriptLoader ||
                 Object.values(prompts).some((p) => !p.trim()) ||
@@ -218,7 +231,7 @@ export const CharacterCarousel = ({
             {/* IMAGE */}
             <img
               // src={characterData[currentIndex]?.image_url}
-              src={current?.image_url}
+              src={current?.image_url || current || "Loading..."}
               onLoad={() => setImgLoaded(true)}
               alt="character"
               style={{
@@ -234,12 +247,36 @@ export const CharacterCarousel = ({
             />
 
             {/* NAME */}
-            <Typography
-              variant="h6"
-              sx={{ textTransform: "capitalize", textAlign: "center" }}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
             >
-              {characterData[currentIndex]?.character_name}
-            </Typography>
+              <Typography
+                variant="h6"
+                sx={{ textTransform: "capitalize", textAlign: "center" }}
+              >
+                {characterData[currentIndex]?.character_name}
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  textTransform: "capitalize",
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() =>
+                  handleRegenerateCharacterImage(
+                    characterData[currentIndex]?.character_name,
+                  )
+                }
+              >
+                <img src={reuse} alt="regenerate" />
+              </Typography>
+            </Box>
 
             {/* BUTTON CONTROLS */}
             <Box
@@ -250,7 +287,6 @@ export const CharacterCarousel = ({
               }}
             >
               <ButtonComp
-              
                 variant="contained"
                 disabled={currentIndex === 0}
                 // onClick={() => setCurrentIndex((i) => i - 1)}

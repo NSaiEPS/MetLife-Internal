@@ -133,6 +133,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { characterData, promptData, scriptLoader } = useSelector(
     (store) => store.Script,
   );
+  console.log(characterData, "characterdata")
   const { pathname } = useLocation();
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
