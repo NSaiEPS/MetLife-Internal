@@ -248,10 +248,15 @@ export const postExtractCharacters =
 
   // Regenerate character images
 export const postRegenerateCharacterImages =
-  (id: string, characterName: string,) => async (dispatch: AppDispatch) => {
+  (id: string, characterName: string, feedback: string) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
-      const res = await api.post(`characters/regenerate-character?script_id=${id}&character_name=${characterName}`);
+      const data = {
+        script_id: id,
+        character_name: characterName,
+        feedback: feedback
+      }
+      const res = await api.post(`characters/regenerate-character`, data);
       console.log(res, "response_regenerate");
       if (res.status) {
         dispatch(setCharacterData(res?.data?.character));

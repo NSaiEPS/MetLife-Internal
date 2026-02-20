@@ -114,6 +114,9 @@ import {
 } from "@mui/material";
 import type { CharacterType } from "../../utils/types";
 import ButtonComp from "../common/Buton/Button";
+import { useDispatch } from "react-redux";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import { useLocation, useNavigate } from "react-router";
 
 /* ================= TYPES ================= */
 
@@ -135,12 +138,21 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   data,
   updateCharacter,
   closePrompt,
+  pdfData,
+  onSave,
+  totalCharacters,
 }) => {
   const [form, setForm] = useState<CharacterType>(data);
   const [preview, setPreview] = useState<string>(data.img || "");
   const [errors, setErrors] = useState<ErrorState>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [expanded, setExpanded] = React.useState<string | false>(false);
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
+  const [collectedCharacters, setCollectedCharacters] = useState<any[]>([]);
+
 
   /* ================= VALIDATION ================= */
 
@@ -179,10 +191,71 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 
   /* ================= HANDLERS ================= */
 
+  // const handleSave = () => {
+  //   if (pathname === "/generate-script") {
+  //     if (!validate()) return;
+  //     updateCharacter(index, form);
+  //     closePrompt();
+  //   }
+
+  //   if (pathname === "/translated-script") {
+  //     if (!validate()) return;
+  //     const updatedCharacters = [...collectedCharacters, form];
+  //     const totalCharacters = pdfData?.characters?.length;
+  //     if (currentCharacterIndex < totalCharacters - 1) {
+  //       setCollectedCharacters(updatedCharacters);
+  //       setCurrentCharacterIndex((prev) => prev + 1);
+  //       updateCharacter(currentCharacterIndex, form);
+  //       return;
+  //     }
+  //     const {
+  //       script_status,
+  //       script_id,
+  //       saved_version,
+  //       scenes,
+  //       title,
+  //       ...rest
+  //     } = pdfData;
+  //     let characters = [];
+  //     characters.push(form);
+  //     const data = {
+  //       data: {
+  //         ...rest,
+  //         script_id,
+  //         scenes,
+  //         title,
+  //         characters: updateCharacter,
+  //         // version: tableExtraData?.version,
+  //         page: "script",
+  //       },
+  //       is_save_action: true,
+  //     };
+
+  //     dispatch(
+  //       postTranslatedDataSave(data, (id) => {
+  //         if (pathname === "/translated-script") {
+  //           navigate(`/scenes/${id}`);
+  //         }
+  //       }),
+  //     );
+  //     setCollectedCharacters([]);
+  //     setCurrentCharacterIndex(0);
+  //     updateCharacter(index, form);
+  //     closePrompt();
+  //   }
+  // };
   const handleSave = () => {
-    if (!validate()) return;
-    updateCharacter(index, form);
-    closePrompt();
+    if (pathname === "/generate-script") {
+      if (!validate()) return;
+
+      updateCharacter(index, form);
+      closePrompt();
+    }
+
+    if (pathname === "/translated-script") {
+      if (!validate()) return;
+      onSave(index, form);
+    }
   };
 
   const handleImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
