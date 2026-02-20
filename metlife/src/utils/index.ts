@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 // ==========================
 export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
   const blob = await pdf(
-    React.createElement(PdfDocument, { data, uploadDownload })
+    React.createElement(PdfDocument, { data, uploadDownload }),
   ).toBlob();
 
   saveAs(
@@ -127,8 +127,8 @@ export const downloadScriptPdf = async (data: any, uploadDownload = false) => {
     data?.upload_info
       ? `${data?.upload_info?.title}.pdf`
       : data?.upload_info?.source == "file"
-      ? `${data?.title}.pdf`
-      : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`
+        ? `${data?.title}.pdf`
+        : `${data?.language.slice(0, 2) + "_"}${data?.title}.pdf`,
   );
 };
 
@@ -292,8 +292,8 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
       data?.upload_info
         ? `${data?.upload_info?.title}.docx`
         : data?.upload_info?.source == "file"
-        ? `${data?.title}.docx`
-        : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`
+          ? `${data?.title}.docx`
+          : `${data?.language.slice(0, 2) + "_"}${data?.title}.docx`,
     );
   });
 };
@@ -303,14 +303,13 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
 //   return data?.access_token;
 // };
 
-
 export const getToken = (): string | null => {
   return secureLocalStorage.getItem("token") as string | null;
 };
 
 export const downloadCSV = (
   response: { data: BlobPart },
-  name: string = "data"
+  name: string = "data",
 ): void => {
   const blob = new Blob([response.data], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -346,7 +345,7 @@ export const apiErrorHandling = (res: any): void => {
 
 export const formatRelativeTime = (
   date: string,
-  format: string = "DD MMM YYYY, hh:mm:ss A"
+  format: string = "DD MMM YYYY, hh:mm:ss A",
 ): string => {
   if (!date) return "-";
   return dayjs.utc(date).tz("Asia/Kolkata").format(format);
@@ -457,3 +456,7 @@ export const VOICE_GENDER_MAP: Record<string, Gender> = {
   "ai2-ar-XA-Nadir": "male",
 };
 
+export const modelOptions = [
+  { value: "gpt-4.1-mini", label: "GPT-4.1-mini" },
+  { value: "gpt-5-mini", label: "GPT-5-mini" },
+];

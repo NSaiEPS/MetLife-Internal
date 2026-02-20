@@ -17,18 +17,13 @@ import ButtonComp from "../Buton/Button";
 import { showToast } from "../../../utils/toast";
 import api from "../../../api/axios";
 import FullScreenGradientLoader from "../GradientLoader";
+import { modelOptions } from "../../../utils";
 
 const topNOptions = [
   { value: 5, label: "5" },
   { value: 10, label: "10" },
   { value: 15, label: "15" },
   { value: 20, label: "20" },
-];
-
-const modelOptions = [
-  { value: "gpt-4o", label: "GPT-4o" },
-  { value: "gpt-4o-mini", label: "GPT-4o-mini" },
-  { value: "gpt-4.1", label: "GPT-4.1" },
 ];
 
 const RegenerateScriptPopup = ({
@@ -44,7 +39,7 @@ const RegenerateScriptPopup = ({
     setFeedback("");
     onClose();
   };
-  const [model, setModel] = useState("gpt-4o-mini");
+  const [model, setModel] = useState("gpt-5-mini");
   const [topn, setTopn] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loader, setLoader] = useState(false);

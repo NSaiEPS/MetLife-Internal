@@ -32,6 +32,7 @@ import CharacterParent from "../../components/Conversationaly_Character/Characte
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import type { CharacterType, PromptItem } from "../../utils/types";
 import BackButton from "../../components/common/Buton/BackButton";
+import { modelOptions } from "../../utils";
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -63,12 +64,6 @@ const topNOptions = [
   { value: "10", label: "10" },
   { value: "15", label: "15" },
   { value: "20", label: "20" },
-];
-
-const modelOptions = [
-  { value: "gpt-4o", label: "GPT-4o" },
-  { value: "gpt-4o-mini", label: "GPT-4o-mini" },
-  { value: "gpt-4.1", label: "GPT-4.1" },
 ];
 
 const dataSourceOptions = [
@@ -157,7 +152,7 @@ const GenerateScript: React.FC = () => {
   const [language, setLanguage] = useState<string | number>("English");
   const [duration, setDuration] = useState<string | number>("2 minutes");
   const [topn, setTopn] = useState<string | null>("5");
-  const [model, setModel] = useState<string | number>("gpt-4o-mini");
+  const [model, setModel] = useState<string | number>("gpt-5-mini");
   const [datasource, setDatasource] = useState<string | number>("");
   const [loader, setLoader] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
