@@ -283,7 +283,7 @@ export const CharacterCarousel = ({
                   variant="h6"
                   sx={{ textTransform: "capitalize", textAlign: "center" }}
                 >
-                  {characterData[currentIndex]?.character_name}
+                  {characterData[currentIndex]?.character_name || characterData?.character_name}
                 </Typography>
                 <Typography
                   variant="h6"
