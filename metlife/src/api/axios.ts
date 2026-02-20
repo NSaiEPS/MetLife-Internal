@@ -4,8 +4,18 @@ import secureLocalStorage from "react-secure-storage";
 
 // export const SERVER_URL = "https://oneframeapi.com/";
 export const SERVER_URL = import.meta.env.VITE_BACKEND_URL;
+export const AI_SERVER_URL = import.meta.env.VITE_AI_BACKEND_URL
 
 export const BASE_URL = `${SERVER_URL}`;
+export const AI_BASE_URL = `${AI_SERVER_URL}`;
+
+export const aiLocalisation = axios.create({
+  baseURL: AI_BASE_URL,
+  // headers: {
+  //   // "Content-Type": "application/json",
+  //   Accept: "application/json",
+  // },
+});
 
 export const api = axios.create({
   baseURL: BASE_URL,

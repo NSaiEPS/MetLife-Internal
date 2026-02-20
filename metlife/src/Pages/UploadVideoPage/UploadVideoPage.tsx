@@ -9,7 +9,7 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import "jspdf-autotable";
 import Input from "../../components/common/Input";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../api/axios";
+import { AI_BASE_URL, BASE_URL } from "../../api/axios";
 import { toast } from "react-toastify";
 import { showToast } from "../../utils/toast";
 import BackButton from "../../components/common/Buton/BackButton";
@@ -93,13 +93,14 @@ const UploadVideoPage = () => {
   const { uploadVideoLoader, uploadVideoInfo } = useSelector(
     (store) => store.Script.uploadVideoData,
   );
+
   const {
     localizationImageLoader,
     localizationImageData,
     imageCoordinatesLoader,
     imageCoordinatesData,
   } = useSelector((store) => store.Script);
-  console.log(localizationImageData, "localizationImageData");
+  // console.log(localizationImageData, "localizationImageData");
   // const waitingTime1 = uploadVideoInfo?.estimated_remaining_time;
   // const waitingTime2 = localizationImageData?.estimated_remaining_time;
   // const waitingTime3 = imageCoordinatesData?.estimated_time_seconds;
@@ -110,24 +111,43 @@ const UploadVideoPage = () => {
   // const waitingTime = uploadVideoInfo?.estimated_remaining_time;
   const getRemainingSeconds = () => {
     const stored = localStorage.getItem("estimated_remaining_time");
-
     if (!stored) return 0;
 
     const { endTime } = JSON.parse(stored);
-
     const remaining = Math.floor((endTime - Date.now()) / 1000);
 
     return remaining > 0 ? remaining : 0;
   };
+  // const getRemainingSeconds = () => {
+  //   const stored = localStorage.getItem("estimated_remaining_time");
 
+  //   if (!stored) return 0;
+
+  //   const { endTime } = JSON.parse(stored);
+
+  //   // ✅ Convert to number
+  //   let end = Number(endTime);
+
+  //   if (isNaN(end)) return 0;
+
+  //   // ✅ Handle seconds vs milliseconds
+  //   if (end.toString().length === 10) {
+  //     end = end * 1000;
+  //   }
+
+  //   const remaining = Math.floor((end - Date.now()) / 1000);
+
+  //   return remaining > 0 ? remaining : 0;
+  // };
+
+  // console.log(localStorage.getItem("estimated_remaining_time"), "check_loader")
   const remainingSeconds = getRemainingSeconds();
   const finalTime = Math.floor((remainingSeconds / 60) * 10) / 10;
 
-  console.log({ remainingSeconds, finalTime });
+  console.log("finnalTime", finalTime);
 
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
-
 
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
@@ -184,7 +204,7 @@ const UploadVideoPage = () => {
       formData.append("intro_present", intro === "yes" ? true : false);
       formData.append("intro_duration", intro === "yes" ? introSeconds : "");
       const response = await fetch(
-        `${BASE_URL}upload-vid/localisation/upload-vid`,
+        `${AI_BASE_URL}upload-vid/localisation/upload-vid`,
         {
           method: "POST",
           body: formData,
@@ -328,7 +348,7 @@ const UploadVideoPage = () => {
     }
   };
 
-  console.log(intro, "check_value")
+  console.log(intro, "check_value");
   return (
     <>
       {(loader || uploadVideoLoader) && (
