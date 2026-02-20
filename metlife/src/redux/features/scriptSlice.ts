@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import api from "../../api/axios";
+import api, { aiLocalisation } from "../../api/axios";
 import type { AppDispatch } from "../store";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -314,7 +314,7 @@ export const postUploadVideo =
   async (dispatch: AppDispatch) => {
     dispatch(setUploadVideoLoader(true));
     try {
-      const res = await api.post(
+      const res = await aiLocalisation.post(
         `process-vid/localisation/process/${projectId}`,
       );
       // console.log(res, "check_res");
@@ -341,7 +341,7 @@ export const getLocalizationImageUrl =
   async (dispatch: AppDispatch) => {
     dispatch(setLocalizationImageLoader(true));
     try {
-      const res = await api.get(`process-vid/localisation/${projectId}`);
+      const res = await aiLocalisation.get(`process-vid/localisation/${projectId}`);
       // console.log(res, "check_final_response");
       if (res?.status) {
         dispatch(setLocalizationImageData(res?.data || []));
@@ -368,7 +368,7 @@ export const postImageCoordinates =
   async (dispatch: AppDispatch) => {
     dispatch(setImageCoordinatesLoader(true));
     try {
-      const res = await api.post(`localisation/${projectId}/propagate`, {
+      const res = await aiLocalisation.post(`localisation/${projectId}/propagate`, {
         reference_scene_index: 1,
         box: coordinates,
       });
