@@ -12,6 +12,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import oneFrame from "../../assets/OneFrame.png";
 import unnamed from "../../assets/updatedLogo.png";
+import Surfai_Video_Studio_Icon from "../../assets/Surfai_Video_Studio_Icon.png";
 import mailIcon from "../../assets/mail-account.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { postAuthLogin } from "../../redux/auth/authSlice";
@@ -39,7 +40,7 @@ interface FormErrors {
 const Login: React.FC = () => {
   const dispatch = useDispatch();
   const { userInfo, authLoader } = useSelector(
-    (store: RootState) => store.Auth
+    (store: RootState) => store.Auth,
   );
 
   const [formData, setFormData] = useState<FormData>({
@@ -53,7 +54,7 @@ const Login: React.FC = () => {
   /* ---------------- Handlers ---------------- */
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -87,7 +88,7 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     const validationErrors = validate();
@@ -123,13 +124,15 @@ const Login: React.FC = () => {
           sx={{ width: { xs: "80%", lg: "50%" } }}
         >
           <Box sx={{ width: { xs: "100%", md: "80%" } }}>
-            <img src={oneFrame} alt="oneFrame" />
-
+            {/* <img src={oneFrame} alt="oneFrame" /> */}
+            <Typography variant="h2" fontWeight={600} mb={1}>
+              Video Studio
+            </Typography>
             <Typography variant="h4" fontWeight={600} mb={1}>
               Account Login
             </Typography>
 
-            <Typography color="text.secondary" variant = "body1" mb={3}>
+            <Typography color="text.secondary" variant="body1" mb={3}>
               Enter your login details to continue
             </Typography>
 
@@ -244,7 +247,7 @@ const Login: React.FC = () => {
           sx={{ width: "50%" }}
         >
           <img
-            src={unnamed}
+            src={Surfai_Video_Studio_Icon}
             alt="login"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
