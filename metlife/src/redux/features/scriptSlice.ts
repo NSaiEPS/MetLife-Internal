@@ -151,7 +151,6 @@ export const postAddScene =
   (
     data: { script_id?: string; scene_id: string | number; version?: number },
     // setOpenDeletePopup: (v: boolean) => void,
-
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
@@ -164,7 +163,6 @@ export const postAddScene =
             scene_id: data.scene_id,
           }),
         );
-
       }
     } catch (error: any) {
       // console.error(error);
@@ -246,16 +244,17 @@ export const postExtractCharacters =
     }
   };
 
-  // Regenerate character images
+// Regenerate character images
 export const postRegenerateCharacterImages =
-  (id: string, characterName: string, feedback: string) => async (dispatch: AppDispatch) => {
+  (id: string, characterName: string, feedback: string) =>
+  async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
       const data = {
         script_id: id,
         character_name: characterName,
-        feedback: feedback
-      }
+        feedback: feedback,
+      };
       const res = await api.post(`characters/regenerate-character`, data);
       console.log(res, "response_regenerate");
       if (res.status) {
@@ -272,7 +271,7 @@ export const postRegenerateCharacterImages =
     }
   };
 
-// get characters
+// get characters images
 export const getExtractCharacters =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
@@ -367,7 +366,9 @@ export const getLocalizationImageUrl =
   async (dispatch: AppDispatch) => {
     dispatch(setLocalizationImageLoader(true));
     try {
-      const res = await aiLocalisation.get(`process-vid/localisation/${projectId}`);
+      const res = await aiLocalisation.get(
+        `process-vid/localisation/${projectId}`,
+      );
       // console.log(res, "check_final_response");
       if (res?.status) {
         dispatch(setLocalizationImageData(res?.data || []));
@@ -386,18 +387,17 @@ export const getLocalizationImageUrl =
 
 // Post Image coordinates
 export const postImageCoordinates =
-  (
-    projectId: string,
-    coordinates: [],
-     successCallback?: () => void
-  ) =>
+  (projectId: string, coordinates: [], successCallback?: () => void) =>
   async (dispatch: AppDispatch) => {
     dispatch(setImageCoordinatesLoader(true));
     try {
-      const res = await aiLocalisation.post(`localisation/${projectId}/propagate`, {
-        reference_scene_index: 1,
-        box: coordinates,
-      });
+      const res = await aiLocalisation.post(
+        `localisation/${projectId}/propagate`,
+        {
+          reference_scene_index: 1,
+          box: coordinates,
+        },
+      );
       // console.log(res, "image_coordinates");
       if (res?.status) {
         toast.success(res?.data?.message || "Processing started successfully");
@@ -410,5 +410,22 @@ export const postImageCoordinates =
       toast.error(error?.response?.data?.message || "Video upload failed!");
     } finally {
       dispatch(setImageCoordinatesLoader(false));
+    }
+  };
+
+// Get characters list
+export const getCharactersList = (id: string) => async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await api.get(`characters/${id}`);
+      // console.log(res, "get_check_character_res");
+      if (res.status) {
+        dispatch(setCharacterData(res?.data?.characters));
+      }
+    } catch (error: any) {
+      console.error(error);
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
     }
   };

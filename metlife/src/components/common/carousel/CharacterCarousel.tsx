@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Modal,
   Box,
@@ -17,7 +17,6 @@ import {
 } from "../../../redux/features/scriptSlice";
 import { postCreateVisualContent } from "../../../redux/features/createVisualSlice";
 import ButtonComp from "../Buton/Button";
-import { RiUploadCloud2Line } from "react-icons/ri";
 import reuse from "../../../assets/reuse.svg";
 import RegenerateCharacterImagesPopup from "../../popUps/RegenerateCharacterImagesPopup";
 export const CharacterCarousel = ({
@@ -111,8 +110,6 @@ export const CharacterCarousel = ({
     setFeedback("");
     setSelectedCharacter(null);
   };
-
-  console.log(characterData[currentIndex] ,"checkkk")
 
   return (
     <>

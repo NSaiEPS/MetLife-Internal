@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Types
 // =========================
 
-export type InputType = "prompt" | "image";
+export type InputType = "prompt" | "image" | "search";
 
 export interface CharacterData {
   name: string;
@@ -38,6 +38,17 @@ interface CharacterProps {
 // =========================
 // Component
 // =========================
+
+const characters = [
+  {
+    id: 1,
+    name: "John Carter",
+    age: 28,
+    role: "Sales Executive",
+    ethnicity: "Asian",
+    avatar: "/images/avatar1.png",
+  },
+];
 
 export const Character: React.FC<CharacterProps> = ({
   index,
@@ -117,6 +128,7 @@ import ButtonComp from "../common/Buton/Button";
 import { useDispatch } from "react-redux";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import { useLocation, useNavigate } from "react-router";
+import AvailableCharacters from "../Available Characters/AvailableCharacters";
 
 /* ================= TYPES ================= */
 
@@ -152,7 +164,6 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const navigate = useNavigate();
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
   const [collectedCharacters, setCollectedCharacters] = useState<any[]>([]);
-
 
   /* ================= VALIDATION ================= */
 
@@ -314,36 +325,42 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 >
                   <MenuItem value="prompt">Generate</MenuItem>
                   <MenuItem value="image">Upload</MenuItem>
+                  <MenuItem value="search">Search</MenuItem>
                 </Select>
               </FormControl>
             </Box>
 
             {/* NAME & ROLE */}
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 2,
-                mt: 3,
-              }}
-            >
-              {(
-                [
-                  ["Name", "name"],
-                  ["Role", "role"],
-                ] as Array<[string, keyof CharacterType]>
-              ).map(([label, key]) => (
-                <TextField
-                  key={key}
-                  fullWidth
-                  label={label}
-                  value={form[key]}
-                  error={!!errors[key]}
-                  helperText={errors[key] && "Required"}
-                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                />
+            {form.inputType === "prompt" ||
+              (form.inputType === "image" && (
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: 2,
+                    mt: 3,
+                  }}
+                >
+                  {(
+                    [
+                      ["Name", "name"],
+                      ["Role", "role"],
+                    ] as Array<[string, keyof CharacterType]>
+                  ).map(([label, key]) => (
+                    <TextField
+                      key={key}
+                      fullWidth
+                      label={label}
+                      value={form[key]}
+                      error={!!errors[key]}
+                      helperText={errors[key] && "Required"}
+                      onChange={(e) =>
+                        setForm({ ...form, [key]: e.target.value })
+                      }
+                    />
+                  ))}
+                </Box>
               ))}
-            </Box>
 
             {/* INPUT TYPE: PROMPT */}
             {form.inputType === "prompt" && (
@@ -745,6 +762,13 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                   </Accordion>
                 </Box>
               </Box>
+            )}
+
+            {/* INPUT TYPE: SEARCH */}
+            {form.inputType === "search" && (
+              <>
+                <AvailableCharacters characters={characters} />
+              </>
             )}
 
             {/* ACTIONS */}

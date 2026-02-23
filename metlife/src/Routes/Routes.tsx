@@ -1,5 +1,4 @@
 // src/router/router.jsx
-import React from "react";
 import type { ReactElement } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
@@ -14,7 +13,7 @@ import GenerateScript from "../Pages/GenerateScipt/GenerateScript";
 import VideoProgressPage from "../Pages/VedioPregressPage/VedioProgressvideo";
 // import UploadClipsPage from "../Pages/UploadVedioPage/UploadVideoPage";
 import ScriptPage from "../Pages/AddNewScriptPage/AddNewScriptPage";
-import { getToken, getLoggedInUserType, USERS } from "../utils";
+import { getToken, getLoggedInUserType, } from "../utils";
 import Layout from "../components/layout/Layout";
 import MyVideosDashboard from "../Pages/Dashboard/Dashboard";
 import CreateVisualContentPage from "../Pages/VisualContent/CreateVisualContentPage";
