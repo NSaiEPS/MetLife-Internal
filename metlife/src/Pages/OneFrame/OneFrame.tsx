@@ -34,7 +34,7 @@ const VideoCreationOptions: React.FC = () => {
       <Box
         sx={{
           // minHeight:  "calc(100vh - 70px)",
-          minHeight:  "90vh",
+          minHeight: "90vh",
           backgroundColor: "#fff",
           display: "flex",
           flexDirection: "column",
@@ -54,7 +54,10 @@ const VideoCreationOptions: React.FC = () => {
         >
           {/* <p className={styles.upperHeading}>Create Your Video with OneFrame</p> */}
 
-          <Typography variant="h3"> Create Your Video with OneFrame</Typography>
+          <Typography variant="h3">
+            {" "}
+            Create Your Video with Video Studio
+          </Typography>
 
           <Grid
             container

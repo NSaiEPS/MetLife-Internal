@@ -45,9 +45,11 @@
 } */
 
 .logo {
-  width: 100px;
+  width: auto;
   height: 37px;
-
-  background: "blue";
+  max-width: 100px;
+  object-fit: contain;
+  object-position: left center;
+  display: block;
   cursor: pointer;
 }

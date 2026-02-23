@@ -15,7 +15,7 @@ import styles from "./OneFrameHeader.module.css";
 import { useNavigate, useLocation } from "react-router";
 import { navigateTo } from "../../utils/navigate";
 import secureLocalStorage from "react-secure-storage";
-import footerImage from "../../assets/SurfAI_white.png";
+import footerImage from "../../assets/SurfAI_Icon.png";
 
 interface OneFrameHeaderProps {
   // setMakeChanges?: (value: boolean) => void;
@@ -83,7 +83,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             className={styles.logo}
           />
           <Typography variant="h6" className={styles.title}>
-            OneFrame
+            Video Studio
           </Typography>
           <div>
             <Button

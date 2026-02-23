@@ -232,7 +232,7 @@ const OneframeAdminPanel: React.FC = () => {
     <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
       <Box sx={{ p: 4 }}>
         <Typography variant="h4" fontWeight={600} mb={3}>
-          OneFrame Admin Panel
+          Admin Panel
         </Typography>
 
         {/* STATISTICS */}
