@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import api, { aiLocalisation } from "../../api/axios";
+import api, { aiLocalisation, studio, STUDIO_URL } from "../../api/axios";
 import type { AppDispatch } from "../store";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -48,6 +48,8 @@ interface ScriptState {
   localizationImageData: any[];
   imageCoordinatesLoader: boolean;
   imageCoordinatesData: {};
+  charactersListData: any[];
+  charactersListFilters: any[];
 }
 
 const initialState: ScriptState = {
@@ -63,6 +65,8 @@ const initialState: ScriptState = {
   localizationImageData: [],
   imageCoordinatesLoader: false,
   imageCoordinatesData: {},
+  charactersListData: [],
+  charactersListFilters: [],
 };
 
 const ScriptDataSlice = createSlice({
@@ -129,6 +133,14 @@ const ScriptDataSlice = createSlice({
     setImageCoordinatesData(state, action: PayloadAction<any[]>) {
       state.imageCoordinatesData = action.payload;
     },
+
+    setCharactersListData(state, action: PayloadAction<any[]>) {
+      state.charactersListData = action.payload;
+    },
+
+    setCharactersListFilter(state, action: PayloadAction<any[]>) {
+      state.charactersListFilters = action.payload;
+    },
   },
 });
 
@@ -144,6 +156,8 @@ export const {
   setLocalizationImageData,
   setImageCoordinatesLoader,
   setImageCoordinatesData,
+  setCharactersListData,
+  setCharactersListFilter,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
@@ -151,7 +165,6 @@ export const postAddScene =
   (
     data: { script_id?: string; scene_id: string | number; version?: number },
     // setOpenDeletePopup: (v: boolean) => void,
-
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
@@ -164,7 +177,6 @@ export const postAddScene =
             scene_id: data.scene_id,
           }),
         );
-
       }
     } catch (error: any) {
       // console.error(error);
@@ -246,7 +258,34 @@ export const postExtractCharacters =
     }
   };
 
-// get characters
+// Regenerate character images
+export const postRegenerateCharacterImages =
+  (id: string, characterName: string, feedback: string) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const data = {
+        script_id: id,
+        character_name: characterName,
+        feedback: feedback,
+      };
+      const res = await api.post(`characters/regenerate-character`, data);
+      console.log(res, "response_regenerate");
+      if (res.status) {
+        dispatch(setCharacterData(res?.data?.character));
+        // if (callback) {
+        //   callback();
+        // }
+        // dispatch(getExtractCharacters(id));
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+    }
+  };
+
+// get characters images
 export const getExtractCharacters =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
@@ -341,7 +380,9 @@ export const getLocalizationImageUrl =
   async (dispatch: AppDispatch) => {
     dispatch(setLocalizationImageLoader(true));
     try {
-      const res = await aiLocalisation.get(`process-vid/localisation/${projectId}`);
+      const res = await aiLocalisation.get(
+        `process-vid/localisation/${projectId}`,
+      );
       // console.log(res, "check_final_response");
       if (res?.status) {
         dispatch(setLocalizationImageData(res?.data || []));
@@ -360,29 +401,93 @@ export const getLocalizationImageUrl =
 
 // Post Image coordinates
 export const postImageCoordinates =
-  (
-    projectId: string,
-    coordinates: [],
-    //  callback?: () => void
-  ) =>
+  (projectId: string, coordinates: [], successCallback?: () => void) =>
   async (dispatch: AppDispatch) => {
     dispatch(setImageCoordinatesLoader(true));
     try {
-      const res = await aiLocalisation.post(`localisation/${projectId}/propagate`, {
-        reference_scene_index: 1,
-        box: coordinates,
-      });
+      const res = await aiLocalisation.post(
+        `localisation/${projectId}/propagate`,
+        {
+          reference_scene_index: 1,
+          box: coordinates,
+        },
+      );
       // console.log(res, "image_coordinates");
       if (res?.status) {
         toast.success(res?.data?.message || "Processing started successfully");
         dispatch(setImageCoordinatesData(res?.data || []));
-        // if (callback) {
-        //   callback();
-        // }
+        if (successCallback) {
+          successCallback(res?.data);
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");
     } finally {
       dispatch(setImageCoordinatesLoader(false));
+    }
+  };
+
+// Get characters filter options
+export const getCharactersFilterOptions =
+  () => async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await studio.get(`characters/images/filter-options`);
+      console.log(res, "get_check_character_res");
+      if (res.status) {
+        dispatch(setCharactersListFilter(res?.data));
+      }
+    } catch (error: any) {
+      console.error(error);
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+    }
+  };
+
+// Get characters list
+export const getCharactersList = () => async (dispatch: AppDispatch) => {
+  dispatch(setScriptLoader(true));
+  try {
+    const res = await studio.get(`characters/images/all`);
+    console.log(res, "get_check_character_res");
+    if (res.status) {
+      dispatch(setCharactersListData(res?.data?.characters));
+    }
+  } catch (error: any) {
+    console.error(error);
+    // toast.error(error?.response?.data?.message || "Something went wrong!");
+  } finally {
+    dispatch(setScriptLoader(false));
+  }
+};
+
+// Get characters list Filter
+export const getCharactersFilteredList =
+  (gender: string, role: string, age: string | number, origin: string) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const params: any = {};
+      if (gender) params.gender = gender;
+      if (role) params.role = role;
+      if (origin) params.origin = origin;
+      if (age !== undefined && age !== "") {
+        params.age = Number(age); 
+      }
+      // const res = await studio.get(`characters/images/filter?gender=${gender}&role=${role}&age=${age}&origin=${origin}`);
+      const res = await studio.get("characters/images/filter", {
+        params,
+      });
+
+      console.log(res, "get_check_character_res");
+      if (res.status) {
+        dispatch(setCharactersListData(res?.data?.characters));
+      }
+    } catch (error: any) {
+      console.error(error);
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
     }
   };

@@ -273,7 +273,7 @@ const GenerateScript: React.FC = () => {
         return Boolean(hasBasicInfo && hasValidInput);
       });
       if (validCharacters.length === 0) {
-        showToast.error("Please add at least one valid character!");
+        showToast.error("Please add at least two valid characters!");
         return;
       } else {
         apiCall(successCallback);
@@ -299,6 +299,16 @@ const GenerateScript: React.FC = () => {
             script_id: id,
             character_name: char.name,
             role: char.role,
+            gender: char.gender,
+            age: char.age,
+            wardrobe: char.wardrobe,
+            skin_tone: char.skin_tone,
+            hair: char.hair,
+            face: char.face,
+            build: char.build,
+            accessories: char.accessories,
+            personality: char.personality,
+            origin: char.origin,
           },
           headers: {
             "Content-Type": "multipart/form-data",
@@ -332,6 +342,7 @@ const GenerateScript: React.FC = () => {
   // };
 
   const buildCharacterPayload = (characters: CharacterType[] = []) => {
+    console.log(characters, "check_characters")
     return {
       characters: characters.map((c: CharacterType) => {
         if (c.inputType === "image") {
@@ -359,6 +370,8 @@ const GenerateScript: React.FC = () => {
       }),
     };
   };
+
+  console.log(characters, "check_characters")
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>

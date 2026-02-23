@@ -68,6 +68,10 @@ import {
 import { CharacterCarousel } from "../carousel/CharacterCarousel";
 import TableRowComp from "./TableRowComp";
 import TableComp from "./TableComp";
+import type { CharacterType } from "../../../utils/types";
+import CharacterPrompt, {
+  Character,
+} from "../../Conversationaly_Character/Character";
 
 export interface SceneRow {
   id: string | number;
@@ -103,6 +107,23 @@ interface RootState {
 
 type FlowStep = "characters" | "mixed-options" | null;
 
+export const emptyCharacter: CharacterType = {
+  name: "",
+  role: "",
+  img: "",
+  inputType: "prompt",
+  age: 30,
+  gender: "",
+  skin_tone: "Light-medium",
+  hair: "Short, neatly combed black hair",
+  face: "Clean-shaven, calm professional expression",
+  build: "Average",
+  wardrobe: "Light blue dress shirt, navy blazer, no tie",
+  accessories: "Simple watch, no flashy items",
+  personality: "Curious, thoughtful, professional",
+  origin: "Spanish / Latin America",
+};
+
 const DynamicTable: React.FC<DynamicTableProps> = ({
   columns = [],
   extraDetails = {},
@@ -133,6 +154,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { characterData, promptData, scriptLoader } = useSelector(
     (store) => store.Script,
   );
+  console.log(characterData, "characterdata");
   const { pathname } = useLocation();
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
@@ -186,6 +208,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
   const [selectedProvider, setSelectedProvider] =
     React.useState<ProviderType>("azure");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const openPrompt = (index: number) => setEditingIndex(index);
+  const closePrompt = () => setEditingIndex(null);
+  const [characters, setCharacters] = useState<CharacterType[]>([
+    emptyCharacter,
+  ]);
+
+  const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
+  const totalCharacters = extraDetails?.characters?.length || 0;
 
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
@@ -212,6 +243,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       dispatch(getExtractCharacters(id));
     }
   }, [id, dispatch, tableExtraData?.char_image_exist]);
+
+  useEffect(() => {
+    if (extraDetails?.characters?.length) {
+      setCharacters(Array(extraDetails.characters.length).fill(null));
+    }
+  }, [extraDetails]);
+
 
   // useEffect(() => {
   //   if (
@@ -514,29 +552,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     // setOperations(false);
     setUiState((prev) => ({ ...prev, operations: false }));
     const { script_status, saved_version, scenes, ...rest } = tableExtraData;
-    // let updatedData = [...rows]?.map((parentItem) => {
-    //   let data = [...scenes].filter((item) => item?.scene_id == parentItem?.id);
-    //   if (data[0]) {
-    //     data[0].description = parentItem?.Script;
-    //     data[0].on_screen_text = parentItem?.OST;
-    //     data[0].scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
-    //     data[0].scene_number = parentItem?.["Scene No."];
-    //     data[0].is_deleted = parentItem?.is_deleted;
-    //     // data[0].scene_id=parentItem?.Script
 
-    //     return data[0];
-    //   } else {
-    //     let data = {};
-    //     data.description = parentItem?.Script;
-    //     data.on_screen_text = parentItem?.OST;
-    //     data.scene_type = parentItem?.Type ? parentItem?.Type : "narrator";
-    //     data.scene_number = parentItem?.["Scene No."];
-    //     // if (parentItem?.id || parentItem?.scene_id) {
-    //     //   data.scene_id = parentItem.scene_id ?? parentItem.id;
-    //     // }
-    //     return data;
-    //   }
-    // });
     let updatedData = [...rows]
       .filter((parentItem) => !parentItem?.is_deleted) // ✅ skip deleted rows
       .map((parentItem) => {
@@ -723,10 +739,81 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  // console.log(
-  //   !saveTranslatedData?.saved_version,
-  //   "tableExtraData",
-  // );
+  // const handleCharactersForUpload = () => {
+  //   console.log("first");
+  //   setCurrentCharacterIndex(0);
+  //   setEditingIndex(0);
+  // };
+
+  const handleCharactersForUpload = () => {
+    const nextIndex = characters.findIndex((char) => char === null);
+
+    if (nextIndex !== -1) {
+      setEditingIndex(nextIndex);
+    }
+  };
+
+  // const updateCharacter = (index: number, updatedData: CharacterType) => {
+  //   if (index >= characters.length) {
+  //     setCharacters((prev) => [...prev, updatedData]);
+  //   } else {
+  //     setCharacters((prev) =>
+  //       prev.map((item, i) => (i === index ? updatedData : item)),
+  //     );
+  //   }
+  // };
+
+  // const deleteCharacter = (index: number) => {
+  //   if (characters.length === 1) {
+  //     setCharacters([emptyCharacter]);
+  //   } else {
+  //     setCharacters((prev) => prev.filter((_, i) => i !== index));
+  //   }
+  // };
+
+  const handleCharacterSave = (index: number, formData: any) => {
+    const totalCharacters = extraDetails?.characters?.length || 0;
+    const updatedCharacters = [...characters];
+    updatedCharacters[index] = formData;
+
+    setCharacters(updatedCharacters);
+
+    // ✅ CLOSE POPUP EVERY TIME
+    setEditingIndex(null);
+    const isLastCharacter = index === totalCharacters - 1;
+    console.log(index, "index");
+
+    // ✅ If this was LAST character → CALL API
+    // if (index === totalCharacters - 1) {
+    if (isLastCharacter && totalCharacters > 0) {
+      const { script_status, saved_version, ...rest } = extraDetails;
+
+      const data = {
+        data: {
+          ...rest,
+          characters: updatedCharacters,
+          page: "script",
+        },
+        is_save_action: true,
+      };
+
+      dispatch(
+        postTranslatedDataSave(data, (id) => {
+          navigate(`/scenes/${id}`);
+        }),
+      );
+    }
+  };
+
+  const filledCharacters = characters.filter(
+    (char) => char !== null && Object.keys(char || {}).length > 0,
+  ).length;
+
+  const isLastCharacter =
+    pathname === "/translated-script" &&
+    filledCharacters === extraDetails?.characters?.length - 1;
+
+    console.log(tableExtraData?.conversational, "tableExtraData")
 
   return (
     <>
@@ -881,6 +968,30 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         showDragAndActions={showDragAndActions}
         actions={actions}
       />
+
+      {/* {characters.map((char, index) => (
+        <Character
+          key={index}
+          index={index}
+          data={char}
+          onEdit={() => openPrompt(index)}
+          onDelete={deleteCharacter}
+          total={characters.length}
+          isEmpty={!char.name && !char.role && !char.prompt && !char.img}
+        />
+      ))} */}
+
+      {editingIndex !== null && (
+        <CharacterPrompt
+          index={editingIndex}
+          totalCharacters={extraDetails?.characters?.length}
+          data={characters[editingIndex] || emptyCharacter}
+          closePrompt={closePrompt}
+          // updateCharacter={updateCharacter}
+          onSave={handleCharacterSave}
+          pdfData={extraDetails}
+        />
+      )}
 
       {/* ---------------- POPUPS ---------------- */}
       <AddNewScriptPopup
@@ -1080,10 +1191,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               variant="outlined"
               colorType="secondary"
               // className={styles.largeOutline}
-              onClick={handleSave}
+              onClick={
+                pathname === "/translated-script" && tableExtraData?.conversational
+                  ? handleCharactersForUpload
+                  : handleSave
+              }
               disabled={saveLoader}
             >
-              Save
+              {/* Save */}
+              {pathname === "/translated-script" && tableExtraData?.conversational
+                ? isLastCharacter
+                  ? "Save"
+                  : "Next"
+                : "Save"}
             </ButtonComp>
           )}
 

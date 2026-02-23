@@ -9,14 +9,14 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React from "react";
+import React, { useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 // =========================
 // Types
 // =========================
 
-export type InputType = "prompt" | "image";
+export type InputType = "prompt" | "image" | "search";
 
 export interface CharacterData {
   name: string;
@@ -38,6 +38,17 @@ interface CharacterProps {
 // =========================
 // Component
 // =========================
+
+const characters = [
+  {
+    id: 1,
+    name: "John Carter",
+    age: 28,
+    role: "Sales Executive",
+    ethnicity: "Asian",
+    avatar: "/images/avatar1.png",
+  },
+];
 
 export const Character: React.FC<CharacterProps> = ({
   index,
@@ -114,6 +125,11 @@ import {
 } from "@mui/material";
 import type { CharacterType } from "../../utils/types";
 import ButtonComp from "../common/Buton/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { postTranslatedDataSave } from "../../redux/features/saveSlice";
+import { useLocation, useNavigate } from "react-router";
+import AvailableCharacters from "../Available Characters/AvailableCharacters";
+import { getCharactersList } from "../../redux/features/scriptSlice";
 
 /* ================= TYPES ================= */
 
@@ -135,13 +151,21 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   data,
   updateCharacter,
   closePrompt,
+  pdfData,
+  onSave,
+  totalCharacters,
 }) => {
   const [form, setForm] = useState<CharacterType>(data);
   const [preview, setPreview] = useState<string>(data.img || "");
   const [errors, setErrors] = useState<ErrorState>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [expanded, setExpanded] = React.useState<string | false>(false);
-
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
+  const [collectedCharacters, setCollectedCharacters] = useState<any[]>([]);
+  const { charactersListData } = useSelector((state) => state?.Script);
   /* ================= VALIDATION ================= */
 
   const validate = (): boolean => {
@@ -179,10 +203,79 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 
   /* ================= HANDLERS ================= */
 
+  // const handleSave = () => {
+  //   if (pathname === "/generate-script") {
+  //     if (!validate()) return;
+  //     updateCharacter(index, form);
+  //     closePrompt();
+  //   }
+
+  //   if (pathname === "/translated-script") {
+  //     if (!validate()) return;
+  //     const updatedCharacters = [...collectedCharacters, form];
+  //     const totalCharacters = pdfData?.characters?.length;
+  //     if (currentCharacterIndex < totalCharacters - 1) {
+  //       setCollectedCharacters(updatedCharacters);
+  //       setCurrentCharacterIndex((prev) => prev + 1);
+  //       updateCharacter(currentCharacterIndex, form);
+  //       return;
+  //     }
+  //     const {
+  //       script_status,
+  //       script_id,
+  //       saved_version,
+  //       scenes,
+  //       title,
+  //       ...rest
+  //     } = pdfData;
+  //     let characters = [];
+  //     characters.push(form);
+  //     const data = {
+  //       data: {
+  //         ...rest,
+  //         script_id,
+  //         scenes,
+  //         title,
+  //         characters: updateCharacter,
+  //         // version: tableExtraData?.version,
+  //         page: "script",
+  //       },
+  //       is_save_action: true,
+  //     };
+
+  //     dispatch(
+  //       postTranslatedDataSave(data, (id) => {
+  //         if (pathname === "/translated-script") {
+  //           navigate(`/scenes/${id}`);
+  //         }
+  //       }),
+  //     );
+  //     setCollectedCharacters([]);
+  //     setCurrentCharacterIndex(0);
+  //     updateCharacter(index, form);
+  //     closePrompt();
+  //   }
+  // };
   const handleSave = () => {
-    if (!validate()) return;
-    updateCharacter(index, form);
-    closePrompt();
+    console.log(form)
+    if (pathname === "/generate-script" && !form.inputType === "search") {
+      console.log("hit")
+      if (!validate()) return;
+
+      updateCharacter(index, form);
+      closePrompt();
+    }
+
+    if (pathname === "/generate-script" && form.inputType === "search") {
+      console.log(form, index, "form_check")
+      updateCharacter(index, form);
+      closePrompt();
+    }
+
+    if (pathname === "/translated-script") {
+      if (!validate()) return;
+      onSave(index, form);
+    }
   };
 
   const handleImgSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,7 +287,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     // setForm({ ...form, img: URL.createObjectURL(file) });
     setForm({
       ...form,
-      img: file, 
+      img: file,
     });
   };
 
@@ -241,36 +334,42 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 >
                   <MenuItem value="prompt">Generate</MenuItem>
                   <MenuItem value="image">Upload</MenuItem>
+                  <MenuItem value="search">Search</MenuItem>
                 </Select>
               </FormControl>
             </Box>
 
             {/* NAME & ROLE */}
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 2,
-                mt: 3,
-              }}
-            >
-              {(
-                [
-                  ["Name", "name"],
-                  ["Role", "role"],
-                ] as Array<[string, keyof CharacterType]>
-              ).map(([label, key]) => (
-                <TextField
-                  key={key}
-                  fullWidth
-                  label={label}
-                  value={form[key]}
-                  error={!!errors[key]}
-                  helperText={errors[key] && "Required"}
-                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                />
+            {form.inputType === "prompt" ||
+              (form.inputType === "image" && (
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: 2,
+                    mt: 3,
+                  }}
+                >
+                  {(
+                    [
+                      ["Name", "name"],
+                      ["Role", "role"],
+                    ] as Array<[string, keyof CharacterType]>
+                  ).map(([label, key]) => (
+                    <TextField
+                      key={key}
+                      fullWidth
+                      label={label}
+                      value={form[key]}
+                      error={!!errors[key]}
+                      helperText={errors[key] && "Required"}
+                      onChange={(e) =>
+                        setForm({ ...form, [key]: e.target.value })
+                      }
+                    />
+                  ))}
+                </Box>
               ))}
-            </Box>
 
             {/* INPUT TYPE: PROMPT */}
             {form.inputType === "prompt" && (
@@ -304,7 +403,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         value={form.age}
                         error={!!errors.age}
                         helperText={errors.age && "Required"}
-                        inputProps={{ min: 0, max: 120 }}
+                        inputProps={{ min: 18, max: 120 }}
                         onChange={(e) =>
                           setForm({ ...form, age: Number(e.target.value) })
                         }
@@ -494,7 +593,191 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                     Image required
                   </Typography>
                 )}
+                <Box textAlign="center" mt={4}>
+                  {/* BASIC INFO */}
+                  <Accordion
+                    sx={{ mb: 2, boxShadow: "none", background: "aliceblue" }}
+                    expanded={expanded === "basic"}
+                    onChange={handleChange("basic")}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography variant="subtitle2" sx={{ fontSize: "16px" }}>
+                        Basic Info
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, 1fr)",
+                          gap: 2,
+                          mb: 3,
+                          background: "#fff",
+                          padding: "16px",
+                        }}
+                      >
+                        <TextField
+                          fullWidth
+                          label="Age"
+                          type="number"
+                          value={form.age}
+                          error={!!errors.age}
+                          helperText={errors.age && "Required"}
+                          inputProps={{ min: 18, max: 120 }}
+                          onChange={(e) =>
+                            setForm({ ...form, age: Number(e.target.value) })
+                          }
+                        />
+
+                        <FormControl fullWidth error={!!errors.gender}>
+                          <InputLabel>Gender</InputLabel>
+                          <Select
+                            label="Gender"
+                            value={form.gender}
+                            onChange={(e) =>
+                              setForm({ ...form, gender: e.target.value })
+                            }
+                          >
+                            {GENDER_OPTIONS.map((g) => (
+                              <MenuItem key={g} value={g}>
+                                {g}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {errors.gender && (
+                            <Typography fontSize={12} color="error">
+                              Required
+                            </Typography>
+                          )}
+                        </FormControl>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+
+                  {/* APPEARANCE */}
+                  <Accordion
+                    sx={{
+                      mb: 2,
+                      boxShadow: "none",
+                      border: "none",
+                      background: "aliceblue",
+                      "&:before": {
+                        display: "none",
+                      },
+                    }}
+                    expanded={expanded === "appearance"}
+                    onChange={handleChange("appearance")}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography
+                        sx={{
+                          fontSize: "16px",
+                        }}
+                        variant="subtitle2"
+                      >
+                        Appearance
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, 1fr)",
+                          gap: 2,
+                          mb: 3,
+                          background: "#fff",
+                          padding: "16px",
+                        }}
+                      >
+                        {(
+                          [
+                            ["Skin Tone", "skin_tone"],
+                            ["Hair", "hair"],
+                            ["Face", "face"],
+                            ["Build", "build"],
+                          ] as Array<[string, keyof CharacterType]>
+                        ).map(([label, key]) => (
+                          <TextField
+                            key={key}
+                            fullWidth
+                            label={label}
+                            value={form[key]}
+                            error={!!errors[key]}
+                            helperText={errors[key] && "Required"}
+                            onChange={(e) =>
+                              setForm({ ...form, [key]: e.target.value })
+                            }
+                          />
+                        ))}
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+
+                  {/* STYLE & PERSONALITY */}
+                  <Accordion
+                    sx={{
+                      boxShadow: "none",
+                      background: "aliceblue",
+                      "&:before": {
+                        display: "none",
+                      },
+                    }}
+                    expanded={expanded === "style"}
+                    onChange={handleChange("style")}
+                  >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography
+                        sx={{
+                          fontSize: "16px",
+                          fontWeight: 500,
+                        }}
+                        variant="subtitle2"
+                      >
+                        Style & Personality
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(2, 1fr)",
+                          gap: 2,
+                          background: "#fff",
+                          padding: "16px",
+                        }}
+                      >
+                        {(
+                          [
+                            ["Attire", "wardrobe"],
+                            ["Accessories", "accessories"],
+                            ["Personality", "personality"],
+                            ["Origin / Ethnicity", "origin"],
+                          ] as Array<[string, keyof CharacterType]>
+                        ).map(([label, key]) => (
+                          <TextField
+                            key={key}
+                            fullWidth
+                            label={label}
+                            value={form[key]}
+                            error={!!errors[key]}
+                            helperText={errors[key] && "Required"}
+                            onChange={(e) =>
+                              setForm({ ...form, [key]: e.target.value })
+                            }
+                          />
+                        ))}
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
               </Box>
+            )}
+
+            {/* INPUT TYPE: SEARCH */}
+            {form.inputType === "search" && (
+              <>
+                <AvailableCharacters characters={charactersListData} />
+              </>
             )}
 
             {/* ACTIONS */}
