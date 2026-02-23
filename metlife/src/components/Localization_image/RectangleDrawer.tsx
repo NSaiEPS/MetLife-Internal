@@ -68,12 +68,26 @@ export default function RectangleDrawer({
 
     console.log(result, "=> [x, y, width, height]");
 
-    dispatch(postImageCoordinates(projectId, result));
-    setStep(STEPS.TIMER3);
+    dispatch(postImageCoordinates(projectId, result, successCallback));
 
     // setStartTimer3(true);
     // setShowRectangleCanvas(false);
     setRect(null);
+  };
+
+  const successCallback = (data) => {
+    console.log(data, "data_check");
+    if (data?.status) {
+      const duration = Number(data?.estimated_time_seconds);
+      const endTime = Date.now() + duration * 1000;
+
+      localStorage.setItem(
+        "estimated_remaining_time",
+        JSON.stringify({ endTime }),
+      );
+
+      setStep(STEPS.TIMER3);
+    }
   };
 
   return (

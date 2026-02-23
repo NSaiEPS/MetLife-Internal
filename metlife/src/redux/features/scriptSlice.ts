@@ -246,6 +246,32 @@ export const postExtractCharacters =
     }
   };
 
+  // Regenerate character images
+export const postRegenerateCharacterImages =
+  (id: string, characterName: string, feedback: string) => async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const data = {
+        script_id: id,
+        character_name: characterName,
+        feedback: feedback
+      }
+      const res = await api.post(`characters/regenerate-character`, data);
+      console.log(res, "response_regenerate");
+      if (res.status) {
+        dispatch(setCharacterData(res?.data?.character));
+        // if (callback) {
+        //   callback();
+        // }
+        // dispatch(getExtractCharacters(id));
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+    }
+  };
+
 // get characters
 export const getExtractCharacters =
   (id: string) => async (dispatch: AppDispatch) => {
@@ -363,7 +389,7 @@ export const postImageCoordinates =
   (
     projectId: string,
     coordinates: [],
-    //  callback?: () => void
+     successCallback?: () => void
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(setImageCoordinatesLoader(true));
@@ -376,9 +402,9 @@ export const postImageCoordinates =
       if (res?.status) {
         toast.success(res?.data?.message || "Processing started successfully");
         dispatch(setImageCoordinatesData(res?.data || []));
-        // if (callback) {
-        //   callback();
-        // }
+        if (successCallback) {
+          successCallback(res?.data);
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");

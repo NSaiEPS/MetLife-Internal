@@ -33,7 +33,8 @@ const VideoCreationOptions: React.FC = () => {
     <>
       <Box
         sx={{
-          minHeight: "100vh",
+          // minHeight:  "calc(100vh - 70px)",
+          minHeight:  "90vh",
           backgroundColor: "#fff",
           display: "flex",
           flexDirection: "column",
