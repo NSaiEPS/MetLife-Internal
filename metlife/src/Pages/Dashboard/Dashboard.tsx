@@ -515,7 +515,6 @@ const MyVideosDashboard: React.FC = () => {
                   {/* <TableCell>Thumbnail</TableCell> */}
                   <TableCell>Video Name</TableCell>
                   <TableCell>Language</TableCell>
-
                   <TableCell>Duration</TableCell>
                   <TableCell>Last Update</TableCell>
                   <TableCell>Status</TableCell>
@@ -544,15 +543,14 @@ const MyVideosDashboard: React.FC = () => {
                         {/* ${
                           video.language ? "_" + video.language.slice(0, 2) : ""
                         } */}
-                        {`${video.title}
-                        `}
+                        {`${video.title}` }
                       </TableCell>
-                      <TableCell>{video?.language}</TableCell>
+                      <TableCell>{video?.language || "-"}</TableCell>
 
-                      <TableCell>{video?.suggested_duration_minutes}</TableCell>
+                      <TableCell>{video?.suggested_duration_minutes || "-"}</TableCell>
 
                       <TableCell>
-                        {formatRelativeTime(video?.created_at)}
+                        {formatRelativeTime(video?.created_at) || "-"}
                       </TableCell>
 
                       <TableCell>{getStatusChip(video)}</TableCell>
