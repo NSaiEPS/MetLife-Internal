@@ -23,6 +23,7 @@ import AudioAnimationPage from "../Pages/AudioAnimation/AudioAnimationPage";
 import AnimationPage from "../Pages/Animation/AnimationPage";
 import UploadConversationalClipsPage from "../Pages/UploadConversation/UploadConversationClipsPage";
 import UploadVideoPage from "../Pages/UploadVideoPage/UploadVideoPage";
+import SuperAdminPanel from "../Admin/SuperAdminPanel";
 import OneframeAdminPanel from "../Admin/oneframe_admin_panel_ui-2";
 
 // ===============================
@@ -111,6 +112,10 @@ export const router = createBrowserRouter([
     // element: <Layout />,
     element: <ProtectedRoute element={<Layout />} />,
     children: [
+      {
+        path: "/super-admin",
+        element: <SuperAdminPanel />,
+      },
       {
         path: "/admin",
         element: <OneframeAdminPanel />,

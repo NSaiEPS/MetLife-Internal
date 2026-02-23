@@ -1,204 +1,336 @@
-import * as React from "react";
+import React from "react";
+import Grid from "@mui/material/Grid";
 import {
   Box,
   Typography,
-  Button,
-  Card,
-  CardContent,
-  Grid,
+  Paper,
+  TextField,
+  InputAdornment,
   Tabs,
   Tab,
-  TextField,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
   Chip,
-  Paper,
-  Stack,
+  IconButton,
 } from "@mui/material";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
-import BusinessIcon from "@mui/icons-material/Business";
-import ShieldIcon from "@mui/icons-material/Security";
-import PeopleIcon from "@mui/icons-material/People";
+import {
+  Business,
+  Groups2,
+  VerifiedUser,
+  Block,
+  Visibility,
+} from "@mui/icons-material";
+import { IoSearchCircleOutline } from "react-icons/io5";
+import ButtonComp from "../components/common/Buton/Button";
 
-// MetLife-inspired color theme
-const metlifeTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#007ABC", // MetLife Blue
-      contrastText: "#ffffff",
-    },
-    secondary: {
-      main: "#6CC24A", // MetLife Green
-    },
-    success: {
-      main: "#6CC24A",
-    },
-    background: {
-      default: "#F4F8FB",
-      paper: "#ffffff",
-    },
-  },
-  shape: {
-    borderRadius: 10,
-  },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
+type TabType = "clients" | "admins" | "users";
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div hidden={value !== index} {...other}>
-      {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
-    </div>
-  );
+interface ClientRow {
+  name: string;
+  admins: number;
+  users: number;
+  status: "Active" | "Suspended";
+  lastUpdate: string;
 }
 
-export default function OneframeAdminPanel() {
-  const [tab, setTab] = React.useState(0);
+const rows: ClientRow[] = [
+  {
+    name: "Acme Corporation",
+    admins: 2,
+    users: 54,
+    status: "Active",
+    lastUpdate: "20 Feb 2026, 03:40 PM",
+  },
+  {
+    name: "Globex Ltd",
+    admins: 1,
+    users: 38,
+    status: "Active",
+    lastUpdate: "18 Feb 2026, 11:10 AM",
+  },
+  {
+    name: "Initech",
+    admins: 1,
+    users: 12,
+    status: "Suspended",
+    lastUpdate: "16 Feb 2026, 09:15 AM",
+  },
+];
 
-  const clients = [
-    { name: "Acme Corp", admins: 1, users: 54, status: "Active" },
-    { name: "Globex Ltd", admins: 2, users: 120, status: "Active" },
-    { name: "Initech", admins: 1, users: 32, status: "Suspended" },
+const tabMap: TabType[] = ["clients", "admins", "users"];
+
+const getStatusChip = (status: ClientRow["status"]) => {
+  if (status === "Active") {
+    return (
+      <Chip
+        label="Active"
+        sx={{
+          bgcolor: "#ecfcf2",
+          fontWeight: "bold",
+          lineHeight: "normal",
+          color: "#057647",
+          border: "2px solid #aaefc6",
+        }}
+      />
+    );
+  }
+
+  return (
+    <Chip
+      label="Suspended"
+      sx={{
+        bgcolor: "#fcececff",
+        fontWeight: "bold",
+        lineHeight: "normal",
+        color: "#760505ff",
+        border: "2px solid #efaaaaff",
+      }}
+    />
+  );
+};
+
+const OneframeAdminPanel: React.FC = () => {
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [selectedTab, setSelectedTab] = React.useState<TabType>("clients");
+
+  const totalClients = rows.length;
+  const totalAdmins = rows.reduce((sum, item) => sum + item.admins, 0);
+  const totalUsers = rows.reduce((sum, item) => sum + item.users, 0);
+  const suspendedClients = rows.filter((item) => item.status === "Suspended");
+
+  const stats = [
+    {
+      title: "Total Clients",
+      value: totalClients,
+      color: "#E3F2FD",
+      icon: <Business fontSize="large" sx={{ color: "#1976D2" }} />,
+      filter: "clients" as TabType,
+    },
+    {
+      title: "Client Admins",
+      value: totalAdmins,
+      color: "#FFF8E1",
+      icon: <VerifiedUser fontSize="large" sx={{ color: "#F9A825" }} />,
+      filter: "admins" as TabType,
+    },
+    {
+      title: "Total Users",
+      value: totalUsers,
+      color: "#E8F5E9",
+      icon: <Groups2 fontSize="large" sx={{ color: "#2E7D32" }} />,
+      filter: "users" as TabType,
+    },
+    {
+      title: "Suspended Clients",
+      value: suspendedClients.length,
+      color: "#FDECEA",
+      icon: <Block fontSize="large" sx={{ color: "#D32F2F" }} />,
+      filter: "clients" as TabType,
+    },
   ];
 
+  const filteredRows = rows.filter((item) => {
+    if (!searchQuery) return true;
+    return (
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.status.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
   return (
-    <ThemeProvider theme={metlifeTheme}>
-      <Box sx={{ minHeight: "100vh", bgcolor: "background.default", p: 4 }}>
-        {/* Header */}
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          <Box>
-            <Typography variant="h5" fontWeight={700} color="primary.main">
-              Oneframe Admin Panel
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Super Admin Dashboard
-            </Typography>
-          </Box>
-          <Button variant="contained" startIcon={<AddIcon />}>
-            Add Client
-          </Button>
-        </Stack>
+    <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
+      <Box sx={{ p: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
+          <Typography variant="h4" fontWeight={600}>
+            OneFrame Admin Panel
+          </Typography>
+        </Box>
 
-        {/* Stats */}
-        <Grid container spacing={2} mb={3}>
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider" }}>
-              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <BusinessIcon color="primary" />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Clients
-                  </Typography>
-                  <Typography variant="h6">24</Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
+        <Paper elevation={1} sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Statistics
+          </Typography>
 
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider" }}>
-              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <ShieldIcon sx={{ color: "secondary.main" }} />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Client Admins
-                  </Typography>
-                  <Typography variant="h6">24</Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider" }}>
-              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <PeopleIcon color="primary" />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Users
-                  </Typography>
-                  <Typography variant="h6">1,284</Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-
-        {/* Main Card */}
-        <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider" }}>
-          <CardContent>
-            <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} spacing={2} mb={2}>
-              <Typography variant="h6">Clients</Typography>
-
-              <Stack direction="row" spacing={1}>
-                <TextField
-                  size="small"
-                  placeholder="Search clients..."
-                  InputProps={{ startAdornment: <SearchIcon fontSize="small" /> }}
-                />
-                <Button variant="outlined" startIcon={<AddIcon />}>
-                  New
-                </Button>
-              </Stack>
-            </Stack>
-
-            {/* Tabs */}
-            <Tabs value={tab} onChange={(_, v) => setTab(v)} textColor="primary" indicatorColor="primary">
-              <Tab label="Clients" />
-              <Tab label="Admins" />
-              <Tab label="Users" />
-            </Tabs>
-
-            {/* Clients Tab */}
-            <TabPanel value={tab} index={0}>
-              <Stack spacing={1.5}>
-                {clients.map((c, i) => (
-                  <Paper
-                    key={i}
-                    variant="outlined"
-                    sx={{ p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}
+          <Grid
+            container
+            spacing={3}
+            sx={{
+              width: "100%",
+              m: 0,
+              pt: "10px",
+              flexWrap: "nowrap",
+              overflowX: "auto",
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": { display: "none" },
+            }}
+          >
+            {stats.map((s) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={3}
+                key={s.title}
+                sx={{
+                  flex: 1,
+                  minWidth: { xs: "220px", md: "auto" },
+                  cursor: "pointer",
+                }}
+              >
+                <Paper
+                  elevation={selectedTab === s.filter ? 6 : 0}
+                  onClick={() => setSelectedTab(s.filter)}
+                  sx={{
+                    p: 3,
+                    borderRadius: 4,
+                    bgcolor: s.color,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    boxShadow: "none",
+                    border:
+                      selectedTab === s.filter
+                        ? "2px solid #1976D2"
+                        : "2px solid transparent",
+                    transition: "0.3s",
+                    "&:hover": {
+                      transform: "translateY(-3px)",
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: "50%",
+                      bgcolor: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
-                    <Box>
-                      <Typography fontWeight={600}>{c.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {c.admins} Admin • {c.users} Users
-                      </Typography>
-                    </Box>
+                    {s.icon}
+                  </Box>
 
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Chip
-                        label={c.status}
-                        color={c.status === "Active" ? "success" : "default"}
-                        size="small"
-                      />
-                      <Button size="small" variant="outlined">
-                        Manage
-                      </Button>
-                    </Stack>
-                  </Paper>
-                ))}
-              </Stack>
-            </TabPanel>
+                  <Box sx={{ textAlign: "right" }}>
+                    <Typography variant="h5">{s.value}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {s.title}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
 
-            {/* Admins Tab */}
-            <TabPanel value={tab} index={1}>
-              <Typography color="text.secondary">
-                Select a client to view admins.
-              </Typography>
-            </TabPanel>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="h6">Client List</Typography>
+            <TextField
+              placeholder="Search by client name"
+              variant="outlined"
+              size="small"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              sx={{
+                width: 300,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "14px",
+                  backgroundColor: "#f9f9f9",
+                },
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IoSearchCircleOutline color="gray" size={20} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
 
-            {/* Users Tab */}
-            <TabPanel value={tab} index={2}>
-              <Typography color="text.secondary">
-                Select a client to view users.
-              </Typography>
-            </TabPanel>
-          </CardContent>
-        </Card>
+          <ButtonComp
+            variant="contained"
+            colorType="secondary"
+            label="+ Add Client"
+            transform="none"
+          >
+            + Add Client
+          </ButtonComp>
+        </Box>
+
+        <Paper sx={{ mb: 2, borderRadius: 3 }}>
+          <Tabs
+            value={tabMap.indexOf(selectedTab)}
+            onChange={(_, value: number) => setSelectedTab(tabMap[value])}
+            sx={{ px: 2, pt: 1 }}
+          >
+            <Tab label="Clients" />
+            <Tab label="Admins" />
+            <Tab label="Users" />
+          </Tabs>
+        </Paper>
+
+        <Paper sx={{ borderRadius: 3 }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: "#E3F2FD" }}>
+                <TableCell>S.No</TableCell>
+                <TableCell>Client Name</TableCell>
+                <TableCell>Admins</TableCell>
+                <TableCell>Users</TableCell>
+                <TableCell>Last Update</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell align="center">Action</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {filteredRows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    <Typography
+                      variant="body1"
+                      sx={{ py: 4, color: "text.secondary", fontWeight: 500 }}
+                    >
+                      Data not available
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredRows.map((item, index) => (
+                  <TableRow key={item.name}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.admins}</TableCell>
+                    <TableCell>{item.users}</TableCell>
+                    <TableCell>{item.lastUpdate}</TableCell>
+                    <TableCell>{getStatusChip(item.status)}</TableCell>
+                    <TableCell align="center">
+                      <IconButton size="small">
+                        <Visibility />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
       </Box>
-    </ThemeProvider>
+    </Box>
   );
-}
+};
+
+export default OneframeAdminPanel;
