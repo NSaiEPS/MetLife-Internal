@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import api, { aiLocalisation } from "../../api/axios";
+import api, { aiLocalisation, studio, STUDIO_URL } from "../../api/axios";
 import type { AppDispatch } from "../store";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -48,6 +48,8 @@ interface ScriptState {
   localizationImageData: any[];
   imageCoordinatesLoader: boolean;
   imageCoordinatesData: {};
+  charactersListData: any[];
+  charactersListFilters: any[];
 }
 
 const initialState: ScriptState = {
@@ -63,6 +65,8 @@ const initialState: ScriptState = {
   localizationImageData: [],
   imageCoordinatesLoader: false,
   imageCoordinatesData: {},
+  charactersListData: [],
+  charactersListFilters: [],
 };
 
 const ScriptDataSlice = createSlice({
@@ -129,6 +133,14 @@ const ScriptDataSlice = createSlice({
     setImageCoordinatesData(state, action: PayloadAction<any[]>) {
       state.imageCoordinatesData = action.payload;
     },
+
+    setCharactersListData(state, action: PayloadAction<any[]>) {
+      state.charactersListData = action.payload;
+    },
+
+    setCharactersListFilter(state, action: PayloadAction<any[]>) {
+      state.charactersListFilters = action.payload;
+    },
   },
 });
 
@@ -144,6 +156,8 @@ export const {
   setLocalizationImageData,
   setImageCoordinatesLoader,
   setImageCoordinatesData,
+  setCharactersListData,
+  setCharactersListFilter,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
@@ -413,14 +427,62 @@ export const postImageCoordinates =
     }
   };
 
-// Get characters list
-export const getCharactersList = (id: string) => async (dispatch: AppDispatch) => {
+// Get characters filter options
+export const getCharactersFilterOptions =
+  () => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
-      const res = await api.get(`characters/${id}`);
-      // console.log(res, "get_check_character_res");
+      const res = await studio.get(`characters/images/filter-options`);
+      console.log(res, "get_check_character_res");
       if (res.status) {
-        dispatch(setCharacterData(res?.data?.characters));
+        dispatch(setCharactersListFilter(res?.data));
+      }
+    } catch (error: any) {
+      console.error(error);
+      // toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+    }
+  };
+
+// Get characters list
+export const getCharactersList = () => async (dispatch: AppDispatch) => {
+  dispatch(setScriptLoader(true));
+  try {
+    const res = await studio.get(`characters/images/all`);
+    console.log(res, "get_check_character_res");
+    if (res.status) {
+      dispatch(setCharactersListData(res?.data?.characters));
+    }
+  } catch (error: any) {
+    console.error(error);
+    // toast.error(error?.response?.data?.message || "Something went wrong!");
+  } finally {
+    dispatch(setScriptLoader(false));
+  }
+};
+
+// Get characters list Filter
+export const getCharactersFilteredList =
+  (gender: string, role: string, age: string | number, origin: string) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const params: any = {};
+      if (gender) params.gender = gender;
+      if (role) params.role = role;
+      if (origin) params.origin = origin;
+      if (age !== undefined && age !== "") {
+        params.age = Number(age); 
+      }
+      // const res = await studio.get(`characters/images/filter?gender=${gender}&role=${role}&age=${age}&origin=${origin}`);
+      const res = await studio.get("characters/images/filter", {
+        params,
+      });
+
+      console.log(res, "get_check_character_res");
+      if (res.status) {
+        dispatch(setCharactersListData(res?.data?.characters));
       }
     } catch (error: any) {
       console.error(error);

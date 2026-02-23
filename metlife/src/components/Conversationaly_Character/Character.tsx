@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React from "react";
+import React, { useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 // =========================
@@ -125,10 +125,11 @@ import {
 } from "@mui/material";
 import type { CharacterType } from "../../utils/types";
 import ButtonComp from "../common/Buton/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import { useLocation, useNavigate } from "react-router";
 import AvailableCharacters from "../Available Characters/AvailableCharacters";
+import { getCharactersList } from "../../redux/features/scriptSlice";
 
 /* ================= TYPES ================= */
 
@@ -164,7 +165,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const navigate = useNavigate();
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
   const [collectedCharacters, setCollectedCharacters] = useState<any[]>([]);
-
+  const { charactersListData } = useSelector((state) => state?.Script);
   /* ================= VALIDATION ================= */
 
   const validate = (): boolean => {
@@ -256,9 +257,17 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   //   }
   // };
   const handleSave = () => {
-    if (pathname === "/generate-script") {
+    console.log(form)
+    if (pathname === "/generate-script" && !form.inputType === "search") {
+      console.log("hit")
       if (!validate()) return;
 
+      updateCharacter(index, form);
+      closePrompt();
+    }
+
+    if (pathname === "/generate-script" && form.inputType === "search") {
+      console.log(form, index, "form_check")
       updateCharacter(index, form);
       closePrompt();
     }
@@ -767,7 +776,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
             {/* INPUT TYPE: SEARCH */}
             {form.inputType === "search" && (
               <>
-                <AvailableCharacters characters={characters} />
+                <AvailableCharacters characters={charactersListData} />
               </>
             )}
 

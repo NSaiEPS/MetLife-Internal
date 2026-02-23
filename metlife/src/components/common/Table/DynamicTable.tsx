@@ -753,23 +753,23 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   };
 
-  const updateCharacter = (index: number, updatedData: CharacterType) => {
-    if (index >= characters.length) {
-      setCharacters((prev) => [...prev, updatedData]);
-    } else {
-      setCharacters((prev) =>
-        prev.map((item, i) => (i === index ? updatedData : item)),
-      );
-    }
-  };
+  // const updateCharacter = (index: number, updatedData: CharacterType) => {
+  //   if (index >= characters.length) {
+  //     setCharacters((prev) => [...prev, updatedData]);
+  //   } else {
+  //     setCharacters((prev) =>
+  //       prev.map((item, i) => (i === index ? updatedData : item)),
+  //     );
+  //   }
+  // };
 
-  const deleteCharacter = (index: number) => {
-    if (characters.length === 1) {
-      setCharacters([emptyCharacter]);
-    } else {
-      setCharacters((prev) => prev.filter((_, i) => i !== index));
-    }
-  };
+  // const deleteCharacter = (index: number) => {
+  //   if (characters.length === 1) {
+  //     setCharacters([emptyCharacter]);
+  //   } else {
+  //     setCharacters((prev) => prev.filter((_, i) => i !== index));
+  //   }
+  // };
 
   const handleCharacterSave = (index: number, formData: any) => {
     const totalCharacters = extraDetails?.characters?.length || 0;

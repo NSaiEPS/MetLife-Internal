@@ -347,6 +347,7 @@ const GenerateScript: React.FC = () => {
   // };
 
   const buildCharacterPayload = (characters: CharacterType[] = []) => {
+    console.log(characters, "check_characters")
     return {
       characters: characters.map((c: CharacterType) => {
         if (c.inputType === "image") {
@@ -374,6 +375,8 @@ const GenerateScript: React.FC = () => {
       }),
     };
   };
+
+  console.log(characters, "check_characters")
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
