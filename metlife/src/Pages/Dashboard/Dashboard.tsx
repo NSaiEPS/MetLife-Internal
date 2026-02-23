@@ -16,11 +16,7 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import {
-  PlayCircle,
-  ErrorOutline,
-  VideoLibrary,
-} from "@mui/icons-material";
+import { PlayCircle, ErrorOutline, VideoLibrary } from "@mui/icons-material";
 import { FaFileDownload, FaRegPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -407,7 +403,7 @@ const MyVideosDashboard: React.FC = () => {
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {stats.map((s, idx) => (
+              {{stats}.map((s, idx) => (
                 <Grid
                   item
                   xs={12}
