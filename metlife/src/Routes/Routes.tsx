@@ -13,7 +13,7 @@ import GenerateScript from "../Pages/GenerateScipt/GenerateScript";
 import VideoProgressPage from "../Pages/VedioPregressPage/VedioProgressvideo";
 // import UploadClipsPage from "../Pages/UploadVedioPage/UploadVideoPage";
 import ScriptPage from "../Pages/AddNewScriptPage/AddNewScriptPage";
-import { getToken, getLoggedInUserType, } from "../utils";
+import { getToken, getLoggedInUserType } from "../utils";
 import Layout from "../components/layout/Layout";
 import MyVideosDashboard from "../Pages/Dashboard/Dashboard";
 import CreateVisualContentPage from "../Pages/VisualContent/CreateVisualContentPage";
@@ -24,6 +24,8 @@ import UploadConversationalClipsPage from "../Pages/UploadConversation/UploadCon
 import UploadVideoPage from "../Pages/UploadVideoPage/UploadVideoPage";
 import SuperAdminPanel from "../Admin/SuperAdminPanel";
 import OneframeAdminPanel from "../Admin/oneframe_admin_panel_ui-2";
+import PageNotFound from "../Pages/PageNotFound/PageNotFound";
+import ErrorPage from "../Pages/PageNotFound/ErrorPage";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -108,8 +110,13 @@ export const router = createBrowserRouter([
     element: <Authorization element={<ForgotPassword />} />,
   },
   {
+    path: "*",
+    element: <PageNotFound />,
+  },
+  {
     // element: <Layout />,
     element: <ProtectedRoute element={<Layout />} />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/super-admin",

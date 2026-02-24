@@ -5,6 +5,7 @@ import App from "./App";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { createTheme, ThemeProvider } from "@mui/material";
+import ErrorBoundary from "./Pages/PageNotFound/ErrorPage";
 
 const rootElement = document.getElementById("root");
 
@@ -91,6 +92,6 @@ if (rootElement) {
           <App />
         </ThemeProvider>
       </Provider>
-    </StrictMode>
+    </StrictMode>,
   );
 }
