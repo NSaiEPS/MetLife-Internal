@@ -22,7 +22,8 @@ import AudioAnimationPage from "../Pages/AudioAnimation/AudioAnimationPage";
 import AnimationPage from "../Pages/Animation/AnimationPage";
 import UploadConversationalClipsPage from "../Pages/UploadConversation/UploadConversationClipsPage";
 import UploadVideoPage from "../Pages/UploadVideoPage/UploadVideoPage";
-
+import PageNotFound from "../Pages/PageNotFound/PageNotFound";
+import ErrorPage from "../Pages/PageNotFound/ErrorPage";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -107,8 +108,13 @@ export const router = createBrowserRouter([
     element: <Authorization element={<ForgotPassword />} />,
   },
   {
+    path: "*",
+    element: <PageNotFound />,
+  },
+  {
     // element: <Layout />,
     element: <ProtectedRoute element={<Layout />} />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/dashboard",
