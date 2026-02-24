@@ -21,23 +21,19 @@ import {
 } from "../../redux/features/scriptSlice";
 import FullScreenGradientLoader from "../common/GradientLoader";
 
-const AvailableCharacters = ({ characters }) => {
+const AvailableCharacters = ({ characters, setCharacterData, setForm }) => {
   const [filters, setFilters] = useState({
     gender: "",
     role: "",
     age: "",
     origin: "",
   });
-  const [ characterData, setCharacterData] = useState(null);
-  const { charactersListFilters, scriptLoader } = useSelector((state) => state?.Script);
+  // const [selectedCharacterId, setSelectedCharacterId] = useState(null);
+  // const [ characterData, setCharacterData] = useState(null);
+  const { charactersListFilters, scriptLoader } = useSelector(
+    (state) => state?.Script,
+  );
   const dispatch = useDispatch();
-
-  const handleChange = (field: string, value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
 
   useEffect(() => {
     dispatch(getCharactersList());
@@ -55,12 +51,40 @@ const AvailableCharacters = ({ characters }) => {
     );
   }, [dispatch, filters.gender, filters.role, filters.age, filters.origin]);
 
-  const handleSigleCharacter = (characterData) => {
-    console.log(characterData, "check")
-    setCharacterData(characterData);
-  }
+  const handleChange = (field: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-  console.log(characterData, "check_character_data")
+  const handleSigleCharacter = (characterData) => {
+    setForm((prev) => {
+      return {
+        ...prev,
+        name: characterData?.character_name,
+        age: characterData?.age,
+        gender: characterData?.gender,
+        role: characterData?.role,
+        origin: characterData?.origin,
+        image_s3_key: characterData?.image_s3_key,
+        image_url: characterData?.image_url,
+        script_id: characterData?.script_id,
+        skin_tone: characterData?.appearance?.skin_tone,
+        accessories: characterData?.appearance?.accessories,
+        build: characterData?.appearance?.build,
+        face: characterData?.appearance?.face,
+        hair: characterData?.appearance?.hair,
+        wardrobe: characterData?.appearance?.wardrobe,
+        personality: characterData?.appearance?.personality,
+      };
+    });
+    console.log(characterData, "check");
+    // setSelectedCharacterId(characterData.id);
+    // setCharacterData(characterData);
+  };
+
+  // console.log(characterData, "check_character_data")
 
   return (
     <Box>
@@ -141,82 +165,90 @@ const AvailableCharacters = ({ characters }) => {
       {/* 🔹 Characters Grid */}
       {scriptLoader ? (
         <>
-        <FullScreenGradientLoader text="Loadig Characters" />
+          <FullScreenGradientLoader text="Loadig Characters" />
         </>
-      ) :
-      <Grid container spacing={3} sx={{ ...(characters?.length === 0 && {justifyContent: "center"})}}>
-        {characters?.length === 0 ? (
-          <>
-            <Grid item xs={12} >
-              <Box
-                sx={{
-                  py: 8,
-                  textAlign: "center",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Avatar
+      ) : (
+        <Grid
+          container
+          spacing={3}
+          sx={{ ...(characters?.length === 0 && { justifyContent: "center" }) }}
+        >
+          {characters?.length === 0 ? (
+            <>
+              <Grid item xs={12}>
+                <Box
                   sx={{
-                    bgcolor: "#f5f5f5",
-                    width: 80,
-                    height: 80,
-                    mb: 2,
+                    py: 8,
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  📂
-                </Avatar>
-
-                <Typography
-                  variant="h6"
-                  fontWeight={600}
-                  color="text.primary"
-                  gutterBottom
-                >
-                  No Characters Found
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  Try adjusting your filters to see results.
-                </Typography>
-              </Box>
-            </Grid>
-          </>
-        ) : (
-          characters?.map((char) => (
-            <Grid item xs={12} sm={6} md={3} key={char.id}>
-              <Card
-                sx={{
-                  textAlign: "center",
-                  borderRadius: 3,
-                  cursor: "pointer",
-                  "&:hover": {
-                    boxShadow: 6,
-                  },
-                }}
-
-                
-              >
-                <CardContent onClick={ () => handleSigleCharacter(char)} >
                   <Avatar
-                    src={char.image_url}
-                    alt={char.name}
-                    variant="square"
                     sx={{
-                      width: 120,
-                      height: 120,
-                      margin: "0 auto",
-                      borderRadius: "5px",
+                      bgcolor: "#f5f5f5",
+                      width: 80,
+                      height: 80,
                       mb: 2,
                     }}
-                  />
+                  >
+                    📂
+                  </Avatar>
 
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    {char.character_name}
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    color="text.primary"
+                    gutterBottom
+                  >
+                    No Characters Found
                   </Typography>
-                  {/* 
+
+                  <Typography variant="body2" color="text.secondary">
+                    Try adjusting your filters to see results.
+                  </Typography>
+                </Box>
+              </Grid>
+            </>
+          ) : (
+            characters?.map((char) => (
+              <Grid item xs={12} sm={6} md={3} key={char.id}>
+                <Card
+                  sx={{
+                    textAlign: "center",
+                    borderRadius: 3,
+                    cursor: "pointer",
+                    // border:
+                    //   selectedCharacterId === char.id
+                    //     ? "2px solid #1976d2"
+                    //     : "1px solid #eee",
+                    // boxShadow: selectedCharacterId === char.id ? 6 : 1,
+                    // transition: "all 0.3s ease",
+                    "&:hover": {
+                      boxShadow: 6,
+                    },
+                  }}
+                >
+                  <CardContent onClick={() => handleSigleCharacter(char)}>
+                    <Avatar
+                      src={char.image_url}
+                      alt={char.name}
+                      variant="square"
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        margin: "0 auto",
+                        borderRadius: "5px",
+                        mb: 2,
+                      }}
+                    />
+
+                    <Typography variant="subtitle1" fontWeight={600}>
+                      {char.character_name}
+                    </Typography>
+                    {/* 
                 <Typography variant="body2" color="text.secondary">
                   Age: {char.age}
                 </Typography>
@@ -228,13 +260,13 @@ const AvailableCharacters = ({ characters }) => {
                 <Typography variant="body2" color="text.secondary">
                   Origin: {char.origin}
                 </Typography> */}
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
-    }
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          )}
+        </Grid>
+      )}
     </Box>
   );
 };

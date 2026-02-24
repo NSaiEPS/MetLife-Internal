@@ -4,9 +4,12 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  Menu,
+  MenuItem,
   Paper,
   Radio,
   RadioGroup,
+  Switch,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -103,6 +106,9 @@ const AnimationPage: React.FC = () => {
   );
 
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [bgMusic, setBgMusic] = useState("on"); // default
+  const open = Boolean(anchorEl);
 
   // console.log(generatedVideoData?.audio_exists, "videoAnimationData");
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
@@ -277,9 +283,21 @@ const AnimationPage: React.FC = () => {
     dispatch(postGenerateVideoBatch(data));
   };
 
+  // const generateVideo = () => {
+  //   if (!id) return;
+  //   dispatch(postGenerateFullVideo(id));
+  // };
+
+  // const generateVideo = (musicOption) => {
+  //   if (!id) return;
+  //   console.log(musicOption, "music")
+  //     dispatch(postGenerateFullVideo(id, musicOption));
+  // };
+
   const generateVideo = () => {
     if (!id) return;
-    dispatch(postGenerateFullVideo(id));
+    dispatch(postGenerateFullVideo(id, bgMusic));
+    handleMenuClose();
   };
 
   const handleSave = () => {
@@ -296,6 +314,20 @@ const AnimationPage: React.FC = () => {
     };
     dispatch(postTranslatedDataSave(data, id));
   };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // const handleMusicSelect = (value) => {
+  //   setBgMusic(value); // store selected value
+  //   handleMenuClose();
+  //   generateVideo(value); // pass forward
+  // };
 
   return (
     <>
@@ -404,7 +436,8 @@ const AnimationPage: React.FC = () => {
                       <ButtonComp
                         sx={{ textTransform: "none", width: "200px" }}
                         label={"Generate Final Video"}
-                        action={generateVideo}
+                        // action={generateVideo}
+                        action={handleMenuOpen}
                         disabled={
                           audioAnimationLoader ||
                           videoAnimationLoader ||
@@ -413,6 +446,56 @@ const AnimationPage: React.FC = () => {
                           finalTime > 0
                         }
                       />
+
+                      {/* <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleMenuClose}
+                      >
+                        <MenuItem onClick={() => handleMusicSelect("on")}>
+                          Background Music ON
+                        </MenuItem>
+
+                        <MenuItem onClick={() => handleMusicSelect("off")}>
+                          Background Music OFF
+                        </MenuItem>
+                      </Menu> */}
+
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        PaperProps={{ sx: { p: 2, width: 230 } }}
+                      >
+                        <Box display="flex" flexDirection="column" gap={2}>
+                          <Typography variant="primary" fontWeight={600}>
+                            Background Music
+                          </Typography>
+
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={bgMusic}
+                                onChange={(e) => setBgMusic(e.target.checked)}
+                              />
+                            }
+                            label={bgMusic ? "ON" : "OFF"}
+                          />
+                          <ButtonComp
+                            sx={{ textTransform: "none", width: "200px" }}
+                            label={"Generate Final Video"}
+                            action={generateVideo}
+                            // action={handleMenuOpen}
+                            disabled={
+                              audioAnimationLoader ||
+                              videoAnimationLoader ||
+                              !videoAnimationData ||
+                              generatedVideoData?.final_video ||
+                              finalTime > 0
+                            }
+                          />
+                        </Box>
+                      </Menu>
                     </Box>
                   )}
 

@@ -11,6 +11,9 @@ import {
   DialogContent,
   DialogActions,
   Chip,
+  Menu,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
@@ -99,6 +102,8 @@ const UploadConversationalClipsPage: React.FC = () => {
     ) || [];
   const hasMissingScenes = remainingScenes.length > 0;
   const maxFileSize = 10 * 1024 * 1024;
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [bgMusic, setBgMusic] = useState("on"); // default
 
   // useEffect(() => {
   //   if (scenesData?.scenes) {
@@ -278,15 +283,28 @@ const UploadConversationalClipsPage: React.FC = () => {
     handleStichVideo();
   };
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleStichVideo = () => {
+    const backgroudMusic = bgMusic === "on" ? true : false;
     if (id) {
-      dispatch(postStitchAllVideos(id, setOpenConfirm));
+      dispatch(postStitchAllVideos(id, setOpenConfirm, backgroudMusic));
+      handleMenuClose();
     }
   };
 
   // console.log(stitchedVideoUrl, "check_url");
   // console.log(scenesData, "check_url");
-  console.log(scenesData?.stitched_video?.url && stitchedVideoUrl, "check_scennes_data");
+  console.log(
+    scenesData?.stitched_video?.url && stitchedVideoUrl,
+    "check_scennes_data",
+  );
 
   return (
     <>
@@ -316,8 +334,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                   <Typography variant="h1" fontSize="32px">
                     {!scenesData?.stitched_video?.url && !stitchedVideoUrl
                       ? "Upload Conversational Clips"
-                      : "Final Stitched Video"
-                      }
+                      : "Final Stitched Video"}
                   </Typography>
                   <Button
                     className={styles.icon}
@@ -638,13 +655,44 @@ const UploadConversationalClipsPage: React.FC = () => {
                     </ButtonComp>
 
                     <ButtonComp
-                      onClick={handleStichVideo}
+                      // onClick={handleStichVideo}
+                      onClick={handleMenuOpen}
                       variant="contained"
-                      // color="primary"
                       disabled={conversationalLoader}
                     >
                       Yes
                     </ButtonComp>
+
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      PaperProps={{ sx: { p: 2, width: 230 } }}
+                    >
+                      <Box display="flex" flexDirection="column" gap={2}>
+                        <Typography variant="primary" fontWeight={600}>
+                          Background Music
+                        </Typography>
+
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={bgMusic}
+                              onChange={(e) => setBgMusic(e.target.checked)}
+                            />
+                          }
+                          label={bgMusic ? "ON" : "OFF"}
+                        />
+                        <ButtonComp
+                          // onClick={handleStichVideo}
+                          onClick={handleStichVideo}
+                          variant="contained"
+                          disabled={conversationalLoader}
+                        >
+                          Yes
+                        </ButtonComp>
+                      </Box>
+                    </Menu>
                   </DialogActions>
                 </Dialog>
 

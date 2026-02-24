@@ -128,7 +128,7 @@ export const UploadPopup = ({
                 key="upload-video"
                 onClick={() => {
                   handleCloseMenu();
-                  navigate("/upload-video");
+                  // navigate("/upload-video");
                 }}
               >
                 Upload Video

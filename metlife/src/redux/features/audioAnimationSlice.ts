@@ -307,11 +307,16 @@ export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
 
 // final video
 export const postGenerateFullVideo =
-  (id: string) => async (dispatch: AppDispatch) => {
+  (id: string, backgroundMusic: boolean) => async (dispatch: AppDispatch) => {
     dispatch(setAudioAnimationLoader(true));
     try {
       const res: ApiResponse = await api.post(
-        `media/generate-video-full/${id}`,
+        `media/generate-video-full/${id}`, null , 
+          {
+          params: {
+            background_music: backgroundMusic === "on" ? true : false,
+          },
+        }
       );
       // console.log(res, "final_video_response");
 

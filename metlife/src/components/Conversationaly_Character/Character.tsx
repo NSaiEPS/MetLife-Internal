@@ -17,6 +17,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // =========================
 
 export type InputType = "prompt" | "image" | "search";
+// export type InputType = "prompt" | "image" ;
+
 
 export interface CharacterData {
   name: string;
@@ -165,6 +167,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const navigate = useNavigate();
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
   const [collectedCharacters, setCollectedCharacters] = useState<any[]>([]);
+  const [characterData, setCharacterData] = useState(null);
   const { charactersListData } = useSelector((state) => state?.Script);
   /* ================= VALIDATION ================= */
 
@@ -203,72 +206,19 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 
   /* ================= HANDLERS ================= */
 
-  // const handleSave = () => {
-  //   if (pathname === "/generate-script") {
-  //     if (!validate()) return;
-  //     updateCharacter(index, form);
-  //     closePrompt();
-  //   }
-
-  //   if (pathname === "/translated-script") {
-  //     if (!validate()) return;
-  //     const updatedCharacters = [...collectedCharacters, form];
-  //     const totalCharacters = pdfData?.characters?.length;
-  //     if (currentCharacterIndex < totalCharacters - 1) {
-  //       setCollectedCharacters(updatedCharacters);
-  //       setCurrentCharacterIndex((prev) => prev + 1);
-  //       updateCharacter(currentCharacterIndex, form);
-  //       return;
-  //     }
-  //     const {
-  //       script_status,
-  //       script_id,
-  //       saved_version,
-  //       scenes,
-  //       title,
-  //       ...rest
-  //     } = pdfData;
-  //     let characters = [];
-  //     characters.push(form);
-  //     const data = {
-  //       data: {
-  //         ...rest,
-  //         script_id,
-  //         scenes,
-  //         title,
-  //         characters: updateCharacter,
-  //         // version: tableExtraData?.version,
-  //         page: "script",
-  //       },
-  //       is_save_action: true,
-  //     };
-
-  //     dispatch(
-  //       postTranslatedDataSave(data, (id) => {
-  //         if (pathname === "/translated-script") {
-  //           navigate(`/scenes/${id}`);
-  //         }
-  //       }),
-  //     );
-  //     setCollectedCharacters([]);
-  //     setCurrentCharacterIndex(0);
-  //     updateCharacter(index, form);
-  //     closePrompt();
-  //   }
-  // };
   const handleSave = () => {
-    console.log(form)
-    if (pathname === "/generate-script" && !form.inputType === "search") {
-      console.log("hit")
+    if (pathname === "/generate-script" && (form.inputType === "image" || form.inputType === "prompt") ) {
       if (!validate()) return;
-
+      console.log("hit");
       updateCharacter(index, form);
       closePrompt();
     }
 
     if (pathname === "/generate-script" && form.inputType === "search") {
-      console.log(form, index, "form_check")
+      console.log(form, index, characterData, "form_check");
       updateCharacter(index, form);
+      // updateCharacter(index, characterData);
+
       closePrompt();
     }
 
@@ -295,6 +245,8 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
+
+  console.log(characterData, "characterDataCheck");
 
   /* ================= RENDER ================= */
 
@@ -334,42 +286,41 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 >
                   <MenuItem value="prompt">Generate</MenuItem>
                   <MenuItem value="image">Upload</MenuItem>
-                  <MenuItem value="search">Search</MenuItem>
+                  {/* <MenuItem value="search">Search</MenuItem> */}
                 </Select>
               </FormControl>
             </Box>
 
             {/* NAME & ROLE */}
-            {form.inputType === "prompt" ||
-              (form.inputType === "image" && (
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gap: 2,
-                    mt: 3,
-                  }}
-                >
-                  {(
-                    [
-                      ["Name", "name"],
-                      ["Role", "role"],
-                    ] as Array<[string, keyof CharacterType]>
-                  ).map(([label, key]) => (
-                    <TextField
-                      key={key}
-                      fullWidth
-                      label={label}
-                      value={form[key]}
-                      error={!!errors[key]}
-                      helperText={errors[key] && "Required"}
-                      onChange={(e) =>
-                        setForm({ ...form, [key]: e.target.value })
-                      }
-                    />
-                  ))}
-                </Box>
-              ))}
+            {(form.inputType === "prompt" || form.inputType === "image") && (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: 2,
+                  mt: 3,
+                }}
+              >
+                {(
+                  [
+                    ["Name", "name"],
+                    ["Role", "role"],
+                  ] as Array<[string, keyof CharacterType]>
+                ).map(([label, key]) => (
+                  <TextField
+                    key={key}
+                    fullWidth
+                    label={label}
+                    value={form[key]}
+                    error={!!errors[key]}
+                    helperText={errors[key] && "Required"}
+                    onChange={(e) =>
+                      setForm({ ...form, [key]: e.target.value })
+                    }
+                  />
+                ))}
+              </Box>
+            )}
 
             {/* INPUT TYPE: PROMPT */}
             {form.inputType === "prompt" && (
@@ -776,7 +727,11 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
             {/* INPUT TYPE: SEARCH */}
             {form.inputType === "search" && (
               <>
-                <AvailableCharacters characters={charactersListData} />
+                <AvailableCharacters
+                  characters={charactersListData}
+                  setCharacterData={setCharacterData}
+                  setForm={setForm}
+                />
               </>
             )}
 
@@ -802,6 +757,60 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
 };
 
 export default CharacterPrompt;
+
+// const handleSave = () => {
+//   if (pathname === "/generate-script") {
+//     if (!validate()) return;
+//     updateCharacter(index, form);
+//     closePrompt();
+//   }
+
+//   if (pathname === "/translated-script") {
+//     if (!validate()) return;
+//     const updatedCharacters = [...collectedCharacters, form];
+//     const totalCharacters = pdfData?.characters?.length;
+//     if (currentCharacterIndex < totalCharacters - 1) {
+//       setCollectedCharacters(updatedCharacters);
+//       setCurrentCharacterIndex((prev) => prev + 1);
+//       updateCharacter(currentCharacterIndex, form);
+//       return;
+//     }
+//     const {
+//       script_status,
+//       script_id,
+//       saved_version,
+//       scenes,
+//       title,
+//       ...rest
+//     } = pdfData;
+//     let characters = [];
+//     characters.push(form);
+//     const data = {
+//       data: {
+//         ...rest,
+//         script_id,
+//         scenes,
+//         title,
+//         characters: updateCharacter,
+//         // version: tableExtraData?.version,
+//         page: "script",
+//       },
+//       is_save_action: true,
+//     };
+
+//     dispatch(
+//       postTranslatedDataSave(data, (id) => {
+//         if (pathname === "/translated-script") {
+//           navigate(`/scenes/${id}`);
+//         }
+//       }),
+//     );
+//     setCollectedCharacters([]);
+//     setCurrentCharacterIndex(0);
+//     updateCharacter(index, form);
+//     closePrompt();
+//   }
+// };
 
 // <Modal open>
 //   <Box
