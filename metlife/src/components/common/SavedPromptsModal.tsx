@@ -27,9 +27,9 @@ export default function SavedPromptsModal({
   onClose,
   prompts = [],
   size = "md", // "md" or "lg"
-}:SavedPromptsModalProps) {
-  const { promtLoader } = useSelector((store:RootState) => store.Prompts);
-
+}: SavedPromptsModalProps) {
+  const { promtLoader } = useSelector((store: RootState) => store.Prompts);
+  console.log(prompts, "prompts");
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");
 
@@ -112,12 +112,14 @@ export default function SavedPromptsModal({
                     size="small"
                     onClick={() => handleCopy(prompt?.prompt)}
                     startIcon={<ContentCopyIcon />}
-                    sx={{
-                      // textTransform: "none",
-                      // fontWeight: 600,
-                      // borderRadius: 10,
-                      // px: 2,
-                    }}
+                    sx={
+                      {
+                        // textTransform: "none",
+                        // fontWeight: 600,
+                        // borderRadius: 10,
+                        // px: 2,
+                      }
+                    }
                   >
                     Use this prompt
                   </ButtonComp>
@@ -137,11 +139,13 @@ export default function SavedPromptsModal({
             variant="outlined"
             colorType="secondary"
             onClick={() => onClose()}
-            sx={{
-              // textTransform: "none",
-              // borderRadius: 2,
-              // px: 3,
-            }}
+            sx={
+              {
+                // textTransform: "none",
+                // borderRadius: 2,
+                // px: 3,
+              }
+            }
           >
             Close
           </ButtonComp>
