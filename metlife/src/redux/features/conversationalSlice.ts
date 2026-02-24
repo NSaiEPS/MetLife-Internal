@@ -57,11 +57,12 @@ export const {
 export default ConversationalClipsSlice.reducer;
 
 export const postStitchAllVideos =
-  (script_id: string, setOpenConfirm) => async (dispatch: AppDispatch) => {
+  (script_id: string, setOpenConfirm, backgroudMusic:any) => async (dispatch: AppDispatch) => {
     dispatch(setConversationalLoader(true));
     try {
       const body = new URLSearchParams();
       body.append("script_id", script_id);
+      body.append("background_music", backgroudMusic);
       const result = await api.post("upload-clip/stitch-script-ffmpeg", body, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
