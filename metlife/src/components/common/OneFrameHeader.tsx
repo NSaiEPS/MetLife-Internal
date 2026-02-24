@@ -11,7 +11,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import logo from "../../assets/mainImage.svg";
+// import logo from "../../assets/mainImage.svg";
+import logo from "../../assets/logo.jpeg";
 import styles from "./OneFrameHeader.module.css";
 import { useNavigate, useLocation } from "react-router";
 import { navigateTo } from "../../utils/navigate";
