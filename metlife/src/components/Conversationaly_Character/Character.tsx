@@ -16,8 +16,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Types
 // =========================
 
-// export type InputType = "prompt" | "image" | "search";
-export type InputType = "prompt" | "image" ;
+export type InputType = "prompt" | "image" | "search";
+// export type InputType = "prompt" | "image" ;
 
 
 export interface CharacterData {
@@ -207,21 +207,20 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   /* ================= HANDLERS ================= */
 
   const handleSave = () => {
-    if (pathname === "/generate-script" ) {
+    if (pathname === "/generate-script" && (form.inputType === "image" || form.inputType === "prompt") ) {
       if (!validate()) return;
-
+      console.log("hit");
       updateCharacter(index, form);
       closePrompt();
     }
 
-    // if (form.inputType === "search") {
-    //   console.log("hit");
-    //   console.log(form, index, characterData, "form_check");
-    //   updateCharacter(index, form);
-    //   // updateCharacter(index, characterData);
+    if (pathname === "/generate-script" && form.inputType === "search") {
+      console.log(form, index, characterData, "form_check");
+      updateCharacter(index, form);
+      // updateCharacter(index, characterData);
 
-    //   closePrompt();
-    // }
+      closePrompt();
+    }
 
     if (pathname === "/translated-script") {
       if (!validate()) return;
@@ -726,7 +725,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
             )}
 
             {/* INPUT TYPE: SEARCH */}
-            {/* {form.inputType === "search" && (
+            {form.inputType === "search" && (
               <>
                 <AvailableCharacters
                   characters={charactersListData}
@@ -734,7 +733,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                   setForm={setForm}
                 />
               </>
-            )} */}
+            )}
 
             {/* ACTIONS */}
             <Box display="flex" justifyContent="space-between" mt={4}>

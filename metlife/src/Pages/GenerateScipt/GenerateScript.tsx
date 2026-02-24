@@ -21,7 +21,7 @@ import { getPromptsList } from "../../redux/features/promptSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
-import api from "../../api/axios";
+import api, { studio } from "../../api/axios";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import SavedPromptsModal from "../../components/common/SavedPromptsModal";
 import DataFilters from "../../components/Data Filters/DataFilters";
@@ -286,17 +286,60 @@ const GenerateScript: React.FC = () => {
     } else apiCall(successCallback);
   };
 
-  const successCallback = async (id: string) => {
-    try {
-      setLoader(true);
-      const imageCharacters = characters.filter(
-        (c) => c.inputType === "image" && c.img,
-      );
+  // const successCallback = async (id: string) => {
+  //   try {
+  //     setLoader(true);
+  //     console.log(characters, 'successCallback');
+      
+  //     const imageCharacters = characters.filter(
+  //       (c) => c.inputType === "image" && c.img,
+  //     );
 
-      for (const char of imageCharacters) {
+  //     for (const char of imageCharacters) {
+  //       const formData = new FormData();
+  //       formData.append("file", char.img);
+
+  //       await api.post("characters/upload-character-image", formData, {
+  //         params: {
+  //           script_id: id,
+  //           character_name: char.name,
+  //           role: char.role,
+  //           gender: char.gender,
+  //           age: char.age,
+  //           wardrobe: char.wardrobe,
+  //           skin_tone: char.skin_tone,
+  //           hair: char.hair,
+  //           face: char.face,
+  //           build: char.build,
+  //           accessories: char.accessories,
+  //           personality: char.personality,
+  //           origin: char.origin,
+  //         },
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       });
+  //     }
+
+
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoader(false);
+  //   }
+  // };
+
+  const successCallback = async (id: string) => {
+  try {
+    setLoader(true);
+
+    // console.log(characters, "successCallback");
+
+    for (const char of characters) {
+      // 🔹 CASE 1: IMAGE upload character
+      if (char.inputType === "image" && char.img) {
+
         const formData = new FormData();
-        // formData.append("script_id", id);
-        // formData.append("character_name", char.name);
         formData.append("file", char.img);
 
         await api.post("characters/upload-character-image", formData, {
@@ -319,13 +362,48 @@ const GenerateScript: React.FC = () => {
             "Content-Type": "multipart/form-data",
           },
         });
+
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
+
+      // 🔹 CASE 2: SEARCH character (metadata save API)
+      if (char.inputType === "search") {
+
+        await studio.post("characters/save-character-metadata", {
+          script_id: id,
+          characters: [
+            {
+              character_name: char.name,
+              role: char.role,
+              gender: char.gender,
+              appearance: {
+                age: char.age,
+                skin_tone: char.skin_tone,
+                hair: char.hair,
+                face: char.face,
+                build: char.build,
+                wardrobe: char.wardrobe,
+                accessories: char.accessories,
+                personality: char.personality,
+                origin: char.origin,
+              },
+              image_s3_key: char.image_s3_key,
+              image_url: char.image_url,
+              prompt_used: char.prompt_used || "",
+            },
+          ],
+        });
+
+      }
     }
-  };
+
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoader(false);
+  }
+};
+
+
   // const buildCharacterPayload = (characters: CharacterType[] = []) => {
   //   return {
   //     characters: characters?.map((c: CharacterType) => ({
@@ -347,7 +425,7 @@ const GenerateScript: React.FC = () => {
   // };
 
   const buildCharacterPayload = (characters: CharacterType[] = []) => {
-    console.log(characters, "check_characters")
+    console.log(characters, "check_characters");
     return {
       characters: characters.map((c: CharacterType) => {
         if (c.inputType === "image") {
@@ -355,6 +433,23 @@ const GenerateScript: React.FC = () => {
             name: c.name || "",
             role: c.role || "",
             file: c.img,
+          };
+        }
+
+        if (c.inputType === "search") {
+          return {
+            name: c.name || "",
+            role: c.role || "",
+            gender: c.gender || "",
+            age: String(c.age || ""),
+            skin_tone: c.skin_tone || "",
+            hair: c.hair || "",
+            face: c.face || "",
+            build: c.build || "",
+            wardrobe: c.wardrobe || "",
+            accessories: c.accessories || "",
+            personality: c.personality || "",
+            origin: c.origin || "",
           };
         }
 
@@ -376,7 +471,7 @@ const GenerateScript: React.FC = () => {
     };
   };
 
-  console.log(characters, "check_characters")
+  console.log(characters, "check_characters");
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
