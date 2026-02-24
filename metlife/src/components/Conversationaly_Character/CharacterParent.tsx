@@ -13,28 +13,31 @@ import ButtonComp from "../common/Buton/Button";
 export type InputType = "prompt" | "image";
 
 // interface CharacterParentProps {
-//   characters: CharacterType[]; 
+//   characters: CharacterType[];
 //   setCharacters: React.Dispatch<React.SetStateAction<CharacterType[]>>;
 // }
 
 /* ================= COMPONENT ================= */
 
-const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters }) => {
+const CharacterParent: React.FC<CharacterType> = ({
+  setCharacters,
+  characters,
+}) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showSubmit, setShowSubmit] = useState<boolean>(false);
 
   const hasPromptData = (char: CharacterType) => {
     return Boolean(
       char.age ||
-        char.gender ||
-        char.skin_tone ||
-        char.hair ||
-        char.face ||
-        char.build ||
-        char.wardrobe ||
-        char.accessories ||
-        char.personality ||
-        char.origin
+      char.gender ||
+      char.skin_tone ||
+      char.hair ||
+      char.face ||
+      char.build ||
+      char.wardrobe ||
+      char.accessories ||
+      char.personality ||
+      char.origin,
     );
   };
 
@@ -52,7 +55,7 @@ const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters })
       setCharacters((prev) => [...prev, updatedData]);
     } else {
       setCharacters((prev) =>
-        prev.map((item, i) => (i === index ? updatedData : item))
+        prev.map((item, i) => (i === index ? updatedData : item)),
       );
     }
   };
@@ -78,8 +81,11 @@ const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters })
   /* ================= EFFECT ================= */
 
   useEffect(() => {
-    const hasValidCharacter = characters.some((char) => {
-      const hasBasicInfo = char.name.trim() !== "" && char.role.trim() !== "";
+    console.log(characters, "characters");
+    const hasValidCharacter = characters?.some((char) => {
+      const hasBasicInfo = char?.name.trim() !== "" && char?.role.trim() !== "";
+      //  ||
+      // (char?.character_name.trim() !== "" && char?.role.trim() !== "");
 
       const hasValidInput =
         char.inputType === "image" ? !!char.img : hasPromptData(char);
@@ -111,9 +117,11 @@ const CharacterParent: React.FC<CharacterType> = ({ setCharacters, characters })
           variant="contained"
           color="primary"
           onClick={addCharacter}
-          sx={{ 
-            // px: 3, py: 1, fontSize: "14px" 
-          }}
+          sx={
+            {
+              // px: 3, py: 1, fontSize: "14px"
+            }
+          }
         >
           Add Character
         </ButtonComp>

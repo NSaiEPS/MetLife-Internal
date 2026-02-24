@@ -21,14 +21,14 @@ import {
 } from "../../redux/features/scriptSlice";
 import FullScreenGradientLoader from "../common/GradientLoader";
 
-const AvailableCharacters = ({ characters }) => {
+const AvailableCharacters = ({ characters, setCharacterData, }) => {
   const [filters, setFilters] = useState({
     gender: "",
     role: "",
     age: "",
     origin: "",
   });
-  const [ characterData, setCharacterData] = useState(null);
+  // const [ characterData, setCharacterData] = useState(null);
   const { charactersListFilters, scriptLoader } = useSelector((state) => state?.Script);
   const dispatch = useDispatch();
 
@@ -56,11 +56,11 @@ const AvailableCharacters = ({ characters }) => {
   }, [dispatch, filters.gender, filters.role, filters.age, filters.origin]);
 
   const handleSigleCharacter = (characterData) => {
-    console.log(characterData, "check")
+    console.log(characterData, "check");
     setCharacterData(characterData);
   }
 
-  console.log(characterData, "check_character_data")
+  // console.log(characterData, "check_character_data")
 
   return (
     <Box>

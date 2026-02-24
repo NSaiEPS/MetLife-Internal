@@ -403,7 +403,7 @@ const MyVideosDashboard: React.FC = () => {
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {stats.map((s, idx) => (
+              {stats?.map((s, idx) => (
                 <Grid
                   item
                   xs={12}
