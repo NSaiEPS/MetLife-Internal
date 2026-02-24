@@ -16,7 +16,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Types
 // =========================
 
-export type InputType = "prompt" | "image" | "search";
+// export type InputType = "prompt" | "image" | "search";
+export type InputType = "prompt" | "image" ;
+
 
 export interface CharacterData {
   name: string;
@@ -205,18 +207,18 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   /* ================= HANDLERS ================= */
 
   const handleSave = () => {
-    console.log(form);
-    if (pathname === "/generate-script") {
+    if (pathname === "/generate-script" ) {
       if (!validate()) return;
 
       updateCharacter(index, form);
       closePrompt();
     }
 
-    // if (pathname === "/generate-script" && form.inputType === "search") {
-    //   console.log(form, index, "form_check")
-    //   // updateCharacter(index, form);
-    //   updateCharacter(index, characterData);
+    // if (form.inputType === "search") {
+    //   console.log("hit");
+    //   console.log(form, index, characterData, "form_check");
+    //   updateCharacter(index, form);
+    //   // updateCharacter(index, characterData);
 
     //   closePrompt();
     // }
@@ -285,7 +287,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 >
                   <MenuItem value="prompt">Generate</MenuItem>
                   <MenuItem value="image">Upload</MenuItem>
-                  <MenuItem value="search">Search</MenuItem>
+                  {/* <MenuItem value="search">Search</MenuItem> */}
                 </Select>
               </FormControl>
             </Box>
@@ -724,14 +726,15 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
             )}
 
             {/* INPUT TYPE: SEARCH */}
-            {form.inputType === "search" && (
+            {/* {form.inputType === "search" && (
               <>
                 <AvailableCharacters
                   characters={charactersListData}
                   setCharacterData={setCharacterData}
+                  setForm={setForm}
                 />
               </>
-            )}
+            )} */}
 
             {/* ACTIONS */}
             <Box display="flex" justifyContent="space-between" mt={4}>
