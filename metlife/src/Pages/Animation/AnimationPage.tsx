@@ -84,8 +84,8 @@ interface RootState {
 /* ---------- COMPONENT ---------- */
 
 const AnimationPage: React.FC = () => {
-  const [entryAnimation, setEntryAnimation] = useState<string>("none");
-  const [exitAnimation, setExitAnimation] = useState<string>("none");
+  // const [entryAnimation, setEntryAnimation] = useState<string>("none");
+  // const [exitAnimation, setExitAnimation] = useState<string>("none");
   const [timerDone, setTimerDone] = useState<boolean>(false);
   const [animationData, setAnimationData] = useState<AnimationData[]>([]);
   const [openMissingPopup, setOpenMissingPopup] = useState(false);
@@ -109,8 +109,6 @@ const AnimationPage: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [bgMusic, setBgMusic] = useState("on"); // default
   const open = Boolean(anchorEl);
-
-  // console.log(generatedVideoData?.audio_exists, "videoAnimationData");
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -373,21 +371,25 @@ const AnimationPage: React.FC = () => {
 
                 <Box className={styles.insideContainer}>
                   {/* Available videos */}
+                  {/* {!timerDone && finalTime > 0 && !generatedVideoData?.final_video && ( <Timer time={finalTime} onComplete={() => setTimerDone(true)} /> )} {finalVideoTime > 0 && ( <Timer time={finalVideoTime} onComplete={() => setIsGeneratingVideo(true)} /> )} */}
                   {!timerDone &&
                     finalTime > 0 &&
-                    !generatedVideoData?.final_video && (
+                    !generatedVideoData?.final_video &&
+                    !sceneData?.final_video_estimated_completion_at && (
                       <Timer
                         time={finalTime}
                         onComplete={() => setTimerDone(true)}
                       />
                     )}
 
-                  {finalVideoTime > 0 && (
-                    <Timer
-                      time={finalVideoTime}
-                      onComplete={() => setIsGeneratingVideo(true)}
-                    />
-                  )}
+                  {sceneData?.final_video_estimated_completion_at &&
+                    finalVideoTime > 0 &&
+                    !generatedVideoData?.final_video && (
+                      <Timer
+                        time={finalVideoTime}
+                        onComplete={() => setIsGeneratingVideo(true)}
+                      />
+                    )}
 
                   {showTimeline && (
                     <Grid container>
