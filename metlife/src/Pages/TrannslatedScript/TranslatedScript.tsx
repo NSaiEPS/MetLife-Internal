@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { toast } from "react-toastify";
-
 import styles from "./translateScript.module.css";
-import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import DynamicTable from "../../components/common/Table/DynamicTable";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";

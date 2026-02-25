@@ -171,6 +171,16 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const { charactersListData } = useSelector((state) => state?.Script);
   /* ================= VALIDATION ================= */
 
+
+  useEffect(() => {
+  if (pathname === "/translated-script" && pdfData?.characters?.[index]) {
+    setForm((prev) => ({
+      ...prev,
+      name: pdfData.characters[index],
+    }));
+  }
+}, [pathname, index, pdfData]);
+
   const validate = (): boolean => {
     const err: ErrorState = {
       name: !form.name.trim(),
@@ -312,6 +322,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                     fullWidth
                     label={label}
                     value={form[key]}
+                    disabled={pathname === "/translated-script" && key === "name"} 
                     error={!!errors[key]}
                     helperText={errors[key] && "Required"}
                     onChange={(e) =>

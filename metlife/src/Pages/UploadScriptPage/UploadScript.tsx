@@ -34,7 +34,7 @@ const UploadScript = () => {
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef<any>(null);
-  const isDisabled = !title.trim() || !uploadSuccess;
+  const isDisabled = !title.trim() || !uploadSuccess; 
   const handleClick = () => {
     fileInputRef?.current?.click();
   };
