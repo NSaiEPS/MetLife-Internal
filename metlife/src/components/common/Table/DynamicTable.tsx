@@ -19,6 +19,7 @@ import {
   Box,
   FormControl,
   Select,
+  TextField,
 } from "@mui/material";
 
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
@@ -64,6 +65,8 @@ import {
   postDeleteScene,
   postExtractCharacters,
   postPromptSetupCharacters,
+  postUpdateScriptTitle,
+  setScriptTitle,
 } from "../../../redux/features/scriptSlice";
 import { CharacterCarousel } from "../carousel/CharacterCarousel";
 import TableRowComp from "./TableRowComp";
@@ -214,9 +217,34 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [characters, setCharacters] = useState<CharacterType[]>([
     emptyCharacter,
   ]);
-
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
   const totalCharacters = extraDetails?.characters?.length || 0;
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(
+    tableExtraData?.title ||
+      visualContentTitle ||
+      tableExtraData?.upload_info?.title ||
+      "Your Script",
+  );
+  const { scriptTitle } = useSelector((state) => state?.Script);
+
+  useEffect(() => {
+    if (!isEditing) {
+      const newTitle =
+        tableExtraData?.title ||
+        visualContentTitle ||
+        tableExtraData?.upload_info?.title ||
+        "Your Script";
+
+      setTitle(newTitle);
+    }
+  }, [
+    tableExtraData?.title,
+    visualContentTitle,
+    tableExtraData?.upload_info?.title,
+    isEditing,
+  ]);
 
   useEffect(() => {
     setTableExtraData(extraDetails ?? {});
@@ -249,7 +277,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       setCharacters(Array(extraDetails.characters.length).fill(null));
     }
   }, [extraDetails]);
-
 
   // useEffect(() => {
   //   if (
@@ -813,17 +840,69 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     pathname === "/translated-script" &&
     filledCharacters === extraDetails?.characters?.length - 1;
 
-    // console.log(tableExtraData?.conversational, "tableExtraData")
+  const handleEditSave = () => {
+    dispatch(postUpdateScriptTitle(id, title, setIsEditing));
+  };
+
+  console.log(
+    tableExtraData?.title,
+    visualContentTitle,
+    tableExtraData?.upload_info?.title,
+    "Title",
+  );
+
+  console.log(title, "checkTitle");
 
   return (
     <>
       <div className={styles1.header}>
-        <Typography variant="h4">
+        {/* <Typography variant="h4">
           {tableExtraData?.title ||
             visualContentTitle ||
             tableExtraData?.upload_info?.title ||
             "Your Script"}
-        </Typography>
+        </Typography> */}
+
+        {isEditing ? (
+          <TextField
+            value={title}
+            autoFocus
+            variant="outlined"
+            size="small"
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={() => setIsEditing(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleEditSave();
+              }
+              if (e.key === "Escape") setIsEditing(false);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                fontSize: "28px",
+                fontWeight: 500,
+                "& fieldset": {
+                  borderColor: "#007abc",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#007abc",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#007abc",
+                  borderWidth: "2px",
+                },
+              },
+            }}
+          />
+        ) : (
+          <Typography
+            variant="h4"
+            sx={{ cursor: "pointer" }}
+            onClick={() => setIsEditing(true)}
+          >
+            {title}
+          </Typography>
+        )}
 
         {showDragAndActions && features && (
           <div className={styles1.headerButtons}>
@@ -1192,14 +1271,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               colorType="secondary"
               // className={styles.largeOutline}
               onClick={
-                pathname === "/translated-script" && tableExtraData?.conversational
+                pathname === "/translated-script" &&
+                tableExtraData?.conversational
                   ? handleCharactersForUpload
                   : handleSave
               }
               disabled={saveLoader}
             >
               {/* Save */}
-              {pathname === "/translated-script" && tableExtraData?.conversational
+              {pathname === "/translated-script" &&
+              tableExtraData?.conversational
                 ? isLastCharacter
                   ? "Save"
                   : "Next"

@@ -108,7 +108,7 @@ const AnimationPage: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [bgMusic, setBgMusic] = useState("on"); // default
-  const open = Boolean(anchorEl);
+  // const open = Boolean(anchorEl);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
@@ -223,7 +223,6 @@ const AnimationPage: React.FC = () => {
   // };
 
   const handleAllSubmit = (entry: string, exit: string) => {
-    // console.log({ entry, exit });
     const updated = videoAnimationData?.map((scene) => ({
       scene_number: scene.scene_number,
       scene_id: scene.scene_id,
@@ -327,6 +326,8 @@ const AnimationPage: React.FC = () => {
   //   generateVideo(value); // pass forward
   // };
 
+  console.log(generatedVideoData?.estimated_seconds, "generatedVideoData");
+
   return (
     <>
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -342,114 +343,133 @@ const AnimationPage: React.FC = () => {
             {(audioAnimationLoader || videoAnimationLoader) && (
               <FullScreenGradientLoader text="loading..." />
             )}
+            {mediaAPILoader || audioAnimationLoader || videoAnimationLoader ? (
+              <FullScreenGradientLoader text="loading..." />
+            ) : (
+              <>
+                <main className={styles.cardWrap}>
+                  <Box className={styles.card}>
+                    <Box className={styles.headerRow}>
+                      {generatedVideoData?.final_video_status ===
+                      "completed" ? (
+                        <>
+                          <Typography variant="h4" className={styles.title}>
+                            Final Generated Video
+                          </Typography>
+                        </>
+                      ) : (
+                        <>
+                          <Typography variant="h4" className={styles.title}>
+                            Animation Toolkit
+                          </Typography>
+                        </>
+                      )}
 
-            <main className={styles.cardWrap}>
-              <Box className={styles.card}>
-                <Box className={styles.headerRow}>
-                  {generatedVideoData?.final_video_status === "completed" ? (
-                    <>
-                      <Typography variant="h4" className={styles.title}>
-                        Final Generated Video
-                      </Typography>
-                    </>
-                  ) : (
-                    <>
-                      <Typography variant="h4" className={styles.title}>
-                        Animation Toolkit
-                      </Typography>
-                    </>
-                  )}
-
-                  <Button
-                    className={styles.icon}
-                    onClick={() => navigate(`/audio-animation-toolkit/${id}`)}
-                    disabled={!generatedVideoData?.audio_exists}
-                  >
-                    <IoArrowBackCircleOutline size={30} /> Back
-                  </Button>
-                </Box>
-
-                <Box className={styles.insideContainer}>
-                  {/* Available videos */}
-                  {/* {!timerDone && finalTime > 0 && !generatedVideoData?.final_video && ( <Timer time={finalTime} onComplete={() => setTimerDone(true)} /> )} {finalVideoTime > 0 && ( <Timer time={finalVideoTime} onComplete={() => setIsGeneratingVideo(true)} /> )} */}
-                  {!timerDone &&
-                    finalTime > 0 &&
-                    !generatedVideoData?.final_video &&
-                    !sceneData?.final_video_estimated_completion_at && (
-                      <Timer
-                        time={finalTime}
-                        onComplete={() => setTimerDone(true)}
-                      />
-                    )}
-
-                  {sceneData?.final_video_estimated_completion_at &&
-                    finalVideoTime > 0 &&
-                    !generatedVideoData?.final_video && (
-                      <Timer
-                        time={finalVideoTime}
-                        onComplete={() => setIsGeneratingVideo(true)}
-                      />
-                    )}
-
-                  {showTimeline && (
-                    <Grid container>
-                      <Typography
-                        sx={{ fontSize: "20px", fontWeight: 500, mb: 2 }}
-                      >
-                        Video Timeline
-                      </Typography>
-                      <VideoTimeline
-                        videosData={videoAnimationData}
-                        isFinalVideo={generatedVideoData?.final_video !== null}
-                        animationData={animationData}
-                        setAnimationData={setAnimationData}
-                        handleAnimationChanges={handleAnimationChanges}
-                        handleAllSubmit={handleAllSubmit}
-                        finalTime={finalTime}
-                        handleAlternateSubmit={handleAlternateSubmit}
-                        // handleAnimationChanges={handleAnimationChanges}
-                      />
-                    </Grid>
-                  )}
-
-                  <MissingAnimationPopup
-                    open={openMissingPopup}
-                    onClose={() => setOpenMissingPopup(false)}
-                    onConfirm={handleMissingAnimationConfirm}
-                    missingScenes={missingScenes}
-                  />
-
-                  {generatedVideoData?.final_video === null && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "end",
-                        gap: "1rem",
-                        mt: "1rem",
-                      }}
-                    >
-                      <ButtonComp
-                        label={"Submit Animation Changes"}
-                        sx={{ textTransform: "none" }}
-                        action={handleAnimationChanges}
-                        disabled={finalTime > 0}
-                      />
-
-                      <ButtonComp
-                        sx={{ textTransform: "none", width: "200px" }}
-                        label={"Generate Final Video"}
-                        // action={generateVideo}
-                        action={handleMenuOpen}
-                        disabled={
-                          audioAnimationLoader ||
-                          videoAnimationLoader ||
-                          !videoAnimationData ||
-                          generatedVideoData?.final_video ||
-                          finalTime > 0
+                      <Button
+                        className={styles.icon}
+                        onClick={() =>
+                          navigate(`/audio-animation-toolkit/${id}`)
                         }
-                      />
+                        disabled={!generatedVideoData?.audio_exists}
+                      >
+                        <IoArrowBackCircleOutline size={30} /> Back
+                      </Button>
+                    </Box>
 
-                      {/* <Menu
+                    <Box className={styles.insideContainer}>
+                      {/* Available videos */}
+                      {!timerDone &&
+                        finalTime > 0 &&
+                        !generatedVideoData?.final_video && (
+                          <Timer
+                            time={finalTime}
+                            onComplete={() => setTimerDone(true)}
+                          />
+                        )}{" "}
+                        
+                      {finalVideoTime > 0 && (
+                        <Timer
+                          time={finalVideoTime}
+                          onComplete={() => setIsGeneratingVideo(true)}
+                        />
+                      )}
+                      {/* {!timerDone &&
+                        finalTime > 0 &&
+                        !generatedVideoData?.final_video &&
+                        !sceneData?.final_video_estimated_completion_at && (
+                          <Timer
+                            time={finalTime}
+                            onComplete={() => setTimerDone(true)}
+                          />
+                        )}
+
+                      {sceneData?.final_video_estimated_completion_at &&
+                        finalVideoTime > 0 &&
+                        !generatedVideoData?.final_video && (
+                          <Timer
+                            time={finalVideoTime}
+                            onComplete={() => setIsGeneratingVideo(true)}
+                          />
+                        )} */}
+                      {showTimeline && (
+                        <Grid container>
+                          <Typography
+                            sx={{ fontSize: "20px", fontWeight: 500, mb: 2 }}
+                          >
+                            Video Timeline
+                          </Typography>
+                          <VideoTimeline
+                            videosData={videoAnimationData}
+                            isFinalVideo={
+                              generatedVideoData?.final_video !== null
+                            }
+                            animationData={animationData}
+                            setAnimationData={setAnimationData}
+                            handleAnimationChanges={handleAnimationChanges}
+                            handleAllSubmit={handleAllSubmit}
+                            finalTime={finalTime}
+                            handleAlternateSubmit={handleAlternateSubmit}
+                            // handleAnimationChanges={handleAnimationChanges}
+                          />
+                        </Grid>
+                      )}
+                      <MissingAnimationPopup
+                        open={openMissingPopup}
+                        onClose={() => setOpenMissingPopup(false)}
+                        onConfirm={handleMissingAnimationConfirm}
+                        missingScenes={missingScenes}
+                      />
+                      {generatedVideoData?.final_video === null && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "end",
+                            gap: "1rem",
+                            mt: "1rem",
+                          }}
+                        >
+                          <ButtonComp
+                            label={"Submit Animation Changes"}
+                            sx={{ textTransform: "none" }}
+                            action={handleAnimationChanges}
+                            disabled={finalTime > 0}
+                          />
+
+                          <ButtonComp
+                            sx={{ textTransform: "none", width: "200px" }}
+                            label={"Generate Final Video"}
+                            // action={generateVideo}
+                            action={handleMenuOpen}
+                            disabled={
+                              audioAnimationLoader ||
+                              videoAnimationLoader ||
+                              !videoAnimationData ||
+                              generatedVideoData?.final_video ||
+                              finalTime > 0
+                            }
+                          />
+
+                          {/* <Menu
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleMenuClose}
@@ -463,111 +483,115 @@ const AnimationPage: React.FC = () => {
                         </MenuItem>
                       </Menu> */}
 
-                      <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                        PaperProps={{ sx: { p: 2, width: 230 } }}
-                      >
-                        <Box display="flex" flexDirection="column" gap={2}>
-                          <Typography variant="primary" fontWeight={600}>
-                            Background Music
-                          </Typography>
+                          <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                            PaperProps={{ sx: { p: 2, width: 230 } }}
+                          >
+                            <Box display="flex" flexDirection="column" gap={2}>
+                              <Typography variant="primary" fontWeight={600}>
+                                Background Music
+                              </Typography>
 
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={bgMusic}
-                                onChange={(e) => setBgMusic(e.target.checked)}
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={bgMusic}
+                                    onChange={(e) =>
+                                      setBgMusic(e.target.checked)
+                                    }
+                                  />
+                                }
+                                label={bgMusic ? "ON" : "OFF"}
                               />
-                            }
-                            label={bgMusic ? "ON" : "OFF"}
-                          />
-                          <ButtonComp
-                            sx={{ textTransform: "none", width: "200px" }}
-                            label={"Generate Final Video"}
-                            action={generateVideo}
-                            // action={handleMenuOpen}
-                            disabled={
-                              audioAnimationLoader ||
-                              videoAnimationLoader ||
-                              !videoAnimationData ||
-                              generatedVideoData?.final_video ||
-                              finalTime > 0
-                            }
-                          />
+                              <ButtonComp
+                                sx={{ textTransform: "none", width: "200px" }}
+                                label={"Generate Final Video"}
+                                action={generateVideo}
+                                // action={handleMenuOpen}
+                                disabled={
+                                  audioAnimationLoader ||
+                                  videoAnimationLoader ||
+                                  !videoAnimationData ||
+                                  generatedVideoData?.final_video ||
+                                  finalTime > 0
+                                }
+                              />
+                            </Box>
+                          </Menu>
                         </Box>
-                      </Menu>
+                      )}
+                      {/* Full Video */}
+                      {generatedVideoData?.final_video !== null &&
+                        sceneData?.video_exists === true &&
+                        generatedVideoData?.final_video_status ===
+                          "completed" && (
+                          <>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              <Typography
+                                variant="h4"
+                                sx={{
+                                  fontSize: "20px",
+                                  fontWeight: 600,
+                                  mt: 1,
+                                  mb: 2,
+                                }}
+                              >
+                                {generatedVideoData?.title || "Generated Video"}
+                              </Typography>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: "12px",
+                                }}
+                              >
+                                <ButtonComp
+                                  variant="outlined"
+                                  className={styles.largeOutline}
+                                  onClick={() => navigateTo(`/scenes/${id}`)}
+                                >
+                                  Edit
+                                </ButtonComp>
+
+                                <ButtonComp
+                                  variant="contained"
+                                  onClick={() => handleSave()}
+                                  disabled={saveLoader}
+                                >
+                                  Save
+                                </ButtonComp>
+                              </Box>
+                            </Box>
+
+                            <VideoTimeline
+                              type="final-video"
+                              videosData={finalVideoAsTimeline}
+                              isFinalVideo={
+                                generatedVideoData?.final_video !== null
+                              }
+                              animationData={animationData}
+                              setAnimationData={setAnimationData}
+                              handleAllSubmit={handleAllSubmit}
+                              handleAlternateSubmit={handleAlternateSubmit}
+                              finalTime={finalTime}
+                              // handleAllSubmitInside={handleAllSubmit}
+                              // handleAnimationChanges={handleAnimationChanges}
+                            />
+                          </>
+                        )}
                     </Box>
-                  )}
-
-                  {/* Full Video */}
-                  {generatedVideoData?.final_video !== null &&
-                    sceneData?.video_exists === true &&
-                    generatedVideoData?.final_video_status === "completed" && (
-                      <>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginBottom: "1rem",
-                          }}
-                        >
-                          <Typography
-                            variant="h4"
-                            sx={{
-                              fontSize: "20px",
-                              fontWeight: 600,
-                              mt: 1,
-                              mb: 2,
-                            }}
-                          >
-                            {generatedVideoData?.title || "Generated Video"}
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              gap: "12px",
-                            }}
-                          >
-                            <ButtonComp
-                              variant="outlined"
-                              className={styles.largeOutline}
-                              onClick={() => navigateTo(`/scenes/${id}`)}
-                            >
-                              Edit
-                            </ButtonComp>
-
-                            <ButtonComp
-                              variant="contained"
-                              onClick={() => handleSave()}
-                              disabled={saveLoader}
-                            >
-                              Save
-                            </ButtonComp>
-                          </Box>
-                        </Box>
-
-                        <VideoTimeline
-                          type="final-video"
-                          videosData={finalVideoAsTimeline}
-                          isFinalVideo={
-                            generatedVideoData?.final_video !== null
-                          }
-                          animationData={animationData}
-                          setAnimationData={setAnimationData}
-                          handleAllSubmit={handleAllSubmit}
-                          handleAlternateSubmit={handleAlternateSubmit}
-                          finalTime={finalTime}
-                          // handleAllSubmitInside={handleAllSubmit}
-                          // handleAnimationChanges={handleAnimationChanges}
-                        />
-                      </>
-                    )}
-                </Box>
-              </Box>
-            </main>
+                  </Box>
+                </main>
+              </>
+            )}
           </>
         ) : (
           <>
@@ -581,152 +605,3 @@ const AnimationPage: React.FC = () => {
 };
 
 export default AnimationPage;
-
-{
-  /* {generatedVideoData?.final_video === null && (
-                    <>
-                      <Typography variant="h5"
-                        className={styles.audioSelectionTitle}
-                        sx={{
-                          fontSize: "22px",
-                          // fontWeight: "500",
-                          marginBottom: "10px",
-                          mt: 2,
-                        }}
-                      >
-                        Or Animation Selection - Method 2
-                      </Typography>
-                      <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          <Typography
-                            variant="h6"
-                            fontWeight="500"
-                            fontSize="16px"
-                            mb={1}
-                          >
-                            Entry
-                          </Typography>
-                          <Paper
-                            elevation={0}
-                            sx={{
-                              p: 3,
-                              border: "1px solid #e0e0e0",
-                              borderRadius: 3,
-                            }}
-                          >
-                            <FormControl disabled={finalTime > 0}>
-                              <RadioGroup
-                                value={entryAnimation}
-                                onChange={(e) =>
-                                  setEntryAnimation(e.target.value)
-                                }
-                              >
-                                {animationLabels?.entry_transitions?.map(
-                                  (opt, index) => (
-                                    <FormControlLabel
-                                      key={index}
-                                      value={opt}
-                                      control={<Radio color="primary" />}
-                                      label={opt}
-                                      sx={{
-                                        "& .MuiFormControlLabel-label": {
-                                          color: "#555",
-                                          fontSize: "0.95rem",
-                                        },
-                                      }}
-                                    />
-                                  )
-                                )}
-                              </RadioGroup>
-                            </FormControl>
-                          </Paper>
-                        </Grid>
-
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          <Typography
-                            variant="h6"
-                            fontWeight="500"
-                            fontSize="16px"
-                            mb={1}
-                          >
-                            Exit
-                          </Typography>
-                          <Paper
-                            elevation={0}
-                            sx={{
-                              p: 3,
-                              border: "1px solid #e0e0e0",
-                              borderRadius: 3,
-                            }}
-                          >
-                            <FormControl disabled={finalTime > 0}>
-                              <RadioGroup
-                                value={exitAnimation}
-                                onChange={(e) =>
-                                  setExitAnimation(e.target.value)
-                                }
-                              >
-                                {animationLabels?.exit_transitions?.map(
-                                  (opt, index) => (
-                                    <FormControlLabel
-                                      key={index}
-                                      value={opt}
-                                      label={opt}
-                                      control={<Radio color="primary" />}
-                                      sx={{
-                                        "& .MuiFormControlLabel-label": {
-                                          color: "#555",
-                                          fontSize: "0.95rem",
-                                        },
-                                      }}
-                                    />
-                                  )
-                                )}
-                              </RadioGroup>
-                            </FormControl>
-                          </Paper>
-                        </Grid>
-                      </Grid>
-
-                      <div className={styles.actions}>
-                        <ButtonComp
-                          label={"Alternative Scenes"}
-                          colorType="download"
-                          // sx={{
-                          //   backgroundColor: "#99d539",
-                          //   textTransform: "none",
-                          // }}
-                          action={handleAlternateSubmit}
-                          disabled={finalTime > 0}
-                        />
-                        <ButtonComp
-                          label={"Apply To All"}
-                          sx={{ textTransform: "none" }}
-                          action={handleAllSubmit}
-                          disabled={finalTime > 0}
-                        />
-
-                        <ButtonComp
-                          label={"Submit Animation Changes"}
-                          sx={{ textTransform: "none" }}
-                          action={handleAnimationChanges}
-                          disabled={finalTime > 0}
-                        />
-                      </div>
-                      <div className={styles.actions_second}>
-                        <ButtonComp
-                          sx={{ textTransform: "none", width: "200px" }}
-                          label={"Generate Video"}
-                          action={generateVideo}
-                          disabled={
-                            audioAnimationLoader ||
-                            videoAnimationLoader ||
-                            !videoAnimationData ||
-                            generatedVideoData?.final_video ||
-                            finalTime > 0
-                          }
-                        />
-                      </div>
-                    </>
-                  )} */
-}

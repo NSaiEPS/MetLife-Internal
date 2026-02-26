@@ -50,6 +50,7 @@ interface ScriptState {
   imageCoordinatesData: {};
   charactersListData: any[];
   charactersListFilters: any[];
+  scriptTitle: string;
 }
 
 const initialState: ScriptState = {
@@ -67,6 +68,7 @@ const initialState: ScriptState = {
   imageCoordinatesData: {},
   charactersListData: [],
   charactersListFilters: [],
+  scriptTitle: "",
 };
 
 const ScriptDataSlice = createSlice({
@@ -141,6 +143,9 @@ const ScriptDataSlice = createSlice({
     setCharactersListFilter(state, action: PayloadAction<any[]>) {
       state.charactersListFilters = action.payload;
     },
+    setScriptTitle(state, action: PayloadAction<string>) {
+      state.scriptTitle = action.payload;
+    },
   },
 });
 
@@ -158,6 +163,7 @@ export const {
   setImageCoordinatesData,
   setCharactersListData,
   setCharactersListFilter,
+  setScriptTitle,
 } = ScriptDataSlice.actions;
 export default ScriptDataSlice.reducer;
 
@@ -487,6 +493,30 @@ export const getCharactersFilteredList =
     } catch (error: any) {
       console.error(error);
       // toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      dispatch(setScriptLoader(false));
+    }
+  };
+
+
+// Edit script title
+  export const postUpdateScriptTitle =
+  (id:string, title: string, setIsEditing,) => async (dispatch: AppDispatch) => {
+    dispatch(setScriptLoader(true));
+    try {
+      const res = await api.post(`script-title-update/${id}`, {
+        title: title
+      });
+
+        dispatch(setScriptTitle(title));
+        setIsEditing(false);
+         toast.success("Title updated successfully");
+      // if (res.status) {
+      //   dispatch(setScriptTitle(res?.data));
+      // }
+    } catch (error: any) {
+      // console.error(error);
+      toast.error(error?.response?.data?.message || "Failed to update title!");
     } finally {
       dispatch(setScriptLoader(false));
     }

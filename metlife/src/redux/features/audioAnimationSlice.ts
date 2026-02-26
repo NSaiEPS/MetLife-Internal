@@ -311,15 +311,13 @@ export const postGenerateFullVideo =
     dispatch(setAudioAnimationLoader(true));
     try {
       const res: ApiResponse = await api.post(
-        `media/generate-video-full/${id}`, null , 
+        `media/generate-video-full/${id}`, null, 
           {
           params: {
             background_music: backgroundMusic === "on" ? true : false,
           },
         }
       );
-      // console.log(res, "final_video_response");
-
       if (res.status) {
         // let data = {
         //   final_video: res.data?.final_video_with_intro || null,
