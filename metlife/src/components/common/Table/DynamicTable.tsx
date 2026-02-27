@@ -841,7 +841,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     filledCharacters === extraDetails?.characters?.length - 1;
 
   const handleEditSave = () => {
-    dispatch(postUpdateScriptTitle(id, title, setIsEditing));
+    // dispatch(postUpdateScriptTitle(id, title, setIsEditing));
   };
 
   console.log(
