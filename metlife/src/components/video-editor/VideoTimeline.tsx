@@ -238,10 +238,17 @@ const VideoTimeline: React.FC<VideoTimelineProps> = ({
           next={next}
           prev={prev}
           // onTogglePlay={setPlaying}
+          // onTogglePlay={(val) => {
+          //   if (val) {
+          //     hasEndedRef.current = false;
+          //     setProg(0);
+          //   }
+          //   setPlaying(val);
+          // }}
           onTogglePlay={(val) => {
-            if (val) {
+            if (val && hasEndedRef.current) {
               hasEndedRef.current = false;
-              setProg(0); // 🔑 THIS WAS MISSING
+              setProg(0);
             }
             setPlaying(val);
           }}
