@@ -856,14 +856,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   return (
     <>
       <div className={styles1.header}>
-        {/* <Typography variant="h4">
+        <Typography variant="h4">
           {tableExtraData?.title ||
             visualContentTitle ||
             tableExtraData?.upload_info?.title ||
             "Your Script"}
-        </Typography> */}
+        </Typography>
 
-        {isEditing ? (
+        {/* {isEditing ? (
           <TextField
             value={title}
             autoFocus
@@ -902,7 +902,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           >
             {title}
           </Typography>
-        )}
+        )} */}
 
         {showDragAndActions && features && (
           <div className={styles1.headerButtons}>
