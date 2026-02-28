@@ -114,7 +114,7 @@ export const router = createBrowserRouter([
   {
     // element: <Layout />,
     element: <ProtectedRoute element={<Layout />} />,
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/dashboard",
