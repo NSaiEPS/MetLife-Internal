@@ -339,6 +339,7 @@ const MyVideosDashboard: React.FC = () => {
       );
     });
 
+    // For downloading the script from dashboard
   const handleDownloadMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
     video,
