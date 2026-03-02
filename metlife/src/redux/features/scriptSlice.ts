@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import api, { aiLocalisation, studio, STUDIO_URL } from "../../api/axios";
@@ -504,16 +505,17 @@ export const getCharactersFilteredList =
   (id:string, title: string, setIsEditing,) => async (dispatch: AppDispatch) => {
     dispatch(setScriptLoader(true));
     try {
-      const res = await api.post(`script-title-update/${id}`, {
-        title: title
+      const response = await api.patch(`scripts/${id}/title`, {
+        new_title: title
       });
+      console.log(response, "responnse_edit")
 
-        dispatch(setScriptTitle(title));
+      if (response?.status) {
+        dispatch(setScriptTitle(response?.data?.new_title));
         setIsEditing(false);
-         toast.success("Title updated successfully");
-      // if (res.status) {
-      //   dispatch(setScriptTitle(res?.data));
-      // }
+         toast.success(response?.data?.message || "Title updated successfully");
+
+      }
     } catch (error: any) {
       // console.error(error);
       toast.error(error?.response?.data?.message || "Failed to update title!");

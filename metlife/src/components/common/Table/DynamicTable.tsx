@@ -231,7 +231,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   useEffect(() => {
     if (!isEditing) {
-      const newTitle =
+      const newTitle = scriptTitle ||
         tableExtraData?.title ||
         visualContentTitle ||
         tableExtraData?.upload_info?.title ||
@@ -240,6 +240,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       setTitle(newTitle);
     }
   }, [
+    scriptTitle,
     tableExtraData?.title,
     visualContentTitle,
     tableExtraData?.upload_info?.title,
@@ -841,7 +842,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     filledCharacters === extraDetails?.characters?.length - 1;
 
   const handleEditSave = () => {
-    // dispatch(postUpdateScriptTitle(id, title, setIsEditing));
+    dispatch(postUpdateScriptTitle(id, title, setIsEditing));
   };
 
   console.log(
@@ -856,14 +857,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   return (
     <>
       <div className={styles1.header}>
-        <Typography variant="h4">
+        {/* <Typography variant="h4">
           {tableExtraData?.title ||
             visualContentTitle ||
             tableExtraData?.upload_info?.title ||
             "Your Script"}
-        </Typography>
+        </Typography> */}
 
-        {/* {isEditing ? (
+        {isEditing ? (
           <TextField
             value={title}
             autoFocus
@@ -902,7 +903,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           >
             {title}
           </Typography>
-        )} */}
+        )}
 
         {showDragAndActions && features && (
           <div className={styles1.headerButtons}>
