@@ -9,6 +9,12 @@ import { downloadScriptPdf, downloadScriptWord } from "../../../utils";
 import api from "../../../api/axios";
 import FullScreenGradientLoader from "../GradientLoader";
 
+interface RootState {
+  AudioAnimation: {
+    videoAnimationLoader: boolean;
+  };
+}
+
 export const UploadPopup = ({
   open,
   openPopup,
@@ -28,8 +34,11 @@ export const UploadPopup = ({
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const [sceneData, setSceneData] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const { videoAnimationLoader } = useSelector(
+    (store: RootState) => store.AudioAnimation,
+  );
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   const downloadVideoFromDashboard = () => {
     const title = videoData?.title;
@@ -64,26 +73,32 @@ export const UploadPopup = ({
   console.log(sceneData, "sceneData");
 
   const handleDownloadType = (type: string) => {
+    console.log("Scene_Data", sceneData);
+    // if (!sceneData?.scenes?.length) {
+    //   console.log("Scenes not ready");
+    //   return;
+    // }
     setLoading(true);
     try {
       if (type === "pdf") {
         downloadScriptPdf({ ...sceneData, scenes: sceneData?.scenes }, true);
       } else if (type === "word") {
-        downloadScriptWord({ ...sceneData, scenes: sceneData?.scenes });
+        downloadScriptWord({ ...sceneData, scenes: sceneData?.scenes }, true);
       }
       setOpenDownloadPopup(false);
     } catch (err) {
       console.error("Error generating file:", err);
     } finally {
       handleCloseMenu();
-    setLoading(false);
-
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {loading && <FullScreenGradientLoader text={"loading..."} />}
+      {(loading || videoAnimationLoader) && (
+        <FullScreenGradientLoader text={"loading..."} />
+      )}
       <Menu
         anchorEl={open}
         open={openPopup}

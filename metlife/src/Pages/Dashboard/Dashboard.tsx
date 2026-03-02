@@ -346,7 +346,7 @@ const MyVideosDashboard: React.FC = () => {
   ) => {
     event.stopPropagation();
     setOpen(event.currentTarget);
-    console.log(video?.final_video, video?.title, "finalVidieop");
+    // console.log(video?.final_video, video?.title, "finalVidieop");
     setMenuData((prev) => {
       return {
         ...prev,
@@ -554,9 +554,9 @@ const MyVideosDashboard: React.FC = () => {
 
                       <TableCell align="center">
                         <Button onClick={() => handleView(video)}>👁️</Button>
-                        {/* <Button onClick={(e) => handleDownloadMenu(e, video)}>
+                        <Button onClick={(e) => handleDownloadMenu(e, video)}>
                           <FaFileDownload size={18} />
-                        </Button> */}
+                        </Button>
                         {/* <Button onClick={() => handleUsers(video)}>
                           <FaShareSquare size={18} />
                         </Button> */}

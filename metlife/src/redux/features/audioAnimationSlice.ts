@@ -440,6 +440,7 @@ export const downloadVideoWithUrl =
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Download_error_video", error);
+      toast.error("Something went wrong!")
     } finally {
       dispatch(setVideoAnimationLoader(false));
       // handleCloseMenu();

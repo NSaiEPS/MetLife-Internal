@@ -201,7 +201,7 @@ export const downloadScriptWord = (data: any, uploadDownload = false) => {
   });
 
   // ✅ Table Body Rows
-  const tableRows = scenes.map((scene: any, index: number) => {
+  const tableRows = scenes?.map((scene: any, index: number) => {
     // const sceneNumber = scene["Scene No."] ?? index + 1;
     const sceneNumber = String(scene["Scene No."] ?? index + 1);
 
