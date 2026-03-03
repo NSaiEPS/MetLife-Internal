@@ -257,7 +257,7 @@ export const CharacterCarousel = ({
                 alt="character"
                 style={{
                   width: "100%",
-                  height: "auto",
+                  // height: "auto",
                   // maxHeight: "60vh",
                   height: imgLoaded ? "auto" : 0,
                   borderRadius: "10px",
