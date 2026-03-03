@@ -106,6 +106,7 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from "react-icons/io5";
+import OstStylePopup from "../../components/common/popup/OstStylePopup";
 
 interface VoiceOption {
   label: string;
@@ -744,6 +745,17 @@ const AudioAnimationPage: React.FC = () => {
     Record<string, string>
   >({});
 
+  const [openTransitionPopup, setOpenTransitionPopup] = useState(false);
+
+  const [ostStyle, setOstStyle] = useState({
+    bg_color: [0, 0, 0],
+    text_color: [255, 255, 255],
+    accent_color: [0, 200, 100],
+    opacity: 70,
+    width_percent: 60,
+    y_position_percent: 65,
+  });
+
   // const languageOptions = [
   //   { label: "English", value: "english" },
   //   { label: "Hindi", value: "hindi" },
@@ -1160,22 +1172,49 @@ const AudioAnimationPage: React.FC = () => {
   };
 
   // Create transitionn
+
   const handleCreateTransition = () => {
+    setOpenTransitionPopup(true);
+  };
+
+  const submitTransition = () => {
     dispatch(setSceneData({}));
     dispatch(setVideoAnimationData(null));
     dispatch(setGeneratedVideoData(null));
-    const scenesPayload = audioAnimationData?.scenes.map((scene, index) => ({
+
+    const scenesPayload = audioAnimationData?.scenes.map((scene) => ({
       scene_id: scene.scene_id,
       start_transition: "none",
       end_transition: "none",
+      ost_style: ostStyle, // 🔥 sending popup data
+
     }));
 
     const payload = {
       script_id: id,
       scenes: scenesPayload,
+      // ost_style: ostStyle, // 🔥 sending popup data
     };
+
     dispatch(postGenerateVideoBatch(payload, successCallBack));
   };
+
+  // const handleCreateTransition = () => {
+  //   dispatch(setSceneData({}));
+  //   dispatch(setVideoAnimationData(null));
+  //   dispatch(setGeneratedVideoData(null));
+  //   const scenesPayload = audioAnimationData?.scenes.map((scene, index) => ({
+  //     scene_id: scene.scene_id,
+  //     start_transition: "none",
+  //     end_transition: "none",
+  //   }));
+
+  //   const payload = {
+  //     script_id: id,
+  //     scenes: scenesPayload,
+  //   };
+  //   // dispatch(postGenerateVideoBatch(payload, successCallBack));
+  // };
 
   const successCallBack = () => {
     navigateTo(`/animation-page/${id}`);
@@ -1555,6 +1594,14 @@ const AudioAnimationPage: React.FC = () => {
         )}
         <Footer />
       </Box>
+
+      <OstStylePopup
+        open={openTransitionPopup}
+        onClose={() => setOpenTransitionPopup(false)}
+        ostStyle={ostStyle}
+        setOstStyle={setOstStyle}
+        onApply={submitTransition}
+      />
     </>
   );
 };
