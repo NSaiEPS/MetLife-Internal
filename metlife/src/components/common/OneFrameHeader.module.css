@@ -1,5 +1,5 @@
 .appBar {
-  background-color: #fff !important;
+  background: transparent !important;
   box-shadow: none !important;
   box-sizing: border-box;
 }
@@ -23,7 +23,7 @@
   /* padding-right: 100px; */
   /* font-family: "Playfair Display", serif !important; */
   font-size: 40px !important;
-  color: #000;
+  /* color: #000; */
 
   /* @media(max-width:900px) {
     text-align: start;
@@ -33,6 +33,15 @@
     display: none;
   } */
 }
+
+.dark_text{
+  color: #ffffff !important;
+}
+.light_text{
+  color: #333333 !important;
+}
+
+
 
 /* .logo {
   width: 167px;
@@ -46,8 +55,8 @@
 
 .logo {
   width: auto;
-  height: 37px;
-  max-width: 100px;
+  height: 80px;
+  max-height: 100px;
   object-fit: contain;
   object-position: left center;
   display: block;

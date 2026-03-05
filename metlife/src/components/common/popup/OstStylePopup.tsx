@@ -88,7 +88,7 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
             width: { xs: "95%", sm: 500,md:768, },
             maxHeight: "90vh",
             overflowY: "auto",
-            bgcolor: "background.paper",
+            // bgcolor: "background.paper",
             borderRadius: 2,
             p: 3,
           }}

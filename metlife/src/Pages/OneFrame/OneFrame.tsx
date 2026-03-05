@@ -35,7 +35,7 @@ const VideoCreationOptions: React.FC = () => {
         sx={{
           // minHeight:  "calc(100vh - 70px)",
           minHeight: "90vh",
-          backgroundColor: "#fff",
+          // backgroundColor: "#fff",
           display: "flex",
           flexDirection: "column",
         }}
@@ -56,7 +56,7 @@ const VideoCreationOptions: React.FC = () => {
 
           <Typography variant="h3">
             {" "}
-            Create Your Video with Video Studio
+            Create Your Video with EdwSurf Ai Studio
           </Typography>
 
           <Grid

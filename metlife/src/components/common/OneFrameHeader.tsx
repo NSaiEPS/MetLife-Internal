@@ -9,6 +9,7 @@ import {
   MenuItem,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 // import logo from "../../assets/mainImage.svg";
 import logo from "../../assets/logo.jpeg";
@@ -16,7 +17,8 @@ import styles from "./OneFrameHeader.module.css";
 import { useNavigate, useLocation } from "react-router";
 import { navigateTo } from "../../utils/navigate";
 import secureLocalStorage from "react-secure-storage";
-import footerImage from "../../assets/SurfAI_Icon.png";
+import footerImage from "../../assets/edwsurf_light_logo.svg";
+import footerdarkImage from "../../assets/edwsurf_dark_logo.svg";
 
 interface OneFrameHeaderProps {
   // setMakeChanges?: (value: boolean) => void;
@@ -38,6 +40,9 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const theme = useTheme();
+  const mode = theme.palette.mode;
+
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -72,19 +77,22 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
     navigate("/login");
   };
 
+  console.log(mode, "mode");
+
+
   return (
     <>
-      <AppBar position="static" className={styles.appBar}>
+      <AppBar position="static" className={`${styles.appBar}`}>
         <Toolbar className={styles.toolbar}>
           {/* Left spacer to keep title centered */}
           <img
-            src={footerImage}
+            src={mode === "dark" ? footerdarkImage : footerImage}
             alt="MetLife logo"
             onClick={handleImageClick}
             className={styles.logo}
           />
-          <Typography variant="h6" className={styles.title}>
-            Video Studio
+          <Typography variant="h6" className={`${styles.title} ${mode === "dark" ? styles.dark_text : styles.light_text}`}>
+            EdwSurf Ai Studio
           </Typography>
           <div>
             <Button
@@ -94,7 +102,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
               sx={{
                 fontSize: "24px",
                 lineHeight: "30px",
-                color: "#000000",
+                color: `${mode === "light" ? "#333333" : "#ffffff"}`,
                 fontWeight: 600,
                 padding: "11px",
                 marginBottom: "-9px",
@@ -122,6 +130,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
                       fontSize: "18px",
                       fontWeight: 600,
                       paddingTop: "0.3rem",
+                      color: "#fff",
                       // lineHeight: 1,
                       // fontFamily: "Inter, Roboto, sans-serif",
                     }}

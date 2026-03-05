@@ -126,7 +126,7 @@ const Login: React.FC = () => {
           <Box sx={{ width: { xs: "100%", md: "80%" } }}>
             {/* <img src={oneFrame} alt="oneFrame" /> */}
             <Typography variant="h2" fontWeight={600} mb={1}>
-              Video Studio
+            EdwSurf Ai Studio
             </Typography>
             <Typography variant="h4" fontWeight={600} mb={1}>
               Account Login
