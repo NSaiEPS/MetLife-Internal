@@ -7,6 +7,7 @@ import { NoDataMessage } from "../../components/common/NoDataMessage";
 import api from "../../api/axios";
 import styles from "./AddNewScript.module.css";
 import { showToast } from "../../utils/toast";
+import { toast } from "react-toastify";
 
 // ---------- Types ----------
 interface Scene {
@@ -64,7 +65,8 @@ const ScriptPage: React.FC = () => {
         setSceneData(result?.data);
       }
     } catch (e: any) {
-      showToast.error(e?.detail);
+      console.log(e?.response?.data?.detail, "error");
+      toast.error(e?.response?.data?.detail);
     } finally {
       setLoading(false);
     }

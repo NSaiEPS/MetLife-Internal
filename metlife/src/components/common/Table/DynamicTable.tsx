@@ -1524,7 +1524,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
         <DownloadPopup
           open={uiState?.openDownloadPopup}
-          // open={openDownloadPopup}
           onClose={() =>
             setUiState((prev) => ({ ...prev, openDownloadPopup: false }))
           }
