@@ -1186,14 +1186,14 @@ const AudioAnimationPage: React.FC = () => {
       scene_id: scene.scene_id,
       start_transition: "none",
       end_transition: "none",
-      ost_style: ostStyle, // 🔥 sending popup data
+      ost_style: ostStyle, 
 
     }));
 
     const payload = {
       script_id: id,
       scenes: scenesPayload,
-      // ost_style: ostStyle, // 🔥 sending popup data
+      // ost_style: ostStyle, 
     };
 
     dispatch(postGenerateVideoBatch(payload, successCallBack));

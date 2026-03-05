@@ -14,7 +14,7 @@ const OST_PRESETS = {
     accent_color: [220, 38, 38],
     text_color: [255, 255, 255],
     opacity: 90,
-    width_percent: 55,
+    width_percent: 60,
     y_position_percent: 65,
   },
   premiumNavy: {
@@ -22,7 +22,7 @@ const OST_PRESETS = {
     accent_color: [212, 175, 55],
     text_color: [245, 245, 245],
     opacity: 95,
-    width_percent: 55,
+    width_percent: 60,
     y_position_percent: 65,
   },
   cyberpunk: {
@@ -30,7 +30,7 @@ const OST_PRESETS = {
     accent_color: [0, 255, 255],
     text_color: [255, 255, 255],
     opacity: 85,
-    width_percent: 55,
+    width_percent: 60,
     y_position_percent: 65,
   },
   cleanLight: {
@@ -38,7 +38,7 @@ const OST_PRESETS = {
     accent_color: [37, 99, 235],
     text_color: [15, 23, 42],
     opacity: 95,
-    width_percent: 55,
+    width_percent: 60,
     y_position_percent: 65,
   },
   alert: {
@@ -46,7 +46,7 @@ const OST_PRESETS = {
     accent_color: [255, 213, 0],
     text_color: [255, 255, 255],
     opacity: 100,
-    width_percent: 55,
+    width_percent: 60,
     y_position_percent: 65,
   },
 };
