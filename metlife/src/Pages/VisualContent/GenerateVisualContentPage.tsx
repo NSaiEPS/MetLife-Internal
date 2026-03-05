@@ -29,6 +29,7 @@ import type { RootState } from "../../redux/store"; // adjust path if needed
 import { navigateTo } from "../../utils/navigate";
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
 import ButtonComp from "../../components/common/Buton/Button";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 // ---------- Types ----------
 interface VisualRow {
@@ -66,24 +67,21 @@ interface PopupState {
 
 // ---------- Component ----------
 const GenerateVisualContentPage: React.FC = () => {
-  const [rows, setRows] = useState<VisualRow[]>([]);
-  const [popup, setPopup] = useState<PopupState>({ type: null, data: null });
-
   const dummyImage = "https://dummyimage.com/50x50/e0e0e0/aaaaaa&text=No+Image";
-
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
+  const [rows, setRows] = useState<VisualRow[]>([]);
+  const [popup, setPopup] = useState<PopupState>({ type: null, data: null });
   const { id } = useParams<{ id: string }>();
-
   const { generateVisualLoader, generateVisualContentData } = useSelector(
     (store: RootState) => store.GenerateVisualContent,
   );
   const conversational =
     generateVisualContentData?.flow_type === "conversation" ||
     generateVisualContentData?.video_style === "conversational";
-  const { audioAnimationLoader } = useSelector(
-    (store: RootState) => store.AudioAnimation,
-  );
+  // const { audioAnimationLoader } = useSelector(
+  //   (store: RootState) => store.AudioAnimation,
+  // );
   const { saveLoader, saveTranslatedData } = useSelector(
     (store) => store.SaveTranslatedData,
   );
@@ -98,82 +96,168 @@ const GenerateVisualContentPage: React.FC = () => {
     { label: "Scene No.", key: "Scene_No." },
     { label: "Visual Type", key: "Visual_Type" },
     { label: "Scenes", key: "Visual_Description" },
-    {
-      label: "Visual Image",
-      key: "Visual_Image",
-      render: (value, row, setPreviewImage, setVisualImages) => (
-        <div
-          style={{
-            width: "50px",
-            height: "50px",
-            padding: "6px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            if (!row.Visual_Image || row.Visual_Image.length === 0) {
-              toast.error("No Image found to preview");
-              setPreviewImage?.([]);
-              return;
-            }
-            setPreviewImage?.(value);
-            setVisualImages?.(row);
-          }}
-        >
-          {row.Visual_Type === "Footage" ? (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 5,
-                backgroundColor: "#e0e0e0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <svg
-                width="80%"
-                height="80%"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="3"
-                  y="5"
-                  width="18"
-                  height="14"
-                  rx="2"
-                  ry="2"
-                  fill="#bdbdbd"
-                />
-                <polygon points="10,9 16,12 10,15" fill="#757575" />
-              </svg>
-            </div>
-          ) : (
-            <img
-              src={value}
-              alt="visual"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = dummyImage;
-              }}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 5,
-              }}
-            />
-          )}
-        </div>
-      ),
-    },
+    ...(generateVisualContentData?.video_style !== "conversational"
+      ? [
+          {
+            label: "Visual Image",
+            key: "Visual_Image" as keyof VisualRow,
+            render: (value, row, setPreviewImage, setVisualImages) => (
+              <>
+                <div
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    padding: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (!row.Visual_Image || row.Visual_Image.length === 0) {
+                      toast.error("No Image found to preview");
+                      setPreviewImage?.([]);
+                      return;
+                    }
+                    setPreviewImage?.(value);
+                    setVisualImages?.(row);
+                  }}
+                >
+                  {row.Visual_Type === "Footage" ? (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: 5,
+                        backgroundColor: "#e0e0e0",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <svg
+                        width="80%"
+                        height="80%"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect
+                          x="3"
+                          y="5"
+                          width="18"
+                          height="14"
+                          rx="2"
+                          ry="2"
+                          fill="#bdbdbd"
+                        />
+                        <polygon points="10,9 16,12 10,15" fill="#757575" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <img
+                      src={value}
+                      alt="visual"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = dummyImage;
+                      }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: 5,
+                      }}
+                    />
+                  )}
+                </div>
+              </>
+            ),
+          },
+        ]
+      : []),
+
+    // {
+    //   label: "Visual Image",
+    //   key: "Visual_Image",
+    //   render: (value, row, setPreviewImage, setVisualImages) => (
+    //     <>
+    //       <div
+    //         style={{
+    //           width: "50px",
+    //           height: "50px",
+    //           padding: "6px",
+    //           display: "flex",
+    //           alignItems: "center",
+    //           justifyContent: "center",
+    //           overflow: "hidden",
+    //           cursor: "pointer",
+    //         }}
+    //         onClick={() => {
+    //           if (!row.Visual_Image || row.Visual_Image.length === 0) {
+    //             toast.error("No Image found to preview");
+    //             setPreviewImage?.([]);
+    //             return;
+    //           }
+    //           setPreviewImage?.(value);
+    //           setVisualImages?.(row);
+    //         }}
+    //       >
+    //         {row.Visual_Type === "Footage" ? (
+    //           <div
+    //             style={{
+    //               width: "100%",
+    //               height: "100%",
+    //               objectFit: "cover",
+    //               borderRadius: 5,
+    //               backgroundColor: "#e0e0e0",
+    //               display: "flex",
+    //               alignItems: "center",
+    //               justifyContent: "center",
+    //             }}
+    //           >
+    //             <svg
+    //               width="80%"
+    //               height="80%"
+    //               viewBox="0 0 24 24"
+    //               fill="none"
+    //               xmlns="http://www.w3.org/2000/svg"
+    //             >
+    //               <rect
+    //                 x="3"
+    //                 y="5"
+    //                 width="18"
+    //                 height="14"
+    //                 rx="2"
+    //                 ry="2"
+    //                 fill="#bdbdbd"
+    //               />
+    //               <polygon points="10,9 16,12 10,15" fill="#757575" />
+    //             </svg>
+    //           </div>
+    //         ) : (
+    //           <img
+    //             src={value}
+    //             alt="visual"
+    //             onError={(e) => {
+    //               (e.target as HTMLImageElement).src = dummyImage;
+    //             }}
+    //             style={{
+    //               width: "100%",
+    //               height: "100%",
+    //               objectFit: "cover",
+    //               borderRadius: 5,
+    //             }}
+    //           />
+    //         )}
+    //       </div>
+    //     </>
+    //   ),
+    // },
   ];
+
+  const [openVisualGallery, setOpenVisualGallery] = useState(false);
 
   const handleImageUpload = (data: VisualRow) =>
     setPopup({ type: "upload", data });
@@ -406,8 +490,22 @@ const GenerateVisualContentPage: React.FC = () => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
+                      gap: 2
                     }}
                   >
+                    {/* {generateVisualContentData?.video_style ===
+                      "conversational" && <Button>Visual Image</Button>} */}
+                    {generateVisualContentData?.video_style ===
+                      "conversational" && (
+                      <Button
+                        variant="contained"
+                        // sx={{ mb: 2 }}
+                        // onClick={() => setOpenVisualGallery(true)}
+                        onClick={() => setOpenVisualGallery((prev) => !prev)}
+                      >
+                        Visual Image
+                      </Button>
+                    )}
                     <Button
                       className={styles.icon}
                       onClick={() =>
@@ -436,6 +534,17 @@ const GenerateVisualContentPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* {generateVisualContentData?.video_style === "conversational" && (
+                <Button
+                  variant="contained"
+                  sx={{ mb: 2 }}
+                  // onClick={() => setOpenVisualGallery(true)}
+                  onClick={() => setOpenVisualGallery((prev) => !prev)}
+                >
+                  View Visual Images
+                </Button>
+              )} */}
+
               <VisualContentTable
                 columns={columns}
                 rows={rows}
@@ -443,6 +552,8 @@ const GenerateVisualContentPage: React.FC = () => {
                 updateImagesInRow={updateImagesInRow}
                 updatePromptInRow={updatePromptInRow}
                 conversational={conversational}
+                openVisualGallery={openVisualGallery}
+                setOpenVisualGallery={setOpenVisualGallery}
               />
 
               {popup.type === "upload" && (

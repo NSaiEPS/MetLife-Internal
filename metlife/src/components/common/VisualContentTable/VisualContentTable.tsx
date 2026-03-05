@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./visualContent.module.css";
 import {
   Table,
@@ -71,6 +71,9 @@ interface VisualContentTableProps {
     new_prompt: string;
     scene_id: string | number;
   }) => void;
+  conversational?: boolean;
+  openVisualGallery?: boolean;
+  setOpenVisualGallery?: (val: boolean) => void;
 }
 
 // --------------------------------------------------
@@ -82,6 +85,8 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
   updateImagesInRow,
   updatePromptInRow,
   conversational,
+  openVisualGallery,
+  setOpenVisualGallery,
 }) => {
   const { generateVisualContentData, generateVisualLoader } = useSelector(
     (store: any) => store.GenerateVisualContent,
@@ -106,6 +111,45 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
   // --------------------------------------------------
   // Helpers
   // --------------------------------------------------
+
+  // useEffect(() => {
+  //   if (conversational && openVisualGallery) {
+  //     const firstRowWithImage = rows.find(
+  //       (r) =>
+  //         r.image_uploaded_urls?.length > 0 ||
+  //         r.video_uploaded_urls?.length > 0,
+  //     );
+
+  //     if (firstRowWithImage) {
+  //       setVisualImages(firstRowWithImage);
+
+  //       if (firstRowWithImage.Visual_Type === "image") {
+  //         setPreviewImage(firstRowWithImage.image_uploaded_urls?.[0]?.url);
+  //       } else {
+  //         setPreviewImage(firstRowWithImage.video_uploaded_urls?.[0]?.url);
+  //       }
+  //     }
+  //   }
+  // }, [openVisualGallery]);
+
+  useEffect(() => {
+    if (!openVisualGallery) return;
+
+    const firstRowWithImage = rows.find(
+      (r) =>
+        r.image_uploaded_urls?.length > 0 || r.video_uploaded_urls?.length > 0,
+    );
+
+    if (firstRowWithImage) {
+      setVisualImages(firstRowWithImage);
+
+      if (firstRowWithImage.Visual_Type === "image") {
+        setPreviewImage(firstRowWithImage.image_uploaded_urls?.[0]?.url);
+      } else {
+        setPreviewImage(firstRowWithImage.video_uploaded_urls?.[0]?.url);
+      }
+    }
+  }, [openVisualGallery, rows]);
 
   const getPromptFromSceneId = (sceneId: string | number): string => {
     const found = rows.find((v) => v.scene_id === sceneId);
@@ -160,7 +204,7 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
       };
 
       dispatch(
-        deleteGenerateVisualContent(payload,id, () => {
+        deleteGenerateVisualContent(payload, id, () => {
           const updatedImages = visuaiImages.image_uploaded_urls.filter(
             (img: any) => img.url !== currentImage,
           );
@@ -276,7 +320,11 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
       {previewImage && (
         <Dialog
           open={!!previewImage}
-          onClose={() => setPreviewImage(null)}
+          // onClose={() => setPreviewImage(null)}
+          onClose={() => {
+            setPreviewImage(null);
+            setOpenVisualGallery?.(false);
+          }}
           maxWidth={false}
         >
           <div
@@ -318,7 +366,11 @@ const VisualContentTable: React.FC<VisualContentTableProps> = ({
             )}
 
             <IconButton
-              onClick={() => setPreviewImage(null)}
+              // onClick={() => setPreviewImage(null)}
+              onClick={() => {
+                setPreviewImage(null);
+                setOpenVisualGallery?.(false);
+              }}
               sx={{
                 backgroundColor: "rgba(0,0,0,0.4)",
                 color: "white",
