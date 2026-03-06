@@ -27,6 +27,7 @@ import { postGenerateVisualContentImage } from "../../redux/features/generateVis
 import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
+  IoCheckmarkDoneCircle,
 } from "react-icons/io5";
 import type { AppDispatch, RootState } from "../../redux/store"; // adjust according to your setup
 import { postTranslatedDataSave } from "../../redux/features/saveSlice";
@@ -93,19 +94,48 @@ const CreateVisualContentPage: React.FC = () => {
 
   const actions = [
     // image upload for footage
+    // {
+    //   icon: (row: RowData) =>
+    //     row.Visual_Type === "clip" ? (
+    //       <Tooltip title="Upload Footage" placement="top" arrow>
+    //         <span>
+    //           <img src={upload} />
+    //         </span>
+    //       </Tooltip>
+    //     ) : null,
+
+    //   onClick: (row: RowData) => {
+    //     if (row.Visual_Type === "clip") {
+    //       console.log(row, "row_check")
+    //       handleVideoUpload(row);
+    //     }
+    //   },
+    // },
     {
-      icon: (row: RowData) =>
-        row.Visual_Type === "clip" ? (
-          <Tooltip title="Upload Footage" placement="top" arrow>
+      icon: (row: RowData) => {
+        if (row.Visual_Type !== "clip") return null;
+
+        const hasVideo = row?.videos?.length > 0; // adjust key if different
+
+        return (
+          <Tooltip
+            title={hasVideo ? "Video Uploaded (Upload More)" : "Upload Footage"}
+            placement="top"
+            arrow
+          >
             <span>
-              <img src={upload} />
+              {hasVideo ? (
+                <IoCheckmarkDoneCircle style={{marginTop: "6px"}} color="#1976d2" width={22} height={22} />
+              ) : (
+                <img src={upload} style={{ width: 20, height: 20 }} />
+              )}
             </span>
           </Tooltip>
-        ) : null,
+        );
+      },
 
       onClick: (row: RowData) => {
         if (row.Visual_Type === "clip") {
-          console.log(row, "row_check")
           handleVideoUpload(row);
         }
       },
@@ -140,15 +170,13 @@ const CreateVisualContentPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData,
   );
-
-  // const { generateVisualContentData } = useSelector(
-  //   (store: RootState) => store.GenerateVisualContent,
-  // );
-
+  const { generateVisualContentData } = useSelector(
+    (store: RootState) => store.GenerateVisualContent,
+  );
+  console.log(generateVisualContentData, "check_updated_data");
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
@@ -167,6 +195,7 @@ const CreateVisualContentPage: React.FC = () => {
   }, [saveVisualContentData?.prompts]);
 
   const settingDataInRows = (reqData: any[]) => {
+    console.log(reqData, "check_req_data");
     const newdata: RowData[] = reqData.map((item, index) => ({
       Scene_No: index + 1,
       Visual_Type: item?.clip_visual_type === "clip" ? "clip" : "image",
@@ -181,6 +210,7 @@ const CreateVisualContentPage: React.FC = () => {
       clip_prompt: item?.clip_prompt ?? "",
       scene_type: item?.scene_type ?? "",
       clip_generated_at: item?.clip_generated_at ?? null,
+      videos: item?.videos ?? null,
     }));
     setRows(newdata);
   };
@@ -238,41 +268,6 @@ const CreateVisualContentPage: React.FC = () => {
       dispatch(postVisualTypeUpdate(payload));
     }
   };
-
-  // const handleGenerate = () => {
-  //   // const prompts = saveVisualContentData?.prompts ?? [];
-  //   const prompts = rows ?? [];
-
-  //   const manipulatedPrompts = prompts.map((item) => {
-  //     const obj = {
-  //       ...item,
-  //       // scene_type: item?.scene_type ?? item?.scene_type,
-  //     };
-  //     if (item.clip_visual_type === "clip") {
-  //       obj.clip_visual_type = "clip";
-  //       delete obj?.prompt;
-  //       delete obj?.visual_type;
-  //     } else if (item?.visual_type === "image") {
-  //       obj.visual_type = "image";
-  //       delete obj?.clip_prompt;
-  //       delete obj?.clip_visual_type;
-  //     }
-  //     return obj;
-  //   });
-
-  //   const finalPayload = {
-  //     script_id: saveVisualContentData?.script_id,
-  //     prompt_batch_id: saveVisualContentData?.prompt_batch_id,
-  //     title: saveVisualContentData?.title,
-  //     total_scenes: saveVisualContentData?.total_scenes,
-  //     processed_scenes: saveVisualContentData?.processed_scenes,
-  //     prompts: manipulatedPrompts,
-  //     video_style: saveVisualContentData?.video_style,
-  //     flow_type: saveVisualContentData?.flow_type,
-  //   };
-  //   console.log(finalPayload, "check_final")
-  //   // dispatch(postGenerateVisualContentImage(finalPayload));
-  // };
 
   const handleGenerate = () => {
     const prompts = rows ?? [];
@@ -338,8 +333,8 @@ const CreateVisualContentPage: React.FC = () => {
     dispatch(postTranslatedDataSave(data, id));
   };
 
-
   console.log(saveVisualContentData?.prompts, "chekc");
+  console.log(rows, "rows");
 
   return (
     <>
@@ -443,3 +438,38 @@ const CreateVisualContentPage: React.FC = () => {
 };
 
 export default CreateVisualContentPage;
+
+// const handleGenerate = () => {
+//   // const prompts = saveVisualContentData?.prompts ?? [];
+//   const prompts = rows ?? [];
+
+//   const manipulatedPrompts = prompts.map((item) => {
+//     const obj = {
+//       ...item,
+//       // scene_type: item?.scene_type ?? item?.scene_type,
+//     };
+//     if (item.clip_visual_type === "clip") {
+//       obj.clip_visual_type = "clip";
+//       delete obj?.prompt;
+//       delete obj?.visual_type;
+//     } else if (item?.visual_type === "image") {
+//       obj.visual_type = "image";
+//       delete obj?.clip_prompt;
+//       delete obj?.clip_visual_type;
+//     }
+//     return obj;
+//   });
+
+//   const finalPayload = {
+//     script_id: saveVisualContentData?.script_id,
+//     prompt_batch_id: saveVisualContentData?.prompt_batch_id,
+//     title: saveVisualContentData?.title,
+//     total_scenes: saveVisualContentData?.total_scenes,
+//     processed_scenes: saveVisualContentData?.processed_scenes,
+//     prompts: manipulatedPrompts,
+//     video_style: saveVisualContentData?.video_style,
+//     flow_type: saveVisualContentData?.flow_type,
+//   };
+//   console.log(finalPayload, "check_final")
+//   // dispatch(postGenerateVisualContentImage(finalPayload));
+// };
