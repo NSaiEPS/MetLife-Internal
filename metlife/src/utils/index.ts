@@ -460,3 +460,11 @@ export const modelOptions = [
   { value: "gpt-4.1-mini", label: "GPT-4.1-mini" },
   { value: "gpt-5-mini", label: "GPT-5-mini" },
 ];
+
+
+
+
+export const  capitalizeFirstLetter = (text: string) => {
+  if (!text) return "";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Typography, Box, Grid, Button, MenuItem, Menu } from "@mui/material";
+import React, { use, useState } from "react";
+import { Typography, Box, Grid, Button, MenuItem, Menu, useTheme } from "@mui/material";
 import UploadIcon from "../../assets/UploadCloudIcon.svg";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import ButtonComp from "../../components/common/Buton/Button";
@@ -9,7 +9,8 @@ import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
-
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 // If needed for importing SVGs
 // declare module "*.svg" {
 //   const content: string;
@@ -18,6 +19,8 @@ import { UploadPopup } from "../../components/common/popup/UploadPopup";
 
 const VideoCreationOptions: React.FC = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
   const openPopup = Boolean(open);
 
@@ -56,7 +59,7 @@ const VideoCreationOptions: React.FC = () => {
 
           <Typography variant="h3">
             {" "}
-            Create Your Video with EdwSurf Ai Studio
+            Create Your Video with <b className={styles.colorTitle}>EdwSurf Ai Studio</b>
           </Typography>
 
           <Grid
@@ -82,8 +85,11 @@ const VideoCreationOptions: React.FC = () => {
                   <div className={styles.parentContainer}>
                     <ButtonComp
                       label="Generate a Script"
+                      colorType={mode == "dark" ? "secondary" : "primary"}
                       // sx={styles.Button}
-                      icon={AutoFixHighIcon}
+                      // className={styles.button_bg}
+
+                      icon={<AutoFixHighOutlinedIcon />}
                       variant="contained"
                       action={() => navigate("/generate-script")}
                     >
@@ -113,8 +119,10 @@ const VideoCreationOptions: React.FC = () => {
                     <ButtonComp
                       // label="Upload a Script"
                       label="Localization"
+                      colorType={mode == "dark" ? "secondary" : "primary"}
                       // sx={styles.Button}
-                      icon={UploadIcon}
+                      // className={styles.button_bg}
+                      icon={<CloudUploadOutlinedIcon />}
                       variant="contained"
                       // action={() => navigate("/upload-script")}
                       action={handleOpenMenu}

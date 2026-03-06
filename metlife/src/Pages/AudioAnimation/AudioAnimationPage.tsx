@@ -1186,7 +1186,7 @@ const AudioAnimationPage: React.FC = () => {
       scene_id: scene.scene_id,
       start_transition: "none",
       end_transition: "none",
-      ost_style: ostStyle, 
+      ost_style: ostStyle,
 
     }));
 
@@ -1274,7 +1274,9 @@ const AudioAnimationPage: React.FC = () => {
     <>
       {saveLoader && <FullScreenGradientLoader text="loading..." />}
       <audio ref={audioRef} />
-      <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+      <Box sx={{
+        minHeight: "100vh"
+      }} >
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
             {(audioAnimationLoader || videoAnimationLoader) && (
@@ -1295,6 +1297,9 @@ const AudioAnimationPage: React.FC = () => {
                   >
                     <Button
                       className={styles.icon}
+                      sx={{
+                        color: "var(--primary-color)"
+                      }}
                       onClick={() => navigate(`/generate-visual-page/${id}`)}
                     >
                       <IoArrowBackCircleOutline size={30} /> Back
@@ -1302,6 +1307,9 @@ const AudioAnimationPage: React.FC = () => {
                     <Button
                       className={styles.icon}
                       disabled={!videoExists}
+                      sx={{
+                        color: "var(--primary-color)"
+                      }}
                       onClick={() => navigate(`/animation-page/${id}`)}
                     >
                       Next <IoArrowForwardCircleOutline size={30} />
@@ -1447,13 +1455,13 @@ const AudioAnimationPage: React.FC = () => {
                             label="Voice Options/Voice Name"
                             options={
                               Array.isArray(audioAnimationData?.scenes) &&
-                              audioAnimationData.scenes.length > 0
+                                audioAnimationData.scenes.length > 0
                                 ? getFilteredVoiceOptions(charName).map(
-                                    (opt) => ({
-                                      ...opt,
-                                      disabled: false,
-                                    }),
-                                  )
+                                  (opt) => ({
+                                    ...opt,
+                                    disabled: false,
+                                  }),
+                                )
                                 : getFilteredVoiceOptions(charName)
                             }
                             // options={
@@ -1506,7 +1514,7 @@ const AudioAnimationPage: React.FC = () => {
                       </Grid>
                     ))}
                   {audioAnimationData?.scenes &&
-                  audioAnimationData?.scenes?.length > 0 ? (
+                    audioAnimationData?.scenes?.length > 0 ? (
                     <>
                       <Typography
                         sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
@@ -1591,9 +1599,10 @@ const AudioAnimationPage: React.FC = () => {
           <>
             <NoDataMessage filter={false} loading={true} />
           </>
-        )}
-        <Footer />
-      </Box>
+        )
+        }
+        < Footer />
+      </Box >
 
       <OstStylePopup
         open={openTransitionPopup}

@@ -43,16 +43,30 @@ import { RouterProvider } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setRouter } from "./utils/navigate";
-import { IconButton } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { useEffect } from "react";
 
-function App({ mode, setMode }:any) {
+function ThemeWatcher() {
+  const theme = useTheme();
+
+  useEffect(() => {
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(theme.palette.mode);
+  }, [theme.palette.mode]);
+
+  return null;
+}
+
+function App({ mode, setMode }: any) {
   setRouter(router);
 
   const toggleTheme = () => {
     setMode(mode === "light" ? "dark" : "light");
   };
+
+
 
   console.log("v1.0.4");
 
@@ -64,7 +78,7 @@ function App({ mode, setMode }:any) {
           {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
         </IconButton>
       </div>
-
+      <ThemeWatcher />
       <ToastContainer
         position="top-right"
         autoClose={5000}

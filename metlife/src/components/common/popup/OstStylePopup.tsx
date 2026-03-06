@@ -1,4 +1,5 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
+import ButtonComp from "../Buton/Button";
 
 interface OstStylePopupProps {
   open: boolean;
@@ -85,7 +86,8 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
             left: "50%",
             transform: "translate(-50%, -50%)",
             // width: 400,
-            width: { xs: "95%", sm: 500,md:768, },
+            background: "var(--dark-color)", // Use CSS variable for background
+            width: { xs: "95%", sm: 500, md: 768, },
             maxHeight: "90vh",
             overflowY: "auto",
             // bgcolor: "background.paper",
@@ -183,9 +185,8 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
               <Box
                 sx={{
                   flex: 1,
-                  backgroundColor: `rgba(${ostStyle.bg_color.join(",")}, ${
-                    ostStyle.opacity / 100
-                  })`,
+                  backgroundColor: `rgba(${ostStyle.bg_color.join(",")}, ${ostStyle.opacity / 100
+                    })`,
                   color: `rgb(${ostStyle.text_color.join(",")})`,
                   padding: "8px 12px",
                   fontWeight: 500,
@@ -286,9 +287,9 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
           />
 
           <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
-            <Button onClick={onClose}>Cancel</Button>
+            <ButtonComp colorType="secondary" onClick={onClose}>Cancel</ButtonComp>
 
-            <Button
+            <ButtonComp
               variant="contained"
               onClick={() => {
                 onApply();
@@ -296,7 +297,7 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
               }}
             >
               Apply
-            </Button>
+            </ButtonComp>
           </Box>
         </Box>
       </Modal>

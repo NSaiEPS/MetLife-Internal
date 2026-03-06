@@ -73,12 +73,12 @@ const SelectWithAudio: React.FC<SelectWithAudioProps> = ({
           return selectedOption?.label || "";
         }}
         sx={{
-          background: "#fff",
+          // background: "#fff",
           borderRadius: "10px",
           height: "50px",
-          "& fieldset": {
-            borderColor: "#d0d0d0",
-          },
+          // "& fieldset": {
+          //   borderColor: "#d0d0d0",
+          // },
           "&:hover fieldset": {
             borderColor: "#b5b5b5",
           },

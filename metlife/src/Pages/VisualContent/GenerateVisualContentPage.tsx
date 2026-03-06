@@ -299,9 +299,9 @@ const GenerateVisualContentPage: React.FC = () => {
       prev.map((item) =>
         item.scene_id === data.fieldData.scene_id
           ? {
-              ...item,
-              Visual_Description: data.new_prompt || item.Visual_Description,
-            }
+            ...item,
+            Visual_Description: data.new_prompt || item.Visual_Description,
+          }
           : item,
       ),
     );
@@ -317,15 +317,15 @@ const GenerateVisualContentPage: React.FC = () => {
         row.scene_id === sceneId
           ? type === "image"
             ? {
-                ...row,
-                image_uploaded_urls: newFiles,
-                Visual_Image: newFiles[newFiles.length - 1]?.url || "",
-              }
+              ...row,
+              image_uploaded_urls: newFiles,
+              Visual_Image: newFiles[newFiles.length - 1]?.url || "",
+            }
             : {
-                ...row,
-                video_uploaded_urls: newFiles,
-                Visual_Image: newFiles[newFiles.length - 1]?.url || "",
-              }
+              ...row,
+              video_uploaded_urls: newFiles,
+              Visual_Image: newFiles[newFiles.length - 1]?.url || "",
+            }
           : row,
       ),
     );
@@ -339,17 +339,17 @@ const GenerateVisualContentPage: React.FC = () => {
       prev.map((row) =>
         row.scene_id === data.scene_id
           ? {
-              ...row,
-              new_prompt: data.new_prompt,
-              // image_uploaded_urls: data?.image_uploaded_urls,
-              image_uploaded_urls:
-                data?.image_uploaded_urls ?? row?.image_uploaded_urls,
+            ...row,
+            new_prompt: data.new_prompt,
+            // image_uploaded_urls: data?.image_uploaded_urls,
+            image_uploaded_urls:
+              data?.image_uploaded_urls ?? row?.image_uploaded_urls,
 
-              // Visual_Image: data.image_uploaded_urls?.length
-              //   ? data.image_uploaded_urls[data.image_uploaded_urls.length - 1]
-              //       ?.url
-              //   : row.Visual_Image,
-            }
+            // Visual_Image: data.image_uploaded_urls?.length
+            //   ? data.image_uploaded_urls[data.image_uploaded_urls.length - 1]
+            //       ?.url
+            //   : row.Visual_Image,
+          }
           : row,
       ),
     );
@@ -392,7 +392,7 @@ const GenerateVisualContentPage: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.tableContainer}>
           {generateVisualContentData?.visuals?.length &&
-          generateVisualContentData?.visuals?.length > 0 ? (
+            generateVisualContentData?.visuals?.length > 0 ? (
             <>
               <div className={styles.innerContainer}>
                 <div className={styles.header}>
@@ -410,6 +410,9 @@ const GenerateVisualContentPage: React.FC = () => {
                   >
                     <Button
                       className={styles.icon}
+                      sx={{
+                        color: "var(--primary-color)"
+                      }}
                       onClick={() =>
                         navigate(`/create-visual-content/${prompt_batch_id}`)
                       }
@@ -419,6 +422,9 @@ const GenerateVisualContentPage: React.FC = () => {
                     <Button
                       className={styles.icon}
                       disabled={!audioExist}
+                      sx={{
+                        color: "var(--primary-color)"
+                      }}
                       onClick={() => {
                         if (
                           generateVisualContentData?.video_style ===
@@ -453,7 +459,7 @@ const GenerateVisualContentPage: React.FC = () => {
                   script_id={id!}
                   prompt_batch_id={prompt_batch_id}
                   title={title}
-                  // handleImageUpdate={handleImageUpdate}
+                // handleImageUpdate={handleImageUpdate}
                 />
               )}
               {popup.type === "video_upload" && (

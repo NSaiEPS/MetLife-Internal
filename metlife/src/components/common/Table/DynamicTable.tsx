@@ -27,7 +27,7 @@ import type { DropResult } from "@hello-pangea/dnd";
 
 import styles from "./Table.module.css";
 import AddNewScriptPopup from "../../popUps/addScripts";
-import { downloadScriptPdf, downloadScriptWord } from "../../../utils";
+import { capitalizeFirstLetter, downloadScriptPdf, downloadScriptWord } from "../../../utils";
 import { showToast } from "../../../utils/toast";
 
 import {
@@ -59,6 +59,9 @@ import { postCreateVisualContent } from "../../../redux/features/createVisualSli
 import { languages } from "../../../utils/languageOptions";
 import SinglePromptModal from "../SinglePromptModal";
 import { postSavePrompt } from "../../../redux/features/promptSlice";
+import WestOutlinedIcon from '@mui/icons-material/WestOutlined';
+import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
+
 import {
   getExtractCharacters,
   postDeleteScene,
@@ -129,7 +132,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   extraDetails = {},
   showDragAndActions = true,
   pdfId,
-  setMakeChanges = () => {},
+  setMakeChanges = () => { },
   features = true,
   visualContentTitle,
 }) => {
@@ -429,12 +432,12 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       const updated = rows.map((item) =>
         item.id === data.fieldData.id
           ? {
-              "Scene No.": data.fieldData?.["Scene No."],
-              Script: data.script,
-              OST: data.ost,
-              Type: data.type,
-              id: data.fieldData?.id,
-            }
+            "Scene No.": data.fieldData?.["Scene No."],
+            Script: data.script,
+            OST: data.ost,
+            Type: data.type,
+            id: data.fieldData?.id,
+          }
           : item,
       );
       setRows(updated);
@@ -813,16 +816,16 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     pathname === "/translated-script" &&
     filledCharacters === extraDetails?.characters?.length - 1;
 
-    console.log(tableExtraData?.conversational, "tableExtraData")
+  console.log(tableExtraData?.conversational, "tableExtraData")
 
   return (
     <>
       <div className={styles1.header}>
         <Typography variant="h4">
-          {tableExtraData?.title ||
+          {capitalizeFirstLetter(tableExtraData?.title ||
             visualContentTitle ||
             tableExtraData?.upload_info?.title ||
-            "Your Script"}
+            "Your Script")}
         </Typography>
 
         {showDragAndActions && features && (
@@ -847,7 +850,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   }
                   disabled={!tableExtraData?.previous_version_id}
                 >
-                  ← Backward
+                  <WestOutlinedIcon fontSize="small" /> &nbsp; Backward
                 </ButtonComp>
               </span>
             </Tooltip>
@@ -870,7 +873,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   onClick={() => handleVersion(tableExtraData?.next_version_id)}
                   disabled={!tableExtraData?.next_version_id}
                 >
-                  Forward →
+                  Forward &nbsp; <EastOutlinedIcon fontSize="small" />
                 </ButtonComp>
               </span>
             </Tooltip>
@@ -932,6 +935,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             {/* Back Button */}
             <Button
               className={styles1.icon}
+              sx={{
+                color: "var(--primary-color)"
+              }}
               onClick={() => navigate("/generate-script")}
             >
               <IoArrowBackCircleOutline size={30} />
@@ -939,6 +945,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             </Button>
             <Button
               className={styles1.icon}
+              sx={{
+                color: "var(--primary-color)"
+              }}
               onClick={() =>
                 navigate(
                   `/create-visual-content/${tableExtraData?.prompt_batch_id}`,
@@ -1103,9 +1112,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {filteredLanguages.map((lang, index) => (
                     <div
                       key={index}
-                      className={`${styles.languageItem} ${
-                        selectedLang === lang ? styles.activeLang : ""
-                      }`}
+                      className={`${styles.languageItem} ${selectedLang === lang ? styles.activeLang : ""
+                        }`}
                       onClick={() => {
                         setSelectedLang(lang);
                         setMakeChanges(true);
@@ -1236,7 +1244,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   <ButtonComp
                     onClick={
                       tableExtraData?.video_style === "conversational" ||
-                      tableExtraData?.video_style === "mixed"
+                        tableExtraData?.video_style === "mixed"
                         ? handleOpenFlowDialog
                         : handleCreateVisualContent
                     }
@@ -1257,7 +1265,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </span>
               </Tooltip>
               {tableExtraData?.video_style === "conversational" ||
-              tableExtraData?.video_style === "mixed" ? (
+                tableExtraData?.video_style === "mixed" ? (
                 <>
                   <Dialog
                     open={openFlowDialog}
@@ -1294,31 +1302,31 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         !tableExtraData?.char_image_exist) ||
                         (tableExtraData?.video_style === "mixed" &&
                           !characterData?.length)) && (
-                        <Box
-                          onClick={handleGenerateImagesFlow}
-                          sx={{
-                            cursor: "pointer",
-                            width: 200,
-                            p: 2,
-                            borderRadius: 2,
-                            border: "1px solid #e0e0e0",
-                            transition: "0.2s",
-                            "&:hover": {
-                              boxShadow: 3,
-                              transform: "translateY(-2px)",
-                            },
-                          }}
-                        >
-                          <Typography fontWeight={600}>
-                            {promptData?.length
-                              ? "View existing prompts & Images"
-                              : "Create/Setup prompts"}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Generate character images
-                          </Typography>
-                        </Box>
-                      )}
+                          <Box
+                            onClick={handleGenerateImagesFlow}
+                            sx={{
+                              cursor: "pointer",
+                              width: 200,
+                              p: 2,
+                              borderRadius: 2,
+                              border: "1px solid #e0e0e0",
+                              transition: "0.2s",
+                              "&:hover": {
+                                boxShadow: 3,
+                                transform: "translateY(-2px)",
+                              },
+                            }}
+                          >
+                            <Typography fontWeight={600}>
+                              {promptData?.length
+                                ? "View existing prompts & Images"
+                                : "Create/Setup prompts"}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Generate character images
+                            </Typography>
+                          </Box>
+                        )}
 
                       {tableExtraData?.char_image_exist &&
                         tableExtraData?.video_style === "conversational" && (
@@ -1437,7 +1445,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           size="md"
           extraDetails={tableExtraData}
           operations={uiState?.operations}
-          // operations={operations}
+        // operations={operations}
         />
 
         <DownloadPopup

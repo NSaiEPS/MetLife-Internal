@@ -126,7 +126,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
                 <IconButton onClick={handleOpen}>
                   <Avatar
                     sx={{
-                      bgcolor: "#1976d2",
+                      bgcolor: "var(--primary-color)", // Use CSS variable for avatar background
                       fontSize: "18px",
                       fontWeight: 600,
                       paddingTop: "0.3rem",

@@ -8,10 +8,10 @@
 
 .card {
   width: 86%;
-  background: rgba(35, 157, 224, 0.1);
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 25px 36px 20px 36px;
-  border: 1px solid rgba(35, 157, 224, 0.4);
+  border: 1px solid var(--card-border);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   height: auto;
 
@@ -68,7 +68,6 @@
   gap: 15px;
 }
 
-
 .actions_second {
   display: flex;
   justify-content: flex-end;
@@ -103,5 +102,12 @@
     height: 45px;
     font-size: 14px;
     margin-top: 10px;
+  }
+}
+
+:global(body.dark) {
+  .insideContainer {
+    background-color: #000;
+    border: 1px solid #dddddd8c;
   }
 }

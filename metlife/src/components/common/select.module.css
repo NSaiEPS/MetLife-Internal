@@ -10,15 +10,14 @@
 .selectLabel {
   margin-bottom: 6px;
   font-weight: 500;
-  color: #333;
+  color: var(--light-color);
   font-size: 0.875rem;
   /* font-family: "Roboto", sans-serif; */
 }
 
 .selectBox {
-  background-color: #fff;
   height: 50px;
-  border: 1px #dfdfdf;
+  /* border: 1px solid #dfdfdf; */
   border-radius: 10px !important;
 }
 

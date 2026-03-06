@@ -13,10 +13,10 @@ const VoicePlayer = ({ description, s3_url, index }) => {
   const dispatch = useDispatch();
 
   const {
-      audioAnimationLoader,
-    } = useSelector(
-      (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
-    );
+    audioAnimationLoader,
+  } = useSelector(
+    (store: { AudioAnimation: AudioAnimationState }) => store.AudioAnimation
+  );
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -53,8 +53,8 @@ const VoicePlayer = ({ description, s3_url, index }) => {
         sx={{
           mb: 2,
           borderRadius: 3,
-          border: "1px solid #e2e2e2",
-          background: "#fff",
+          // border: "1px solid #e2e2e2",
+          // background: "#fff",
         }}
       >
         <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>

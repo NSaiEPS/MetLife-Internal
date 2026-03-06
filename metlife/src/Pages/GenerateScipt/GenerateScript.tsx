@@ -33,6 +33,7 @@ import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import type { CharacterType, PromptItem } from "../../utils/types";
 import BackButton from "../../components/common/Buton/BackButton";
 import { modelOptions } from "../../utils";
+import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 
 // ---------- Options ----------
 const videoTypeOptions = [
@@ -258,17 +259,17 @@ const GenerateScript: React.FC = () => {
           char.inputType === "image"
             ? !!char.img
             : Boolean(
-                char.age ||
-                char.gender ||
-                char.skin_tone ||
-                char.hair ||
-                char.face ||
-                char.build ||
-                char.wardrobe ||
-                char.accessories ||
-                char.personality ||
-                char.origin,
-              );
+              char.age ||
+              char.gender ||
+              char.skin_tone ||
+              char.hair ||
+              char.face ||
+              char.build ||
+              char.wardrobe ||
+              char.accessories ||
+              char.personality ||
+              char.origin,
+            );
 
         return Boolean(hasBasicInfo && hasValidInput);
       });
@@ -285,7 +286,7 @@ const GenerateScript: React.FC = () => {
   //   try {
   //     setLoader(true);
   //     console.log(characters, 'successCallback');
-      
+
   //     const imageCharacters = characters.filter(
   //       (c) => c.inputType === "image" && c.img,
   //     );
@@ -325,78 +326,78 @@ const GenerateScript: React.FC = () => {
   // };
 
   const successCallback = async (id: string) => {
-  try {
-    setLoader(true);
+    try {
+      setLoader(true);
 
-    // console.log(characters, "successCallback");
+      // console.log(characters, "successCallback");
 
-    for (const char of characters) {
-      // 🔹 CASE 1: IMAGE upload character
-      if (char.inputType === "image" && char.img) {
+      for (const char of characters) {
+        // 🔹 CASE 1: IMAGE upload character
+        if (char.inputType === "image" && char.img) {
 
-        const formData = new FormData();
-        formData.append("file", char.img);
+          const formData = new FormData();
+          formData.append("file", char.img);
 
-        await api.post("characters/upload-character-image", formData, {
-          params: {
-            script_id: id,
-            character_name: char.name,
-            role: char.role,
-            gender: char.gender,
-            age: char.age,
-            wardrobe: char.wardrobe,
-            skin_tone: char.skin_tone,
-            hair: char.hair,
-            face: char.face,
-            build: char.build,
-            accessories: char.accessories,
-            personality: char.personality,
-            origin: char.origin,
-          },
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-      }
-
-      // 🔹 CASE 2: SEARCH character (metadata save API)
-      if (char.inputType === "search") {
-
-        await studio.post("characters/save-character-metadata", {
-          script_id: id,
-          characters: [
-            {
+          await api.post("characters/upload-character-image", formData, {
+            params: {
+              script_id: id,
               character_name: char.name,
               role: char.role,
               gender: char.gender,
-              appearance: {
-                age: char.age,
-                skin_tone: char.skin_tone,
-                hair: char.hair,
-                face: char.face,
-                build: char.build,
-                wardrobe: char.wardrobe,
-                accessories: char.accessories,
-                personality: char.personality,
-                origin: char.origin,
-              },
-              image_s3_key: char.image_s3_key,
-              image_url: char.image_url,
-              prompt_used: char.prompt_used || "",
+              age: char.age,
+              wardrobe: char.wardrobe,
+              skin_tone: char.skin_tone,
+              hair: char.hair,
+              face: char.face,
+              build: char.build,
+              accessories: char.accessories,
+              personality: char.personality,
+              origin: char.origin,
             },
-          ],
-        });
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
+        }
+
+        // 🔹 CASE 2: SEARCH character (metadata save API)
+        if (char.inputType === "search") {
+
+          await studio.post("characters/save-character-metadata", {
+            script_id: id,
+            characters: [
+              {
+                character_name: char.name,
+                role: char.role,
+                gender: char.gender,
+                appearance: {
+                  age: char.age,
+                  skin_tone: char.skin_tone,
+                  hair: char.hair,
+                  face: char.face,
+                  build: char.build,
+                  wardrobe: char.wardrobe,
+                  accessories: char.accessories,
+                  personality: char.personality,
+                  origin: char.origin,
+                },
+                image_s3_key: char.image_s3_key,
+                image_url: char.image_url,
+                prompt_used: char.prompt_used || "",
+              },
+            ],
+          });
+
+        }
       }
-    }
 
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoader(false);
-  }
-};
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoader(false);
+    }
+  };
 
 
   // const buildCharacterPayload = (characters: CharacterType[] = []) => {
@@ -469,7 +470,7 @@ const GenerateScript: React.FC = () => {
   console.log(characters, "check_characters");
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <Box sx={{ minHeight: "100vh" }}>
       {loader && <FullScreenGradientLoader />}
       <main className={styles.cardWrap}>
         <div className={styles.card}>
@@ -499,6 +500,7 @@ const GenerateScript: React.FC = () => {
               label="Title:"
               type="text"
               name="title"
+
               placeholder="Enter the title to generate script"
               className={styles.input}
               value={title}
@@ -708,7 +710,7 @@ const GenerateScript: React.FC = () => {
             <div className={styles.actions}>
               <ButtonComp
                 disabled={loader}
-                icon={AutoFixHighIcon}
+                icon={<AutoFixHighOutlinedIcon />}
                 label={loader ? "Generating..." : "Generate Script"}
                 // className={styles.generateBtn}
                 action={handleGenerate}

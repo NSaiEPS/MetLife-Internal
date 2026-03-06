@@ -8,6 +8,8 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import EditPromptPopup from "../../components/common/popup/EditPromptPopup";
 import RegeneratePromptPopup from "../../components/common/popup/RegeneratePromptPopup";
 import { useDispatch, useSelector } from "react-redux";
+import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
+
 import {
   Box,
   Button,
@@ -215,15 +217,15 @@ const CreateVisualContentPage: React.FC = () => {
     const updatedRows = rows.map((item) =>
       item.scene_id === data.scene_id
         ? {
-            ...item,
-            Visual_Type: value,
-            // requiresVideo: value === "clip",
-            // video_uploaded: value === "clip" ? item.video_uploaded : false,
-            Visual_Description:
-              value === "image"
-                ? data.prompt || "Generating..."
-                : data.clip_prompt || "Generating...",
-          }
+          ...item,
+          Visual_Type: value,
+          // requiresVideo: value === "clip",
+          // video_uploaded: value === "clip" ? item.video_uploaded : false,
+          Visual_Description:
+            value === "image"
+              ? data.prompt || "Generating..."
+              : data.clip_prompt || "Generating...",
+        }
         : item,
     );
     setRows(updatedRows);
@@ -368,6 +370,9 @@ const CreateVisualContentPage: React.FC = () => {
                   >
                     <Button
                       className={styles.icon}
+                      sx={{
+                        color: "var(--primary-color)"
+                      }}
                       onClick={() => navigate(`/scenes/${script_id}`)}
                     >
                       <IoArrowBackCircleOutline size={30} /> Back
@@ -375,6 +380,9 @@ const CreateVisualContentPage: React.FC = () => {
                     <Button
                       className={styles.icon}
                       disabled={!visualExist}
+                      sx={{
+                        color: "var(--primary-color)"
+                      }}
                       onClick={() =>
                         navigate(`/generate-visual-page/${script_id}`)
                       }
@@ -432,7 +440,7 @@ const CreateVisualContentPage: React.FC = () => {
                   variant="contained"
                   // className={styles.primaryBtn}
                   disabled={saveTranslatedData === null}
-                  icon={AutoFixHighIcon}
+                  icon={<AutoFixHighOutlinedIcon />}
                 >
                   Generate Visual
                 </ButtonComp>

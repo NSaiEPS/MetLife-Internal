@@ -158,3 +158,25 @@
 .noDataText {
   text-align: center;
 }
+
+:global(body.dark) {
+  .tablePaper {
+    border: unset;
+  }
+  .headRow {
+    background: var(--footer-bg);
+  }
+  .bodyRow {
+    background: transparent;
+  }
+  .bodyCell {
+    color: #ddd;
+  }
+
+  .bodyRow:nth-child(odd) {
+    background: transparent;
+  }
+  .bodyRow:nth-child(even) {
+    background: var(--footer-bg);
+  }
+}

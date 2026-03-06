@@ -116,31 +116,31 @@ const AnimationPage: React.FC = () => {
   const dispatch = useDispatch<any>();
   const waitingTime = convertToISTParts(
     videoAnimationData?.estimated_completion_at ||
-      sceneData?.estimated_completion_at,
+    sceneData?.estimated_completion_at,
   );
   const finalTime = Math.ceil(waitingTime / 60);
 
   const isWaitingVideoTime = convertToISTParts(
     sceneData?.final_video_estimated_completion_at ||
-      generatedVideoData?.estimated_completion_at ||
-      videoAnimationData?.estimated_completion_at,
+    generatedVideoData?.estimated_completion_at ||
+    videoAnimationData?.estimated_completion_at,
   );
   const finalVideoTime = Math.ceil(isWaitingVideoTime / 60);
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
-        {
-          scene_id: "final_video",
-          scene_number: 1,
-          ost: "Final Video",
-          image_urls: ["/imgs/final-thumbnail.png"],
-          audio_url: "",
-          final_video: generatedVideoData?.final_video,
-          duration: generatedVideoData?.duration_seconds ?? 0,
-          // duration: generatedVideoData?.estimated_seconds ?? 0,
-          start_transition: "none",
-          end_transition: "none",
-        },
-      ]
+      {
+        scene_id: "final_video",
+        scene_number: 1,
+        ost: "Final Video",
+        image_urls: ["/imgs/final-thumbnail.png"],
+        audio_url: "",
+        final_video: generatedVideoData?.final_video,
+        duration: generatedVideoData?.duration_seconds ?? 0,
+        // duration: generatedVideoData?.estimated_seconds ?? 0,
+        start_transition: "none",
+        end_transition: "none",
+      },
+    ]
     : [];
 
   const showTimeline =
@@ -242,10 +242,10 @@ const AnimationPage: React.FC = () => {
       prev.map((scene, index) =>
         index % 2 === 0
           ? {
-              ...scene,
-              start_transition: entry,
-              end_transition: exit,
-            }
+            ...scene,
+            start_transition: entry,
+            end_transition: exit,
+          }
           : scene,
       ),
     );
@@ -331,12 +331,12 @@ const AnimationPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+      <Box sx={{ minHeight: "100vh" }}>
         {saveLoader && <FullScreenGradientLoader text="loading..." />}
         {(animationLabels?.entry_transitions ||
           animationLabels?.exit_transitions) &&
-        (animationLabels?.entry_transitions?.length > 0 ||
-          animationLabels?.exit_transitions?.length > 0) ? (
+          (animationLabels?.entry_transitions?.length > 0 ||
+            animationLabels?.exit_transitions?.length > 0) ? (
           <>
             {(mediaAPILoader || !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
@@ -353,7 +353,7 @@ const AnimationPage: React.FC = () => {
                   <Box className={styles.card}>
                     <Box className={styles.headerRow}>
                       {generatedVideoData?.final_video_status ===
-                      "completed" ? (
+                        "completed" ? (
                         <>
                           <Typography variant="h4" className={styles.title}>
                             Final Generated Video
@@ -369,6 +369,9 @@ const AnimationPage: React.FC = () => {
 
                       <Button
                         className={styles.icon}
+                        sx={{
+                          color: "var(--primary-color)"
+                        }}
                         onClick={() =>
                           navigate(`/audio-animation-toolkit/${id}`)
                         }
@@ -414,7 +417,7 @@ const AnimationPage: React.FC = () => {
                             handleAllSubmit={handleAllSubmit}
                             finalTime={finalTime}
                             handleAlternateSubmit={handleAlternateSubmit}
-                            // handleAnimationChanges={handleAnimationChanges}
+                          // handleAnimationChanges={handleAnimationChanges}
                           />
                         </Grid>
                       )}
@@ -514,7 +517,7 @@ const AnimationPage: React.FC = () => {
                       {generatedVideoData?.final_video !== null &&
                         sceneData?.video_exists === true &&
                         generatedVideoData?.final_video_status ===
-                          "completed" && (
+                        "completed" && (
                           <>
                             <Box
                               sx={{
@@ -570,8 +573,8 @@ const AnimationPage: React.FC = () => {
                               handleAllSubmit={handleAllSubmit}
                               handleAlternateSubmit={handleAlternateSubmit}
                               finalTime={finalTime}
-                              // handleAllSubmitInside={handleAllSubmit}
-                              // handleAnimationChanges={handleAnimationChanges}
+                            // handleAllSubmitInside={handleAllSubmit}
+                            // handleAnimationChanges={handleAnimationChanges}
                             />
                           </>
                         )}

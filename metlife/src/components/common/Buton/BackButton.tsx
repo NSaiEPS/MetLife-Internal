@@ -10,7 +10,7 @@ const BackButton = ({ route }: { route: string }) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        color: "#005f9f",
+        color: "var(--primary-color)",
         gap: "5px",
         marginBottom: "15px",
         paddingX: 0,

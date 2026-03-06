@@ -68,14 +68,16 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete, label }) => {
         mx: "auto",
         my: 4,
         p: 3,
-        borderRadius: 2,
+        borderRadius: 4,
         border: "1px solid #cfe3f5",
-        backgroundColor: "#fff",
-        boxShadow: "0 0 0 1px #e3f2fd",
+        // backgroundColor: "#fff",
+        boxShadow: "0 0 0 0px #e3f2fd",
       }}
     >
       {/* Title */}
-      <Typography fontSize={18} variant="h5" mb={2}>
+      <Typography fontSize={18} variant="h5" mb={2} sx={{
+        color: "var(--light-color)"
+      }}>
         {label || "Video Generation in Progress"}
       </Typography>
 
@@ -93,7 +95,7 @@ const Timer: React.FC<TimerProps> = ({ time, onComplete, label }) => {
         <motion.div
           style={{
             height: "100%",
-            backgroundColor: "#4da3ff",
+            backgroundColor: "var(--primary-color)",
             width: useTransform(smoothHeight, (v) => `${Math.max(0, v)}%`),
           }}
         />

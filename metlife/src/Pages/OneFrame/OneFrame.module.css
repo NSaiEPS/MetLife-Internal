@@ -1,6 +1,6 @@
 .beigeCard {
-  background-color: rgba(35, 157, 224, 0.1); /* #239DE01A */
-  border: 1px solid rgba(35, 157, 224, 0.4); /* #239DE066 */
+  background-color:var(--card-bg); 
+  border: 1px solid var(--card-border); 
   width: 416px;
   height: 327px;
   padding: 24px;
@@ -22,14 +22,20 @@
   margin-bottom: 40px;
 }
 
+.colorTitle{
+  color: var(--primary-color);
+}
+
 .boxHeading {
   font-size: 20px;
   font-weight: 700;
   /* color: #231f20; */
+  color: var(--primary-color);
   padding-top: 70px;
   padding-bottom: 10px;
   padding-left: 20px;
   text-align: start;
+  
 }
 
 .boxText {
@@ -64,3 +70,22 @@
 .Button:hover {
   opacity: 0.9;
 }
+
+
+.button_bg{
+  background: var(--primary-color) !important;
+  border: none !important;
+}
+
+
+
+
+/* :global(body.light) .beigeCard {
+  background-color: rgba(35, 157, 224, 0.1);
+  border: 1px solid rgba(35, 157, 224, 0.4);
+}
+
+:global(body.dark) .beigeCard {
+  background-color: #f7c31720;
+  border: 1px solid #f7c317;
+} */

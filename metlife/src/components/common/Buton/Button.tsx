@@ -44,32 +44,34 @@ import type { ButtonProps } from "@mui/material";
 interface ButtonCompProps {
   children: React.ReactNode;
   variant?: ButtonProps["variant"];
-  icon?: string;
-  label: string;
-  transform: string;
+  icon?: any;
+  img_icon?: boolean;
+  label?: string;
+  transform?: string;
   className?: string;
   sx?: any;
-  action?: () => void;
+  action?: any;
+  onClick?: () => void;
   disabled?: boolean;
-  colorType?: "primary" | "secondary" | "download" | "warning" | "error"; // 🔥 NEW
+  colorType?: "primary" | "secondary" | "download" | "warning" | "error" | "outlined"; // 🔥 NEW
 }
 
 const COLOR_CONFIG = {
   primary: {
-    bg: "#007ABC",
-    text: "#FFFFFF",
-    border: "2px solid #007ABC",
-    hoverBg: "#0061A0",
-    hoverText: "#FFFFFF",
-    hoverBorder: "2px solid #0061A0",
+    bg: "var(--button-bg)", // Use CSS variable for primary color
+    text: "var(--button-text)", // Use CSS variable for text color
+    border: "2px solid var(--button-border)",
+    hoverBg: "var(--button-hover-bg)", // Use CSS variable for hover background
+    hoverText: "var(--button-hover-text)", // Use CSS variable for hover text color
+    hoverBorder: "2px solid var(--button-hover-border)", // Use CSS variable for hover border
   },
   secondary: {
     bg: "#FFFFFF",
-    text: "#2f91c7",
-    border: "2px solid #007ABC",
-    hoverBg: "#0061A0",
-    hoverText: "#FFFFFF",
-    hoverBorder: "2px solid #0061A0",
+    text: "var(--button-secondary-text)",
+    border: "2px solid var(--button-secondary-border)",
+    hoverBg: "var(--button-secondary-hover-bg)",
+    hoverText: "var(--button-hover-text)",
+    hoverBorder: "2px solid var(--button-secondary-hover-border)",
   },
   download: {
     bg: "#327037ff",
@@ -78,6 +80,14 @@ const COLOR_CONFIG = {
     hoverBg: "#1B5E20",
     hoverText: "#ffffff",
     hoverBorder: "2px solid #1B5E20",
+  },
+  outlined: {
+    bg: "transparent",
+    text: "var(--primary-color)",
+    border: "2px solid var(--primary-color)",
+    hoverBg: "var(--primary-color)",
+    hoverText: "#fff",
+    hoverBorder: "2px solid var(--primary-color)",
   },
   warning: {
     bg: "#e65100",          // ORANGE
@@ -89,7 +99,7 @@ const COLOR_CONFIG = {
   },
 
   error: {
-    bg: "#C62828",          
+    bg: "#C62828",
     text: "#FFFFFF",
     border: "2px solid #C62828",
     hoverBg: "#B71C1C",
@@ -104,9 +114,11 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
   transform = "uppercase",
   variant = "contained",
   icon,
+  img_icon,
   className,
   sx,
   action,
+  onClick,
   disabled = false,
   colorType = "primary",
   ...rest
@@ -116,9 +128,9 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
   return (
     <Button
       variant={variant}
-      startIcon={icon ? <img src={icon} alt="icon" /> : undefined}
+      startIcon={img_icon ? <img src={icon} alt="icon" /> : icon}
       className={className}
-      onClick={action}
+      onClick={action ?? onClick}
       disabled={disabled}
       {...rest}
       sx={{
@@ -128,17 +140,23 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
         borderRadius: "4px",
         textTransform: transform,
         fontSize: "14px",
-        fontWeight: 500,
+        fontWeight: 600,
         padding: "8px 16px",
 
         backgroundColor: disabled ? "#E0E0E0" : colors.bg,
-        color: disabled ? "#9E9E9E" : colors.text,
+        color: disabled ? "var(--button-disabled-color)" : colors.text,
         border: disabled ? "none" : colors.border,
 
         "&:hover": {
           backgroundColor: disabled ? "#E0E0E0" : colors.hoverBg,
-          color: disabled ? "#9E9E9E" : colors.hoverText,
+          color: disabled ? "var(--button-disabled-color)" : colors.hoverText,
           border: disabled ? "none" : colors.hoverBorder,
+        },
+
+        "&.Mui-disabled": {
+          backgroundColor: "var(--button-disabled-bg)", // 👈 disabled background
+          color: "var(--button-disabled-color)",          // 👈 disabled text
+          cursor: "not-allowed",
         },
 
         ...sx,

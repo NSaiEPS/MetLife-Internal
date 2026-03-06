@@ -1,6 +1,7 @@
 .footer {
   width: 100%;
-  background-color: #4d99d1; /* same blue as image */
+  /* background-color: #4d99d1;  */
+  background-color: var(--footer-bg);
   padding: 14px 0; /* vertical padding only */
   display: flex;
   justify-content: center; /* center text horizontally */
@@ -16,7 +17,7 @@
 .text {
   color: white;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   /* font-family: "Poppins", sans-serif; */
   margin: 0;
 }
