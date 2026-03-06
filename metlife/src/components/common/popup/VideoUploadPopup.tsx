@@ -15,6 +15,7 @@ import type { AppDispatch } from "../../../redux/store"; // <-- update this path
 import { postImageUpload } from "../../../redux/features/generateVisualSlice";
 import ButtonComp from "../Buton/Button";
 import { useLocation } from "react-router";
+import { getVisualContent } from "../../../redux/features/createVisualSlice";
 
 // ---------- TYPES ----------
 
@@ -54,17 +55,8 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   const scene_id = fieldData?.scene_id;
   const scene_no = fieldData?.["Scene_No."] || fieldData?.Scene_No;
   const dispatch = useDispatch<AppDispatch>();
-  const {pathname} = useLocation();
-  const createVisualContentFlow = pathname.startsWith('/create-visual-content');
-
   const existingVideos = fieldData?.video_uploaded_urls || [];
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
-
-  //  const { generateVisualContentData } = useSelector(
-  //     (store) => store.GenerateVisualContent,
-  //   );
-
 
   // Load last uploaded video on open
   useEffect(() => {
@@ -96,7 +88,7 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
     formData.append("prompt_batch_id", prompt_batch_id);
     formData.append("file", videoFile);
 
-    dispatch(postImageUpload(formData, onClose));
+    dispatch(postImageUpload(formData, onClose,prompt_batch_id ));
   };
 
   return (
