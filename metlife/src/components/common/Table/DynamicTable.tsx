@@ -231,7 +231,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   useEffect(() => {
     if (!isEditing) {
-      const newTitle = scriptTitle ||
+      const newTitle =
+        scriptTitle ||
         tableExtraData?.title ||
         visualContentTitle ||
         tableExtraData?.upload_info?.title ||
@@ -422,24 +423,32 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     const filteredScenes = [...rows]?.filter(
       (scene) => scene?.is_deleted !== true,
     );
-    console.log(filteredScenes, "filteredScenes");
+    // console.log(filteredScenes, "filteredScenes");
+
+    const updatedData = {
+      ...tableExtraData,
+      title: title, // override with latest title state
+      scenes: filteredScenes,
+    };
 
     try {
       if (type === "pdf") {
-        downloadScriptPdf(
-          {
-            ...tableExtraData,
-            // scenes: rows
-            scenes: filteredScenes,
-          },
-          true,
-        );
+        // downloadScriptPdf(
+        //   {
+        //     ...tableExtraData,
+        //     // scenes: rows
+        //     scenes: filteredScenes,
+        //   },
+        //   true,
+        // );
+        downloadScriptPdf(updatedData, true);
       } else if (type === "word") {
-        downloadScriptWord({
-          ...tableExtraData,
-          // scenes: rows,
-          scenes: filteredScenes,
-        });
+        // downloadScriptWord({
+        //   ...tableExtraData,
+        //   // scenes: rows,
+        //   scenes: filteredScenes,
+        // });
+        downloadScriptWord(updatedData);
       }
       setUiState((prev) => ({ ...prev, openDownloadPopup: false }));
     } catch (err) {
@@ -580,9 +589,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     // setOperations(false);
     setUiState((prev) => ({ ...prev, operations: false }));
     const { script_status, saved_version, scenes, ...rest } = tableExtraData;
+    console.log(tableExtraData, "table_extra_data");
 
     let updatedData = [...rows]
-      .filter((parentItem) => !parentItem?.is_deleted) // ✅ skip deleted rows
+      .filter((parentItem) => !parentItem?.is_deleted)
       .map((parentItem) => {
         let existing = scenes.find((item) => item?.scene_id == parentItem?.id);
 
@@ -610,7 +620,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         ...rest,
         script_id: id,
         scenes: updatedData,
-        title: tableExtraData?.title,
+        title,
         version: tableExtraData?.version,
         page: "script",
       },

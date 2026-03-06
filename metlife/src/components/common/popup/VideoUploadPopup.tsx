@@ -97,9 +97,6 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
     formData.append("file", videoFile);
 
     dispatch(postImageUpload(formData, onClose));
-    // if (createVisualContentFlow) {
-
-    // }
   };
 
   return (

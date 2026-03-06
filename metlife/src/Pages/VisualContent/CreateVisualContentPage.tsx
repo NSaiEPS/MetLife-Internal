@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import styles from "./visualContent.module.css";
 import copy from "../../assets/copy.svg";
@@ -35,7 +34,6 @@ import ButtonComp from "../../components/common/Buton/Button";
 import AutoFixHighIcon from "../../assets/wizardMagic.svg";
 import upload from "../../assets/upload_icon.svg";
 import VideoUploadPopup from "../../components/common/popup/VideoUploadPopup";
-import { toast } from "react-toastify";
 
 // ---------- Types ----------
 interface RowData {
@@ -65,7 +63,7 @@ const CreateVisualContentPage: React.FC = () => {
   const { saveVisualContentData, saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
   );
-  console.log(saveVisualContentData, "check");
+
   const columns: Column<RowData>[] = [
     { label: "Scene No.", key: "Scene_No", width: "5%" },
     {
@@ -107,6 +105,7 @@ const CreateVisualContentPage: React.FC = () => {
 
       onClick: (row: RowData) => {
         if (row.Visual_Type === "clip") {
+          console.log(row, "row_check")
           handleVideoUpload(row);
         }
       },
@@ -146,9 +145,9 @@ const CreateVisualContentPage: React.FC = () => {
     (store: RootState) => store.SaveTranslatedData,
   );
 
-  const { generateVisualContentData } = useSelector(
-    (store: RootState) => store.GenerateVisualContent,
-  );
+  // const { generateVisualContentData } = useSelector(
+  //   (store: RootState) => store.GenerateVisualContent,
+  // );
 
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
@@ -339,11 +338,6 @@ const CreateVisualContentPage: React.FC = () => {
     dispatch(postTranslatedDataSave(data, id));
   };
 
-  // const disableGenerate =
-  // generateVisualContentData?.visuals?.some((scene: any) => {
-  //   if (!Array.isArray(scene.videos)) return false;
-  //   return scene.status !== "uploaded" || scene.videos.length === 0;
-  // }) ?? false;
 
   console.log(saveVisualContentData?.prompts, "chekc");
 
