@@ -1366,7 +1366,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       </Typography>
                     ) : (
                       <Typography variant="h5" fontWeight={600} mb={1}>
-                        Conmbined Video Flow
+                        Combined Video Flow
                       </Typography>
                     )}
 

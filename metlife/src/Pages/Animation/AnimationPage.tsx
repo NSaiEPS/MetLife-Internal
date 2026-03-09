@@ -1,6 +1,11 @@
 import {
   Box,
   Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   Grid,
@@ -108,6 +113,11 @@ const AnimationPage: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [bgMusic, setBgMusic] = useState("on"); // default
+  const [openMusicPopup, setOpenMusicPopup] = useState(false);
+  const [introVideo, setIntroVideo] = useState<File | null>(null);
+  const [outroVideo, setOutroVideo] = useState<File | null>(null);
+  const [sameAsIntro, setSameAsIntro] = useState(false);
+
   // const open = Boolean(anchorEl);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
@@ -320,11 +330,23 @@ const AnimationPage: React.FC = () => {
     setAnchorEl(null);
   };
 
-  // const handleMusicSelect = (value) => {
-  //   setBgMusic(value); // store selected value
-  //   handleMenuClose();
-  //   generateVideo(value); // pass forward
-  // };
+  const handleOpenMusicPopup = () => {
+    setOpenMusicPopup(true);
+  };
+
+  const handleCloseMusicPopup = () => {
+    setOpenMusicPopup(false);
+  };
+
+  const handleIntroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setIntroVideo(file);
+  };
+
+  const handleOutroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setOutroVideo(file);
+  };
 
   console.log(generatedVideoData?.estimated_seconds, "generatedVideoData");
 
@@ -386,7 +408,6 @@ const AnimationPage: React.FC = () => {
                             onComplete={() => setTimerDone(true)}
                           />
                         )}{" "}
-                        
                       {finalVideoTime > 0 && (
                         <Timer
                           time={finalVideoTime}
@@ -459,7 +480,8 @@ const AnimationPage: React.FC = () => {
                             sx={{ textTransform: "none", width: "200px" }}
                             label={"Generate Final Video"}
                             // action={generateVideo}
-                            action={handleMenuOpen}
+                            // action={handleMenuOpen}
+                            action={handleOpenMusicPopup}
                             disabled={
                               audioAnimationLoader ||
                               videoAnimationLoader ||
@@ -469,21 +491,118 @@ const AnimationPage: React.FC = () => {
                             }
                           />
 
+                          <Dialog
+                            open={openMusicPopup}
+                            onClose={handleCloseMusicPopup}
+                            maxWidth="sm"
+                            fullWidth
+                          >
+                            <DialogTitle>Background Music</DialogTitle>
+
+                            <DialogContent>
+                              <Box
+                                display="flex"
+                                flexDirection="column"
+                                gap={2}
+                                mt={1}
+                              >
+                                <FormControlLabel
+                                  control={
+                                    <Switch
+                                      checked={bgMusic}
+                                      onChange={(e) =>
+                                        setBgMusic(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label={bgMusic ? "ON" : "OFF"}
+                                />
+                              </Box>
+
+                              <Box
+                                display="flex"
+                                flexDirection="column"
+                                gap={3}
+                                mt={1}
+                              >
+                                {/* Intro Upload */}
+                                <Box>
+                                  <Typography fontWeight={600}>
+                                    Upload Intro Video
+                                  </Typography>
+                                  <input
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleIntroUpload}
+                                  />
+
+                                  {introVideo && (
+                                    <Typography variant="body2">
+                                      {introVideo.name}
+                                    </Typography>
+                                  )}
+                                </Box>
+
+                                {/* Checkbox */}
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={sameAsIntro}
+                                      onChange={(e) =>
+                                        setSameAsIntro(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label="Use same video as Intro for Outro"
+                                />
+
+                                {/* Outro Upload */}
+                                <Box>
+                                  <Typography fontWeight={600}>
+                                    Upload Outro Video
+                                  </Typography>
+
+                                  <input
+                                    type="file"
+                                    accept="video/*"
+                                    disabled={sameAsIntro}
+                                    onChange={handleOutroUpload}
+                                  />
+
+                                  {!sameAsIntro && outroVideo && (
+                                    <Typography variant="body2">
+                                      {outroVideo.name}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              </Box>
+                            </DialogContent>
+
+                            <DialogActions>
+                              <ButtonComp
+                                label="Cancel"
+                                variant="outlined"
+                                action={handleCloseMusicPopup}
+                              />
+
+                              <ButtonComp
+                                label="Generate Final Video"
+                                action={() => {
+                                  generateVideo();
+                                  handleCloseMusicPopup();
+                                }}
+                                disabled={
+                                  audioAnimationLoader ||
+                                  videoAnimationLoader ||
+                                  !videoAnimationData ||
+                                  generatedVideoData?.final_video ||
+                                  finalTime > 0
+                                }
+                              />
+                            </DialogActions>
+                          </Dialog>
+
                           {/* <Menu
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleMenuClose}
-                      >
-                        <MenuItem onClick={() => handleMusicSelect("on")}>
-                          Background Music ON
-                        </MenuItem>
-
-                        <MenuItem onClick={() => handleMusicSelect("off")}>
-                          Background Music OFF
-                        </MenuItem>
-                      </Menu> */}
-
-                          <Menu
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
@@ -519,7 +638,7 @@ const AnimationPage: React.FC = () => {
                                 }
                               />
                             </Box>
-                          </Menu>
+                          </Menu> */}
                         </Box>
                       )}
                       {/* Full Video */}

@@ -1466,7 +1466,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
                       </Grid>
                     ))}
-                  {audioAnimationData?.scenes &&
+                  {/* {audioAnimationData?.scenes &&
                   audioAnimationData?.scenes?.length > 0 ? (
                     <>
                       <Typography
@@ -1504,6 +1504,83 @@ const AudioAnimationPage: React.FC = () => {
                         />
                       </>
                     )
+                  )} */}
+
+                  {audioAnimationData?.scenes &&
+                  audioAnimationData?.scenes?.length > 0 ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Available Voices
+                      </Typography>
+
+                      <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {(() => {
+                          const scenes = audioAnimationData.scenes;
+
+                          // Create scene lookup
+                          const sceneMap = new Map(
+                            scenes.map((scene: any) => [
+                              scene.scene_number,
+                              scene,
+                            ]),
+                          );
+
+                          // Find max scene number
+                          const maxScene = Math.max(
+                            ...scenes.map((s: any) => s.scene_number),
+                          );
+
+                          return Array.from({ length: maxScene }, (_, i) => {
+                            const sceneNumber = i + 1;
+                            const scene = sceneMap.get(sceneNumber);
+
+                            return (
+                              <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                key={sceneNumber}
+                                sx={{ width: "100%" }}
+                              >
+                                {scene ? (
+                                  <VoicePlayer
+                                    index={sceneNumber - 1}
+                                    description={scene.description}
+                                    s3_url={scene.final_audio_s3_url}
+                                  />
+                                ) : (
+                                  <Box
+                                    sx={{
+                                      p: 2,
+                                      borderRadius: 2,
+                                      border: "1px dashed #ccc",
+                                      opacity: 0.6,
+                                      pointerEvents: "none",
+                                    }}
+                                  >
+                                    <Typography fontWeight={600}>
+                                      Scene {sceneNumber} Audio
+                                    </Typography>
+
+                                    <Typography variant="body2">
+                                      Scene not available
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Grid>
+                            );
+                          });
+                        })()}
+                      </Grid>
+                    </>
+                  ) : (
+                    <NoDataMessage
+                      filter={false}
+                      loading={audioAnimationLoader}
+                    />
                   )}
 
                   <div className={styles.actions}>
