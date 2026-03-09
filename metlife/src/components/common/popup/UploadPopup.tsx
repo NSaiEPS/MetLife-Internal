@@ -76,7 +76,7 @@ export const UploadPopup = ({
       console.error("Error generating file:", err);
     } finally {
       handleCloseMenu();
-    setLoading(false);
+      setLoading(false);
 
     }
   };
@@ -108,42 +108,42 @@ export const UploadPopup = ({
         {" "}
         {route
           ? [
-              <MenuItem
-                key="download-script"
-                // onClick={() => setOpenDownloadPopup(true)}
-                onClick={handleScriptDownload}
-              >
-                Download Script
-              </MenuItem>,
-              <Divider key="d1" sx={{ my: 0 }} />,
-              <MenuItem
-                key="download-video"
-                onClick={downloadVideoFromDashboard}
-              >
-                Download Video
-              </MenuItem>,
-            ]
+            <MenuItem
+              key="download-script"
+              // onClick={() => setOpenDownloadPopup(true)}
+              onClick={handleScriptDownload}
+            >
+              Download Script
+            </MenuItem>,
+            <Divider key="d1" sx={{ my: 0 }} />,
+            <MenuItem
+              key="download-video"
+              onClick={downloadVideoFromDashboard}
+            >
+              Download Video
+            </MenuItem>,
+          ]
           : [
-              <MenuItem
-                key="upload-video"
-                onClick={() => {
-                  handleCloseMenu();
-                  // navigate("/upload-video");
-                }}
-              >
-                Upload Video
-              </MenuItem>,
-              <Divider key="d2" sx={{ my: 0 }} />,
-              <MenuItem
-                key="upload-script"
-                onClick={() => {
-                  handleCloseMenu();
-                  navigate("/upload-script");
-                }}
-              >
-                Upload Script
-              </MenuItem>,
-            ]}
+            <MenuItem
+              key="upload-video"
+              onClick={() => {
+                handleCloseMenu();
+                // navigate("/upload-video");
+              }}
+            >
+              Upload Video
+            </MenuItem>,
+            <Divider key="d2" sx={{ my: 0 }} />,
+            <MenuItem
+              key="upload-script"
+              onClick={() => {
+                handleCloseMenu();
+                navigate("/upload-script");
+              }}
+            >
+              Upload Script
+            </MenuItem>,
+          ]}
       </Menu>
 
       <DownloadPopup

@@ -1120,7 +1120,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       }}
                     >
                       {selectedLang === lang && (
-                        <MdDone size={20} className={styles.tickIcon} />
+                        <MdDone size={20} color="var(--primary-color)" className={styles.tickIcon} />
                       )}
                       <span>{lang}</span>
                     </div>

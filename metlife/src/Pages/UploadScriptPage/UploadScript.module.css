@@ -4,17 +4,18 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding:60px 40px;
+  padding: 60px 40px;
   background-color: #f8fafc;
   /* padding-top: 100px; */
 }
 
 .uploadCard {
   width: 1500px;
-  background-color: #239de01a;
+  /* background-color: #239de01a; */
+  background-color: var(--card-bg);
   border-radius: 12px;
   height: 600px;
-  border: 1px solid rgba(35, 157, 224, 0.4);
+  border: 1px solid var(--card-border);
   padding: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -27,11 +28,12 @@
   /* font-family: "Metlife_Circular", "Noto_Sans", Arial, sans-serif; */
   outline: none;
   font-size: 16px;
-  color: #000;
+  color: var(--text-colors);
   width: 100%;
   height: 41px;
+  background: var(--dark-color);
   line-height: 37px;
-  background-color: #fff;
+  /* background-color: #fff; */
   height: 50px;
   border: 1px solid #dfdfdf;
   border-radius: 10px !important;
@@ -56,7 +58,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background-color: var(--dark-color);
   margin-bottom: 32px;
   cursor: pointer;
 }
@@ -140,4 +142,13 @@
 
 .downloadBtn:hover {
   background-color: #5cb2e1ff !important;
+}
+
+:global(body.dark) {
+  .uploadPageContainer {
+    background-color: unset;
+  }
+  .uploadBox img {
+    filter: brightness(0) invert(1);
+  }
 }

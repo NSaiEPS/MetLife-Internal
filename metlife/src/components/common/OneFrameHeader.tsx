@@ -94,7 +94,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
           <Typography variant="h6" className={`${styles.title} ${mode === "dark" ? styles.dark_text : styles.light_text}`}>
             EdwSurf Ai Studio
           </Typography>
-          <div>
+          <div style={{ marginRight: "35px" }}>
             <Button
               disableRipple
               disableTouchRipple

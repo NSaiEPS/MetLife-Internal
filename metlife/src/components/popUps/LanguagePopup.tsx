@@ -1,5 +1,5 @@
 import React from "react";
-import type {ReactNode} from "react"
+import type { ReactNode } from "react"
 import { Dialog, DialogContent } from "@mui/material";
 import styles from "./LanguagePopup.module.css";
 

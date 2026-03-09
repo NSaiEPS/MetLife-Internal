@@ -73,7 +73,7 @@ function App({ mode, setMode }: any) {
   return (
     <>
       {/* Theme Toggle Button */}
-      <div style={{ position: "fixed", top: 20, right: 20 }}>
+      <div style={{ position: "fixed", top: 20, right: 20, zIndex: 1000 }}>
         <IconButton onClick={toggleTheme}>
           {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
         </IconButton>

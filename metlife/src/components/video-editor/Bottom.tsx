@@ -257,8 +257,8 @@ export default function Bottom({
                     type === "final-video"
                       ? finalVideoImg
                       : row?.image_urls
-                      ? row?.image_urls[0]
-                      : ""
+                        ? row?.image_urls[0]
+                        : ""
                   }
                   alt=""
                   sx={{
@@ -457,21 +457,21 @@ export default function Bottom({
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 width: 700,
-                bgcolor: "#f5fbff",
+                bgcolor: "var(--dark-color)",
                 borderRadius: 3,
                 boxShadow: 24,
                 p: 3,
               }}
             >
               {/* Title */}
-              <Typography variant="h5"  mb={2}>
+              <Typography variant="h5" mb={2}>
                 Animation Toolkit
               </Typography>
 
               {/* Card */}
               <Box
                 sx={{
-                  bgcolor: "#fff",
+                  // bgcolor: "#fff",
                   borderRadius: 2,
                   p: 3,
                 }}

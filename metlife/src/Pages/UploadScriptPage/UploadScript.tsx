@@ -18,7 +18,7 @@ import DownloadPopup from "../../components/common/popup/DownloadPopup";
 import "jspdf-autotable"; // <-- important for TypeScript to register autoTable
 // import { IoArrowBackCircleOutline } from "react-icons/io5";
 import BackButton from "../../components/common/Buton/BackButton";
-import { Typography } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import secureLocalStorage from "react-secure-storage";
 // import { Button, Typography } from "@mui/material";
 // import { color } from "framer-motion";
@@ -34,6 +34,8 @@ const UploadScript = () => {
   const [openDownloadPopup, setOpenDownloadPopup] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef<any>(null);
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   const isDisabled = !title.trim() || !uploadSuccess;
   const handleClick = () => {
     fileInputRef?.current?.click();
@@ -323,7 +325,7 @@ const UploadScript = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
               accept=".pdf"
-              // multiple
+            // multiple
             />
           </div>
 
@@ -361,16 +363,20 @@ const UploadScript = () => {
             </ButtonComp>
             <ButtonComp
               label={loader ? "Uploading" : "Upload"}
-              variant="contained"
+              // variant=""
               sx={{
-                color: "#ffffff",
+                // color: "#ffffff",
 
                 "&.Mui-disabled": {
                   color: "#ffffff",
+
                   backgroundColor: "#adadad",
+                  "& img": {
+                    filter: "brightness(0) invert(1)",
+                  },
                 },
                 "& img": {
-                  filter: "brightness(0) invert(1)",
+                  filter: mode == "dark" ? "brightness(9) invert(1)" : "brightness(0) invert(1)",
                 },
                 // display: "flex",
                 // alignItems: "center",

@@ -30,6 +30,8 @@ body.light {
   --button-secondary-hover-bg: #007abc;
   --button-secondary-border: #007abc;
   --button-secondary-hover-border: #007abc;
+  --bg-active-select-color: #f4f4f4;
+  --text-colors: #444;
 }
 
 body.dark {
@@ -52,4 +54,6 @@ body.dark {
   --button-secondary-hover-bg: #f7c217;
   --button-secondary-border: #ffffff;
   --button-secondary-hover-border: #f7c217;
+  --bg-active-select-color: #c2c2a342;
+  --text-colors: #ddd;
 }

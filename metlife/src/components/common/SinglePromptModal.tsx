@@ -42,7 +42,7 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
   const modalWidth = size === "lg" ? 800 : 600;
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose}  >
       <Box
         sx={{
           position: "absolute",
@@ -80,6 +80,7 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
             whiteSpace: "pre-wrap",
             overflowY: "auto",
             flex: 1,
+            backgroundColor: "var(--background-color)",
           }}
         >
           {prompt}

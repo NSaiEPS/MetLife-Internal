@@ -15,6 +15,7 @@ import {
   Chip,
   TextField,
   InputAdornment,
+  useTheme,
 } from "@mui/material";
 import { PlayCircle, ErrorOutline, VideoLibrary } from "@mui/icons-material";
 import { FaFileDownload, FaRegPlayCircle } from "react-icons/fa";
@@ -64,7 +65,8 @@ const MyVideosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   // const [selectedFilter, setSelectedFilter] = useState<DashboardFilter>("ALL");
-
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   const [scriptId, setScriptId] = useState("");
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
   const [menuData, setMenuData] = useState({
@@ -367,7 +369,7 @@ const MyVideosDashboard: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
+      <Box sx={{ minHeight: "100vh" }}>
         {dashboardLoader && <FullScreenGradientLoader text="Loading..." />}
 
         <Box sx={{ p: 4 }}>
@@ -423,7 +425,7 @@ const MyVideosDashboard: React.FC = () => {
                     sx={{
                       p: 3,
                       borderRadius: 4,
-                      bgcolor: s.color,
+                      bgcolor: mode == "dark" ? " " : s.color,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -431,7 +433,7 @@ const MyVideosDashboard: React.FC = () => {
                       boxShadow: "none",
                       border:
                         selectedFilter === s.filter
-                          ? "2px solid #1976D2"
+                          ? "2px solid var(--primary-color)"
                           : "2px solid transparent",
                       transition: "0.3s",
                       "&:hover": {
@@ -479,7 +481,7 @@ const MyVideosDashboard: React.FC = () => {
                   width: 280,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "14px",
-                    backgroundColor: "#f9f9f9",
+                    // backgroundColor: "#f9f9f9",
                   },
                 }}
                 InputProps={{
@@ -506,7 +508,7 @@ const MyVideosDashboard: React.FC = () => {
           <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
             <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: "#E3F2FD" }}>
+                <TableRow sx={{ bgcolor: mode == "dark" ? "var(--footer-bg)" : "#E3F2FD" }}>
                   <TableCell>S.No</TableCell>
                   {/* <TableCell>Thumbnail</TableCell> */}
                   <TableCell>Video Name</TableCell>
@@ -539,7 +541,7 @@ const MyVideosDashboard: React.FC = () => {
                         {/* ${
                           video.language ? "_" + video.language.slice(0, 2) : ""
                         } */}
-                        {`${video.title}` }
+                        {`${video.title}`}
                       </TableCell>
                       <TableCell>{video?.language || "-"}</TableCell>
 

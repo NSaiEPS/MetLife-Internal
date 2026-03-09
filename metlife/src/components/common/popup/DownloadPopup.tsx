@@ -39,7 +39,7 @@ const DownloadPopup = ({ open, onClose, onSelect }) => {
         sx={{
           fontWeight: "bold",
           textAlign: "center",
-          color: "#1976d2",
+          color: "var(--primary-color)",
           fontSize: "1.3rem",
         }}
       >

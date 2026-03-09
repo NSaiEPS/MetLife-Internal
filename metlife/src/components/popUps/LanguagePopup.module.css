@@ -1,10 +1,9 @@
 .title {
-  
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 12px;
-  color: #239DE0;
-  padding: 14px 31px !important; 
+  color: var(--primary-color);
+  padding: 14px 31px !important;
   box-shadow: 0px 1px 20px #00000012;
 }
 
@@ -16,7 +15,7 @@
   /* transition: background-color 0.2s ease, color 0.2s ease; */
 }
 
-.selectLangParent{
+.selectLangParent {
   padding: 20px 0 0 20px;
 }
 
@@ -25,6 +24,6 @@
 } */
 
 .languageItem.active {
-  background-color: #0069aa; /* Same as hover */
+  background-color: var(--primary-color); /* Same as hover */
   font-weight: 600;
 }

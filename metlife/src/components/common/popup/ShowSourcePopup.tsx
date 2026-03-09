@@ -40,7 +40,7 @@ const ShowSourcePopup = ({ open, onClose, data = [], loader = false }) => {
           sx={{
             fontWeight: "bold",
             textAlign: "center",
-            color: "#1976d2",
+            color: "var(--primary-color)",
             fontSize: "1.3rem",
             textTransform: "capitalize",
           }}
