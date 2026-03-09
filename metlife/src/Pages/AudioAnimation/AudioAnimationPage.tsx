@@ -1506,7 +1506,7 @@ const AudioAnimationPage: React.FC = () => {
                     )
                   )} */}
 
-                  {audioAnimationData?.scenes &&
+                  {/* {audioAnimationData?.scenes &&
                   audioAnimationData?.scenes?.length > 0 ? (
                     <>
                       <Typography
@@ -1574,6 +1574,67 @@ const AudioAnimationPage: React.FC = () => {
                             );
                           });
                         })()}
+                      </Grid>
+                    </>
+                  ) : (
+                    <NoDataMessage
+                      filter={false}
+                      loading={audioAnimationLoader}
+                    />
+                  )} */}
+
+                  {audioAnimationData?.scenes &&
+                  audioAnimationData?.scenes?.length > 0 ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Available Voices
+                      </Typography>
+
+                      <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {audioAnimationData.scenes.map(
+                          (scene: any, idx: number) => {
+                            const isDisabled = !scene.final_audio_s3_url;
+
+                            return (
+                              <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                key={idx}
+                                sx={{ width: "100%" }}
+                              >
+                                {!isDisabled ? (
+                                  <VoicePlayer
+                                    index={idx}
+                                    description={scene.description}
+                                    s3_url={scene.final_audio_s3_url}
+                                  />
+                                ) : (
+                                  <Box
+                                    sx={{
+                                      p: 2,
+                                      borderRadius: 2,
+                                      border: "1px dashed #ccc",
+                                      opacity: 0.6,
+                                      pointerEvents: "none",
+                                    }}
+                                  >
+                                    <Typography fontWeight={600}>
+                                      Scene {scene.scene_number} Audio
+                                    </Typography>
+
+                                    <Typography variant="body2">
+                                      Audio for this scene is not available
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Grid>
+                            );
+                          },
+                        )}
                       </Grid>
                     </>
                   ) : (

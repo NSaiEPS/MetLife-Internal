@@ -112,7 +112,7 @@ const AnimationPage: React.FC = () => {
 
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [bgMusic, setBgMusic] = useState("on"); // default
+  const [bgMusic, setBgMusic] = useState(false); // default
   const [openMusicPopup, setOpenMusicPopup] = useState(false);
   const [introVideo, setIntroVideo] = useState<File | null>(null);
   const [outroVideo, setOutroVideo] = useState<File | null>(null);
@@ -303,8 +303,26 @@ const AnimationPage: React.FC = () => {
 
   const generateVideo = () => {
     if (!id) return;
-    dispatch(postGenerateFullVideo(id, bgMusic));
-    handleMenuClose();
+    if (!introVideo) {
+      toast.error("Please upload an Intro video");
+      return;
+    }
+
+    if (!sameAsIntro && !outroVideo) {
+      toast.error("Please upload an Outro video or select 'Same as Intro'");
+      return;
+    }
+
+    // const background_music = bgMusic;
+    const formData = new FormData();
+    formData.append("intro_file", introVideo);
+    formData.append("outro_file", outroVideo || "");
+
+    // console.log(bgMusic, "checkBgMusic");
+
+    dispatch(postGenerateFullVideo(id, bgMusic, formData, sameAsIntro));
+    // handleMenuClose();
+    handleCloseMusicPopup();
   };
 
   const handleSave = () => {
@@ -340,15 +358,19 @@ const AnimationPage: React.FC = () => {
 
   const handleIntroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (!file) return;
     if (file) setIntroVideo(file);
   };
 
   const handleOutroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (!file) return;
+
     if (file) setOutroVideo(file);
   };
 
-  console.log(generatedVideoData?.estimated_seconds, "generatedVideoData");
+  // console.log(generatedVideoData?.estimated_seconds, "generatedVideoData");
+  // console.log(introVideo, outroVideo, "check");
 
   return (
     <>
@@ -497,14 +519,15 @@ const AnimationPage: React.FC = () => {
                             maxWidth="sm"
                             fullWidth
                           >
-                            <DialogTitle>Background Music</DialogTitle>
+                            <DialogTitle>Final Attachments</DialogTitle>
 
                             <DialogContent>
+                              <Typography>Background Music</Typography>
                               <Box
                                 display="flex"
                                 flexDirection="column"
                                 gap={2}
-                                mt={1}
+                                // mt={1}
                               >
                                 <FormControlLabel
                                   control={
@@ -589,7 +612,7 @@ const AnimationPage: React.FC = () => {
                                 label="Generate Final Video"
                                 action={() => {
                                   generateVideo();
-                                  handleCloseMusicPopup();
+                                  // handleCloseMusicPopup();
                                 }}
                                 disabled={
                                   audioAnimationLoader ||
