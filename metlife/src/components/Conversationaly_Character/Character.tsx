@@ -296,7 +296,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 >
                   <MenuItem value="prompt">Generate</MenuItem>
                   <MenuItem value="image">Upload</MenuItem>
-                  {/* <MenuItem value="search">Search</MenuItem> */}
+                  <MenuItem value="search">Search</MenuItem>
                 </Select>
               </FormControl>
             </Box>
