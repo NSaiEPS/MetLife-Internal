@@ -123,9 +123,11 @@ const AnimationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
   const waitingTime = convertToISTParts(
-    videoAnimationData?.estimated_completion_at ||
+    generatedVideoData?.estimated_completion_at ||
+      videoAnimationData?.estimated_completion_at ||
       sceneData?.estimated_completion_at,
   );
+
   const finalTime = Math.ceil(waitingTime / 60);
 
   const isWaitingVideoTime = convertToISTParts(
@@ -303,24 +305,29 @@ const AnimationPage: React.FC = () => {
 
   const generateVideo = () => {
     if (!id) return;
-    if (!introVideo) {
-      toast.error("Please upload an Intro video");
-      return;
-    }
+    // if (!introVideo) {
+    //   toast.error("Please upload an Intro video");
+    //   return;
+    // }
 
-    if (!sameAsIntro && !outroVideo) {
-      toast.error("Please upload an Outro video or select 'Same as Intro'");
-      return;
-    }
+    // if (!sameAsIntro && !outroVideo) {
+    //   toast.error("Please upload an Outro video or select 'Same as Intro'");
+    //   return;
+    // }
 
-    // const background_music = bgMusic;
     const formData = new FormData();
-    formData.append("intro_file", introVideo);
-    formData.append("outro_file", outroVideo || "");
-
-    // console.log(bgMusic, "checkBgMusic");
-
-    dispatch(postGenerateFullVideo(id, bgMusic, formData, sameAsIntro));
+    if (introVideo) formData.append("intro_file", introVideo);
+    if (outroVideo) formData.append("outro_file", outroVideo);
+    dispatch(
+      postGenerateFullVideo(
+        id,
+        bgMusic,
+        formData,
+        sameAsIntro,
+        !!introVideo,
+        !!outroVideo,
+      ),
+    );
     // handleMenuClose();
     handleCloseMusicPopup();
   };
@@ -369,8 +376,11 @@ const AnimationPage: React.FC = () => {
     if (file) setOutroVideo(file);
   };
 
-  // console.log(generatedVideoData?.estimated_seconds, "generatedVideoData");
-  // console.log(introVideo, outroVideo, "check");
+  // console.log(generatedVideoData, "generatedVideoData");
+  console.log("finalTime", finalTime);
+  console.log("timerDone", timerDone);
+  console.log("generatedVideoData",!generatedVideoData?.final_video, generatedVideoData);
+
 
   return (
     <>

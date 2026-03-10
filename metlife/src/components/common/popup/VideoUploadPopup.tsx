@@ -61,7 +61,7 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   const existingVideos = fieldData?.video_uploaded_urls || [];
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [audio, setAudio] = useState("on"); // default
+  const [audio, setAudio] = useState(false);
 
   // Load last uploaded video on open
   useEffect(() => {
@@ -92,7 +92,9 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
     formData.append("title", title);
     formData.append("prompt_batch_id", prompt_batch_id);
     formData.append("file", videoFile);
-    formData.append("generate_audio", audio === "on" ? true: false);
+    // formData.append("generate_audio", audio === "on" ? true: false);
+    formData.append("generate_audio", audio);
+    console.log(audio, 'audio')
 
     dispatch(postImageUpload(formData, onClose, prompt_batch_id));
   };
@@ -170,7 +172,7 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
         >
           <Box display="flex" flexDirection="column" gap={2}>
             <Typography variant="primary" fontWeight={600}>
-              Want Audio
+              Footage audio
             </Typography>
 
             <FormControlLabel
