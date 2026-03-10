@@ -299,18 +299,41 @@ const OneframeAdminPanel: React.FC = () => {
           value={tabMap.indexOf(selectedTab)}
           onChange={(_, v) => setSelectedTab(tabMap[v])}
           sx={{
-            '& .Mui-selected': {
-              color: 'var(--primary-color)', // selected tab text
-              fontWeight: 'bold',
-            },
             '& .MuiTabs-indicator': {
-              backgroundColor: 'var(--primary-color)', // bottom line color
+              background: 'var(--primary-color)',
             }
           }}
         >
-          <Tab label="Clients" />
-          <Tab label="Admins" />
-          <Tab label="Users" />
+          <Tab
+            label="Clients"
+            sx={{
+              // color: 'gray',
+              '&.Mui-selected': {
+                color: 'var(--primary-color)',
+                fontWeight: 'bold'
+              }
+            }}
+          />
+          <Tab
+            label="Admins"
+            sx={{
+              // color: 'gray',
+              '&.Mui-selected': {
+                color: 'var(--primary-color)',
+                fontWeight: 'bold'
+              }
+            }}
+          />
+          <Tab
+            label="Users"
+            sx={{
+              // color: 'gray',
+              '&.Mui-selected': {
+                color: 'var(--primary-color)',
+                fontWeight: 'bold'
+              }
+            }}
+          />
         </Tabs>
 
         {/* TABLE */}
