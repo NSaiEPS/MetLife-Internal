@@ -379,8 +379,11 @@ const AnimationPage: React.FC = () => {
   // console.log(generatedVideoData, "generatedVideoData");
   console.log("finalTime", finalTime);
   console.log("timerDone", timerDone);
-  console.log("generatedVideoData",!generatedVideoData?.final_video, generatedVideoData);
-
+  console.log(
+    "generatedVideoData",
+    !generatedVideoData?.final_video,
+    generatedVideoData,
+  );
 
   return (
     <>
@@ -523,7 +526,7 @@ const AnimationPage: React.FC = () => {
                             }
                           />
 
-                          <Dialog
+                          {/* <Dialog
                             open={openMusicPopup}
                             onClose={handleCloseMusicPopup}
                             maxWidth="sm"
@@ -558,7 +561,7 @@ const AnimationPage: React.FC = () => {
                                 gap={3}
                                 mt={1}
                               >
-                                {/* Intro Upload */}
+
                                 <Box>
                                   <Typography fontWeight={600}>
                                     Upload Intro Video
@@ -576,7 +579,7 @@ const AnimationPage: React.FC = () => {
                                   )}
                                 </Box>
 
-                                {/* Checkbox */}
+
                                 <FormControlLabel
                                   control={
                                     <Checkbox
@@ -589,7 +592,7 @@ const AnimationPage: React.FC = () => {
                                   label="Use same video as Intro for Outro"
                                 />
 
-                                {/* Outro Upload */}
+
                                 <Box>
                                   <Typography fontWeight={600}>
                                     Upload Outro Video
@@ -624,6 +627,131 @@ const AnimationPage: React.FC = () => {
                                   generateVideo();
                                   // handleCloseMusicPopup();
                                 }}
+                                disabled={
+                                  audioAnimationLoader ||
+                                  videoAnimationLoader ||
+                                  !videoAnimationData ||
+                                  generatedVideoData?.final_video ||
+                                  finalTime > 0
+                                }
+                              />
+                            </DialogActions>
+                          </Dialog> */}
+
+                          <Dialog
+                            open={openMusicPopup}
+                            onClose={handleCloseMusicPopup}
+                            maxWidth="sm"
+                            fullWidth
+                          >
+                            <DialogTitle sx={{ fontWeight: 600 }}>
+                              Final Video Attachments
+                            </DialogTitle>
+
+                            <DialogContent dividers>
+                              {/* Background Music */}
+                              <Box mb={3}>
+                                <Typography fontWeight={600} mb={1}>
+                                  Background Music
+                                </Typography>
+
+                                <FormControlLabel
+                                  control={
+                                    <Switch
+                                      checked={bgMusic}
+                                      onChange={(e) =>
+                                        setBgMusic(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label={bgMusic ? "Enabled" : "Disabled"}
+                                />
+                              </Box>
+
+                              {/* Intro Section */}
+                              <Box mb={3}>
+                                <Typography fontWeight={600} mb={1}>
+                                  Intro Video
+                                </Typography>
+
+                                <Button variant="outlined" component="label">
+                                  Upload Intro Video
+                                  <input
+                                    hidden
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleIntroUpload}
+                                  />
+                                </Button>
+
+                                {introVideo && (
+                                  <Typography
+                                    variant="body2"
+                                    mt={1}
+                                    sx={{ color: "text.secondary" }}
+                                  >
+                                    Selected: {introVideo.name}
+                                  </Typography>
+                                )}
+                              </Box>
+
+                              {/* Same as Intro Checkbox */}
+                              <Box mb={2}>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={sameAsIntro}
+                                      onChange={(e) =>
+                                        setSameAsIntro(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label="Use Intro Video as Outro"
+                                />
+                              </Box>
+
+                              {/* Outro Section */}
+                              <Box>
+                                <Typography fontWeight={600} mb={1}>
+                                  Outro Video
+                                </Typography>
+
+                                <Button
+                                  variant="outlined"
+                                  component="label"
+                                  disabled={sameAsIntro}
+                                >
+                                  Upload Outro Video
+                                  <input
+                                    hidden
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleOutroUpload}
+                                  />
+                                </Button>
+
+                                {!sameAsIntro && outroVideo && (
+                                  <Typography
+                                    variant="body2"
+                                    mt={1}
+                                    sx={{ color: "text.secondary" }}
+                                  >
+                                    Selected: {outroVideo.name}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </DialogContent>
+
+                            <DialogActions sx={{ px: 3, py: 2 }}>
+                              <ButtonComp
+                                label="Cancel"
+                                variant="outlined"
+                                action={handleCloseMusicPopup}
+                              />
+
+                              <ButtonComp
+                                label="Generate Final Video"
+                                action={generateVideo}
                                 disabled={
                                   audioAnimationLoader ||
                                   videoAnimationLoader ||
