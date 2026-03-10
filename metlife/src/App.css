@@ -32,6 +32,7 @@ body.light {
   --button-secondary-hover-border: #007abc;
   --bg-active-select-color: #f4f4f4;
   --text-colors: #444;
+  --table-bg-color: #e3f2fd;
 }
 
 body.dark {
@@ -56,4 +57,5 @@ body.dark {
   --button-secondary-hover-border: #f7c217;
   --bg-active-select-color: #c2c2a342;
   --text-colors: #ddd;
+  --table-bg-color: #242323;
 }

@@ -26,6 +26,7 @@ import {
   TableContainer,
   Button,
   Divider,
+  useTheme,
 } from "@mui/material";
 
 import {
@@ -71,7 +72,8 @@ const SuperAdminPanel: React.FC = () => {
   const [search, setSearch] = React.useState("");
   const [selectedClient, setSelectedClient] = React.useState("all");
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
-
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   /* ---------------- CLIENT STATE ---------------- */
   const [clients, setClients] = React.useState<string[]>([
     "MetLife US",
@@ -145,19 +147,22 @@ const SuperAdminPanel: React.FC = () => {
   });
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#f6f8fb" }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       {/* HEADER */}
       <AppBar
         position="sticky"
         elevation={0}
         sx={{
-          bgcolor: "white",
+          bgcolor: "var(--dark-color)",
           color: "black",
-          borderBottom: "1px solid #edf0f5",
+          borderBottom: mode == "dark" ? "" : "1px solid #edf0f5",
+          marginLeft: sidebarOpen ? ` ${drawerWidth}px` : "0",
+          width: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : "100%"
         }}
       >
+
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Typography variant="h6" fontWeight={600}>
+          <Typography variant="h6" fontWeight={600} sx={{ color: "var(--light-color)" }}>
             Super Admin Panel
           </Typography>
 
@@ -169,6 +174,11 @@ const SuperAdminPanel: React.FC = () => {
               borderRadius: 3,
               textTransform: "none",
               px: 2,
+              color: "var(--primary-color)",
+              borderColor: "var(--primary-color)",
+              "&:hover": {
+                borderColor: "var(--button-secondary-hover-border)",
+              },
             }}
           >
             {sidebarOpen ? "Hide Menu" : "Show Menu"}
@@ -184,8 +194,8 @@ const SuperAdminPanel: React.FC = () => {
           width: drawerWidth,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
-            bgcolor: "white",
-            borderRight: "1px solid #edf0f5",
+            bgcolor: mode == "dark" ? "var(--footer-bg)" : "white",
+            borderRight: mode == "dark" ? "" : "1px solid #edf0f5",
             p: 2,
           },
         }}
@@ -284,11 +294,11 @@ const SuperAdminPanel: React.FC = () => {
           <TableContainer
             component={Paper}
             elevation={0}
-            sx={{ borderRadius: 4, border: "1px solid #edf0f5" }}
+            sx={{ borderRadius: 4, border: mode == "dark" ? "" : "1px solid #edf0f5" }}
           >
             <Table size="small">
               <TableHead>
-                <TableRow sx={{ bgcolor: "#e3f2fd" }}>
+                <TableRow sx={{ bgcolor: "var(--table-bg-color)" }}>
                   <TableCell sx={{ fontWeight: 600 }}>Client Name</TableCell>
                   <TableCell sx={{ fontWeight: 600 }} align="center">
                     Action
@@ -319,11 +329,11 @@ const SuperAdminPanel: React.FC = () => {
         )}
 
         {/* USERS TABLE */}
-        {section === "users" && <DataTable rows={filteredUsers} type="users" />}
+        {section === "users" && <DataTable rows={filteredUsers} type="users" mode={mode} />}
 
         {/* SCRIPTS TABLE */}
         {section === "scripts" && (
-          <DataTable rows={filteredScripts} type="scripts" />
+          <DataTable rows={filteredScripts} type="scripts" mode={mode} />
         )}
       </Box>
 
@@ -366,10 +376,10 @@ const SidebarButton = ({ active, icon, label, onClick }: any) => (
       borderRadius: 3,
       textTransform: "none",
       fontWeight: active ? 600 : 400,
-      bgcolor: active ? "#e3f2fd" : "transparent",
-      color: active ? "primary.main" : "text.primary",
+      bgcolor: active ? "var(--card-bg)" : "transparent",
+      color: active ? "var(--primary-color)" : "text.primary",
       "&:hover": {
-        bgcolor: "#f5f7fa",
+        bgcolor: "var(--bg-active-select-color)",
       },
     }}
   >
@@ -378,15 +388,15 @@ const SidebarButton = ({ active, icon, label, onClick }: any) => (
 );
 
 /* ---------------- Shared Table ---------------- */
-const DataTable = ({ rows, type }: any) => (
+const DataTable = ({ rows, type, mode }: any) => (
   <TableContainer
     component={Paper}
     elevation={0}
-    sx={{ borderRadius: 4, border: "1px solid #edf0f5" }}
+    sx={{ borderRadius: 4, border: mode == "dark" ? "" : "1px solid #edf0f5" }}
   >
     <Table size="small">
       <TableHead>
-        <TableRow sx={{ bgcolor: "#e3f2fd" }}>
+        <TableRow sx={{ bgcolor: "var(--table-bg-color)" }}>
           <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
           <TableCell sx={{ fontWeight: 600 }}>
             {type === "users" ? "Email" : "Owner"}

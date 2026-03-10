@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import {
   Box,
   Typography,
@@ -20,6 +20,7 @@ import {
   DialogActions,
   MenuItem,
   Button,
+  useTheme,
 } from "@mui/material";
 
 import {
@@ -104,7 +105,8 @@ const OneframeAdminPanel: React.FC = () => {
   const [clients, setClients] = React.useState(initialClients);
   const [admins, setAdmins] = React.useState(initialAdmins);
   const [users, setUsers] = React.useState(initialUsers);
-
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   /* ---------------- MODAL ---------------- */
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editingItem, setEditingItem] = React.useState<any>(null);
@@ -229,7 +231,7 @@ const OneframeAdminPanel: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ bgcolor: "#f7f7f7", minHeight: "100vh" }}>
+    <Box sx={{ minHeight: "100vh" }}>
       <Box sx={{ p: 4 }}>
         <Typography variant="h4" fontWeight={600} mb={3}>
           Admin Panel
@@ -255,7 +257,7 @@ const OneframeAdminPanel: React.FC = () => {
                 sx={{
                   p: 2.5,
                   borderRadius: 4,
-                  bgcolor: s.color,
+                  bgcolor: mode == "dark" ? "transparent" : s.color,
                   cursor: "pointer",
                   transition: "0.25s",
                   "&:hover": { transform: "translateY(-3px)" },
@@ -296,6 +298,15 @@ const OneframeAdminPanel: React.FC = () => {
         <Tabs
           value={tabMap.indexOf(selectedTab)}
           onChange={(_, v) => setSelectedTab(tabMap[v])}
+          sx={{
+            '& .Mui-selected': {
+              color: 'var(--primary-color)', // selected tab text
+              fontWeight: 'bold',
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--primary-color)', // bottom line color
+            }
+          }}
         >
           <Tab label="Clients" />
           <Tab label="Admins" />
@@ -306,7 +317,7 @@ const OneframeAdminPanel: React.FC = () => {
         <Paper sx={{ borderRadius: 3, mt: 2 }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: "#E3F2FD" }}>
+              <TableRow sx={{ bgcolor: "var(--table-bg-color)" }}>
                 <TableCell>Name</TableCell>
                 {selectedTab !== "clients" && <TableCell>Email</TableCell>}
                 {selectedTab !== "clients" && <TableCell>Client</TableCell>}
