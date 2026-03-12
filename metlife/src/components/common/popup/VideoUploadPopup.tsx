@@ -8,6 +8,9 @@ import {
   IconButton,
   Box,
   Typography,
+  FormControlLabel,
+  Switch,
+  Menu,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +18,7 @@ import type { AppDispatch } from "../../../redux/store"; // <-- update this path
 import { postImageUpload } from "../../../redux/features/generateVisualSlice";
 import ButtonComp from "../Buton/Button";
 import { useLocation } from "react-router";
+import { getVisualContent } from "../../../redux/features/createVisualSlice";
 
 // ---------- TYPES ----------
 
@@ -54,17 +58,10 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   const scene_id = fieldData?.scene_id;
   const scene_no = fieldData?.["Scene_No."] || fieldData?.Scene_No;
   const dispatch = useDispatch<AppDispatch>();
-  const {pathname} = useLocation();
-  const createVisualContentFlow = pathname.startsWith('/create-visual-content');
-
   const existingVideos = fieldData?.video_uploaded_urls || [];
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
-
-  //  const { generateVisualContentData } = useSelector(
-  //     (store) => store.GenerateVisualContent,
-  //   );
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [audio, setAudio] = useState(false);
 
   // Load last uploaded video on open
   useEffect(() => {
@@ -95,12 +92,22 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
     formData.append("title", title);
     formData.append("prompt_batch_id", prompt_batch_id);
     formData.append("file", videoFile);
+    // formData.append("generate_audio", audio === "on" ? true: false);
+    formData.append("generate_audio", audio);
+    console.log(audio, 'audio')
 
-    dispatch(postImageUpload(formData, onClose));
-    // if (createVisualContentFlow) {
-
-    // }
+    dispatch(postImageUpload(formData, onClose, prompt_batch_id));
   };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  console.log(audio, "check_audio")
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -148,6 +155,50 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
         >
           Upload
         </ButtonComp>
+
+        <ButtonComp
+          sx={{ textTransform: "none", }}
+          label={"Audio"}
+          // action={generateVideo}
+          action={handleMenuOpen}
+       
+        />
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          PaperProps={{ sx: { p: 2, width: 230 } }}
+        >
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Typography variant="primary" fontWeight={600}>
+              Footage audio
+            </Typography>
+
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={audio}
+                  onChange={(e) => setAudio(e.target.checked)}
+                />
+              }
+              label={audio ? "ON" : "OFF"}
+            />
+            {/* <ButtonComp
+              sx={{ textTransform: "none", width: "200px" }}
+              label={"Generate Final Video"}
+              action={generateVideo}
+              // action={handleMenuOpen}
+              disabled={
+                audioAnimationLoader ||
+                videoAnimationLoader ||
+                !videoAnimationData ||
+                generatedVideoData?.final_video ||
+                finalTime > 0
+              }
+            /> */}
+          </Box>
+        </Menu>
       </DialogActions>
     </Dialog>
   );

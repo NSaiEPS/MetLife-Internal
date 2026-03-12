@@ -125,7 +125,12 @@ const CreateVisualContentPage: React.FC = () => {
           >
             <span>
               {hasVideo ? (
-                <IoCheckmarkDoneCircle style={{marginTop: "6px"}} color="#1976d2" width={22} height={22} />
+                <IoCheckmarkDoneCircle
+                  style={{ marginTop: "6px" }}
+                  color="#1976d2"
+                  width={22}
+                  height={22}
+                />
               ) : (
                 <img src={upload} style={{ width: 20, height: 20 }} />
               )}
@@ -419,6 +424,7 @@ const CreateVisualContentPage: React.FC = () => {
                 <ButtonComp
                   onClick={handleGenerate}
                   variant="contained"
+                  img_icon
                   // className={styles.primaryBtn}
                   disabled={saveTranslatedData === null}
                   icon={AutoFixHighIcon}
@@ -438,7 +444,6 @@ const CreateVisualContentPage: React.FC = () => {
 };
 
 export default CreateVisualContentPage;
-
 
 // import React, { useEffect, useState } from "react";
 // import OneFrameHeader from "../../components/common/OneFrameHeader";
