@@ -15,40 +15,40 @@ const OST_PRESETS = {
     accent_color: [220, 38, 38],
     text_color: [255, 255, 255],
     opacity: 90,
-    width_percent: 60,
-    y_position_percent: 65,
+    // width_percent: 60,
+    // y_position_percent: 65,
   },
   premiumNavy: {
     bg_color: [10, 25, 49],
     accent_color: [212, 175, 55],
     text_color: [245, 245, 245],
     opacity: 95,
-    width_percent: 60,
-    y_position_percent: 65,
+    // width_percent: 60,
+    // y_position_percent: 65,
   },
   cyberpunk: {
     bg_color: [20, 15, 40],
     accent_color: [0, 255, 255],
     text_color: [255, 255, 255],
     opacity: 85,
-    width_percent: 60,
-    y_position_percent: 65,
+    // width_percent: 60,
+    // y_position_percent: 65,
   },
   cleanLight: {
     bg_color: [240, 240, 240],
     accent_color: [37, 99, 235],
     text_color: [15, 23, 42],
     opacity: 95,
-    width_percent: 60,
-    y_position_percent: 65,
+    // width_percent: 60,
+    // y_position_percent: 65,
   },
   alert: {
     bg_color: [0, 0, 0],
     accent_color: [255, 213, 0],
     text_color: [255, 255, 255],
     opacity: 100,
-    width_percent: 60,
-    y_position_percent: 65,
+    // width_percent: 60,
+    // y_position_percent: 65,
   },
 };
 
@@ -167,7 +167,8 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
                 bottom: "20%",
                 left: "30%",
                 transform: "translateX(-50%)",
-                width: `${ostStyle.width_percent}%`,
+                // width: `${ostStyle.width_percent}%`,
+                width: "60%",
                 display: "flex",
                 alignItems: "stretch",
                 borderRadius: 1,
@@ -257,7 +258,7 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
           />
 
           {/* Width Percent */}
-          <TextField
+          {/* <TextField
             label="Banner Width"
             type="number"
             fullWidth
@@ -269,10 +270,10 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
                 width_percent: Number(e.target.value),
               })
             }
-          />
+          /> */}
 
           {/* Y Position */}
-          <TextField
+          {/* <TextField
             label="Banner Height"
             type="number"
             fullWidth
@@ -284,7 +285,7 @@ const OstStylePopup: React.FC<OstStylePopupProps> = ({
                 y_position_percent: Number(e.target.value),
               })
             }
-          />
+          /> */}
 
           <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
             <ButtonComp colorType="secondary" onClick={onClose}>Cancel</ButtonComp>
