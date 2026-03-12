@@ -8,6 +8,7 @@ import type {
   SceneType,
   VisualContentType,
 } from "../../utils/types";
+import { getVisualContent } from "./createVisualSlice";
 
 // ---------- Types ----------
 
@@ -135,7 +136,7 @@ export const getGenerateVisualContentImage =
   };
 
 export const postImageUpload =
-  (data: any, onClose: CallbackFn) => async (dispatch: any) => {
+  (data: any, onClose: CallbackFn, id:string,) => async (dispatch: any) => {
     dispatch(setGenerateVisualLoader(true));
     try {
       const response = await api.post("images/upload-media", data);
@@ -144,6 +145,7 @@ export const postImageUpload =
           "Image uploaded & scene updated successfully",
       );
       dispatch(updateGenerateVisual({ visuals: response?.data?.visuals }));
+        dispatch(getVisualContent(id))
       onClose(false);
     } catch (error) {
       console.error(error);
