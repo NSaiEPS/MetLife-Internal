@@ -1187,13 +1187,12 @@ const AudioAnimationPage: React.FC = () => {
       start_transition: "none",
       end_transition: "none",
       ost_style: ostStyle,
-
     }));
 
     const payload = {
       script_id: id,
       scenes: scenesPayload,
-      // ost_style: ostStyle, 
+      // ost_style: ostStyle,
     };
 
     dispatch(postGenerateVideoBatch(payload, successCallBack));
@@ -1274,9 +1273,11 @@ const AudioAnimationPage: React.FC = () => {
     <>
       {saveLoader && <FullScreenGradientLoader text="loading..." />}
       <audio ref={audioRef} />
-      <Box sx={{
-        minHeight: "100vh"
-      }} >
+      <Box
+        sx={{
+          minHeight: "100vh",
+        }}
+      >
         {sortedLabels && sortedLabels?.length > 0 ? (
           <>
             {(audioAnimationLoader || videoAnimationLoader) && (
@@ -1298,7 +1299,7 @@ const AudioAnimationPage: React.FC = () => {
                     <Button
                       className={styles.icon}
                       sx={{
-                        color: "var(--primary-color)"
+                        color: "var(--primary-color)",
                       }}
                       onClick={() => navigate(`/generate-visual-page/${id}`)}
                     >
@@ -1308,7 +1309,7 @@ const AudioAnimationPage: React.FC = () => {
                       className={styles.icon}
                       disabled={!videoExists}
                       sx={{
-                        color: "var(--primary-color)"
+                        color: "var(--primary-color)",
                       }}
                       onClick={() => navigate(`/animation-page/${id}`)}
                     >
@@ -1455,13 +1456,13 @@ const AudioAnimationPage: React.FC = () => {
                             label="Voice Options/Voice Name"
                             options={
                               Array.isArray(audioAnimationData?.scenes) &&
-                                audioAnimationData.scenes.length > 0
+                              audioAnimationData.scenes.length > 0
                                 ? getFilteredVoiceOptions(charName).map(
-                                  (opt) => ({
-                                    ...opt,
-                                    disabled: false,
-                                  }),
-                                )
+                                    (opt) => ({
+                                      ...opt,
+                                      disabled: false,
+                                    }),
+                                  )
                                 : getFilteredVoiceOptions(charName)
                             }
                             // options={
@@ -1513,7 +1514,7 @@ const AudioAnimationPage: React.FC = () => {
                         </Grid>
                       </Grid>
                     ))}
-                  {audioAnimationData?.scenes &&
+                  {/* {audioAnimationData?.scenes &&
                     audioAnimationData?.scenes?.length > 0 ? (
                     <>
                       <Typography
@@ -1551,6 +1552,67 @@ const AudioAnimationPage: React.FC = () => {
                         />
                       </>
                     )
+                  )} */}
+
+                  {audioAnimationData?.scenes &&
+                  audioAnimationData?.scenes?.length > 0 ? (
+                    <>
+                      <Typography
+                        sx={{ fontSize: "20px", fontWeight: 500, mt: 4 }}
+                      >
+                        Available Voices
+                      </Typography>
+
+                      <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {audioAnimationData.scenes.map(
+                          (scene: any, idx: number) => {
+                            const isDisabled = !scene.final_audio_s3_url;
+
+                            return (
+                              <Grid
+                                item
+                                xs={12}
+                                md={6}
+                                lg={4}
+                                key={idx}
+                                sx={{ width: "100%" }}
+                              >
+                                {!isDisabled ? (
+                                  <VoicePlayer
+                                    index={idx}
+                                    description={scene.description}
+                                    s3_url={scene.final_audio_s3_url}
+                                  />
+                                ) : (
+                                  <Box
+                                    sx={{
+                                      p: 2,
+                                      borderRadius: 2,
+                                      border: "1px dashed #ccc",
+                                      opacity: 0.6,
+                                      pointerEvents: "none",
+                                    }}
+                                  >
+                                    <Typography fontWeight={600}>
+                                      Scene {scene.scene_number} Audio
+                                    </Typography>
+
+                                    <Typography variant="body2">
+                                      Audio for this scene is not available
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Grid>
+                            );
+                          },
+                        )}
+                      </Grid>
+                    </>
+                  ) : (
+                    <NoDataMessage
+                      filter={false}
+                      loading={audioAnimationLoader}
+                    />
                   )}
 
                   <div className={styles.actions}>
@@ -1599,10 +1661,9 @@ const AudioAnimationPage: React.FC = () => {
           <>
             <NoDataMessage filter={false} loading={true} />
           </>
-        )
-        }
-        < Footer />
-      </Box >
+        )}
+        <Footer />
+      </Box>
 
       <OstStylePopup
         open={openTransitionPopup}
