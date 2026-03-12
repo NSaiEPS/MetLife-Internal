@@ -59,7 +59,7 @@ const VideoCreationOptions: React.FC = () => {
 
           <Typography variant="h3">
             {" "}
-            Create Your Video with <b className={styles.colorTitle}>EdwSurf Ai Studio</b>
+            Create Your Video with <b className={styles.colorTitle}>EdwSurf AI Studio</b>
           </Typography>
 
           <Grid

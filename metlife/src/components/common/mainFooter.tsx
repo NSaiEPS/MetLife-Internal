@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <img src={footerImage} className={styles.image} /> &nbsp; &nbsp;{" "}
-      <p className={styles.text}>Powered by SurfAI solutions</p>
+      <p className={styles.text}>Powered by SurfAI </p>
     </footer>
   );
 };

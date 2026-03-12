@@ -92,7 +92,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             className={styles.logo}
           />
           <Typography variant="h6" className={`${styles.title} ${mode === "dark" ? styles.dark_text : styles.light_text}`}>
-            EdwSurf Ai Studio
+            EdwSurf AI Studio
           </Typography>
           <div style={{ marginRight: "35px" }}>
             <Button
