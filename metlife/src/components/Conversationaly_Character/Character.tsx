@@ -6,6 +6,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Accordion,
+  useTheme,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -69,7 +70,7 @@ export const Character: React.FC<CharacterProps> = ({
         padding: 2,
         borderRadius: 2,
         border: "1px solid #ddd",
-        backgroundColor: isEmpty ? "#f5f5f5" : "white",
+        backgroundColor: "var(--input-bg)  ",
         opacity: isEmpty ? 0.8 : 1,
       }}
     >
@@ -169,6 +170,8 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const [collectedCharacters, setCollectedCharacters] = useState<any[]>([]);
   const [characterData, setCharacterData] = useState(null);
   const { charactersListData } = useSelector((state) => state?.Script);
+  const theme = useTheme();
+  const mode = theme.palette.mode
   /* ================= VALIDATION ================= */
 
   const validate = (): boolean => {
@@ -207,7 +210,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   /* ================= HANDLERS ================= */
 
   const handleSave = () => {
-    if (pathname === "/generate-script" && (form.inputType === "image" || form.inputType === "prompt") ) {
+    if (pathname === "/generate-script" && (form.inputType === "image" || form.inputType === "prompt")) {
       if (!validate()) return;
       console.log("hit");
       updateCharacter(index, form);
@@ -327,7 +330,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
               <Box mt={4}>
                 {/* BASIC INFO */}
                 <Accordion
-                  sx={{ mb: 2, boxShadow: "none", background: "aliceblue" }}
+                  sx={{ mb: 2, boxShadow: "none", background: mode == "dark" ? "var(--dark-color)" : "aliceblue" }}
                   expanded={expanded === "basic"}
                   onChange={handleChange("basic")}
                 >
@@ -343,7 +346,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         gridTemplateColumns: "repeat(2, 1fr)",
                         gap: 2,
                         mb: 3,
-                        background: "#fff",
+                        background: "var(--modal-bg)",
                         padding: "16px",
                       }}
                     >
@@ -391,8 +394,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                     mb: 2,
                     boxShadow: "none",
                     border: "none",
-                    background: "aliceblue",
-                    "&:before": {
+                    background: mode == "dark" ? "var(--dark-color)" : "aliceblue", "&:before": {
                       display: "none",
                     },
                   }}
@@ -416,7 +418,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         gridTemplateColumns: "repeat(2, 1fr)",
                         gap: 2,
                         mb: 3,
-                        background: "#fff",
+                        background: "var(--modal-bg)",
                         padding: "16px",
                       }}
                     >
@@ -448,8 +450,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 <Accordion
                   sx={{
                     boxShadow: "none",
-                    background: "aliceblue",
-                    "&:before": {
+                    background: mode == "dark" ? "var(--dark-color)" : "aliceblue", "&:before": {
                       display: "none",
                     },
                   }}
@@ -473,7 +474,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                         display: "grid",
                         gridTemplateColumns: "repeat(2, 1fr)",
                         gap: 2,
-                        background: "#fff",
+                        background: "var(--modal-bg)",
                         padding: "16px",
                       }}
                     >
@@ -522,7 +523,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                       position: "absolute",
                       bottom: -4,
                       right: -4,
-                      bgcolor: "white",
+                      bgcolor: "var(--dark-color)",
                       border: "1px solid #ccc",
                     }}
                     onClick={() => fileInputRef.current?.click()}
@@ -547,7 +548,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 <Box textAlign="center" mt={4}>
                   {/* BASIC INFO */}
                   <Accordion
-                    sx={{ mb: 2, boxShadow: "none", background: "aliceblue" }}
+                    sx={{ mb: 2, boxShadow: "none", background: mode == "dark" ? "var(--dark-color)" : "aliceblue" }}
                     expanded={expanded === "basic"}
                     onChange={handleChange("basic")}
                   >
@@ -563,7 +564,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                           gridTemplateColumns: "repeat(2, 1fr)",
                           gap: 2,
                           mb: 3,
-                          background: "#fff",
+                          background: "var(--modal-bg)",
                           padding: "16px",
                         }}
                       >
@@ -611,8 +612,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                       mb: 2,
                       boxShadow: "none",
                       border: "none",
-                      background: "aliceblue",
-                      "&:before": {
+                      background: mode == "dark" ? "var(--dark-color)" : "aliceblue", "&:before": {
                         display: "none",
                       },
                     }}
@@ -636,7 +636,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                           gridTemplateColumns: "repeat(2, 1fr)",
                           gap: 2,
                           mb: 3,
-                          background: "#fff",
+                          background: "var(--modal-bg)",
                           padding: "16px",
                         }}
                       >
@@ -668,8 +668,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                   <Accordion
                     sx={{
                       boxShadow: "none",
-                      background: "aliceblue",
-                      "&:before": {
+                      background: mode == "dark" ? "var(--dark-color)" : "aliceblue", "&:before": {
                         display: "none",
                       },
                     }}
@@ -693,7 +692,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                           display: "grid",
                           gridTemplateColumns: "repeat(2, 1fr)",
                           gap: 2,
-                          background: "#fff",
+                          background: "var(--modal-bg)",
                           padding: "16px",
                         }}
                       >

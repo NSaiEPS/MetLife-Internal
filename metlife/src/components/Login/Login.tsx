@@ -22,7 +22,7 @@ import { navigateTo } from "../../utils/navigate";
 import ButtonComp from "../common/Buton/Button";
 // import rightImg from "../../assets/login-right.png";
 // import serfAilogo from "../../assets/serfAi-logo.jpg";
-
+import MailLockIcon from '@mui/icons-material/MailLock';
 /* ---------------- Types ---------------- */
 
 interface FormData {
@@ -126,7 +126,7 @@ const Login: React.FC = () => {
           <Box sx={{ width: { xs: "100%", md: "80%" } }}>
             {/* <img src={oneFrame} alt="oneFrame" /> */}
             <Typography variant="h2" fontWeight={600} mb={1}>
-            EdwSurf AI Studio
+              EdwSurf AI Studio
             </Typography>
             <Typography variant="h4" fontWeight={600} mb={1}>
               Account Login
@@ -154,6 +154,12 @@ const Login: React.FC = () => {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "8px",
+
+                    "& input:-webkit-autofill": {
+                      WebkitBoxShadow: "0 0 0 100px var(--dark-color) inset",
+                      // WebkitTextFillColor: "#000",
+                      transition: "background-color 5000s ease-in-out 0s",
+                    },
                   },
                 }}
                 slotProps={{
@@ -165,7 +171,8 @@ const Login: React.FC = () => {
                           edge="end"
                           sx={{ pointerEvents: "none" }}
                         >
-                          <img src={mailIcon} alt="mailIcon" />
+                          {/* <img src={mailIcon} alt="mailIcon" /> */}
+                          <MailLockIcon sx={{ fontSize: 20 }} />
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -191,6 +198,12 @@ const Login: React.FC = () => {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "8px",
+
+                    "& input:-webkit-autofill": {
+                      WebkitBoxShadow: "0 0 0 100px var(--dark-color) inset",
+                      // WebkitTextFillColor: "#000",
+                      transition: "background-color 5000s ease-in-out 0s",
+                    },
                   },
                 }}
                 slotProps={{
@@ -204,11 +217,11 @@ const Login: React.FC = () => {
                         >
                           {showPassword ? (
                             <VisibilityOff
-                              sx={{ color: "#231F204D", fontSize: 20 }}
+                              sx={{ fontSize: 20 }}
                             />
                           ) : (
                             <Visibility
-                              sx={{ color: "#231F204D", fontSize: 20 }}
+                              sx={{ fontSize: 20 }}
                             />
                           )}
                         </IconButton>

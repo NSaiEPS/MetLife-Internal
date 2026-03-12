@@ -7,6 +7,7 @@ import {
   Button,
   Divider,
   Paper,
+  useTheme,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { showToast } from "../../utils/toast";
@@ -29,6 +30,8 @@ export default function SavedPromptsModal({
   size = "md", // "md" or "lg"
 }: SavedPromptsModalProps) {
   const { promtLoader } = useSelector((store: RootState) => store.Prompts);
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   console.log(prompts, "prompts");
   const handleCopy = async (text) => {
     showToast.info("Prompt copied to clipboard!");
@@ -90,7 +93,7 @@ export default function SavedPromptsModal({
                   sx={{
                     p: 2,
                     borderRadius: 2,
-                    bgcolor: "grey.50",
+                    bgcolor: mode == "dark" ? "" : "grey.50",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
