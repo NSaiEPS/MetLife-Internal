@@ -1,6 +1,11 @@
 import {
   Box,
   Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   Grid,
@@ -84,8 +89,8 @@ interface RootState {
 /* ---------- COMPONENT ---------- */
 
 const AnimationPage: React.FC = () => {
-  const [entryAnimation, setEntryAnimation] = useState<string>("none");
-  const [exitAnimation, setExitAnimation] = useState<string>("none");
+  // const [entryAnimation, setEntryAnimation] = useState<string>("none");
+  // const [exitAnimation, setExitAnimation] = useState<string>("none");
   const [timerDone, setTimerDone] = useState<boolean>(false);
   const [animationData, setAnimationData] = useState<AnimationData[]>([]);
   const [openMissingPopup, setOpenMissingPopup] = useState(false);
@@ -107,40 +112,45 @@ const AnimationPage: React.FC = () => {
 
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [bgMusic, setBgMusic] = useState("on"); // default
-  const open = Boolean(anchorEl);
+  const [bgMusic, setBgMusic] = useState(false); // default
+  const [openMusicPopup, setOpenMusicPopup] = useState(false);
+  const [introVideo, setIntroVideo] = useState<File | null>(null);
+  const [outroVideo, setOutroVideo] = useState<File | null>(null);
+  const [sameAsIntro, setSameAsIntro] = useState(false);
 
-  // console.log(generatedVideoData?.audio_exists, "videoAnimationData");
+  // const open = Boolean(anchorEl);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<any>();
   const waitingTime = convertToISTParts(
-    videoAnimationData?.estimated_completion_at ||
-    sceneData?.estimated_completion_at,
+    generatedVideoData?.estimated_completion_at ||
+      videoAnimationData?.estimated_completion_at ||
+      sceneData?.estimated_completion_at,
   );
+
   const finalTime = Math.ceil(waitingTime / 60);
 
   const isWaitingVideoTime = convertToISTParts(
     sceneData?.final_video_estimated_completion_at ||
-    generatedVideoData?.estimated_completion_at ||
-    videoAnimationData?.estimated_completion_at,
+      generatedVideoData?.estimated_completion_at ||
+      videoAnimationData?.estimated_completion_at,
   );
   const finalVideoTime = Math.ceil(isWaitingVideoTime / 60);
   const finalVideoAsTimeline: VideoData[] = generatedVideoData?.final_video
     ? [
-      {
-        scene_id: "final_video",
-        scene_number: 1,
-        ost: "Final Video",
-        image_urls: ["/imgs/final-thumbnail.png"],
-        audio_url: "",
-        final_video: generatedVideoData?.final_video,
-        duration: generatedVideoData?.duration_seconds ?? 0,
-        // duration: generatedVideoData?.estimated_seconds ?? 0,
-        start_transition: "none",
-        end_transition: "none",
-      },
-    ]
+        {
+          scene_id: "final_video",
+          scene_number: 1,
+          ost: "Final Video",
+          image_urls: ["/imgs/final-thumbnail.png"],
+          audio_url: "",
+          final_video: generatedVideoData?.final_video,
+          duration: generatedVideoData?.duration_seconds ?? 0,
+          // duration: generatedVideoData?.estimated_seconds ?? 0,
+          start_transition: "none",
+          end_transition: "none",
+        },
+      ]
     : [];
 
   const showTimeline =
@@ -225,7 +235,6 @@ const AnimationPage: React.FC = () => {
   // };
 
   const handleAllSubmit = (entry: string, exit: string) => {
-    // console.log({ entry, exit });
     const updated = videoAnimationData?.map((scene) => ({
       scene_number: scene.scene_number,
       scene_id: scene.scene_id,
@@ -242,10 +251,10 @@ const AnimationPage: React.FC = () => {
       prev.map((scene, index) =>
         index % 2 === 0
           ? {
-            ...scene,
-            start_transition: entry,
-            end_transition: exit,
-          }
+              ...scene,
+              start_transition: entry,
+              end_transition: exit,
+            }
           : scene,
       ),
     );
@@ -296,8 +305,31 @@ const AnimationPage: React.FC = () => {
 
   const generateVideo = () => {
     if (!id) return;
-    dispatch(postGenerateFullVideo(id, bgMusic));
-    handleMenuClose();
+    // if (!introVideo) {
+    //   toast.error("Please upload an Intro video");
+    //   return;
+    // }
+
+    // if (!sameAsIntro && !outroVideo) {
+    //   toast.error("Please upload an Outro video or select 'Same as Intro'");
+    //   return;
+    // }
+
+    const formData = new FormData();
+    if (introVideo) formData.append("intro_file", introVideo);
+    if (outroVideo) formData.append("outro_file", outroVideo);
+    dispatch(
+      postGenerateFullVideo(
+        id,
+        bgMusic,
+        formData,
+        sameAsIntro,
+        !!introVideo,
+        !!outroVideo,
+      ),
+    );
+    // handleMenuClose();
+    handleCloseMusicPopup();
   };
 
   const handleSave = () => {
@@ -323,20 +355,44 @@ const AnimationPage: React.FC = () => {
     setAnchorEl(null);
   };
 
-  // const handleMusicSelect = (value) => {
-  //   setBgMusic(value); // store selected value
-  //   handleMenuClose();
-  //   generateVideo(value); // pass forward
-  // };
+  const handleOpenMusicPopup = () => {
+    setOpenMusicPopup(true);
+  };
+
+  const handleCloseMusicPopup = () => {
+    setOpenMusicPopup(false);
+  };
+
+  const handleIntroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file) setIntroVideo(file);
+  };
+
+  const handleOutroUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file) setOutroVideo(file);
+  };
+
+  // console.log(generatedVideoData, "generatedVideoData");
+  console.log("finalTime", finalTime);
+  console.log("timerDone", timerDone);
+  console.log(
+    "generatedVideoData",
+    !generatedVideoData?.final_video,
+    generatedVideoData,
+  );
 
   return (
     <>
-      <Box sx={{ minHeight: "100vh" }}>
+      <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         {saveLoader && <FullScreenGradientLoader text="loading..." />}
         {(animationLabels?.entry_transitions ||
           animationLabels?.exit_transitions) &&
-          (animationLabels?.entry_transitions?.length > 0 ||
-            animationLabels?.exit_transitions?.length > 0) ? (
+        (animationLabels?.entry_transitions?.length > 0 ||
+          animationLabels?.exit_transitions?.length > 0) ? (
           <>
             {(mediaAPILoader || !generatedVideoData) && (
               <FullScreenGradientLoader text="loading..." />
@@ -344,7 +400,6 @@ const AnimationPage: React.FC = () => {
             {(audioAnimationLoader || videoAnimationLoader) && (
               <FullScreenGradientLoader text="loading..." />
             )}
-
             {mediaAPILoader || audioAnimationLoader || videoAnimationLoader ? (
               <FullScreenGradientLoader text="loading..." />
             ) : (
@@ -353,7 +408,7 @@ const AnimationPage: React.FC = () => {
                   <Box className={styles.card}>
                     <Box className={styles.headerRow}>
                       {generatedVideoData?.final_video_status ===
-                        "completed" ? (
+                      "completed" ? (
                         <>
                           <Typography variant="h4" className={styles.title}>
                             Final Generated Video
@@ -369,9 +424,6 @@ const AnimationPage: React.FC = () => {
 
                       <Button
                         className={styles.icon}
-                        sx={{
-                          color: "var(--primary-color)"
-                        }}
                         onClick={() =>
                           navigate(`/audio-animation-toolkit/${id}`)
                         }
@@ -390,15 +442,31 @@ const AnimationPage: React.FC = () => {
                             time={finalTime}
                             onComplete={() => setTimerDone(true)}
                           />
-                        )}
-
+                        )}{" "}
                       {finalVideoTime > 0 && (
                         <Timer
                           time={finalVideoTime}
                           onComplete={() => setIsGeneratingVideo(true)}
                         />
                       )}
+                      {/* {!timerDone &&
+                        finalTime > 0 &&
+                        !generatedVideoData?.final_video &&
+                        !sceneData?.final_video_estimated_completion_at && (
+                          <Timer
+                            time={finalTime}
+                            onComplete={() => setTimerDone(true)}
+                          />
+                        )}
 
+                      {sceneData?.final_video_estimated_completion_at &&
+                        finalVideoTime > 0 &&
+                        !generatedVideoData?.final_video && (
+                          <Timer
+                            time={finalVideoTime}
+                            onComplete={() => setIsGeneratingVideo(true)}
+                          />
+                        )} */}
                       {showTimeline && (
                         <Grid container>
                           <Typography
@@ -417,18 +485,16 @@ const AnimationPage: React.FC = () => {
                             handleAllSubmit={handleAllSubmit}
                             finalTime={finalTime}
                             handleAlternateSubmit={handleAlternateSubmit}
-                          // handleAnimationChanges={handleAnimationChanges}
+                            // handleAnimationChanges={handleAnimationChanges}
                           />
                         </Grid>
                       )}
-
                       <MissingAnimationPopup
                         open={openMissingPopup}
                         onClose={() => setOpenMissingPopup(false)}
                         onConfirm={handleMissingAnimationConfirm}
                         missingScenes={missingScenes}
                       />
-
                       {generatedVideoData?.final_video === null && (
                         <Box
                           sx={{
@@ -449,7 +515,8 @@ const AnimationPage: React.FC = () => {
                             sx={{ textTransform: "none", width: "200px" }}
                             label={"Generate Final Video"}
                             // action={generateVideo}
-                            action={handleMenuOpen}
+                            // action={handleMenuOpen}
+                            action={handleOpenMusicPopup}
                             disabled={
                               audioAnimationLoader ||
                               videoAnimationLoader ||
@@ -459,21 +526,244 @@ const AnimationPage: React.FC = () => {
                             }
                           />
 
+                          {/* <Dialog
+                            open={openMusicPopup}
+                            onClose={handleCloseMusicPopup}
+                            maxWidth="sm"
+                            fullWidth
+                          >
+                            <DialogTitle>Final Attachments</DialogTitle>
+
+                            <DialogContent>
+                              <Typography>Background Music</Typography>
+                              <Box
+                                display="flex"
+                                flexDirection="column"
+                                gap={2}
+                                // mt={1}
+                              >
+                                <FormControlLabel
+                                  control={
+                                    <Switch
+                                      checked={bgMusic}
+                                      onChange={(e) =>
+                                        setBgMusic(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label={bgMusic ? "ON" : "OFF"}
+                                />
+                              </Box>
+
+                              <Box
+                                display="flex"
+                                flexDirection="column"
+                                gap={3}
+                                mt={1}
+                              >
+
+                                <Box>
+                                  <Typography fontWeight={600}>
+                                    Upload Intro Video
+                                  </Typography>
+                                  <input
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleIntroUpload}
+                                  />
+
+                                  {introVideo && (
+                                    <Typography variant="body2">
+                                      {introVideo.name}
+                                    </Typography>
+                                  )}
+                                </Box>
+
+
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={sameAsIntro}
+                                      onChange={(e) =>
+                                        setSameAsIntro(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label="Use same video as Intro for Outro"
+                                />
+
+
+                                <Box>
+                                  <Typography fontWeight={600}>
+                                    Upload Outro Video
+                                  </Typography>
+
+                                  <input
+                                    type="file"
+                                    accept="video/*"
+                                    disabled={sameAsIntro}
+                                    onChange={handleOutroUpload}
+                                  />
+
+                                  {!sameAsIntro && outroVideo && (
+                                    <Typography variant="body2">
+                                      {outroVideo.name}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              </Box>
+                            </DialogContent>
+
+                            <DialogActions>
+                              <ButtonComp
+                                label="Cancel"
+                                variant="outlined"
+                                action={handleCloseMusicPopup}
+                              />
+
+                              <ButtonComp
+                                label="Generate Final Video"
+                                action={() => {
+                                  generateVideo();
+                                  // handleCloseMusicPopup();
+                                }}
+                                disabled={
+                                  audioAnimationLoader ||
+                                  videoAnimationLoader ||
+                                  !videoAnimationData ||
+                                  generatedVideoData?.final_video ||
+                                  finalTime > 0
+                                }
+                              />
+                            </DialogActions>
+                          </Dialog> */}
+
+                          <Dialog
+                            open={openMusicPopup}
+                            onClose={handleCloseMusicPopup}
+                            maxWidth="sm"
+                            fullWidth
+                          >
+                            <DialogTitle sx={{ fontWeight: 600 }}>
+                              Final Video Attachments
+                            </DialogTitle>
+
+                            <DialogContent dividers>
+                              {/* Background Music */}
+                              <Box mb={3}>
+                                <Typography fontWeight={600} mb={1}>
+                                  Background Music
+                                </Typography>
+
+                                <FormControlLabel
+                                  control={
+                                    <Switch
+                                      checked={bgMusic}
+                                      onChange={(e) =>
+                                        setBgMusic(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label={bgMusic ? "Enabled" : "Disabled"}
+                                />
+                              </Box>
+
+                              {/* Intro Section */}
+                              <Box mb={3}>
+                                <Typography fontWeight={600} mb={1}>
+                                  Intro Video
+                                </Typography>
+
+                                <Button variant="outlined" component="label">
+                                  Upload Intro Video
+                                  <input
+                                    hidden
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleIntroUpload}
+                                  />
+                                </Button>
+
+                                {introVideo && (
+                                  <Typography
+                                    variant="body2"
+                                    mt={1}
+                                    sx={{ color: "text.secondary" }}
+                                  >
+                                    Selected: {introVideo.name}
+                                  </Typography>
+                                )}
+                              </Box>
+
+                              {/* Same as Intro Checkbox */}
+                              <Box mb={2}>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={sameAsIntro}
+                                      onChange={(e) =>
+                                        setSameAsIntro(e.target.checked)
+                                      }
+                                    />
+                                  }
+                                  label="Use Intro Video as Outro"
+                                />
+                              </Box>
+
+                              {/* Outro Section */}
+                              <Box>
+                                <Typography fontWeight={600} mb={1}>
+                                  Outro Video
+                                </Typography>
+
+                                <Button
+                                  variant="outlined"
+                                  component="label"
+                                  disabled={sameAsIntro}
+                                >
+                                  Upload Outro Video
+                                  <input
+                                    hidden
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={handleOutroUpload}
+                                  />
+                                </Button>
+
+                                {!sameAsIntro && outroVideo && (
+                                  <Typography
+                                    variant="body2"
+                                    mt={1}
+                                    sx={{ color: "text.secondary" }}
+                                  >
+                                    Selected: {outroVideo.name}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </DialogContent>
+
+                            <DialogActions sx={{ px: 3, py: 2 }}>
+                              <ButtonComp
+                                label="Cancel"
+                                variant="outlined"
+                                action={handleCloseMusicPopup}
+                              />
+
+                              <ButtonComp
+                                label="Generate Final Video"
+                                action={generateVideo}
+                                disabled={
+                                  audioAnimationLoader ||
+                                  videoAnimationLoader ||
+                                  !videoAnimationData ||
+                                  generatedVideoData?.final_video ||
+                                  finalTime > 0
+                                }
+                              />
+                            </DialogActions>
+                          </Dialog>
+
                           {/* <Menu
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleMenuClose}
-                      >
-                        <MenuItem onClick={() => handleMusicSelect("on")}>
-                          Background Music ON
-                        </MenuItem>
-
-                        <MenuItem onClick={() => handleMusicSelect("off")}>
-                          Background Music OFF
-                        </MenuItem>
-                      </Menu> */}
-
-                          <Menu
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
@@ -509,15 +799,14 @@ const AnimationPage: React.FC = () => {
                                 }
                               />
                             </Box>
-                          </Menu>
+                          </Menu> */}
                         </Box>
                       )}
-
                       {/* Full Video */}
                       {generatedVideoData?.final_video !== null &&
                         sceneData?.video_exists === true &&
                         generatedVideoData?.final_video_status ===
-                        "completed" && (
+                          "completed" && (
                           <>
                             <Box
                               sx={{
@@ -573,8 +862,8 @@ const AnimationPage: React.FC = () => {
                               handleAllSubmit={handleAllSubmit}
                               handleAlternateSubmit={handleAlternateSubmit}
                               finalTime={finalTime}
-                            // handleAllSubmitInside={handleAllSubmit}
-                            // handleAnimationChanges={handleAnimationChanges}
+                              // handleAllSubmitInside={handleAllSubmit}
+                              // handleAnimationChanges={handleAnimationChanges}
                             />
                           </>
                         )}
@@ -597,151 +886,3 @@ const AnimationPage: React.FC = () => {
 
 export default AnimationPage;
 
-{
-  /* {generatedVideoData?.final_video === null && (
-                    <>
-                      <Typography variant="h5"
-                        className={styles.audioSelectionTitle}
-                        sx={{
-                          fontSize: "22px",
-                          // fontWeight: "500",
-                          marginBottom: "10px",
-                          mt: 2,
-                        }}
-                      >
-                        Or Animation Selection - Method 2
-                      </Typography>
-                      <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          <Typography
-                            variant="h6"
-                            fontWeight="500"
-                            fontSize="16px"
-                            mb={1}
-                          >
-                            Entry
-                          </Typography>
-                          <Paper
-                            elevation={0}
-                            sx={{
-                              p: 3,
-                              border: "1px solid #e0e0e0",
-                              borderRadius: 3,
-                            }}
-                          >
-                            <FormControl disabled={finalTime > 0}>
-                              <RadioGroup
-                                value={entryAnimation}
-                                onChange={(e) =>
-                                  setEntryAnimation(e.target.value)
-                                }
-                              >
-                                {animationLabels?.entry_transitions?.map(
-                                  (opt, index) => (
-                                    <FormControlLabel
-                                      key={index}
-                                      value={opt}
-                                      control={<Radio color="primary" />}
-                                      label={opt}
-                                      sx={{
-                                        "& .MuiFormControlLabel-label": {
-                                          color: "#555",
-                                          fontSize: "0.95rem",
-                                        },
-                                      }}
-                                    />
-                                  )
-                                )}
-                              </RadioGroup>
-                            </FormControl>
-                          </Paper>
-                        </Grid>
-
-                        <Grid size={{ xs: 12, md: 6, lg: 6 }}>
-                          <Typography
-                            variant="h6"
-                            fontWeight="500"
-                            fontSize="16px"
-                            mb={1}
-                          >
-                            Exit
-                          </Typography>
-                          <Paper
-                            elevation={0}
-                            sx={{
-                              p: 3,
-                              border: "1px solid #e0e0e0",
-                              borderRadius: 3,
-                            }}
-                          >
-                            <FormControl disabled={finalTime > 0}>
-                              <RadioGroup
-                                value={exitAnimation}
-                                onChange={(e) =>
-                                  setExitAnimation(e.target.value)
-                                }
-                              >
-                                {animationLabels?.exit_transitions?.map(
-                                  (opt, index) => (
-                                    <FormControlLabel
-                                      key={index}
-                                      value={opt}
-                                      label={opt}
-                                      control={<Radio color="primary" />}
-                                      sx={{
-                                        "& .MuiFormControlLabel-label": {
-                                          color: "#555",
-                                          fontSize: "0.95rem",
-                                        },
-                                      }}
-                                    />
-                                  )
-                                )}
-                              </RadioGroup>
-                            </FormControl>
-                          </Paper>
-                        </Grid>
-                      </Grid>
-
-                      <div className={styles.actions}>
-                        <ButtonComp
-                          label={"Alternative Scenes"}
-                          colorType="download"
-                          // sx={{
-                          //   backgroundColor: "#99d539",
-                          //   textTransform: "none",
-                          // }}
-                          action={handleAlternateSubmit}
-                          disabled={finalTime > 0}
-                        />
-                        <ButtonComp
-                          label={"Apply To All"}
-                          sx={{ textTransform: "none" }}
-                          action={handleAllSubmit}
-                          disabled={finalTime > 0}
-                        />
-
-                        <ButtonComp
-                          label={"Submit Animation Changes"}
-                          sx={{ textTransform: "none" }}
-                          action={handleAnimationChanges}
-                          disabled={finalTime > 0}
-                        />
-                      </div>
-                      <div className={styles.actions_second}>
-                        <ButtonComp
-                          sx={{ textTransform: "none", width: "200px" }}
-                          label={"Generate Video"}
-                          action={generateVideo}
-                          disabled={
-                            audioAnimationLoader ||
-                            videoAnimationLoader ||
-                            !videoAnimationData ||
-                            generatedVideoData?.final_video ||
-                            finalTime > 0
-                          }
-                        />
-                      </div>
-                    </>
-                  )} */
-}

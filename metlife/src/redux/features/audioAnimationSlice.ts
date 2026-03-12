@@ -307,25 +307,31 @@ export const getVideosList = (id: string) => async (dispatch: AppDispatch) => {
 
 // final video
 export const postGenerateFullVideo =
-  (id: string, backgroundMusic: boolean) => async (dispatch: AppDispatch) => {
+  (id: string, backgroundMusic: any, data:any, sameAsIntro:any,
+     hasIntro: boolean,
+    hasOutro: boolean
+  ) => async (dispatch: AppDispatch) => {
     dispatch(setAudioAnimationLoader(true));
     try {
       const res: ApiResponse = await api.post(
-        `media/generate-video-full/${id}`, null , 
+        `media/generate-video-full/${id}`, data, 
           {
           params: {
-            background_music: backgroundMusic === "on" ? true : false,
+            background_music: backgroundMusic,
+            use_same_for_outro: sameAsIntro,
+         use_default_intro: !hasIntro,
+            use_default_outro: !hasOutro,
           },
         }
       );
-      // console.log(res, "final_video_response");
-
       if (res.status) {
         // let data = {
         //   final_video: res.data?.final_video_with_intro || null,
         //   duration_seconds: res.data?.estimated_seconds || null,
         // };
         dispatch(setGeneratedVideoData(res?.data));
+        toast.success(!hasIntro && "Used default intro");
+        toast.success(!hasOutro && "Used default outro");
       }
     } catch {
       toast.error("Something went wrong while generating full video!");
