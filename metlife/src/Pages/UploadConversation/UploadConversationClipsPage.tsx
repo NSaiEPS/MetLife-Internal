@@ -28,6 +28,7 @@ import type { RootState } from "../../redux/store";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import { showToast } from "../../utils/toast";
 import {
+  getStitchedVideoStatus,
   postStitchAllVideos,
   uploadSceneClip,
 } from "../../redux/features/conversationalSlice";
@@ -35,6 +36,9 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import type { SceneDataType, SceneType } from "../../utils/types";
 import ButtonComp from "../../components/common/Buton/Button";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import Timer from "../../components/common/Timer/Timer";
+import { convertToISTParts } from "../../utils";
+import TimerConversational from "../../components/common/Timer/TimerConversational";
 
 interface ClipData {
   file: File;
@@ -84,6 +88,7 @@ const UploadConversationalClipsPage: React.FC = () => {
     conversationalLoader,
     uploadSceneClipLoader,
     uploadSceneClipResponse,
+    stitchedVideoStatus,
   } = useSelector((state: RootState) => state.Conversational);
   const [openConfirm, setOpenConfirm] = useState(false);
   // const uploadedCount =
@@ -103,7 +108,13 @@ const UploadConversationalClipsPage: React.FC = () => {
   const hasMissingScenes = remainingScenes.length > 0;
   const maxFileSize = 10 * 1024 * 1024;
   const [anchorEl, setAnchorEl] = useState(null);
-  const [bgMusic, setBgMusic] = useState("on"); // default
+  const [bgMusic, setBgMusic] = useState(false);
+  const [ost, setOst] = useState(false);
+  const waitingTime = convertToISTParts(
+    stitchedVideoStatus?.estimated_completion_at,
+  );
+
+  const finalTime = Math.ceil(waitingTime / 60);
 
   // useEffect(() => {
   //   if (scenesData?.scenes) {
@@ -120,6 +131,12 @@ const UploadConversationalClipsPage: React.FC = () => {
   //     setClips(mapped);
   //   }
   // }, [scenesData?.scenes]);
+
+  useEffect(() => {
+    if (stitchedVideoStatus?.stitching_status === "processing") {
+      dispatch(getStitchedVideoStatus(id));
+    }
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (!scenesData?.scenes) return;
@@ -292,19 +309,14 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   const handleStichVideo = () => {
-    const backgroudMusic = bgMusic === "on" ? true : false;
+    console.log(bgMusic, ost, "backgroundMusic");
     if (id) {
-      dispatch(postStitchAllVideos(id, setOpenConfirm, backgroudMusic));
+      dispatch(postStitchAllVideos(id, setOpenConfirm, bgMusic, ost));
       handleMenuClose();
     }
   };
 
-  // console.log(stitchedVideoUrl, "check_url");
-  // console.log(scenesData, "check_url");
-  console.log(
-    scenesData?.stitched_video?.url && stitchedVideoUrl,
-    "check_scennes_data",
-  );
+  console.log(stitchedVideoStatus, "stitchedVideoStatus");
 
   return (
     <>
@@ -313,415 +325,519 @@ const UploadConversationalClipsPage: React.FC = () => {
         {scenesData?.scenes?.length && scenesData?.scenes?.length > 0 ? (
           <>
             <div className={styles.innerContainer}>
-              <Box
-                sx={{
-                  backgroundColor: "#e5f3fc",
-                  padding: "40px",
-                  borderRadius: "20px",
-                  border: "2px solid #bce2f6",
-                  margin: "3rem 0",
-                  minHeight: "70vh",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: "2rem",
-                  }}
-                >
-                  <Typography variant="h1" fontSize="32px">
-                    {!scenesData?.stitched_video?.url && !stitchedVideoUrl
-                      ? "Upload Conversational Clips"
-                      : "Final Stitched Video"}
-                  </Typography>
-                  <Button
-                    className={styles.icon}
-                    onClick={() => navigate(`/generate-visual-page/${id}`)}
-                    disabled={!scenesData?.image_exist}
+              {
+              stitchedVideoStatus?.stitching_status === "processing"
+               &&
+              !stitchedVideoStatus?.stitched_video?.url
+               ? (
+                <>
+                  <Timer
+                    time={finalTime}
+                    onComplete={() => dispatch(getStitchedVideoStatus(id))}
+                  />
+                </>
+              ) :  (
+                <>
+                  <Box
+                    sx={{
+                      backgroundColor: "#e5f3fc",
+                      padding: "40px",
+                      borderRadius: "20px",
+                      border: "2px solid #bce2f6",
+                      margin: "3rem 0",
+                      minHeight: "70vh",
+                    }}
                   >
-                    <IoArrowBackCircleOutline size={30} /> Back
-                  </Button>
-                </Box>
-                {!scenesData?.stitched_video?.url && !stitchedVideoUrl && (
-                  <>
-                    <Stack spacing={3}>
-                      {scenesData?.scenes?.map((scene, index) => (
-                        <Paper
-                          key={scene.scene_id}
-                          elevation={0}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "2rem",
+                      }}
+                    >
+                      <Typography variant="h1" fontSize="32px">
+                        {!scenesData?.stitched_video?.url && !stitchedVideoUrl
+                          ? "Upload Conversational Clips"
+                          : "Final Stitched Video"}
+                      </Typography>
+                      <Button
+                        className={styles.icon}
+                        onClick={() => navigate(`/generate-visual-page/${id}`)}
+                        disabled={!scenesData?.image_exist}
+                      >
+                        <IoArrowBackCircleOutline size={30} /> Back
+                      </Button>
+                    </Box>
+                    {!scenesData?.stitched_video?.url && !stitchedVideoUrl && !stitchedVideoStatus?.stitched_video?.url &&  (
+                      <>
+                        <Stack spacing={3}>
+                          {scenesData?.scenes?.map((scene, index) => (
+                            <Paper
+                              key={scene.scene_id}
+                              elevation={0}
+                              sx={{
+                                padding: "20px",
+                                borderRadius: "12px",
+                                border: "1px solid #d3e6f9",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 2,
+                                background: "white",
+                              }}
+                            >
+                              {/* Top row */}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Box>
+                                  <Typography
+                                    fontSize="16px"
+                                    fontWeight={600}
+                                    color="black"
+                                  >
+                                    {/* {clips[scene.id]?.file?.name || "Awaiting Upload"} */}
+                                    {`Scene ${index + 1}`}
+                                  </Typography>
+                                </Box>
+
+                                <ButtonComp
+                                  variant="contained"
+                                  component="label"
+                                  // disabled={
+                                  //   uploadSceneClipLoader?.[scene?.scene_id] ||
+                                  //   clips[scene.scene_id]?.upload_url
+                                  // }
+                                  disabled={
+                                    uploadSceneClipLoader?.[scene.scene_id]
+                                  }
+                                >
+                                  {uploadSceneClipLoader?.[scene?.scene_id] ? (
+                                    <CircularProgress
+                                      size={20}
+                                      sx={{ color: "white" }}
+                                    />
+                                  ) : (
+                                    "Upload Clip"
+                                  )}
+
+                                  <input
+                                    hidden
+                                    accept="video/*"
+                                    type="file"
+                                    disabled={
+                                      uploadSceneClipLoader?.[
+                                        scene?.scene_id
+                                      ] || clips[scene?.scene_id]?.upload_url
+                                    }
+                                    onChange={(e) => handleUpload(scene, e)}
+                                  />
+                                </ButtonComp>
+                              </Box>
+
+                              {/* <Box
+                                  sx={{
+                                    borderRadius: "10px",
+                                    overflow: "hidden",
+                                    border: "1px solid #d3e6f9",
+                                    mt: 1,
+                                  }}
+                                >
+                                  {clips[scene.scene_id]?.upload_url ? (
+                                    <video
+                                      src={clips[scene.scene_id].upload_url}
+                                      controls
+                                      style={{
+                                        width: "100%",
+                                        height: "40vh",
+                                        borderRadius: "10px",
+                                      }}
+                                    />
+                                  ) : clips[scene.scene_id]?.preview ? (
+                                    <video
+                                      src={clips[scene.scene_id].preview}
+                                      controls
+                                      style={{
+                                        width: "100%",
+                                        height: "40vh",
+                                        borderRadius: "10px",
+                                      }}
+                                    />
+                                  ) : (
+                                    <Typography color="gray" sx={{ p: 2 }}>
+                                      No clip uploaded
+                                    </Typography>
+                                  )}
+                                </Box> */}
+
+                              <Box
+                                // sx={{
+                                //   borderRadius: "10px",
+                                //   overflow: "hidden",
+                                //   border: "1px solid #d3e6f9",
+                                //   mt: 1,
+                                //   p: 2,
+                                // }}
+                                sx={{
+                                  borderRadius: "10px",
+                                  border: "1px solid #d3e6f9",
+                                  mt: 1,
+                                  p: 2,
+                                  display: "flex",
+                                  gap: "16px",
+                                  overflowX: "auto",
+                                  scrollbarWidth: "thin",
+                                  "&::-webkit-scrollbar": {
+                                    height: "6px",
+                                  },
+                                  "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "#bce2f6",
+                                    borderRadius: "4px",
+                                  },
+                                }}
+                              >
+                                {clips[scene.scene_id]?.upload_urls?.length >
+                                0 ? (
+                                  clips[scene.scene_id].upload_urls.map(
+                                    (url, idx) => (
+                                      <>
+                                        <Box
+                                          key={idx}
+                                          sx={{
+                                            minWidth: "320px",
+                                            maxWidth: "320px",
+                                            flexShrink: 0,
+                                            borderRadius: "10px",
+                                            border: "1px solid #d3e6f9",
+                                            overflow: "hidden",
+                                            background: "#f9fcff",
+                                          }}
+                                        >
+                                          <video
+                                            src={url}
+                                            controls
+                                            style={{
+                                              width: "100%",
+                                              height: "180px",
+                                              objectFit: "cover",
+                                            }}
+                                          />
+                                        </Box>
+                                      </>
+                                    ),
+                                  )
+                                ) : clips[scene.scene_id]?.previews?.length >
+                                  0 ? (
+                                  clips[scene.scene_id].previews.map(
+                                    (preview, idx) => (
+                                      <>
+                                        <Box
+                                          key={idx}
+                                          sx={{
+                                            minWidth: "320px",
+                                            maxWidth: "320px",
+                                            flexShrink: 0,
+                                            borderRadius: "10px",
+                                            border: "1px solid #d3e6f9",
+                                            overflow: "hidden",
+                                            background: "#f9fcff",
+                                          }}
+                                        >
+                                          <video
+                                            src={preview}
+                                            controls
+                                            style={{
+                                              width: "100%",
+                                              height: "180px",
+                                              objectFit: "cover",
+                                            }}
+                                          />
+                                        </Box>
+                                      </>
+                                    ),
+                                  )
+                                ) : (
+                                  <Typography color="gray">
+                                    No clips uploaded
+                                  </Typography>
+                                )}
+                              </Box>
+                            </Paper>
+                          ))}
+                        </Stack>
+                        <Box
                           sx={{
-                            padding: "20px",
-                            borderRadius: "12px",
-                            border: "1px solid #d3e6f9",
                             display: "flex",
-                            flexDirection: "column",
-                            gap: 2,
-                            background: "white",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                            mt: 5,
+                            gap: "10px",
+                            marginBottom: "6rem",
                           }}
                         >
-                          {/* Top row */}
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
+                          <Typography
+                            fontSize="14px"
+                            mr={2}
+                            color={allUploaded ? "black" : "gray"}
                           >
-                            <Box>
-                              <Typography
-                                fontSize="16px"
-                                fontWeight={600}
-                                color="black"
-                              >
-                                {/* {clips[scene.id]?.file?.name || "Awaiting Upload"} */}
-                                {`Scene ${index + 1}`}
-                              </Typography>
-                            </Box>
+                            Upload all clips to enable stitching.
+                          </Typography>
 
-                            <ButtonComp
-                              variant="contained"
-                              component="label"
-                              // disabled={
-                              //   uploadSceneClipLoader?.[scene?.scene_id] ||
-                              //   clips[scene.scene_id]?.upload_url
-                              // }
-                              disabled={uploadSceneClipLoader?.[scene.scene_id]}
-                            >
-                              {uploadSceneClipLoader?.[scene?.scene_id] ? (
-                                <CircularProgress
-                                  size={20}
-                                  sx={{ color: "white" }}
-                                />
-                              ) : (
-                                "Upload Clip"
-                              )}
-
-                              <input
-                                hidden
-                                accept="video/*"
-                                type="file"
-                                disabled={
-                                  uploadSceneClipLoader?.[scene?.scene_id] ||
-                                  clips[scene?.scene_id]?.upload_url
-                                }
-                                onChange={(e) => handleUpload(scene, e)}
-                              />
-                            </ButtonComp>
-                          </Box>
-
-                          {/* <Box
-                            sx={{
-                              borderRadius: "10px",
-                              overflow: "hidden",
-                              border: "1px solid #d3e6f9",
-                              mt: 1,
-                            }}
+                          <ButtonComp
+                            variant="contained"
+                            onClick={handleDownloadAssets}
+                            disabled={generateVisualLoader}
                           >
-                            {clips[scene.scene_id]?.upload_url ? (
-                              <video
-                                src={clips[scene.scene_id].upload_url}
-                                controls
-                                style={{
-                                  width: "100%",
-                                  height: "40vh",
-                                  borderRadius: "10px",
-                                }}
-                              />
-                            ) : clips[scene.scene_id]?.preview ? (
-                              <video
-                                src={clips[scene.scene_id].preview}
-                                controls
-                                style={{
-                                  width: "100%",
-                                  height: "40vh",
-                                  borderRadius: "10px",
+                            {generateVisualLoader ? (
+                              <CircularProgress
+                                size={22}
+                                sx={{
+                                  color: "white",
                                 }}
                               />
                             ) : (
-                              <Typography color="gray" sx={{ p: 2 }}>
-                                No clip uploaded
-                              </Typography>
+                              "Download Assets"
                             )}
-                          </Box> */}
+                          </ButtonComp>
 
-                          <Box
-                            // sx={{
-                            //   borderRadius: "10px",
-                            //   overflow: "hidden",
-                            //   border: "1px solid #d3e6f9",
-                            //   mt: 1,
-                            //   p: 2,
-                            // }}
-                            sx={{
-                              borderRadius: "10px",
-                              border: "1px solid #d3e6f9",
-                              mt: 1,
-                              p: 2,
-                              display: "flex",
-                              gap: "16px",
-                              overflowX: "auto",
-                              scrollbarWidth: "thin",
-                              "&::-webkit-scrollbar": {
-                                height: "6px",
-                              },
-                              "&::-webkit-scrollbar-thumb": {
-                                backgroundColor: "#bce2f6",
-                                borderRadius: "4px",
-                              },
-                            }}
+                          <ButtonComp
+                            variant="contained"
+                            onClick={handleStitchClick}
+                            // disabled={
+                            //   !allUploaded ||
+                            //   stitchedVideoUrl ||
+                            //   scenesData?.stitched_video?.url
+                            // }
+                            disabled={scenesData?.video_exist}
                           >
-                            {clips[scene.scene_id]?.upload_urls?.length > 0 ? (
-                              clips[scene.scene_id].upload_urls.map(
-                                (url, idx) => (
-                                  <>
-                                    <Box
-                                      key={idx}
-                                      sx={{
-                                        minWidth: "320px",
-                                        maxWidth: "320px",
-                                        flexShrink: 0,
-                                        borderRadius: "10px",
-                                        border: "1px solid #d3e6f9",
-                                        overflow: "hidden",
-                                        background: "#f9fcff",
-                                      }}
-                                    >
-                                      <video
-                                        src={url}
-                                        controls
-                                        style={{
-                                          width: "100%",
-                                          height: "180px",
-                                          objectFit: "cover",
-                                        }}
-                                      />
-                                    </Box>
-                                  </>
-                                ),
-                              )
-                            ) : clips[scene.scene_id]?.previews?.length > 0 ? (
-                              clips[scene.scene_id].previews.map(
-                                (preview, idx) => (
-                                  <>
-                                    <Box
-                                      key={idx}
-                                      sx={{
-                                        minWidth: "320px",
-                                        maxWidth: "320px",
-                                        flexShrink: 0,
-                                        borderRadius: "10px",
-                                        border: "1px solid #d3e6f9",
-                                        overflow: "hidden",
-                                        background: "#f9fcff",
-                                      }}
-                                    >
-                                      <video
-                                        src={preview}
-                                        controls
-                                        style={{
-                                          width: "100%",
-                                          height: "180px",
-                                          objectFit: "cover",
-                                        }}
-                                      />
-                                    </Box>
-                                  </>
-                                ),
-                              )
-                            ) : (
-                              <Typography color="gray">
-                                No clips uploaded
-                              </Typography>
-                            )}
-                          </Box>
-                        </Paper>
-                      ))}
-                    </Stack>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        mt: 5,
-                        gap: "10px",
-                        marginBottom: "6rem",
-                      }}
+                            Stitch My Video
+                          </ButtonComp>
+                        </Box>
+                      </>
+                    )}
+
+                    <Dialog
+                      open={openConfirm}
+                      onClose={() => setOpenConfirm(false)}
+                      maxWidth="sm"
+                      fullWidth
                     >
-                      <Typography
-                        fontSize="14px"
-                        mr={2}
-                        color={allUploaded ? "black" : "gray"}
-                      >
-                        Upload all clips to enable stitching.
-                      </Typography>
+                      <DialogTitle sx={{ fontWeight: 600 }}>
+                        Confirm Stitching
+                      </DialogTitle>
 
-                      <ButtonComp
-                        variant="contained"
-                        onClick={handleDownloadAssets}
-                        disabled={generateVisualLoader}
-                      >
-                        {generateVisualLoader ? (
-                          <CircularProgress
-                            size={22}
-                            sx={{
-                              color: "white",
-                            }}
-                          />
-                        ) : (
-                          "Download Assets"
+                      <DialogContent>
+                        {hasMissingScenes && (
+                          <>
+                            <Typography sx={{ mb: 2 }}>
+                              The following scenes are missing:
+                            </Typography>
+                          </>
                         )}
-                      </ButtonComp>
 
-                      <ButtonComp
-                        variant="contained"
-                        onClick={handleStitchClick}
-                        // disabled={
-                        //   !allUploaded ||
-                        //   stitchedVideoUrl ||
-                        //   scenesData?.stitched_video?.url
-                        // }
-                        disabled={scenesData?.video_exist}
-                      >
-                        Stitch My Video
-                      </ButtonComp>
-                    </Box>
-                  </>
-                )}
-
-                <Dialog
-                  open={openConfirm}
-                  onClose={() => setOpenConfirm(false)}
-                  maxWidth="sm"
-                  fullWidth
-                >
-                  <DialogTitle sx={{ fontWeight: 600 }}>
-                    Confirm Stitching
-                  </DialogTitle>
-
-                  <DialogContent>
-                    {hasMissingScenes && (
-                      <>
-                        <Typography sx={{ mb: 2 }}>
-                          The following scenes are missing:
-                        </Typography>
-                      </>
-                    )}
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 1,
-                        mb: 2,
-                      }}
-                    >
-                      {remainingScenes.map((scene) => (
-                        <Chip
-                          key={scene.scene_id}
-                          label={`Scene ${scene?.scene_number}`}
-                          variant="outlined"
-                          color="info"
-                        />
-                      ))}
-                    </Box>
-                    {hasMissingScenes ? (
-                      <>
-                        <Typography variant="body2" color="text.secondary">
-                          {/* You can still proceed, but the final video will
-                          include only the uploaded clip. */}
-                          You can still proceed. The final video will include
-                          only the uploaded clips for each completed scene.
-                        </Typography>
-                      </>
-                    ) : (
-                      <>
-                        <Typography variant="body2" color="text.primary">
-                          Proceed to generate your final video. This may take a
-                          moment.
-                        </Typography>
-                      </>
-                    )}
-                  </DialogContent>
-
-                  <DialogActions>
-                    <ButtonComp
-                      colorType="secondary"
-                      onClick={() => setOpenConfirm(false)}
-                      color="inherit"
-                    >
-                      No
-                    </ButtonComp>
-
-                    <ButtonComp
-                      // onClick={handleStichVideo}
-                      onClick={handleMenuOpen}
-                      variant="contained"
-                      disabled={conversationalLoader}
-                    >
-                      Yes
-                    </ButtonComp>
-
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleMenuClose}
-                      PaperProps={{ sx: { p: 2, width: 230 } }}
-                    >
-                      <Box display="flex" flexDirection="column" gap={2}>
-                        <Typography variant="primary" fontWeight={600}>
-                          Background Music
-                        </Typography>
-
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={bgMusic}
-                              onChange={(e) => setBgMusic(e.target.checked)}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 1,
+                            mb: 2,
+                          }}
+                        >
+                          {remainingScenes.map((scene) => (
+                            <Chip
+                              key={scene.scene_id}
+                              label={`Scene ${scene?.scene_number}`}
+                              variant="outlined"
+                              color="info"
                             />
-                          }
-                          label={bgMusic ? "ON" : "OFF"}
-                        />
+                          ))}
+                        </Box>
+                        {hasMissingScenes ? (
+                          <>
+                            <Typography variant="body2" color="text.secondary">
+                              {/* You can still proceed, but the final video will
+                                include only the uploaded clip. */}
+                              You can still proceed. The final video will
+                              include only the uploaded clips for each completed
+                              scene.
+                            </Typography>
+                          </>
+                        ) : (
+                          <>
+                            <Typography variant="body2" color="text.primary">
+                              Proceed to generate your final video. This may
+                              take a moment.
+                            </Typography>
+                          </>
+                        )}
+                      </DialogContent>
+
+                      <DialogActions>
+                        <ButtonComp
+                          colorType="secondary"
+                          onClick={() => setOpenConfirm(false)}
+                          color="inherit"
+                        >
+                          No
+                        </ButtonComp>
+
                         <ButtonComp
                           // onClick={handleStichVideo}
-                          onClick={handleStichVideo}
+                          onClick={handleMenuOpen}
                           variant="contained"
                           disabled={conversationalLoader}
                         >
                           Yes
                         </ButtonComp>
-                      </Box>
-                    </Menu>
-                  </DialogActions>
-                </Dialog>
 
-                {(stitchedVideoUrl || scenesData?.stitched_video?.url) && (
-                  <Box
-                    sx={{
-                      marginTop: "2rem",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #d3e6f9",
-                      background: "white",
-                    }}
-                  >
-                    <Typography fontSize="20px" fontWeight={600} mb={2}>
-                      Final Stitched Video - {scenesData?.title}
-                    </Typography>
+                        <Menu
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={handleMenuClose}
+                          PaperProps={{ sx: { p: 2, width: 330 } }}
+                        >
+                          {/* <Box display="flex" flexDirection="column" gap={2}>
+                              <Typography variant="primary" fontWeight={600}>
+                                Background Music
+                              </Typography>
 
-                    <video
-                      src={stitchedVideoUrl ?? scenesData?.stitched_video?.url}
-                      controls
-                      style={{
-                        width: "100%",
-                        height: "50vh",
-                        borderRadius: "10px",
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={bgMusic}
+                                    onChange={(e) => setBgMusic(e.target.checked)}
+                                  />
+                                }
+                                label={bgMusic ? "ON" : "OFF"}
+                              />
+
+                              <Typography variant="secondary" fontWeight={600}>
+                                OST
+                              </Typography>
+
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={ost}
+                                    onChange={(e) => setOst(e.target.checked)}
+                                  />
+                                }
+                                label={ost ? "ON" : "OFF"}
+                              />
+                              <ButtonComp
+                                // onClick={handleStichVideo}
+                                onClick={handleStichVideo}
+                                variant="contained"
+                                disabled={conversationalLoader}
+                              >
+                                Stitch Video
+                              </ButtonComp>
+                            </Box> */}
+
+                          <Box
+                            display="flex"
+                            flexDirection="column"
+                            gap={3}
+                            width="100%"
+                          >
+                            {/* Background Music */}
+                            <Box
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <Typography fontWeight={600}>
+                                Background Music
+                              </Typography>
+
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={bgMusic}
+                                    onChange={(e) =>
+                                      setBgMusic(e.target.checked)
+                                    }
+                                  />
+                                }
+                                label={bgMusic ? "ON" : "OFF"}
+                                labelPlacement="end"
+                              />
+                            </Box>
+
+                            {/* OST */}
+                            <Box
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <Typography fontWeight={600}>OST</Typography>
+
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={ost}
+                                    onChange={(e) => setOst(e.target.checked)}
+                                  />
+                                }
+                                label={ost ? "ON" : "OFF"}
+                                labelPlacement="end"
+                              />
+                            </Box>
+
+                            {/* Button */}
+                            <Box>
+                              <ButtonComp
+                                fullWidth
+                                onClick={handleStichVideo}
+                                variant="contained"
+                                disabled={conversationalLoader}
+                              >
+                                Stitch Video
+                              </ButtonComp>
+                            </Box>
+                          </Box>
+                        </Menu>
+                      </DialogActions>
+                    </Dialog>
+
+                  {(stitchedVideoUrl ||
+                    scenesData?.stitched_video?.url ||
+                    stitchedVideoStatus?.stitched_video?.url) && (
+                    <Box
+                      sx={{
+                        marginTop: "2rem",
+                        padding: "20px",
+                        borderRadius: "12px",
+                        border: "1px solid #d3e6f9",
+                        background: "white",
                       }}
-                    />
+                    >
+                      <Typography fontSize="20px" fontWeight={600} mb={2}>
+                        Final Stitched Video - {scenesData?.title}
+                      </Typography>
+    
+                      <video
+                        src={
+                          stitchedVideoUrl ??
+                          scenesData?.stitched_video?.url ??
+                          stitchedVideoStatus?.stitched_video?.url
+                        }
+                        controls
+                        style={{
+                          width: "100%",
+                          height: "50vh",
+                          borderRadius: "10px",
+                        }}
+                      />
+                    </Box>
+                  )}
                   </Box>
-                )}
-              </Box>
+                </>
+              )}
             </div>
           </>
         ) : (

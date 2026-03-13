@@ -6,7 +6,16 @@ import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
-import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  IconButton,
+  Button,
+  Menu,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -791,6 +800,9 @@ const AudioAnimationPage: React.FC = () => {
   const videoExists = sceneData?.video_exists;
   const language = sceneData?.language;
   // console.log(language, "check_language")
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [ost, setOst] = useState(false); // default
+
   const characters =
     audioAnimationData?.voice_map?.characters ||
     audioAnimationData?.Characters ||
@@ -1159,6 +1171,13 @@ const AudioAnimationPage: React.FC = () => {
     dispatch(postGenerateVoiceAndAudio(payload));
   };
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   // Create transitionn
   const handleCreateTransition = () => {
     dispatch(setSceneData({}));
@@ -1173,6 +1192,7 @@ const AudioAnimationPage: React.FC = () => {
     const payload = {
       script_id: id,
       scenes: scenesPayload,
+      include_ost: ost,
     };
     dispatch(postGenerateVideoBatch(payload, successCallBack));
   };
@@ -1230,6 +1250,8 @@ const AudioAnimationPage: React.FC = () => {
 
     dispatch(postPreviewAzureVoices(payload));
   };
+
+  console.log(ost, "check");
 
   return (
     <>
@@ -1664,10 +1686,38 @@ const AudioAnimationPage: React.FC = () => {
                       }
                       label={"Create Transition"}
                       // className={styles.createBtn}
-                      action={handleCreateTransition}
+                      action={handleMenuOpen}
                     >
                       Create Transition
                     </ButtonComp>
+
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      PaperProps={{ sx: { p: 2, width: 230 } }}
+                    >
+                      <Box display="flex" flexDirection="column" gap={2}>
+                        <Typography variant="primary" fontWeight={600}>
+                          OST
+                        </Typography>
+
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={ost}
+                              onChange={(e) => setOst(e.target.checked)}
+                            />
+                          }
+                          label={ost ? "ON" : "OFF"}
+                        />
+                        <ButtonComp
+                          sx={{ textTransform: "none", width: "200px" }}
+                          label={"Create Transition"}
+                          action={handleCreateTransition}
+                        />
+                      </Box>
+                    </Menu>
 
                     <ButtonComp
                       label={"Submit"}

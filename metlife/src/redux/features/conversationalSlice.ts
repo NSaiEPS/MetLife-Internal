@@ -5,6 +5,7 @@ import api from "../../api/axios";
 
 export interface ConversationalState {
   stitchedVideoUrl: string | null;
+  stitchedVideoStatus: any[] | null;
   conversationalLoader: boolean;
   uploadSceneClipLoader: Record<string, boolean>;
   uploadSceneClipResponse: {
@@ -18,6 +19,7 @@ const initialState: ConversationalState = {
   conversationalLoader: false,
   uploadSceneClipLoader: {},
   uploadSceneClipResponse: null,
+  stitchedVideoStatus: null,
 };
 
 const ConversationalClipsSlice = createSlice({
@@ -26,6 +28,9 @@ const ConversationalClipsSlice = createSlice({
   reducers: {
     setStitchedVideoUrl(state, action: PayloadAction<string | null>) {
       state.stitchedVideoUrl = action.payload;
+    },
+    setStitchedVideoStatus(state, action:PayloadAction<any[] | null>) {
+      state.stitchedVideoStatus = action.payload;
     },
     setConversationalLoader(state, action: PayloadAction<boolean>) {
       state.conversationalLoader = action.payload;
@@ -53,16 +58,19 @@ export const {
   setConversationalLoader,
   setUploadSceneClipLoader,
   setUploadSceneClipResponse,
+  setStitchedVideoStatus,
 } = ConversationalClipsSlice.actions;
 export default ConversationalClipsSlice.reducer;
 
 export const postStitchAllVideos =
-  (script_id: string, setOpenConfirm, backgroudMusic:any) => async (dispatch: AppDispatch) => {
+  (script_id: string, setOpenConfirm, backgroudMusic:any, ost:any) => async (dispatch: AppDispatch) => {
     dispatch(setConversationalLoader(true));
     try {
       const body = new URLSearchParams();
       body.append("script_id", script_id);
       body.append("background_music", backgroudMusic);
+      body.append("include_ost", ost);
+
       const result = await api.post("upload-clip/stitch-script-ffmpeg", body, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -71,9 +79,10 @@ export const postStitchAllVideos =
       if (result?.status) {
         dispatch(setStitchedVideoUrl(result?.data?.stitched_video_url));
         toast.success("Video stitching completed successfully!");
+        dispatch(getStitchedVideoStatus(script_id));
       }
     } catch (error) {
-      // console.error(error);
+      console.error(error);
       toast.error("Something went wrong");
     } finally {
       dispatch(setConversationalLoader(false));
@@ -115,3 +124,22 @@ export const uploadSceneClip = (data: any) => async (dispatch: AppDispatch) => {
     );
   }
 };
+
+export const getStitchedVideoStatus =
+  (id: string) => async (dispatch: AppDispatch) => {
+
+    dispatch(setConversationalLoader(true));
+
+    try {
+      const res = await api.get(`upload-clip/stitch-status?script_id=${id}`);
+      console.log(res, "check_res")
+      if (res.status) {
+        dispatch(setStitchedVideoStatus(res.data));
+      }
+    } catch (error) {
+      toast.error("Failed to fetch audio details!");
+    } finally {
+    dispatch(setConversationalLoader(false));
+
+    }
+  };
