@@ -3,9 +3,17 @@ import type { AppDispatch } from "../store";
 import { toast } from "react-toastify";
 import api from "../../api/axios";
 
+interface StitchedVideoStatus {
+  estimated_completion_at?:string;
+  stitching_status?:string;
+  stitched_video?: {
+    url?:string;
+  }
+}
+
 export interface ConversationalState {
   stitchedVideoUrl: string | null;
-  stitchedVideoStatus: any[] | null;
+  stitchedVideoStatus: StitchedVideoStatus | null;
   conversationalLoader: boolean;
   uploadSceneClipLoader: Record<string, boolean>;
   uploadSceneClipResponse: {
@@ -29,7 +37,7 @@ const ConversationalClipsSlice = createSlice({
     setStitchedVideoUrl(state, action: PayloadAction<string | null>) {
       state.stitchedVideoUrl = action.payload;
     },
-    setStitchedVideoStatus(state, action:PayloadAction<any[] | null>) {
+    setStitchedVideoStatus(state, action:PayloadAction<StitchedVideoStatus | null>) {
       state.stitchedVideoStatus = action.payload;
     },
     setConversationalLoader(state, action: PayloadAction<boolean>) {
@@ -63,7 +71,7 @@ export const {
 export default ConversationalClipsSlice.reducer;
 
 export const postStitchAllVideos =
-  (script_id: string, setOpenConfirm, backgroudMusic:any, ost:any) => async (dispatch: AppDispatch) => {
+  (script_id: string, setOpenConfirm:any, backgroudMusic:any, ost:any) => async (dispatch: AppDispatch) => {
     dispatch(setConversationalLoader(true));
     try {
       const body = new URLSearchParams();

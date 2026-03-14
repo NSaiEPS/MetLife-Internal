@@ -15,7 +15,6 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import styles from "./uploadConversationClips.module.css";
 import {
@@ -38,7 +37,6 @@ import ButtonComp from "../../components/common/Buton/Button";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import Timer from "../../components/common/Timer/Timer";
 import { convertToISTParts } from "../../utils";
-import TimerConversational from "../../components/common/Timer/TimerConversational";
 
 interface ClipData {
   file: File;
@@ -107,11 +105,11 @@ const UploadConversationalClipsPage: React.FC = () => {
     ) || [];
   const hasMissingScenes = remainingScenes.length > 0;
   const maxFileSize = 10 * 1024 * 1024;
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null >(null);
   const [bgMusic, setBgMusic] = useState(false);
   const [ost, setOst] = useState(false);
   const waitingTime = convertToISTParts(
-    stitchedVideoStatus?.estimated_completion_at,
+    stitchedVideoStatus?.estimated_completion_at ?? "",
   );
 
   const finalTime = Math.ceil(waitingTime / 60);
@@ -133,7 +131,7 @@ const UploadConversationalClipsPage: React.FC = () => {
   // }, [scenesData?.scenes]);
 
   useEffect(() => {
-    if (stitchedVideoStatus?.stitching_status === "processing") {
+    if (id && stitchedVideoStatus?.stitching_status === "processing") {
       dispatch(getStitchedVideoStatus(id));
     }
   }, [dispatch, id]);
@@ -300,7 +298,7 @@ const UploadConversationalClipsPage: React.FC = () => {
     handleStichVideo();
   };
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -357,7 +355,7 @@ const UploadConversationalClipsPage: React.FC = () => {
                       }}
                     >
                       <Typography variant="h1" fontSize="32px">
-                        {!scenesData?.stitched_video?.url && !stitchedVideoUrl
+                        {!scenesData?.stitched_video?.url && !stitchedVideoUrl && !stitchedVideoStatus?.stitched_video?.url
                           ? "Upload Conversational Clips"
                           : "Final Stitched Video"}
                       </Typography>
