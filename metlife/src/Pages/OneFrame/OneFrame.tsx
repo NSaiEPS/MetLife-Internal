@@ -1,30 +1,21 @@
-import React, { use, useState } from "react";
-import { Typography, Box, Grid, Button, MenuItem, Menu, useTheme } from "@mui/material";
-import UploadIcon from "../../assets/UploadCloudIcon.svg";
-import AutoFixHighIcon from "../../assets/wizardMagic.svg";
-import ButtonComp from "../../components/common/Buton/Button";
+import React, { useState } from "react";
+import { Typography, Box, useTheme } from "@mui/material";
 import styles from "./OneFrame.module.css";
-import OneFrameHeader from "../../components/common/OneFrameHeader";
 import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
-// If needed for importing SVGs
-// declare module "*.svg" {
-//   const content: string;
-//   export default content;
-// }
+import ButtonComp from "../../components/common/Buton/Button";
 
 const VideoCreationOptions: React.FC = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const theme = useTheme();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mode = theme.palette.mode;
-  const [open, setOpen] = React.useState<null | HTMLElement>(null);
+  const [open, setOpen] = useState<null | HTMLElement>(null);
   const openPopup = Boolean(open);
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
   };
 
@@ -55,95 +46,123 @@ const VideoCreationOptions: React.FC = () => {
             textAlign: "center",
           }}
         >
-          {/* <p className={styles.upperHeading}>Create Your Video with OneFrame</p> */}
+          <div className={styles.hero}>
+            {/* Left Side Info */}
+            <div className={styles.heroLeft}>
+              <div className={styles.heroEyebrow}>✨ AI-Powered Video Creation</div>
+              <h1 className={styles.heroTitle}>Create <span>AI-Powered</span> Educational Videos</h1>
+              <p className={styles.heroSub}>Generate scripts, localize content, and produce high-quality videos using AI.</p>
 
-          <Typography variant="h3">
-            {" "}
-            Create Your Video with <b className={styles.colorTitle}>EdwSurf AI Studio</b>
-          </Typography>
+              <div className={styles.heroBtns}>
+                <ButtonComp
+                  transform="none"
+                  // className={styles.btnGold}
+                  colorType="primary"
+                  onClick={() => navigate("/generate-script")}
+                >
+                  ✨ Generate Script
+                </ButtonComp>
+                <ButtonComp
+                  transform="none"
+                  // className={styles.btnOutline}
+                  colorType="secondary"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  View Dashboard
+                </ButtonComp>
+              </div>
+            </div>
 
-          <Grid
-            container
-            spacing={4}
-            justifyContent="center"
-            alignItems="stretch"
-            sx={{ maxWidth: 1000, width: "100%" }}
-          >
-            {/* Generate Script Card */}
-            <Grid item xs={12} sm={6} md={4}>
-              <div className={styles.beigeCard}>
-                <div className={styles.completeBoxData}>
-                  <Typography variant="h6" className={styles.boxHeading}>
-                    Generate a Script
-                  </Typography>
+            {/* Right Side Visual Placeholder */}
+            <div className={styles.heroRight}>
+              <div className={styles.heroVisual}>
+                <div className={`${styles.floatingCard} ${styles.floatingCardTopLeft}`}>📄 Script ready</div>
+                <div className={`${styles.floatingCard} ${styles.floatingCardTopRight}`}>🌍 Localization</div>
 
-                  <Typography variant="body1" className={styles.boxText}>
-                    Describe your video idea, and our AI will write the perfect
-                    script for you.
-                  </Typography>
+                <div className={styles.heroVideoPlaceholder} onClick={() => alert("▶ Demo video playing!")}>
+                  <div className={styles.playCircle}>▶</div>
+                  <p style={{ color: "var(--text-secondary-dark)", fontSize: "13px" }}>
+                    AI-generated video preview
+                  </p>
+                </div>
 
-                  <div className={styles.parentContainer}>
-                    <ButtonComp
-                      label="Generate a Script"
-                      colorType={mode == "dark" ? "secondary" : "primary"}
-                      // sx={styles.Button}
-                      // className={styles.button_bg}
-
-                      icon={<AutoFixHighOutlinedIcon />}
-                      variant="contained"
-                      action={() => navigate("/generate-script")}
-                    >
-                      Generate a Script
-                    </ButtonComp>
-                  </div>
+                <div className={`${styles.floatingCard} ${styles.floatingCardBottom}`}>
+                  ⬜ 00:00 ─────────── 03:45
                 </div>
               </div>
-            </Grid>
+            </div>
+          </div>
 
-            {/* Upload Script Card */}
-            <Grid item xs={12} sm={6} md={4}>
-              <div className={styles.beigeCard}>
-                <div className={styles.completeBoxData}>
-                  <Typography variant="h6" className={styles.boxHeading}>
-                    {/* Upload a Script
-                     */}
-                    Localization
-                  </Typography>
+          {/* Features Grid Segment */}
+          <div style={{ padding: "0 80px 40px" }}>
+            <h2 className={styles.sectionTitle}>
+              What can <b>EdWave</b> do today?
+            </h2>
 
-                  <Typography variant="body1" className={styles.boxText}>
-                    Already have a script? Upload a .pdf file or video to get
-                    started.
-                  </Typography>
+            <div className={styles.homeActions}>
 
-                  <div className={styles.parentContainer}>
-                    <ButtonComp
-                      // label="Upload a Script"
-                      label="Localization"
-                      colorType={mode == "dark" ? "secondary" : "primary"}
-                      // sx={styles.Button}
-                      // className={styles.button_bg}
-                      icon={<CloudUploadOutlinedIcon />}
-                      variant="contained"
-                      // action={() => navigate("/upload-script")}
-                      action={handleOpenMenu}
-                    >
-                      Localization
-                    </ButtonComp>
-
-                    <UploadPopup
-                      open={open}
-                      openPopup={openPopup}
-                      handleCloseMenu={handleCloseMenu}
-                    />
-                  </div>
-                </div>
+              {/* Generate Script Action */}
+              <div className={styles.actionCard} onClick={() => navigate("/generate-script")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(245,166,35,.1)" }}>✨</div>
+                <h3 className={styles.actionTitle}>Generate Script</h3>
+                <p className={styles.actionSub}>Create a structured video script using AI</p>
+                <ButtonComp transform="none" colorType="primary" padding="8px 16px" >✨ Start Writing</ButtonComp>
               </div>
-            </Grid>
-          </Grid>
+
+              {/* Localize Content Action */}
+              <div className={styles.actionCard} onClick={handleOpenMenu}>
+                <div className={styles.actionIcon} style={{ background: "rgba(59,130,246,.1)" }}>🌍</div>
+                <h3 className={styles.actionTitle}>Localize Content</h3>
+                <p className={styles.actionSub}>Upload existing content to translate and localize</p>
+                <ButtonComp transform="none" colorType="outlined" padding="8px 16px" >Upload Content</ButtonComp>
+              </div>
+
+              {/* Brand Kit Action */}
+              <div className={styles.actionCard} onClick={() => alert("Brand kit coming soon!")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(168,85,247,.1)" }}>🎨</div>
+                <h3 className={styles.actionTitle}>Brand Kit</h3>
+                <p className={styles.actionSub}>Set up your brand identity for all videos</p>
+                <ButtonComp transform="none" colorType="outlined" padding="8px 16px" >Set Up Brand</ButtonComp>
+              </div>
+
+              {/* Lesson Designer Action */}
+              <div className={styles.actionCard} onClick={() => alert("Instructional Designer coming soon!")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(20,184,166,.1)" }}>🧠</div>
+                <h3 className={styles.actionTitle}>AI Instructional Designer</h3>
+                <p className={styles.actionSub}>Auto-generate lesson structure and objectives</p>
+                <ButtonComp transform="none" colorType="outlined" padding="8px 16px" >Design Lesson</ButtonComp>
+              </div>
+
+
+
+            </div>
+            {/* HOW IT WORKS */}
+            <div style={{ textAlign: "center", padding: "28px 80px 20px" }}>
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "14px" }}>
+                How <b style={{ color: "var(--gold)" }}>EdWave</b> Works
+              </p>
+            </div>
+            <div className={styles.howItWorks}>
+              <div className={styles.howStep}><div className={styles.stepCircle}>1</div><div className={styles.stepLabel}>Generate Script</div></div>
+              <div className={styles.stepArrow}>→</div>
+              <div className={styles.howStep}><div className={styles.stepCircle}>2</div><div className={styles.stepLabel}>Create Scenes</div></div>
+              <div className={styles.stepArrow}>→</div>
+              <div className={styles.howStep}><div className={styles.stepCircle}>3</div><div className={styles.stepLabel}>Edit Transitions</div></div>
+              <div className={styles.stepArrow}>→</div>
+              <div className={styles.howStep}><div className={styles.stepCircle}>4</div><div className={styles.stepLabel}>Export Video</div></div>
+            </div>
+          </div>
+
+
+          <UploadPopup
+            open={open}
+            openPopup={openPopup}
+            handleCloseMenu={handleCloseMenu}
+          />
         </Box>
       </Box>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

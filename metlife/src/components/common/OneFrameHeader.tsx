@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   AppBar,
   Avatar,
+  Box,
   Button,
   Divider,
   IconButton,
@@ -11,155 +12,188 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-// import logo from "../../assets/mainImage.svg";
-import logo from "../../assets/logo.jpeg";
+import MenuIcon from "@mui/icons-material/Menu";
 import styles from "./OneFrameHeader.module.css";
 import { useNavigate, useLocation } from "react-router";
 import { navigateTo } from "../../utils/navigate";
 import secureLocalStorage from "react-secure-storage";
-import footerImage from "../../assets/edwsurf_light_logo.svg";
-import footerdarkImage from "../../assets/edwsurf_dark_logo.svg";
 
 interface OneFrameHeaderProps {
-  // setMakeChanges?: (value: boolean) => void;
   makeChanges?: boolean;
   sceneHandle?: boolean;
 }
 
+const navLinks = [
+  { title: "Dashboard", path: "/dashboard" },
+  { title: "Projects", path: "/dashboard" },
+  { title: "Help", path: "#" },
+];
+
 const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
-  // setMakeChanges,
   makeChanges = false,
   sceneHandle = false,
 }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const token = secureLocalStorage.getItem("token") as string | null;
-  const { username } = secureLocalStorage.getItem("userDetails") as
-    | string
-    | null;
+  const userDetails = secureLocalStorage.getItem("userDetails") as any;
+  const username = userDetails?.username || "Guest";
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const mode = theme.palette.mode;
 
-
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseNavMenu = (path?: string) => {
+    setAnchorElNav(null);
+    if (path && path !== "#") {
+      navigate(path);
+    }
   };
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLElement>) => {
     if (sceneHandle && makeChanges) {
       const confirmLeave = window.confirm(
-        "⚠️ You have unsaved changes. Are you sure you want to leave this page?",
+        "⚠️ You have unsaved changes. Are you sure you want to leave this page?"
       );
 
       if (!confirmLeave) {
-        // ❌ User canceled — stay on the same page
         e.preventDefault();
         return;
       }
     }
 
-    // ✅ Either no unsaved changes, or user confirmed
-    // setMakeChanges(true); // or false, depending on when you want to mark changes
-    // if (pathname === "/dashboard" || pathname === "/") return;
     navigate("/");
   };
 
   const handleLogout = () => {
     secureLocalStorage.clear();
-    // window.location.href = "/login";
     navigate("/login");
   };
 
-  console.log(mode, "mode");
-
-
   return (
-    <>
-      <AppBar position="static" className={`${styles.appBar}`}>
-        <Toolbar className={styles.toolbar}>
-          {/* Left spacer to keep title centered */}
-          <img
-            src={mode === "dark" ? footerdarkImage : footerImage}
-            alt="MetLife logo"
-            onClick={handleImageClick}
-            className={styles.logo}
-          />
-          <Typography variant="h6" className={`${styles.title} ${mode === "dark" ? styles.dark_text : styles.light_text}`}>
-            EdwSurf AI Studio
-          </Typography>
-          <div style={{ marginRight: "35px" }}>
-            <Button
-              disableRipple
-              disableTouchRipple
-              onClick={() => navigateTo("/dashboard")}
+    <AppBar position="static" className={styles.appBar} color="transparent" elevation={0} sx={{ borderBottom: "1px solid var(--border-dark, #1f2d44)", background: "var(--bg-card-dark, #111827)" }}>
+      <Toolbar disableGutters sx={{ px: { xs: 2, md: 4 }, height: "var(--nav-h, 60px)", minHeight: "var(--nav-h, 60px) !important", display: "flex", justifyContent: "space-between" }}>
+
+        {/* Left: Logo Section */}
+        <div className={styles.logo} onClick={handleLogoClick}>
+          <div className={styles.logoIcon}>🎬</div>
+          <div className={styles.logoText}>Ed<span>Wave</span><span className={styles.logoBadge}>Content Studio</span></div>
+        </div>
+
+        {/* Center: Desktop Navigation Links */}
+        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
+          <div className={styles.navLinks}>
+            {navLinks.map((link) => (
+              <div
+                key={link.title}
+                className={styles.navLink}
+                onClick={() => handleCloseNavMenu(link.path)}
+              >
+                {link.title}
+              </div>
+            ))}
+          </div>
+        </Box>
+
+        {/* Right: User / Mobile Menu */}
+        <div className={styles.navRight}>
+
+          {/* <Box sx={{ display: { xs: "none", md: "flex" }, gap: "12px", alignItems: "center" }}>
+            <div className="search-box">
+              <span style={{ fontSize: "14px" }}>🔍</span> Search
+            </div>
+            <div className="icon-btn">
+              🔔
+              <div className="badge">3</div>
+            </div>
+          </Box> */}
+
+          {/* Mobile Menu Icon */}
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="navigation menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              sx={{ color: "var(--text-light, #f0f4ff)" }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              keepMounted
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              open={Boolean(anchorElNav)}
+              onClose={() => handleCloseNavMenu()}
               sx={{
-                fontSize: "24px",
-                lineHeight: "30px",
-                color: `${mode === "light" ? "#333333" : "#ffffff"}`,
-                fontWeight: 600,
-                padding: "11px",
-                marginBottom: "-9px",
-                borderRadius: 0,
-                textTransform: "none",
-                borderBottom: "4px solid transparent",
-                minWidth: "auto",
-                ":hover": {
-                  borderBottom: "4px solid #0079bb",
-                  backgroundColor: "transparent",
-                },
-                ":active": {
-                  backgroundColor: "transparent",
-                },
+                display: { xs: "block", md: "none" },
+                "& .MuiPaper-root": { bgcolor: "var(--bg-card-dark, #111827)" }
               }}
             >
-              Dashboard
-            </Button>
-            {token && (
-              <>
-                <IconButton onClick={handleOpen}>
-                  <Avatar
-                    sx={{
-                      bgcolor: "var(--primary-color)", // Use CSS variable for avatar background
-                      fontSize: "18px",
-                      fontWeight: 600,
-                      paddingTop: "0.3rem",
-                      color: "#fff",
-                      // lineHeight: 1,
-                      // fontFamily: "Inter, Roboto, sans-serif",
-                    }}
-                  >
-                    {username.charAt(0).toUpperCase()}
-                  </Avatar>
-                </IconButton>
+              {navLinks.map((link) => (
+                <MenuItem key={link.title} onClick={() => handleCloseNavMenu(link.path)}>
+                  <Typography textAlign="center" sx={{ color: "var(--text-light, #f0f4ff)" }}>
+                    {link.title}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
 
-                <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  transformOrigin={{ vertical: "top", horizontal: "right" }}
-                >
-                  <MenuItem disabled>
-                    <Typography variant="subtitle2">{username}</Typography>
-                  </MenuItem>
+          {/* User Avatar */}
+          {token && (
+            <Box>
+              <div className={styles.avatar} onClick={handleOpenUserMenu}>
+                {username.charAt(0).toUpperCase()}
+              </div>
+              <Menu
+                sx={{
+                  mt: "45px",
+                  "& .MuiPaper-root": {
+                    bgcolor: "var(--bg-card-dark, #111827)",
+                    color: "var(--text-light, #f0f4ff)",
+                    border: "1px solid var(--border-dark, #1f2d44)",
+                  }
+                }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                keepMounted
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem disabled>
+                  <Typography textAlign="center" sx={{ color: "var(--text-secondary-dark, #8899bb)" }}>
+                    {username}
+                  </Typography>
+                </MenuItem>
+                <Divider sx={{ borderColor: "var(--border-dark, #1f2d44)" }} />
+                <MenuItem onClick={handleLogout}>
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
 
-                  <Divider />
-
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
-              </>
-            )}
-          </div>
-        </Toolbar>
-      </AppBar>
-    </>
+        </div>
+      </Toolbar>
+    </AppBar>
   );
 };
 

@@ -131,14 +131,14 @@ function Root() {
           }
           : {
             background: {
-              default: "#000000",
-              paper: "#000000",
+              default: "var(--bg-deep)",
+              paper: "var(--bg-deep)",
             },
           }),
       },
 
       typography: {
-        fontFamily: "Metlife_Circular, Noto_Sans, Arial, sans-serif",
+        // fontFamily: "Metlife_Circular, Noto_Sans, Arial, sans-serif",
         h1: {
           fontWeight: 600,
         },
@@ -158,19 +158,19 @@ function Root() {
           fontWeight: 600,
         },
 
-        body1: {
-          fontFamily: "Noto_Sans, sans-serif",
-        },
-        body2: {
-          fontFamily: "Noto_Sans, sans-serif",
-        },
+        // body1: {
+        //   fontFamily: "Noto_Sans, sans-serif",
+        // },
+        // body2: {
+        //   fontFamily: "Noto_Sans, sans-serif",
+        // },
       },
 
       components: {
         MuiDialogTitle: {
           styleOverrides: {
             root: {
-              fontFamily: "Metlife_Circular, Noto_Sans, sans-serif",
+              // fontFamily: "Metlife_Circular, Noto_Sans, sans-serif",
               fontWeight: 600,
               fontSize: "1.25rem",
             },

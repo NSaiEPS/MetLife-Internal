@@ -53,25 +53,26 @@ interface ButtonCompProps {
   action?: any;
   onClick?: () => void;
   disabled?: boolean;
+  padding?: string;
   colorType?: "primary" | "secondary" | "download" | "warning" | "error" | "outlined"; // 🔥 NEW
 }
 
 const COLOR_CONFIG = {
   primary: {
-    bg: "var(--button-bg)", // Use CSS variable for primary color
-    text: "var(--button-text)", // Use CSS variable for text color
+    bg: "var(--gradient-gold)",  // Use CSS variable for primary color
+    text: "#000000", // Use CSS variable for text color
     border: "2px solid var(--button-border)",
-    hoverBg: "var(--button-hover-bg)", // Use CSS variable for hover background
-    hoverText: "var(--button-hover-text)", // Use CSS variable for hover text color
+    hoverBg: "var(--gradient-gold)", // Use CSS variable for hover background
+    hoverText: "#000", // Use CSS variable for hover text color
     hoverBorder: "2px solid var(--button-hover-border)", // Use CSS variable for hover border
   },
   secondary: {
-    bg: "#FFFFFF",
-    text: "var(--button-secondary-text)",
-    border: "2px solid var(--button-secondary-border)",
-    hoverBg: "var(--button-secondary-hover-bg)",
-    hoverText: "var(--button-hover-text)",
-    hoverBorder: "2px solid var(--button-secondary-hover-border)",
+    bg: "transparent",
+    text: "#fff",
+    border: "2px solid var(--border-dark)",
+    hoverBg: "transparent",
+    hoverText: "var(--gold)",
+    hoverBorder: "2px solid var(--gold)",
   },
   download: {
     bg: "#327037ff",
@@ -83,11 +84,11 @@ const COLOR_CONFIG = {
   },
   outlined: {
     bg: "transparent",
-    text: "var(--primary-color)",
-    border: "2px solid var(--primary-color)",
-    hoverBg: "var(--primary-color)",
+    text: "var(--text-secondary)",
+    border: "2px solid var(--border-dark)",
+    hoverBg: "transparent",
     hoverText: "#fff",
-    hoverBorder: "2px solid var(--primary-color)",
+    hoverBorder: "2px solid #fff",
   },
   warning: {
     bg: "#e65100",          // ORANGE
@@ -121,6 +122,7 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
   onClick,
   disabled = false,
   colorType = "primary",
+  padding = "12px 24px",
   ...rest
 }) => {
   const colors = COLOR_CONFIG[colorType];
@@ -137,24 +139,25 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
         lineHeight: "normal",
         boxSizing: "border-box",
         height: "fit-content",
-        borderRadius: "4px",
+        borderRadius: "12px",
         textTransform: transform,
         fontSize: "14px",
         fontWeight: 600,
-        padding: "8px 16px",
+        padding: padding && padding,
 
-        backgroundColor: disabled ? "#E0E0E0" : colors.bg,
+        background: disabled ? "#E0E0E0" : colors.bg,
         color: disabled ? "var(--button-disabled-color)" : colors.text,
         border: disabled ? "none" : colors.border,
 
         "&:hover": {
-          backgroundColor: disabled ? "#E0E0E0" : colors.hoverBg,
+          background: disabled ? "#E0E0E0" : colors.hoverBg,
           color: disabled ? "var(--button-disabled-color)" : colors.hoverText,
           border: disabled ? "none" : colors.hoverBorder,
+          filter: "brightness(1.1)", transform: "translateY(-1px)",
         },
 
         "&.Mui-disabled": {
-          backgroundColor: "var(--button-disabled-bg)", // 👈 disabled background
+          background: "var(--button-disabled-bg)", // 👈 disabled background
           color: "var(--button-disabled-color)",          // 👈 disabled text
           cursor: "not-allowed",
         },

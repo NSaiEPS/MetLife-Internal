@@ -1,64 +1,118 @@
 :root {
-  /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
-  line-height: 1.5;
-  font-weight: 400;
+  /* 1. Core Brand Colors (Primary Identity) */
+  --brand-navy: #0B1F3B;
+  --brand-deep-navy: #07142A;
+  --brand-gold: #F2B233;
+  --brand-soft-gold: #FFD166;
 
-  /* color-scheme: light dark; */
-  --bg-color: #f9f9f9;
-  --white-color: #ffffff;
-  --primary-color: #00b194;
-  --secondry-color: #cedc00;
-  --text-color: #333135;
-}
+  /* 2. Product UI Base Colors (For App Interface) */
+  --background: #F5F7FB;
+  --panel-bg: #FFFFFF;
+  --card-bg: #F9FAFC;
+  --border: #E3E8F0;
 
-body.light {
-  --primary-color: #007abc;
-  --card-bg: rgba(35, 157, 224, 0.1);
-  --card-border: rgba(35, 157, 224, 0.4);
-  --dark-color: #ffffff;
-  --light-color: #000000;
-  --button-hover-bg: #045884f9;
-  --button-hover-text: #ffffff;
-  --button-hover-border: #045884f9;
-  --button-text: #fff;
-  --button-border: var(--primary-color);
-  --button-bg: var(--primary-color);
-  --button-secondary-text: #2f91c7;
-  --footer-bg: #4d99d1;
-  --button-disabled-color: #9e9e9e;
-  --button-disabled-bg: #6a69693a;
-  --button-secondary-hover-bg: #007abc;
-  --button-secondary-border: #007abc;
-  --button-secondary-hover-border: #007abc;
-  --bg-active-select-color: #f4f4f4;
-  --text-colors: #444;
-  --table-bg-color: #e3f2fd;
-  --input-bg: #f5f5f5;
-  --modal-bg: #fff;
+  /* 3. Primary Action Colors (Buttons) */
+  --primary: #1E6FD9;
+  --primary-hover: #1859B5;
+  --secondary: #EEF2F8;
+
+  /* 4. Status Colors */
+  --success: #2FBF71;
+  --warning: #F2A93B;
+  --error: #E5484D;
+  --info: #3A86FF;
+
+  /* 5. Typography Colors */
+  --text-primary: #1A1F36;
+  --text-secondary: #6B7280;
+  --text-muted: #9AA3AF;
+
+  /* 6. AI Feature Highlight Colors */
+  --ai-highlight: #7C5CFF;
+  --ai-gradient-start: #6A5AF9;
+  --ai-gradient-end: #9F7AEA;
+
+  /* 7. Recommended Gradients */
+  --gradient-primary: linear-gradient(135deg, #0B1F3B, #1E3A8A);
+  --gradient-ai: linear-gradient(135deg, #6A5AF9, #9F7AEA);
+  --gradient-gold: linear-gradient(135deg, var(--gold), var(--gold-dark));
+
+  /* 8. Additional Accents & Structure */
+  --bg-deep: #0a0d1a;
+  --bg-card-dark: #111827;
+  --bg-card2: #161d2e;
+  --bg-hover: #1e2a3e;
+  --border-dark: #1f2d44;
+
+  --gold: #f5a623;
+  --gold-dark: #c8841a;
+  --gold-light: #fbbf24;
+
+  --blue-accent: #3b82f6;
+  --blue-mid: #1d4ed8;
+
+  --text-light: #f0f4ff;
+  --text-secondary-dark: #8899bb;
+  --text-muted-dark: #4a5d7a;
+
+  --green: #22c55e;
+  --red: #ef4444;
+  --purple: #a855f7;
+  --teal: #14b8a6;
+
+  --sidebar-w: 220px;
+  --nav-h: 80px;
 }
 
 body.dark {
-  --primary-color: #f7c217;
-  --card-bg: #f7c31716;
-  --card-border: #f7c3177d;
-  --dark-color: #000000;
-  --light-color: #ffffff;
-  --button-hover-bg: #bd9510;
-  --button-hover-text: #000000;
-  --button-hover-border: #bd9510;
-  --button-text: #000000;
-  --button-border: var(--primary-color);
-  --button-bg: var(--primary-color);
-  --button-secondary-text: #000000;
-  --footer-bg: #242323;
-  --input-bg: transparent;
-  --button-disabled-color: #dddddd54;
-  --button-disabled-bg: #6a69693a;
-  --button-secondary-hover-bg: #f7c217;
-  --button-secondary-border: #ffffff;
-  --button-secondary-hover-border: #f7c217;
-  --bg-active-select-color: #c2c2a342;
-  --text-colors: #ddd;
-  --table-bg-color: #242323;
-  --modal-bg: #0d0d0d;
+  /* 8. Dark Mode overrides */
+  /* --background: #0F172A;
+  --panel-bg: #1E293B;
+  --card-bg: #1E293B;
+  --border: #334155; */
+  /* --text-primary: #E2E8F0; */
+}
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Syne', sans-serif;
+}
+
+/* ── STARFIELD ── */
+
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

@@ -47,6 +47,7 @@ import { IconButton, useTheme } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useEffect } from "react";
+import Starfield from "./components/Starfield";
 
 function ThemeWatcher() {
   const theme = useTheme();
@@ -73,12 +74,14 @@ function App({ mode, setMode }: any) {
   return (
     <>
       {/* Theme Toggle Button */}
-      <div style={{ position: "fixed", top: 20, right: 20, zIndex: 1000 }}>
+      {/* <div style={{ position: "fixed", top: 20, right: 20, zIndex: 1000 }}>
         <IconButton onClick={toggleTheme}>
           {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
         </IconButton>
-      </div>
+      </div> */}
+
       <ThemeWatcher />
+      <Starfield />
       <ToastContainer
         position="top-right"
         autoClose={5000}

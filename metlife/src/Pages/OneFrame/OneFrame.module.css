@@ -1,91 +1,318 @@
-.beigeCard {
-  background-color:var(--card-bg); 
-  border: 1px solid var(--card-border); 
-  width: 416px;
-  height: 327px;
-  padding: 24px;
-  border-radius: 12px;
+.hero {
+  min-height: calc(100vh - var(--nav-h));
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 80px;
+  gap: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(245, 166, 35, .08), transparent);
+  pointer-events: none;
+}
+
+.heroLeft {
+  max-width: 520px;
+  text-align: left;
+}
+
+.heroEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 166, 35, .1);
+  border: 1px solid rgba(245, 166, 35, .25);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.heroTitle {
+  font-family: 'Syne', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 18px;
+  color: var(--text-light);
+}
+
+.heroTitle span {
+  color: var(--gold);
+}
+
+.heroSub {
+  font-size: 16px;
+  color: var(--text-secondary-dark);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.heroBtns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.heroRight {
+  flex-shrink: 0;
+}
+
+.heroVisual {
+  width: 460px;
+  height: 320px;
+  background: var(--bg-card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, .5);
+}
+
+.heroVisual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(245, 166, 35, .06), transparent);
+}
+
+.heroVideoPlaceholder {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
 }
 
-.upperHeading {
-  text-align: center;
-  font-weight: bold;
-  font-size: 48px;
-  line-height: 62px;
-  /* font-family: "Nexa", sans-serif; */
-  /* margin-top: "40%"; */
-  color: #231f20;
-  margin-bottom: 40px;
-}
-
-.colorTitle{
-  color: var(--primary-color);
-}
-
-.boxHeading {
-  font-size: 20px;
-  font-weight: 700;
-  /* color: #231f20; */
-  color: var(--primary-color);
-  padding-top: 70px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  text-align: start;
-  
-}
-
-.boxText {
-  font-size: 16px;
-  padding-left: 20px;
-  text-align: start;
-  font-weight: 300;
-  line-height: 23px;
-  /* color: #231f20; */
-  margin: 8px 0 16px 0;
-  max-width: 335px;
-  padding-bottom: 30px;
-}
-
-.parentContainer {
+.playCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
   display: flex;
-  justify-content: flex-start;
-  padding-left: 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  animation: pulse 2s infinite;
+  cursor: pointer;
 }
 
-.Button {
-  top: 467px;
-  left: 739px;
-  width: 220px;
-  height: 50px;
-  /* UI Properties */
-  background: #239de0 0% 0% no-repeat padding-box;
+@keyframes pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 166, 35, .4)
+  }
+
+  50% {
+    box-shadow: 0 0 0 16px rgba(245, 166, 35, .0)
+  }
+}
+
+.floatingCard {
+  position: absolute;
+  background: rgba(17, 24, 39, .9);
+  border: 1px solid var(--border-dark);
+  border-radius: 12px;
+  padding: 10px 14px;
+  backdrop-filter: blur(8px);
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.floatingCardTopLeft {
+  top: 16px;
+  left: 16px;
+}
+
+.floatingCardTopRight {
+  top: 16px;
+  right: 16px;
+}
+
+.floatingCardBottom {
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: 'Syne', sans-serif;
+  line-height: 1.1;
+}
+
+.sectionTitle>b {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.homeActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0 80px 60px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.actionCard {
+  background: var(--bg-card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: 14px;
+  padding: 20px;
+  cursor: pointer;
+  transition: .2s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.actionCard:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.actionIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.actionTitle {
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.actionSub {
+  font-size: 13px;
+  color: var(--text-secondary-dark);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.btnGold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--text-primary) !important;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: 0.2s;
+}
+
+
+.btnOutline {
+  background: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--border-dark);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btnOutline:hover {
+  background: var(--bg-hover);
+}
+
+.btnGhost {
+  background: var(--bg-hover);
+  color: var(--text-light);
+  border: none;
+  padding: 8px 16px;
   border-radius: 6px;
-  opacity: 1;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
 }
 
-.Button:hover {
-  opacity: 0.9;
+.btnGhost:hover {
+  background: var(--border-dark);
 }
 
-
-.button_bg{
-  background: var(--primary-color) !important;
-  border: none !important;
+.featuresContainer {
+  padding: 0 80px 40px;
 }
 
-
-
-
-/* :global(body.light) .beigeCard {
-  background-color: rgba(35, 157, 224, 0.1);
-  border: 1px solid rgba(35, 157, 224, 0.4);
+.actionIconGold {
+  background: rgba(245, 166, 35, .1);
 }
 
-:global(body.dark) .beigeCard {
-  background-color: #f7c31720;
-  border: 1px solid #f7c317;
-} */
+.actionIconBlue {
+  background: rgba(59, 130, 246, .1);
+}
+
+.actionIconPurple {
+  background: rgba(168, 85, 247, .1);
+}
+
+.actionIconTeal {
+  background: rgba(20, 184, 166, .1);
+}
+
+.howItWorks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 40px 80px 20px;
+}
+
+.howStep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stepLabel {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stepArrow {
+  color: var(--gold);
+  font-size: 20px;
+  margin: 0 12px;
+}
