@@ -249,15 +249,15 @@ const CreateVisualContentPage: React.FC = () => {
     const updatedRows = rows.map((item) =>
       item.scene_id === data.scene_id
         ? {
-            ...item,
-            Visual_Type: value,
-            // requiresVideo: value === "clip",
-            // video_uploaded: value === "clip" ? item.video_uploaded : false,
-            Visual_Description:
-              value === "image"
-                ? data.prompt || "Generating..."
-                : data.clip_prompt || "Generating...",
-          }
+          ...item,
+          Visual_Type: value,
+          // requiresVideo: value === "clip",
+          // video_uploaded: value === "clip" ? item.video_uploaded : false,
+          Visual_Description:
+            value === "image"
+              ? data.prompt || "Generating..."
+              : data.clip_prompt || "Generating...",
+        }
         : item,
     );
     setRows(updatedRows);

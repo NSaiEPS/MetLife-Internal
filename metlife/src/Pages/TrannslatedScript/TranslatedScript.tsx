@@ -105,7 +105,7 @@ const TranslatedScript: React.FC = () => {
               columns={columns}
               extraDetails={localizationImageData}
               showDragAndActions={false}
-              // pdfId={state?.data?.file_id}
+            // pdfId={state?.data?.file_id}
             />
           </>
         ) : (

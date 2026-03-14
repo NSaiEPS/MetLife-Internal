@@ -19,6 +19,7 @@ import {
   Box,
   FormControl,
   Select,
+  useMediaQuery,
 } from "@mui/material";
 
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
@@ -75,6 +76,7 @@ import type { CharacterType } from "../../../utils/types";
 import CharacterPrompt, {
   Character,
 } from "../../Conversationaly_Character/Character";
+import ScriptQualityAnalyzer from "../ScriptQualityAnalyzer/ScriptQualityAnalyzer";
 
 export interface SceneRow {
   id: string | number;
@@ -92,6 +94,7 @@ export interface DynamicTableProps {
   pdfId?: string | number | null;
   setMakeChanges?: (val: boolean) => void;
   features?: boolean;
+  showScript?: boolean;
   visualContentTitle?: string;
 }
 
@@ -134,6 +137,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   pdfId,
   setMakeChanges = () => { },
   features = true,
+  showScript,
   visualContentTitle,
 }) => {
   const [tableExtraData, setTableExtraData] = useState<any>({});
@@ -153,6 +157,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { saveLoader, saveTranslatedData } = useSelector(
     (store: RootState) => store.SaveTranslatedData,
   );
+  const matches = useMediaQuery('(min-width:1080px)');
+
 
   const { characterData, promptData, scriptLoader } = useSelector(
     (store) => store.Script,
@@ -820,7 +826,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   return (
     <>
-      <div className={styles1.header}>
+      <div className={styles1.header} style={{ textAlign: "center", }}>
         <Typography variant="h4">
           {capitalizeFirstLetter(tableExtraData?.title ||
             visualContentTitle ||
@@ -828,157 +834,168 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             "Your Script")}
         </Typography>
 
-        {showDragAndActions && features && (
-          <div className={styles1.headerButtons}>
-            {/* Backwards Version */}
-            <Tooltip
-              title={
-                !tableExtraData?.previous_version_id
-                  ? "Does not have any previous version"
-                  : ""
-              }
-              disableHoverListener={!tableExtraData?.previous_version_id}
-              arrow
-            >
-              <span>
-                <ButtonComp
-                  variant="outlined"
-                  colorType="secondary"
-                  // className={styles1.outlineBtn}
-                  onClick={() =>
-                    handleVersion(tableExtraData?.previous_version_id)
+
+      </div>
+      <div style={{ width: "100%", display: "flex", flexDirection: !matches ? "column" : "row", flexWrap: "wrap", justifyContent: "space-between", gap: "1rem" }}>
+        <div style={{ width: showScript ? matches ? "70%" : "100%" : "100%" }}>
+          <div className={styles1.header}>
+
+            {showDragAndActions && features && (
+              <div className={styles1.headerButtons}>
+                {/* Backwards Version */}
+                <Tooltip
+                  title={
+                    !tableExtraData?.previous_version_id
+                      ? "Does not have any previous version"
+                      : ""
                   }
-                  disabled={!tableExtraData?.previous_version_id}
+                  disableHoverListener={!tableExtraData?.previous_version_id}
+                  arrow
                 >
-                  <WestOutlinedIcon fontSize="small" /> &nbsp; Backward
-                </ButtonComp>
-              </span>
-            </Tooltip>
+                  <span>
+                    <ButtonComp
+                      variant="outlined"
+                      colorType="secondary"
+                      small
+                      // className={styles1.outlineBtn}
+                      onClick={() =>
+                        handleVersion(tableExtraData?.previous_version_id)
+                      }
+                      disabled={!tableExtraData?.previous_version_id}
+                    >
+                      <WestOutlinedIcon fontSize="small" /> &nbsp; Backward
+                    </ButtonComp>
+                  </span>
+                </Tooltip>
 
-            {/* Forward Version */}
-            <Tooltip
-              title={
-                !tableExtraData?.next_version_id
-                  ? "Does not have any next version"
-                  : ""
-              }
-              disableHoverListener={!tableExtraData?.next_version_id}
-              arrow
-            >
-              <span>
+                {/* Forward Version */}
+                <Tooltip
+                  title={
+                    !tableExtraData?.next_version_id
+                      ? "Does not have any next version"
+                      : ""
+                  }
+                  disableHoverListener={!tableExtraData?.next_version_id}
+                  arrow
+                >
+                  <span>
+                    <ButtonComp
+                      variant="outlined"
+                      small
+                      colorType="secondary"
+                      // className={styles1.outlineBtn}
+                      onClick={() => handleVersion(tableExtraData?.next_version_id)}
+                      disabled={!tableExtraData?.next_version_id}
+                    >
+                      Forward &nbsp; <EastOutlinedIcon fontSize="small" />
+                    </ButtonComp>
+                  </span>
+                </Tooltip>
+
+                {/* Add Scene */}
                 <ButtonComp
                   variant="outlined"
                   colorType="secondary"
+                  small
                   // className={styles1.outlineBtn}
-                  onClick={() => handleVersion(tableExtraData?.next_version_id)}
-                  disabled={!tableExtraData?.next_version_id}
+                  onClick={() => addScene()}
                 >
-                  Forward &nbsp; <EastOutlinedIcon fontSize="small" />
+                  + Add Scene
                 </ButtonComp>
-              </span>
-            </Tooltip>
 
-            {/* Add Scene */}
-            <ButtonComp
-              variant="outlined"
-              colorType="secondary"
-              // className={styles1.outlineBtn}
-              onClick={() => addScene()}
-            >
-              + Add Scene
-            </ButtonComp>
-
-            {/* Show Source */}
-            {!id?.startsWith("SCRIPT") && (
-              <Tooltip
-                title={
-                  tableExtraData?.data_source === "openai"
-                    ? "OpenAI does not have any source"
-                    : ""
-                }
-                disableHoverListener={tableExtraData?.data_source !== "openai"}
-                arrow
-              >
-                <span>
+                {/* Show Source */}
+                {!id?.startsWith("SCRIPT") && (
+                  <Tooltip
+                    title={
+                      tableExtraData?.data_source === "openai"
+                        ? "OpenAI does not have any source"
+                        : ""
+                    }
+                    disableHoverListener={tableExtraData?.data_source !== "openai"}
+                    arrow
+                  >
+                    <span>
+                      <ButtonComp
+                        variant="contained"
+                        small
+                        // className={styles1.primaryBtn}
+                        onClick={handleShowSource}
+                        disabled={tableExtraData?.data_source == "openai"}
+                      >
+                        Show Source
+                      </ButtonComp>
+                    </span>
+                  </Tooltip>
+                )}
+                {!id?.startsWith("SCRIPT") && (
                   <ButtonComp
                     variant="contained"
-                    // className={styles1.primaryBtn}
-                    onClick={handleShowSource}
-                    disabled={tableExtraData?.data_source == "openai"}
+                    small
+                    // className={styles1.BtnSavePrompt}
+                    onClick={() =>
+                      setUiState((prev) => ({ ...prev, openSavePrompt: true }))
+                    }
                   >
-                    Show Source
+                    Show Prompt
                   </ButtonComp>
-                </span>
-              </Tooltip>
+                )}
+                <ShowSourcePopup
+                  open={uiState?.openShowPopup}
+                  // open={openShowPopup}
+                  onClose={() =>
+                    setUiState((prev) => ({ ...prev, openShowPopup: false }))
+                  }
+                  // onClose={() => setOpenShowPopup(false)}
+                  data={showSourceData}
+                  loader={uiState?.showSourceLoader}
+                />
+                {/* Back Button */}
+                <Button
+                  className={styles1.icon}
+                  sx={{
+                    color: "var(--primary-color)"
+                  }}
+                  onClick={() => navigate("/generate-script")}
+                >
+                  <IoArrowBackCircleOutline size={30} />
+                  <span style={{ lineHeight: "normal" }}>Back</span>
+                </Button>
+                <Button
+                  className={styles1.icon}
+                  sx={{
+                    color: "var(--primary-color)"
+                  }}
+                  onClick={() =>
+                    navigate(
+                      `/create-visual-content/${tableExtraData?.prompt_batch_id}`,
+                    )
+                  }
+                  disabled={!tableExtraData?.prompt_batch_id}
+                >
+                  <span style={{ lineHeight: "normal" }}>Next</span>{" "}
+                  <IoArrowForwardCircleOutline size={30} />
+                </Button>
+              </div>
             )}
-            {!id?.startsWith("SCRIPT") && (
-              <ButtonComp
-                variant="contained"
-                // className={styles1.BtnSavePrompt}
-                onClick={() =>
-                  setUiState((prev) => ({ ...prev, openSavePrompt: true }))
-                }
-              >
-                Show Prompt
-              </ButtonComp>
-            )}
-            <ShowSourcePopup
-              open={uiState?.openShowPopup}
-              // open={openShowPopup}
-              onClose={() =>
-                setUiState((prev) => ({ ...prev, openShowPopup: false }))
-              }
-              // onClose={() => setOpenShowPopup(false)}
-              data={showSourceData}
-              loader={uiState?.showSourceLoader}
-            />
-            {/* Back Button */}
-            <Button
-              className={styles1.icon}
-              sx={{
-                color: "var(--primary-color)"
-              }}
-              onClick={() => navigate("/generate-script")}
-            >
-              <IoArrowBackCircleOutline size={30} />
-              <span style={{ lineHeight: "normal" }}>Back</span>
-            </Button>
-            <Button
-              className={styles1.icon}
-              sx={{
-                color: "var(--primary-color)"
-              }}
-              onClick={() =>
-                navigate(
-                  `/create-visual-content/${tableExtraData?.prompt_batch_id}`,
-                )
-              }
-              disabled={!tableExtraData?.prompt_batch_id}
-            >
-              <span style={{ lineHeight: "normal" }}>Next</span>{" "}
-              <IoArrowForwardCircleOutline size={30} />
-            </Button>
           </div>
-        )}
-      </div>
 
-      {saveVisualContentLoader && (
-        <FullScreenGradientLoader text="loading..." />
-      )}
-      {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
-      {loader && <FullScreenGradientLoader text={loaderText} />}
-      {scriptLoader && <FullScreenGradientLoader text="Loading..." />}
+          {saveVisualContentLoader && (
+            <FullScreenGradientLoader text="loading..." />
+          )}
+          {saveLoader && <FullScreenGradientLoader text={"Loading..."} />}
+          {loader && <FullScreenGradientLoader text={loaderText} />}
+          {scriptLoader && <FullScreenGradientLoader text="Loading..." />}
 
-      {/* ---------------- TABLE ---------------- */}
-      <TableComp
-        handleDragEnd={handleDragEnd}
-        columns={columns}
-        rows={rows}
-        showDragAndActions={showDragAndActions}
-        actions={actions}
-      />
+          {/* ---------------- TABLE ---------------- */}
+          <TableComp
+            handleDragEnd={handleDragEnd}
+            columns={columns}
+            rows={rows}
+            showDragAndActions={showDragAndActions}
+            actions={actions}
+          />
 
-      {/* {characters.map((char, index) => (
+          {/* {characters.map((char, index) => (
         <Character
           key={index}
           index={index}
@@ -990,103 +1007,104 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         />
       ))} */}
 
-      {editingIndex !== null && (
-        <CharacterPrompt
-          index={editingIndex}
-          totalCharacters={extraDetails?.characters?.length}
-          data={characters[editingIndex] || emptyCharacter}
-          closePrompt={closePrompt}
-          // updateCharacter={updateCharacter}
-          onSave={handleCharacterSave}
-          pdfData={extraDetails}
-        />
-      )}
+          {editingIndex !== null && (
+            <CharacterPrompt
+              index={editingIndex}
+              totalCharacters={extraDetails?.characters?.length}
+              data={characters[editingIndex] || emptyCharacter}
+              closePrompt={closePrompt}
+              // updateCharacter={updateCharacter}
+              onSave={handleCharacterSave}
+              pdfData={extraDetails}
+            />
+          )}
 
-      {/* ---------------- POPUPS ---------------- */}
-      <AddNewScriptPopup
-        open={uiState?.openPopup}
-        onClose={() => setUiState((prev) => ({ ...prev, openPopup: false }))}
-        fieldData={popUpData}
-        title={popupTitle}
-        handleUpdate={handleUpdate}
-        tableData={tableExtraData}
-      />
+          {/* ---------------- POPUPS ---------------- */}
+          <AddNewScriptPopup
+            open={uiState?.openPopup}
+            onClose={() => setUiState((prev) => ({ ...prev, openPopup: false }))}
+            fieldData={popUpData}
+            title={popupTitle}
+            handleUpdate={handleUpdate}
+            tableData={tableExtraData}
+          />
 
-      <DeleteScenePopup
-        open={uiState?.openDeletePopup}
-        onClose={() =>
-          setUiState((prev) => ({ ...prev, openDeletePopup: false }))
-        }
-        onConfirm={confirmDeleteScene}
-        rowData={selectedScene}
-        id={id}
-        loader={uiState?.deleteLoader}
-      />
+          <DeleteScenePopup
+            open={uiState?.openDeletePopup}
+            onClose={() =>
+              setUiState((prev) => ({ ...prev, openDeletePopup: false }))
+            }
+            onConfirm={confirmDeleteScene}
+            rowData={selectedScene}
+            id={id}
+            loader={uiState?.deleteLoader}
+          />
 
-      {/* FOOTER BUTTONS */}
-      <div className={styles.footerButtons}>
-        <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-          className={styles.stack}
-        >
-          {features && (
-            <>
-              <CharacterCarousel
-                open={uiState?.openCharacterModal}
-                // open={openCharacterModal}
-                onClose={handleCloseCharacterModal}
-                characterData={characterData}
-                promptData={promptData}
-                currentIndex={currentIndex}
-                setCurrentIndex={setCurrentIndex}
-                onGenerateImages={handleCharacterGenerateImages}
-                tableExtraData={tableExtraData}
-                setOpenFlowDialog={setOpenFlowDialog}
-              />
-              <Tooltip
-                title={
-                  // !saveTranslatedData
-                  !saveTranslatedData?.saved_version
-                    ? "Please save before creating visual content."
-                    : ""
-                }
-                action={() => setUiState((prev) => ({ ...prev, open: true }))}
-                // action={() => setOpen(true)}
-                placement="top"
-                arrow
-              >
-                <span>
-                  <ButtonComp
-                    label={loader ? "Translating" : "Translate Script"}
-                    variant="contained"
-                    sx={
-                      {
-                        // backgroundColor: "#239DE0"
-                      }
+          {/* FOOTER BUTTONS */}
+          <div className={styles.footerButtons}>
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="center"
+              alignItems="center"
+              className={styles.stack}
+            >
+              {features && (
+                <>
+                  <CharacterCarousel
+                    open={uiState?.openCharacterModal}
+                    // open={openCharacterModal}
+                    onClose={handleCloseCharacterModal}
+                    characterData={characterData}
+                    promptData={promptData}
+                    currentIndex={currentIndex}
+                    setCurrentIndex={setCurrentIndex}
+                    onGenerateImages={handleCharacterGenerateImages}
+                    tableExtraData={tableExtraData}
+                    setOpenFlowDialog={setOpenFlowDialog}
+                  />
+                  <Tooltip
+                    title={
+                      // !saveTranslatedData
+                      !saveTranslatedData?.saved_version
+                        ? "Please save before creating visual content."
+                        : ""
                     }
+                    action={() => setUiState((prev) => ({ ...prev, open: true }))}
                     // action={() => setOpen(true)}
-                    action={() =>
-                      setUiState((prev) => ({ ...prev, open: true }))
-                    }
-                    disabled={!saveTranslatedData?.saved_version}
+                    placement="top"
+                    arrow
                   >
-                    {loader ? "Translating" : "Translate Script"}
-                  </ButtonComp>
-                </span>
-              </Tooltip>
+                    <span>
+                      <ButtonComp
+                        label={loader ? "Translating" : "Translate Script"}
+                        variant="contained"
+                        small
+                        sx={
+                          {
+                            // backgroundColor: "#239DE0"
+                          }
+                        }
+                        // action={() => setOpen(true)}
+                        action={() =>
+                          setUiState((prev) => ({ ...prev, open: true }))
+                        }
+                        disabled={!saveTranslatedData?.saved_version}
+                      >
+                        {loader ? "Translating" : "Translate Script"}
+                      </ButtonComp>
+                    </span>
+                  </Tooltip>
 
-              {/* Language Popup */}
-              <PopupModal
-                open={uiState?.open}
-                onClose={() => setUiState((prev) => ({ ...prev, open: false }))}
-                title="Select Language"
-              >
-                <div className={styles.languageList}>
-                  {/* Translate tool options */}
-                  {/* <div className={styles.providerSection}>
+                  {/* Language Popup */}
+                  <PopupModal
+                    open={uiState?.open}
+                    onClose={() => setUiState((prev) => ({ ...prev, open: false }))}
+                    title="Select Language"
+                  >
+                    <div className={styles.languageList}>
+                      {/* Translate tool options */}
+                      {/* <div className={styles.providerSection}>
                     <h4 className={styles.sectionTitle}>Select Provider</h4>
 
                     <div className={styles.providerList}>
@@ -1108,355 +1126,367 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       ))}
                     </div>
                   </div> */}
-                  {/* language options */}
-                  {filteredLanguages.map((lang, index) => (
-                    <div
-                      key={index}
-                      className={`${styles.languageItem} ${selectedLang === lang ? styles.activeLang : ""
-                        }`}
-                      onClick={() => {
-                        setSelectedLang(lang);
-                        setMakeChanges(true);
-                      }}
-                    >
-                      {selectedLang === lang && (
-                        <MdDone size={20} color="var(--primary-color)" className={styles.tickIcon} />
-                      )}
-                      <span>{lang}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className={styles.popupButtonRow}>
-                  <FormControl size="small" className={styles.providerDropdown}>
-                    <Select
-                      sx={{
-                        // height: "50px",
-                        width: "110px",
-                      }}
-                      value={selectedProvider}
-                      onChange={(e) =>
-                        setSelectedProvider(e.target.value as ProviderType)
-                      }
-                    >
-                      {PROVIDERS.map((provider) => (
-                        <MenuItem key={provider} value={provider}>
-                          {/* {provider.toUpperCase()} */}
-                          {PROVIDER_LABELS[provider]}
-                        </MenuItem>
+                      {/* language options */}
+                      {filteredLanguages.map((lang, index) => (
+                        <div
+                          key={index}
+                          className={`${styles.languageItem} ${selectedLang === lang ? styles.activeLang : ""
+                            }`}
+                          onClick={() => {
+                            setSelectedLang(lang);
+                            setMakeChanges(true);
+                          }}
+                        >
+                          {selectedLang === lang && (
+                            <MdDone size={20} color="var(--primary-color)" className={styles.tickIcon} />
+                          )}
+                          <span>{lang}</span>
+                        </div>
                       ))}
-                    </Select>
-                  </FormControl>
-                  <ButtonComp
-                    label="Translate Script"
-                    variant="contained"
-                    // className={styles.downloadBtn}
-                    action={() => {
-                      handleTranslateScript();
-                      setUiState((prev) => ({ ...prev, open: false }));
-                      // setOpen(false);
-                    }}
-                  >
-                    Translate Script
-                  </ButtonComp>
-                </div>
-              </PopupModal>
-            </>
-          )}
+                    </div>
 
-          {showDragAndActions && features && (
-            <ButtonComp
-              variant="outlined"
-              colorType="secondary"
-              // className={styles.largeOutline}
-              disabled={pathname.startsWith("SCRIPT-")}
-              onClick={() => {
-                setMakeChanges(true);
-                setSceneData({});
-                setUiState((prev) => ({ ...prev, openRegeneratePopup: true }));
-              }}
-            >
-              Regenerate Script
-            </ButtonComp>
-          )}
+                    <div className={styles.popupButtonRow}>
+                      <FormControl size="small" className={styles.providerDropdown}>
+                        <Select
+                          sx={{
+                            // height: "50px",
+                            width: "110px",
+                          }}
+                          value={selectedProvider}
+                          onChange={(e) =>
+                            setSelectedProvider(e.target.value as ProviderType)
+                          }
+                        >
+                          {PROVIDERS.map((provider) => (
+                            <MenuItem key={provider} value={provider}>
+                              {/* {provider.toUpperCase()} */}
+                              {PROVIDER_LABELS[provider]}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <ButtonComp
+                        label="Translate Script"
+                        variant="contained"
+                        small
+                        // className={styles.downloadBtn}
+                        action={() => {
+                          handleTranslateScript();
+                          setUiState((prev) => ({ ...prev, open: false }));
+                          // setOpen(false);
+                        }}
+                      >
+                        Translate Script
+                      </ButtonComp>
+                    </div>
+                  </PopupModal>
+                </>
+              )}
 
-          {/* Regenerate Popup */}
-          <RegenerateScriptPopup
-            open={uiState?.openRegeneratePopup}
-            // open={openRegeneratePopup}
-            onClose={() => {
-              setUiState((prev) => ({ ...prev, openRegeneratePopup: false }));
-              setSceneData({});
-            }}
-            id={id}
-            setTableExtraData={handleSetData}
-            sceneId={sceneData}
-            tableData={tableExtraData}
-          />
+              {showDragAndActions && features && (
+                <ButtonComp
+                  variant="outlined"
+                  colorType="secondary"
+                  small
+                  // className={styles.largeOutline}
+                  disabled={pathname.startsWith("SCRIPT-")}
+                  onClick={() => {
+                    setMakeChanges(true);
+                    setSceneData({});
+                    setUiState((prev) => ({ ...prev, openRegeneratePopup: true }));
+                  }}
+                >
+                  Regenerate Script
+                </ButtonComp>
+              )}
 
-          {features && (
-            <ButtonComp
-              variant="outlined"
-              colorType="secondary"
-              // className={styles.largeOutline}
-              onClick={
-                pathname === "/translated-script" && tableExtraData?.conversational
-                  ? handleCharactersForUpload
-                  : handleSave
-              }
-              disabled={saveLoader}
-            >
-              {/* Save */}
-              {pathname === "/translated-script" && tableExtraData?.conversational
-                ? isLastCharacter
-                  ? "Save"
-                  : "Next"
-                : "Save"}
-            </ButtonComp>
-          )}
+              {/* Regenerate Popup */}
+              <RegenerateScriptPopup
+                open={uiState?.openRegeneratePopup}
+                // open={openRegeneratePopup}
+                onClose={() => {
+                  setUiState((prev) => ({ ...prev, openRegeneratePopup: false }));
+                  setSceneData({});
+                }}
+                id={id}
+                setTableExtraData={handleSetData}
+                sceneId={sceneData}
+                tableData={tableExtraData}
+              />
 
-          {features && (
-            <ButtonComp
-              colorType="download"
-              variant="contained"
-              // className={styles.successBtn}
-              onClick={() =>
-                setUiState((prev) => ({ ...prev, openDownloadPopup: true }))
-              }
-              disabled={!saveTranslatedData?.saved_version}
-            >
-              Download Script
-            </ButtonComp>
-          )}
+              {features && (
+                <ButtonComp
+                  variant="outlined"
+                  colorType="secondary"
+                  small
+                  // className={styles.largeOutline}
+                  onClick={
+                    pathname === "/translated-script" && tableExtraData?.conversational
+                      ? handleCharactersForUpload
+                      : handleSave
+                  }
+                  disabled={saveLoader}
+                >
+                  {/* Save */}
+                  {pathname === "/translated-script" && tableExtraData?.conversational
+                    ? isLastCharacter
+                      ? "Save"
+                      : "Next"
+                    : "Save"}
+                </ButtonComp>
+              )}
 
-          {showDragAndActions && features && (
-            <>
-              <Tooltip
-                title={
-                  !saveTranslatedData
-                    ? "Please save before creating visual content."
-                    : ""
-                }
-                placement="top"
-                arrow
-              >
-                <span>
-                  <ButtonComp
-                    onClick={
-                      tableExtraData?.video_style === "conversational" ||
-                        tableExtraData?.video_style === "mixed"
-                        ? handleOpenFlowDialog
-                        : handleCreateVisualContent
-                    }
-                    variant="contained"
-                    colorType="secondary"
-                    // className={styles.primaryBtn}
-                    disabled={
-                      saveTranslatedData === null ||
-                      uiState?.operations ||
-                      // operations ||
-                      // saveTranslatedData?.is_save_action === false
-                      !saveTranslatedData?.saved_version
-                      // tableExtraData?.prompt_batch_id
-                    }
-                  >
-                    Create Visual Content
-                  </ButtonComp>
-                </span>
-              </Tooltip>
-              {tableExtraData?.video_style === "conversational" ||
-                tableExtraData?.video_style === "mixed" ? (
+              {features && (
+                <ButtonComp
+                  colorType="download"
+                  variant="contained"
+                  small
+                  // className={styles.successBtn}
+                  onClick={() =>
+                    setUiState((prev) => ({ ...prev, openDownloadPopup: true }))
+                  }
+                  disabled={!saveTranslatedData?.saved_version}
+                >
+                  Download Script
+                </ButtonComp>
+              )}
+
+              {showDragAndActions && features && (
                 <>
-                  <Dialog
-                    open={openFlowDialog}
-                    onClose={handleCloseFlowDialog}
-                    maxWidth="sm"
-                    fullWidth
-                    PaperProps={{
-                      sx: { borderRadius: 3, p: 3, textAlign: "center" },
-                    }}
+                  <Tooltip
+                    title={
+                      !saveTranslatedData
+                        ? "Please save before creating visual content."
+                        : ""
+                    }
+                    placement="top"
+                    arrow
                   >
-                    {tableExtraData?.video_style === "conversational" ? (
-                      <Typography variant="h5" fontWeight={600} mb={1}>
-                        Conversational Video Flow
-                      </Typography>
-                    ) : (
-                      <Typography variant="h5" fontWeight={600} mb={1}>
-                        Conmbined Video Flow
-                      </Typography>
-                    )}
+                    <span>
+                      <ButtonComp
+                        onClick={
+                          tableExtraData?.video_style === "conversational" ||
+                            tableExtraData?.video_style === "mixed"
+                            ? handleOpenFlowDialog
+                            : handleCreateVisualContent
+                        }
+                        small
+                        variant="contained"
+                        colorType="secondary"
+                        // className={styles.primaryBtn}
+                        disabled={
+                          saveTranslatedData === null ||
+                          uiState?.operations ||
+                          // operations ||
+                          // saveTranslatedData?.is_save_action === false
+                          !saveTranslatedData?.saved_version
+                          // tableExtraData?.prompt_batch_id
+                        }
+                      >
+                        Create Visual Content
+                      </ButtonComp>
+                    </span>
+                  </Tooltip>
+                  {tableExtraData?.video_style === "conversational" ||
+                    tableExtraData?.video_style === "mixed" ? (
+                    <>
+                      <Dialog
+                        open={openFlowDialog}
+                        onClose={handleCloseFlowDialog}
+                        maxWidth="sm"
+                        fullWidth
+                        PaperProps={{
+                          sx: { borderRadius: 3, p: 3, textAlign: "center" },
+                        }}
+                      >
+                        {tableExtraData?.video_style === "conversational" ? (
+                          <Typography variant="h5" fontWeight={600} mb={1}>
+                            Conversational Video Flow
+                          </Typography>
+                        ) : (
+                          <Typography variant="h5" fontWeight={600} mb={1}>
+                            Conmbined Video Flow
+                          </Typography>
+                        )}
 
-                    <Typography color="text.secondary" mb={4}>
-                      Choose to proceed:
-                    </Typography>
+                        <Typography color="text.secondary" mb={4}>
+                          Choose to proceed:
+                        </Typography>
 
-                    <Box display="flex" justifyContent="center" gap={4} mb={4}>
-                      {/* {
+                        <Box display="flex" justifyContent="center" gap={4} mb={4}>
+                          {/* {
                       (!tableExtraData?.char_image_exist ||
                         tableExtraData?.video_style === "conversational") &&
                         !(
                           tableExtraData?.video_style === "mixed" &&
                           characterData?.length > 0
                         ) && ( */}
-                      {((tableExtraData?.video_style === "conversational" &&
-                        !tableExtraData?.char_image_exist) ||
-                        (tableExtraData?.video_style === "mixed" &&
-                          !characterData?.length)) && (
-                          <Box
-                            onClick={handleGenerateImagesFlow}
-                            sx={{
-                              cursor: "pointer",
-                              width: 200,
-                              p: 2,
-                              borderRadius: 2,
-                              border: "1px solid #e0e0e0",
-                              transition: "0.2s",
-                              "&:hover": {
-                                boxShadow: 3,
-                                transform: "translateY(-2px)",
-                              },
-                            }}
-                          >
-                            <Typography fontWeight={600}>
-                              {promptData?.length
-                                ? "View existing prompts & Images"
-                                : "Create/Setup prompts"}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Generate character images
-                            </Typography>
-                          </Box>
-                        )}
+                          {((tableExtraData?.video_style === "conversational" &&
+                            !tableExtraData?.char_image_exist) ||
+                            (tableExtraData?.video_style === "mixed" &&
+                              !characterData?.length)) && (
+                              <Box
+                                onClick={handleGenerateImagesFlow}
+                                sx={{
+                                  cursor: "pointer",
+                                  width: 200,
+                                  p: 2,
+                                  borderRadius: 2,
+                                  border: "1px solid #e0e0e0",
+                                  transition: "0.2s",
+                                  "&:hover": {
+                                    boxShadow: 3,
+                                    transform: "translateY(-2px)",
+                                  },
+                                }}
+                              >
+                                <Typography fontWeight={600}>
+                                  {promptData?.length
+                                    ? "View existing prompts & Images"
+                                    : "Create/Setup prompts"}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  Generate character images
+                                </Typography>
+                              </Box>
+                            )}
 
-                      {tableExtraData?.char_image_exist &&
-                        tableExtraData?.video_style === "conversational" && (
-                          <Box
-                            onClick={() => {
-                              handleCloseFlowDialog();
-                              handleOpenCharacterModal();
-                            }}
-                            sx={{
-                              cursor: "pointer",
-                              width: 200,
-                              p: 2,
-                              borderRadius: 2,
-                              border: "1px solid #e0e0e0",
-                              transition: "0.2s",
-                              "&:hover": {
-                                boxShadow: 3,
-                                transform: "translateY(-2px)",
-                              },
-                            }}
-                          >
-                            <Typography fontWeight={600}>
-                              View Existing Images
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Continue conversational flow
-                            </Typography>
-                          </Box>
-                        )}
-                      {/* mixed */}
-                      {tableExtraData?.video_style === "mixed" && (
-                        <>
-                          <Box
-                            display="flex"
-                            justifyContent="center"
-                            gap={4}
-                            mb={4}
-                          >
-                            {tableExtraData?.video_style === "mixed" &&
-                              characterData?.length > 0 && (
-                                <Box
-                                  onClick={() =>
-                                    handleCreateVisualContent("narrative")
-                                  }
-                                  sx={{
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "center",
-                                    width: 160,
-                                    p: 2,
-                                    borderRadius: 2,
-                                    border: "1px solid #e0e0e0",
-                                    transition: "0.2s",
-                                    "&:hover": {
-                                      boxShadow: 3,
-                                      transform: "translateY(-2px)",
-                                    },
-                                  }}
-                                >
-                                  <Typography fontWeight={600}>
-                                    L3 – Narrative Flow
-                                  </Typography>
-                                </Box>
-                              )}
-                            {tableExtraData?.video_style === "mixed" &&
-                              characterData?.length > 0 && (
-                                <Box
-                                  onClick={() =>
-                                    handleCreateVisualContent("conversation")
-                                  }
-                                  sx={{
-                                    cursor: "pointer",
-                                    width: 160,
-                                    p: 2,
-                                    borderRadius: 2,
-                                    border: "1px solid #e0e0e0",
-                                    transition: "0.2s",
-                                    "&:hover": {
-                                      boxShadow: 3,
-                                      transform: "translateY(-2px)",
-                                    },
-                                  }}
-                                >
-                                  <Typography fontWeight={600}>
-                                    L4 – Conversational Flow
-                                  </Typography>
-                                </Box>
-                              )}
-                          </Box>
-                        </>
-                      )}
-                    </Box>
+                          {tableExtraData?.char_image_exist &&
+                            tableExtraData?.video_style === "conversational" && (
+                              <Box
+                                onClick={() => {
+                                  handleCloseFlowDialog();
+                                  handleOpenCharacterModal();
+                                }}
+                                sx={{
+                                  cursor: "pointer",
+                                  width: 200,
+                                  p: 2,
+                                  borderRadius: 2,
+                                  border: "1px solid #e0e0e0",
+                                  transition: "0.2s",
+                                  "&:hover": {
+                                    boxShadow: 3,
+                                    transform: "translateY(-2px)",
+                                  },
+                                }}
+                              >
+                                <Typography fontWeight={600}>
+                                  View Existing Images
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  Continue conversational flow
+                                </Typography>
+                              </Box>
+                            )}
+                          {/* mixed */}
+                          {tableExtraData?.video_style === "mixed" && (
+                            <>
+                              <Box
+                                display="flex"
+                                justifyContent="center"
+                                gap={4}
+                                mb={4}
+                              >
+                                {tableExtraData?.video_style === "mixed" &&
+                                  characterData?.length > 0 && (
+                                    <Box
+                                      onClick={() =>
+                                        handleCreateVisualContent("narrative")
+                                      }
+                                      sx={{
+                                        cursor: "pointer",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        width: 160,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        border: "1px solid #e0e0e0",
+                                        transition: "0.2s",
+                                        "&:hover": {
+                                          boxShadow: 3,
+                                          transform: "translateY(-2px)",
+                                        },
+                                      }}
+                                    >
+                                      <Typography fontWeight={600}>
+                                        L3 – Narrative Flow
+                                      </Typography>
+                                    </Box>
+                                  )}
+                                {tableExtraData?.video_style === "mixed" &&
+                                  characterData?.length > 0 && (
+                                    <Box
+                                      onClick={() =>
+                                        handleCreateVisualContent("conversation")
+                                      }
+                                      sx={{
+                                        cursor: "pointer",
+                                        width: 160,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        border: "1px solid #e0e0e0",
+                                        transition: "0.2s",
+                                        "&:hover": {
+                                          boxShadow: 3,
+                                          transform: "translateY(-2px)",
+                                        },
+                                      }}
+                                    >
+                                      <Typography fontWeight={600}>
+                                        L4 – Conversational Flow
+                                      </Typography>
+                                    </Box>
+                                  )}
+                              </Box>
+                            </>
+                          )}
+                        </Box>
 
-                    <ButtonComp
-                      onClick={handleCloseFlowDialog}
-                      variant="outlined"
-                      sx={{ px: 4 }}
-                    >
-                      Cancel
-                    </ButtonComp>
-                  </Dialog>
+                        <ButtonComp
+                          onClick={handleCloseFlowDialog}
+                          variant="outlined"
+                          sx={{ px: 4 }}
+                        >
+                          Cancel
+                        </ButtonComp>
+                      </Dialog>
+                    </>
+                  ) : null}
                 </>
-              ) : null}
-            </>
-          )}
-        </Stack>
+              )}
+            </Stack>
 
-        <SinglePromptModal
-          open={uiState?.openSavePrompt}
-          onClose={() =>
-            setUiState((prev) => ({ ...prev, openSavePrompt: false }))
-          }
-          prompt={latestPrompt}
-          onSave={handleSavePrompt}
-          size="md"
-          extraDetails={tableExtraData}
-          operations={uiState?.operations}
-        // operations={operations}
-        />
+            <SinglePromptModal
+              open={uiState?.openSavePrompt}
+              onClose={() =>
+                setUiState((prev) => ({ ...prev, openSavePrompt: false }))
+              }
+              prompt={latestPrompt}
+              onSave={handleSavePrompt}
+              size="md"
+              extraDetails={tableExtraData}
+              operations={uiState?.operations}
+            // operations={operations}
+            />
 
-        <DownloadPopup
-          open={uiState?.openDownloadPopup}
-          // open={openDownloadPopup}
-          onClose={() =>
-            setUiState((prev) => ({ ...prev, openDownloadPopup: false }))
-          }
-          onSelect={handleDownloadType}
-        />
-      </div>
+            <DownloadPopup
+              open={uiState?.openDownloadPopup}
+              // open={openDownloadPopup}
+              onClose={() =>
+                setUiState((prev) => ({ ...prev, openDownloadPopup: false }))
+              }
+              onSelect={handleDownloadType}
+            />
+          </div>
+        </div>
+        {showScript && (
+          <div style={{ width: "28%", marginTop: matches ? "2rem" : "0rem" }}>
+            <ScriptQualityAnalyzer />
+          </div>
+        )}
+      </div >
     </>
   );
 };

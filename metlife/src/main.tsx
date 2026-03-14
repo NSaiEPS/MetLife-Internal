@@ -109,7 +109,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 function Root() {
 
   const [mode, setMode] = useState<any>(
-    localStorage.getItem("theme") || "light"
+    localStorage.getItem("theme") || "dark"
   );
 
   const toggleTheme = () => {

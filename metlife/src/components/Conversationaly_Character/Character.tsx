@@ -267,7 +267,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
             overflowY: "auto",
           }}
         >
-          <Paper sx={{ p: 4, borderRadius: 3 }}>
+          <Paper sx={{ p: 4, borderRadius: 3, background: "var(--bg-card2)" }}>
             <Typography variant="h6" mb={2}>
               Generate Characters
             </Typography>
@@ -330,7 +330,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
               <Box mt={4}>
                 {/* BASIC INFO */}
                 <Accordion
-                  sx={{ mb: 2, boxShadow: "none", background: mode == "dark" ? "var(--dark-color)" : "aliceblue" }}
+                  sx={{ mb: 2, boxShadow: "none", background: mode == "dark" ? "var(--bg-card-dark)" : "aliceblue" }}
                   expanded={expanded === "basic"}
                   onChange={handleChange("basic")}
                 >
@@ -394,7 +394,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                     mb: 2,
                     boxShadow: "none",
                     border: "none",
-                    background: mode == "dark" ? "var(--dark-color)" : "aliceblue", "&:before": {
+                    background: mode == "dark" ? "var(--bg-card-dark)" : "aliceblue", "&:before": {
                       display: "none",
                     },
                   }}
@@ -450,7 +450,7 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
                 <Accordion
                   sx={{
                     boxShadow: "none",
-                    background: mode == "dark" ? "var(--dark-color)" : "aliceblue", "&:before": {
+                    background: mode == "dark" ? "var(--bg-card-dark)" : "aliceblue", "&:before": {
                       display: "none",
                     },
                   }}

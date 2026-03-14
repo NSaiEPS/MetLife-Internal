@@ -180,3 +180,33 @@
     background: var(--footer-bg);
   }
 }
+
+/* Responsive Layout for Table and Analyzer */
+.mainTableLayout {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tableContent {
+  width: 68%;
+}
+
+.analyzerContent {
+  width: 30%;
+  margin-top: 2rem;
+}
+
+@media (max-width: 1200px) {
+  .tableContent {
+    width: 100%;
+  }
+  .analyzerContent {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+}

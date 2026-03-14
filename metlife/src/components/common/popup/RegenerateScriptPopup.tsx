@@ -112,6 +112,7 @@ const RegenerateScriptPopup = ({
             borderRadius: 3,
             p: 2,
             textAlign: "center",
+            // background: "var(--bg-deep)"
           },
         }}
         sx={{
@@ -126,7 +127,7 @@ const RegenerateScriptPopup = ({
           sx={{
             fontWeight: "bold",
             textAlign: "center",
-            color: "#1976d2",
+            // color: "#1976d2",
             fontSize: "1.3rem",
           }}
         >
@@ -139,7 +140,7 @@ const RegenerateScriptPopup = ({
             sx={{
               fontWeight: 500,
               fontSize: "18px",
-              color: "#333",
+              // color: "#333",
               mb: 1,
               textAlign: "left",
             }}

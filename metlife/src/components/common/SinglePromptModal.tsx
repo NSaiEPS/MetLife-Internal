@@ -50,7 +50,7 @@ const SinglePromptModal: React.FC<SinglePromptModalProps> = ({
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: modalWidth,
-          bgcolor: "background.paper",
+          bgcolor: "var(--modal-bg)",
           borderRadius: 3,
           boxShadow: 24,
           maxHeight: "80vh",

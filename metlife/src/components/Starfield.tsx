@@ -43,7 +43,7 @@ const Starfield: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
       ctx.beginPath();
-      
+
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
         ctx.moveTo(s.x, s.y);
@@ -58,7 +58,7 @@ const Starfield: React.FC = () => {
         if (s.y > canvas.height) s.y = 0;
       }
       ctx.fill();
-      
+
       animationFrameId = requestAnimationFrame(draw);
     };
 

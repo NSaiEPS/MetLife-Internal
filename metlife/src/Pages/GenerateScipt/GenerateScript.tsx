@@ -165,6 +165,11 @@ const GenerateScript: React.FC = () => {
     (store: RootState) => store.Prompts,
   );
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch prompts list
   useEffect(() => {
     dispatch(getPromptsList());
@@ -546,6 +551,7 @@ const GenerateScript: React.FC = () => {
                 "&::before": {
                   display: "none",
                 },
+                background: "var(--bg-card2)",
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -612,6 +618,7 @@ const GenerateScript: React.FC = () => {
                 "&::before": {
                   display: "none", // removes divider line
                 },
+                background: "var(--bg-card2)",
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -721,7 +728,7 @@ const GenerateScript: React.FC = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
 
       <SavedPromptsModal
         open={open}

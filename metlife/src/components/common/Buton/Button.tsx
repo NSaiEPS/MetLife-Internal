@@ -50,6 +50,7 @@ interface ButtonCompProps {
   transform?: string;
   className?: string;
   sx?: any;
+  small?: boolean;
   action?: any;
   onClick?: () => void;
   disabled?: boolean;
@@ -117,12 +118,13 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
   icon,
   img_icon,
   className,
+  small,
   sx,
   action,
   onClick,
   disabled = false,
   colorType = "primary",
-  padding = "12px 24px",
+  padding,
   ...rest
 }) => {
   const colors = COLOR_CONFIG[colorType];
@@ -141,9 +143,9 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
         height: "fit-content",
         borderRadius: "12px",
         textTransform: transform,
-        fontSize: "14px",
+        fontSize: small ? "12px" : "14px",
         fontWeight: 600,
-        padding: padding && padding,
+        padding: padding ? padding : small ? "8px 8px" : "12px 24px",
 
         background: disabled ? "#E0E0E0" : colors.bg,
         color: disabled ? "var(--button-disabled-color)" : colors.text,
@@ -157,8 +159,8 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
         },
 
         "&.Mui-disabled": {
-          background: "var(--button-disabled-bg)", // 👈 disabled background
-          color: "var(--button-disabled-color)",          // 👈 disabled text
+          background: "var(--text-primary)", // 👈 disabled background
+          color: "var(--text-secondary)",          // 👈 disabled text
           cursor: "not-allowed",
         },
 

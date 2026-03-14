@@ -478,7 +478,7 @@ const UploadVideoPage = () => {
                     handleChange={handleSeconds}
                     max="10"
                     min="2"
-                    // marginStyle={true}
+                  // marginStyle={true}
                   />
                 </Box>
               )}

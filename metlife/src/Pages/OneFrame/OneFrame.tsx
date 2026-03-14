@@ -162,7 +162,7 @@ const VideoCreationOptions: React.FC = () => {
         </Box>
       </Box>
 
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

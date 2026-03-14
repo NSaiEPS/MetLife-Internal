@@ -1,0 +1,177 @@
+.analyzerContainer {
+  background-color: #1c1e26;
+  border-radius: 12px;
+  padding: 24px;
+  width: 380px;
+  color: #a0a5b5;
+  font-family: 'Syne', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.headerIcon {
+  color: #fff;
+}
+
+.title {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.metricRowStacked {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.metricLabel {
+  font-size: 0.95rem;
+}
+
+.durationValue {
+  color: #f7a02c;
+  font-weight: 600;
+}
+
+.dotsContainer {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dotActive {
+  background-color: #f7a02c;
+}
+
+.dotInactive {
+  background-color: #2c303f;
+}
+
+.audienceValue {
+  color: #4b8af5;
+  font-weight: 500;
+}
+
+.progressBarContainer {
+  background-color: #2c303f;
+  height: 8px;
+  border-radius: 4px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  background-color: #26c262;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.progressPercent {
+  color: #26c262;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.engagementValue {
+  color: #f7a02c;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #2c303f;
+  margin: 20px 0;
+}
+
+.suggestionsSection {
+  margin-bottom: 24px;
+}
+
+.suggestionsHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.suggestionIcon {
+  color: #fce779;
+}
+
+.suggestionsTitle {
+  color: #a0a5b5;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.suggestionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.suggestionsList li {
+  position: relative;
+  padding-left: 12px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.suggestionsList li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #a0a5b5;
+}
+
+.improveBtn {
+  background-color: #f7a02c;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.improveBtn:hover {
+  background-color: #e59328;
+  transform: translateY(-1px);
+}

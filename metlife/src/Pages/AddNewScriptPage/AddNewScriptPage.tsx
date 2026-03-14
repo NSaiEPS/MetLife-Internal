@@ -4,6 +4,7 @@ import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Footer from "../../components/common/mainFooter";
 import DynamicTable from "../../components/common/Table/DynamicTable";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
+import ScriptQualityAnalyzer from "../../components/common/ScriptQualityAnalyzer/ScriptQualityAnalyzer";
 import api from "../../api/axios";
 import styles from "./AddNewScript.module.css";
 import { showToast } from "../../utils/toast";
@@ -80,12 +81,18 @@ const ScriptPage: React.FC = () => {
 
       <div className={styles.tableContainer}>
         {sceneData?.scenes?.length && !loading && sceneData.status ? (
-          <DynamicTable
-            setMakeChanges={setMakeChanges}
-            columns={columns}
-            extraDetails={sceneData}
-            //  makeChanges={makeChanges}
-          />
+          <>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <DynamicTable
+                setMakeChanges={setMakeChanges}
+                columns={columns}
+                showScript
+                extraDetails={sceneData}
+              //  makeChanges={makeChanges}
+              />
+            </div>
+            {/* <ScriptQualityAnalyzer /> */}
+          </>
         ) : (
           <NoDataMessage filter={false} loading={loading} />
         )}
