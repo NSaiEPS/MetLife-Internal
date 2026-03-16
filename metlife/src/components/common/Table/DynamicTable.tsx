@@ -1483,7 +1483,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </div>
         {showScript && (
           <div style={{ width: "28%", marginTop: matches ? "2rem" : "0rem" }}>
-            <ScriptQualityAnalyzer />
+            <ScriptQualityAnalyzer
+            data={tableExtraData}
+             />
           </div>
         )}
       </div >
