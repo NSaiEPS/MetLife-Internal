@@ -192,7 +192,7 @@ const MyVideosDashboard: React.FC = () => {
         />
       );
     }
-    if (status.audio && !status.videos)
+    if (status.audio && !status.videos || status.audio && status.videos && !status.has_final_video)
       return (
         <Chip
           label="Audio Progress"
@@ -206,7 +206,7 @@ const MyVideosDashboard: React.FC = () => {
         />
       );
 
-    if (status.visuals)
+    if (status.visuals && !status.audio )
       return (
         <Chip
           label="Visuals in Progress"
@@ -251,7 +251,7 @@ const MyVideosDashboard: React.FC = () => {
     if (!status) return "Unknown";
     if (status.failed) return "Failed";
     if (status.has_final_video) return "Completed";
-    if (status.audio && !status.videos) return "Audio Progress";
+    if (status.audio && !status.videos || status.audio && status.videos && !status.has_final_video) return "Audio Progress";
     if (status.visuals) return "Visuals in Progress";
     if (status.script_id) return "Script Completed";
     if (status.prompt_batch_id) return "Visuals Progress";
@@ -268,7 +268,7 @@ const MyVideosDashboard: React.FC = () => {
 
   const handleView = (video: DashboardItem) => {
     // if (video.videos) {
-    if (video?.final_video?.url && !video?.stitched_video_exists) {
+    if ((video?.final_video?.url && !video?.stitched_video_exists) || (video.audio && !video.videos || video.audio && video.videos && !video.has_final_video)) {
       navigate(`/animation-page/${video.script_id}`);
       return;
     }
@@ -278,6 +278,7 @@ const MyVideosDashboard: React.FC = () => {
       return;
     }
     if (video.audio) {
+  //  if (video.audio && !video.videos || video.audio && video.videos && !video.has_final_video) {
       navigate(`/audio-animation-toolkit/${video.script_id}`);
       return;
     }
