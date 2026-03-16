@@ -387,6 +387,8 @@ const AnimationPage: React.FC = () => {
 
   return (
     <>
+    {
+      videoAnimationData?.length > 0 ? (
       <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
         {saveLoader && <FullScreenGradientLoader text="loading..." />}
         {(animationLabels?.entry_transitions ||
@@ -768,6 +770,13 @@ const AnimationPage: React.FC = () => {
         )}
         <Footer />
       </Box>
+        
+      ) : (
+        <>
+          <NoDataMessage filter={false} loading = { videoAnimationLoader || mediaAPILoader }  />
+        </>
+      )
+    }
     </>
   );
 };
