@@ -67,8 +67,6 @@ function App({ mode, setMode }: any) {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-
-
   console.log("v1.0.4");
 
   return (
@@ -83,18 +81,15 @@ function App({ mode, setMode }: any) {
       <ThemeWatcher />
       <Starfield />
       <ToastContainer
-        position="top-right"
+        position="bottom-right"
         autoClose={5000}
-        hideProgressBar={false}
+        hideProgressBar={true}
+        closeButton={false}
         newestOnTop
         closeOnClick
         pauseOnHover
         draggable
-        theme={mode}   // 🔥 yaha dynamic theme
-        toastStyle={{
-          display: "flex",
-          alignItems: "center",
-        }}
+        theme={mode}
       />
 
       <RouterProvider router={router} />

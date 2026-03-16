@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Dialog, DialogContent, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import styles from "./OneFrame.module.css";
 import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
@@ -10,6 +11,8 @@ const VideoCreationOptions: React.FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState<null | HTMLElement>(null);
   const openPopup = Boolean(open);
+
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
@@ -75,7 +78,7 @@ const VideoCreationOptions: React.FC = () => {
                 <div className={`${styles.floatingCard} ${styles.floatingCardTopLeft}`}>📄 Script ready</div>
                 <div className={`${styles.floatingCard} ${styles.floatingCardTopRight}`}>🌍 Localization</div>
 
-                <div className={styles.heroVideoPlaceholder} onClick={() => alert("▶ Demo video playing!")}>
+                <div className={styles.heroVideoPlaceholder} onClick={() => setVideoModalOpen(true)}>
                   <div className={styles.playCircle}>▶</div>
                   <p style={{ color: "var(--text-secondary-dark)", fontSize: "13px" }}>
                     AI-generated video preview
@@ -192,6 +195,58 @@ const VideoCreationOptions: React.FC = () => {
             openPopup={openPopup}
             handleCloseMenu={handleCloseMenu}
           />
+
+          {/* Video Modal */}
+          <Dialog
+            open={videoModalOpen}
+            onClose={() => setVideoModalOpen(false)}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+              sx: {
+                backgroundColor: "#000",
+                borderRadius: 2,
+                overflow: "hidden",
+                position: "relative",
+              },
+            }}
+          >
+            <IconButton
+              onClick={() => setVideoModalOpen(false)}
+              sx={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                color: "#fff",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                zIndex: 10,
+                "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent sx={{ p: 0, '&:first-of-type': { paddingTop: 0 } }}>
+              <Box sx={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+                {/* Embed a relevant AI demo video here */}
+                <video
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                  }}
+                  controls
+                  preload="metadata"
+                  src="https://videos.pexels.com/video-files/3163534/3163534-uhd_3840_2160_30fps.mp4"
+                >
+                  Your browser does not support the HTML5 video tag.
+                </video>
+              </Box>
+            </DialogContent>
+          </Dialog>
+
         </Box>
       </Box>
 
