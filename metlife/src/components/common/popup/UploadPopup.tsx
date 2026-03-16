@@ -18,6 +18,7 @@ export const UploadPopup = ({
   openPopup: boolean;
   open: HTMLElement | null;
   handleCloseMenu: () => void;
+  menuData: any;
 }) => {
   console.log(menuData, "check_menu_data");
   const scriptId = menuData?.downloadScript?.script_id;

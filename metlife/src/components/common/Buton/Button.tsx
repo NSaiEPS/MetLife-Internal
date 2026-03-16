@@ -55,6 +55,7 @@ interface ButtonCompProps {
   onClick?: () => void;
   disabled?: boolean;
   padding?: string;
+  fullWidth?: boolean;
   colorType?: "primary" | "secondary" | "download" | "warning" | "error" | "outlined"; // 🔥 NEW
 }
 
