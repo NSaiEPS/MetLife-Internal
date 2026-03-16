@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Box, useTheme } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import styles from "./OneFrame.module.css";
 import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
@@ -8,10 +8,6 @@ import ButtonComp from "../../components/common/Buton/Button";
 
 const VideoCreationOptions: React.FC = () => {
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const theme = useTheme();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const mode = theme.palette.mode;
   const [open, setOpen] = useState<null | HTMLElement>(null);
   const openPopup = Boolean(open);
 
@@ -106,7 +102,7 @@ const VideoCreationOptions: React.FC = () => {
                 <div className={styles.actionIcon} style={{ background: "rgba(245,166,35,.1)" }}>✨</div>
                 <h3 className={styles.actionTitle}>Generate Script</h3>
                 <p className={styles.actionSub}>Create a structured video script using AI</p>
-                <ButtonComp transform="none" colorType="primary" padding="8px 16px" >✨ Start Writing</ButtonComp>
+                <ButtonComp transform="none" colorType="primary" className={styles.btnSm} >✨ Start Writing</ButtonComp>
               </div>
 
               {/* Localize Content Action */}
@@ -114,7 +110,7 @@ const VideoCreationOptions: React.FC = () => {
                 <div className={styles.actionIcon} style={{ background: "rgba(59,130,246,.1)" }}>🌍</div>
                 <h3 className={styles.actionTitle}>Localize Content</h3>
                 <p className={styles.actionSub}>Upload existing content to translate and localize</p>
-                <ButtonComp transform="none" colorType="outlined" padding="8px 16px" >Upload Content</ButtonComp>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Upload Content</ButtonComp>
               </div>
 
               {/* Brand Kit Action */}
@@ -122,7 +118,7 @@ const VideoCreationOptions: React.FC = () => {
                 <div className={styles.actionIcon} style={{ background: "rgba(168,85,247,.1)" }}>🎨</div>
                 <h3 className={styles.actionTitle}>Brand Kit</h3>
                 <p className={styles.actionSub}>Set up your brand identity for all videos</p>
-                <ButtonComp transform="none" colorType="outlined" padding="8px 16px" >Set Up Brand</ButtonComp>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Set Up Brand</ButtonComp>
               </div>
 
               {/* Lesson Designer Action */}
@@ -130,11 +126,48 @@ const VideoCreationOptions: React.FC = () => {
                 <div className={styles.actionIcon} style={{ background: "rgba(20,184,166,.1)" }}>🧠</div>
                 <h3 className={styles.actionTitle}>AI Instructional Designer</h3>
                 <p className={styles.actionSub}>Auto-generate lesson structure and objectives</p>
-                <ButtonComp transform="none" colorType="outlined" padding="8px 16px" >Design Lesson</ButtonComp>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Design Lesson</ButtonComp>
               </div>
 
+              {/* Templates Action */}
+              <div className={styles.actionCard} onClick={() => alert("Templates coming soon!")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(245,166,35,.1)" }}>🗂</div>
+                <h3 className={styles.actionTitle}>
+                  Templates <span className={`${styles.tag} ${styles.tagNew}`}>New</span>
+                </h3>
+                <p className={styles.actionSub}>Start faster with ready-made video templates</p>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Browse Templates</ButtonComp>
+              </div>
 
+              {/* AI Presenter Action */}
+              <div className={styles.actionCard} onClick={() => alert("AI Presenter coming soon!")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(168,85,247,.1)" }}>🧑‍💼</div>
+                <h3 className={styles.actionTitle}>
+                  AI Presenter <span className={`${styles.tag} ${styles.tagNew}`}>New</span>
+                </h3>
+                <p className={styles.actionSub}>Add a realistic AI avatar presenter to your video</p>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Choose Avatar</ButtonComp>
+              </div>
 
+              {/* Storyboard Action */}
+              <div className={styles.actionCard} onClick={() => alert("Storyboard coming soon!")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(20,184,166,.1)" }}>🎞</div>
+                <h3 className={styles.actionTitle}>
+                  Storyboard Generator <span className={`${styles.tag} ${styles.tagNew}`}>New</span>
+                </h3>
+                <p className={styles.actionSub}>Turn your script into visual storyboards with AI</p>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Create Storyboard</ButtonComp>
+              </div>
+
+              {/* Prompt Library Action */}
+              <div className={styles.actionCard} onClick={() => alert("Prompt Library coming soon!")}>
+                <div className={styles.actionIcon} style={{ background: "rgba(59,130,246,.1)" }}>📚</div>
+                <h3 className={styles.actionTitle}>
+                  Prompt Library <span className={`${styles.tag} ${styles.tagNew}`}>New</span>
+                </h3>
+                <p className={styles.actionSub}>Saved prompt patterns to accelerate content creation</p>
+                <ButtonComp transform="none" colorType="outlined" className={styles.btnSm}>Browse Prompts</ButtonComp>
+              </div>
             </div>
             {/* HOW IT WORKS */}
             <div style={{ textAlign: "center", padding: "28px 80px 20px" }}>
