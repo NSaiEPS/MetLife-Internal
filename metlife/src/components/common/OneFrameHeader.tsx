@@ -43,6 +43,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const mode = theme.palette.mode;
+  console.log(pathname.startsWith("/dashboard"), "pathname");
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -92,33 +93,44 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
           <div className={styles.logoText}>Ed<span>Wave</span><span className={styles.logoBadge}>Content Studio</span></div>
         </div>
 
-        {/* Center: Desktop Navigation Links */}
-        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
-          <div className={styles.navLinks}>
-            {navLinks.map((link) => (
-              <div
-                key={link.title}
-                className={styles.navLink}
-                onClick={() => handleCloseNavMenu(link.path)}
-              >
-                {link.title}
-              </div>
-            ))}
+        {/* Center: Desktop Navigation Links (Hidden on Dashboard) */}
+        {!pathname.startsWith("/dashboard") && (
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
+            <div className={styles.navLinks}>
+              {navLinks.map((link) => (
+                <div
+                  key={link.title}
+                  className={styles.navLink}
+                  onClick={() => handleCloseNavMenu(link.path)}
+                >
+                  {link.title}
+                </div>
+              ))}
+            </div>
+          </Box>
+        )}
+        {pathname.startsWith("/dashboard") && (
+          <div className={styles.searchBox}>
+            <span style={{ fontSize: "14px" }}>🔍</span> <input type="text" placeholder="Search projects, scripts...
+" />
           </div>
-        </Box>
-
+        )}
         {/* Right: User / Mobile Menu */}
         <div className={styles.navRight}>
 
-          {/* <Box sx={{ display: { xs: "none", md: "flex" }, gap: "12px", alignItems: "center" }}>
-            <div className="search-box">
-              <span style={{ fontSize: "14px" }}>🔍</span> Search
-            </div>
-            <div className="icon-btn">
-              🔔
-              <div className="badge">3</div>
-            </div>
-          </Box> */}
+          {pathname.startsWith("/dashboard") && (
+            <Box sx={{ display: { xs: "none", md: "flex" }, gap: "12px", alignItems: "center" }}>
+
+
+              <div className={styles.iconBtn}>
+                🔔
+                <div className={styles.badge}>3</div>
+              </div>
+              <div className={styles.helpBtn}>
+                ❓
+              </div>
+            </Box>
+          )}
 
           {/* Mobile Menu Icon */}
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

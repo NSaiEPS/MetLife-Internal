@@ -163,10 +163,10 @@
 
 .homeActions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   padding: 0 80px 60px;
-  max-width: 860px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -203,6 +203,7 @@
   margin-bottom: 6px;
   color: var(--text-light);
   font-weight: 600;
+  text-align: left;
 }
 
 .actionSub {
@@ -210,6 +211,8 @@
   color: var(--text-secondary-dark);
   margin-bottom: 14px;
   line-height: 1.5;
+  text-align: left;
+
 }
 
 .btnGold {
@@ -315,4 +318,24 @@
   color: var(--gold);
   font-size: 20px;
   margin: 0 12px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 8px;
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+.tagNew {
+  background: var(--gold);
+  color: #000;
+}
+
+.btnSm {
+  padding: 8px 16px !important;
+  font-size: 13px !important;
 }
