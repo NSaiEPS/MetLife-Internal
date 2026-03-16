@@ -262,7 +262,13 @@ const Login: React.FC = () => {
           <img
             src={Surfai_Video_Studio_Icon}
             alt="login"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ 
+              width: "100%", 
+              height: "100%", 
+              objectFit: "cover",
+              filter: "invert(1) hue-rotate(180deg)",
+              mixBlendMode: "screen", // Makes the inverted black background transparent
+            }}
           />
         </Grid>
       </Grid>
