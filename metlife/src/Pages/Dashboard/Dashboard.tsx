@@ -90,30 +90,70 @@ const MyVideosDashboard: React.FC = () => {
     }
   });
 
-  const inprogress_video = dashBoardInfo?.filter((item) => {
-    if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
-      return item;
-    }
-  });
+  // const inprogress_video = dashBoardInfo?.filter((item) => {
+  //   if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
+  //     return item;
+  //   }
+  // });
 
-  const inprogress_visuals = dashBoardInfo?.filter((item) => {
-    // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
-    if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
-      return item;
-    }
-  });
+  // const inprogress_visuals = dashBoardInfo?.filter((item) => {
+  //   // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
+  //   if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
+  //     return item;
+  //   }
+  // });
 
-  const inprogress_script = dashBoardInfo?.filter((item) => {
-    if (
-      !item.failed &&
-      !item.has_final_video &&
-      !item.visuals &&
-      !item.videos &&
-      !item.audio
-    ) {
-      return item;
-    }
-  });
+  //   const inprogress_audio = dashBoardInfo?.filter((item) => {
+  //   if (item.audio && !item.videos || item.audio && item.videos && !item.has_final_video) {
+  //     return item;
+  //   }
+  // });
+
+  // const inprogress_script = dashBoardInfo?.filter((item) => {
+  //   if (
+  //     !item.failed &&
+  //     !item.has_final_video &&
+  //     !item.visuals &&
+  //     !item.videos &&
+  //     !item.audio
+  //   ) {
+  //     return item;
+  //   }
+  // });
+
+  const inprogress_video = dashBoardInfo?.filter(
+  (item) =>
+    !item.failed &&
+    !item.has_final_video &&
+    item.audio &&
+    item.videos
+);
+
+const inprogress_visuals = dashBoardInfo?.filter(
+  (item) =>
+    !item.failed &&
+    !item.has_final_video &&
+    item.visuals &&
+    !item.audio &&
+    !item.videos
+);
+
+const inprogress_audio = dashBoardInfo?.filter(
+  (item) =>
+    !item.failed &&
+    !item.has_final_video &&
+    item.audio &&
+    !item.videos
+);
+
+const inprogress_script = dashBoardInfo?.filter(
+  (item) =>
+    !item.failed &&
+    !item.has_final_video &&
+    !item.visuals &&
+    !item.videos &&
+    !item.audio
+);
 
   const failed_script = dashBoardInfo?.filter((item) => {
     if (item.failed === true) {
@@ -124,7 +164,8 @@ const MyVideosDashboard: React.FC = () => {
   const total_progress =
     inprogress_video?.length +
     inprogress_visuals?.length +
-    inprogress_script?.length;
+    inprogress_script?.length + 
+    inprogress_audio?.length
 
   const stats = [
     {
@@ -299,7 +340,7 @@ const MyVideosDashboard: React.FC = () => {
   const isInProgress = (item: DashboardItem) => {
     if (item.failed) return false;
     if (item.has_final_video) return false;
-    if (item.audio && !item.videos) return true;
+    if (item.audio && !item.videos || item.audio && item.videos && !item.has_final_video) return true;
     if (item.visuals && !item.videos && !item.audio) return true;
     if (!item.visuals && !item.videos && !item.audio) return true;
     return false;
