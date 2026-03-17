@@ -453,8 +453,17 @@ const MyVideosDashboard: React.FC = () => {
     return "In Progress";
   };
 
-  const handleClick = () => {
-    navigate("/video-frame");
+  const getFlagIcon = (language: string) => {
+    if (!language) return "🏳️";
+    const lang = language.toLowerCase();
+    if (lang.includes("english")) return "🇺🇸";
+    if (lang.includes("hindi")) return "🇮🇳";
+    if (lang.includes("french")) return "🇫🇷";
+    if (lang.includes("spanish")) return "🇪🇸";
+    if (lang.includes("german")) return "🇩🇪";
+    if (lang.includes("japanese")) return "🇯🇵";
+    if (lang.includes("chinese")) return "🇨🇳";
+    return "🏳️";
   };
 
   useEffect(() => {
@@ -758,7 +767,7 @@ const MyVideosDashboard: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                            <span style={{ fontSize: "16px" }}>🇺🇸</span> {video.language || "English"}
+                            <span style={{ fontSize: "16px" }}>{getFlagIcon(video?.language || "English")}</span> {video?.language || "English"}
                           </Box>
                         </TableCell>
                         <TableCell>{video.suggested_duration_minutes || "2"} min</TableCell>
