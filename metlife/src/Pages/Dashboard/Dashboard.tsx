@@ -1,42 +1,30 @@
-import Grid from "@mui/material/Grid";
 import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
   Paper,
-  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  alpha,
-  IconButton,
-  Drawer,
-  List,
   TableRow,
   Chip,
   TextField,
   InputAdornment,
+  Grid,
+  alpha,
+  IconButton,
 } from "@mui/material";
 import {
   PlayCircle,
   ErrorOutline,
   VideoLibrary,
-  Speed as DashboardIcon,
   FolderCopy,
   AutoFixHigh as GenerateScriptIcon,
   MovieCreation as AnimationToolkitIcon,
   Language as LocalizationIcon,
-  Inventory2 as AssetsIcon,
-  Assessment as AnalyticsIcon,
-  Settings as SettingsIcon,
 } from "@mui/icons-material";
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import { FaFileDownload, FaRegPlayCircle, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router";
@@ -55,6 +43,7 @@ import { UploadPopup } from "../../components/common/popup/UploadPopup";
 
 import UsersListPopup from "../../components/common/popup/UsersListPopup";
 import { IoSearchCircleOutline } from "react-icons/io5";
+import Sidebar from "../../components/layout/Sidebar";
 
 export interface DashboardStatus {
   failed?: boolean;
@@ -232,16 +221,7 @@ const MyVideosDashboard: React.FC = () => {
     },
   ];
 
-  const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard", active: true },
-    { text: "Projects", icon: <FolderCopy />, path: "/dashboard" },
-    { text: "Generate Script", icon: <GenerateScriptIcon />, path: "/generate-script" },
-    { text: "Animation Toolkit", icon: <AnimationToolkitIcon />, path: "#" },
-    { text: "Localization", icon: <LocalizationIcon />, path: "#" },
-    { text: "Assets", icon: <AssetsIcon />, path: "#" },
-    { text: "Analytics", icon: <AnalyticsIcon />, path: "#" },
-    { text: "Settings", icon: <SettingsIcon />, path: "#" },
-  ];
+
 
   const quickActions = [
     { title: "Generate Script", desc: "Start with an idea", icon: <GenerateScriptIcon sx={{ color: "#f5a623" }} /> },
@@ -597,7 +577,7 @@ const MyVideosDashboard: React.FC = () => {
     event.stopPropagation();
     setOpen(event.currentTarget);
     console.log(video?.final_video, video?.title, "finalVidieop");
-    setMenuData((prev) => {
+    setMenuData((prev: any) => {
       return {
         ...prev,
         downloadVideo: video,
@@ -621,98 +601,7 @@ const MyVideosDashboard: React.FC = () => {
   return (
     <Box sx={{ display: "flex", maxHeight: "calc(100vh - 80px)", overflow: "auto" }}>
       {/* Sidebar Drawer */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 260,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 260,
-            maxHeight: "calc(100vh - 80px)",
-            boxSizing: "border-box",
-            bgcolor: "#0f1521",
-            borderRight: "1px solid rgba(255, 255, 255, 0.05)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            pb: 2,
-            marginTop: "80px"
-          },
-        }}
-      >
-        <Box >
-          {/* Logo Area */}
-
-
-          <List sx={{ px: 2 }}>
-            {menuItems.map((item) => (
-              <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-                <ListItemButton
-                  onClick={() => item.path !== "#" && navigate(item.path)}
-                  sx={{
-                    borderRadius: "10px",
-                    px: 2,
-                    py: 1.2,
-                    bgcolor: item.active ? alpha("#f5a623", 0.1) : "transparent",
-                    color: item.active ? "#f5a623" : "#8899bb",
-                    "&:hover": {
-                      bgcolor: alpha("#fff", 0.05),
-                      color: "#fff",
-                    },
-                    "& .MuiListItemIcon-root": {
-                      color: "inherit",
-                      minWidth: "36px",
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ fontSize: "20px" }}>{item.icon}</ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    primaryTypographyProps={{
-                      fontSize: "13.5px",
-                      fontWeight: item.active ? 600 : 500,
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-
-        {/* Upgrade Plan Card */}
-        <Box sx={{ px: 2 }}>
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: "16px",
-              bgcolor: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid rgba(255, 255, 255, 0.05)",
-              textAlign: "left",
-            }}
-          >
-            <Typography variant="subtitle2" fontWeight={700} sx={{ color: "#fff", mb: 0.5 }}>
-              Upgrade Plan
-            </Typography>
-            <Typography variant="caption" sx={{ color: "#8899bb", display: "block", mb: 1.5 }}>
-              Unlock all features and generate unlimited content.
-            </Typography>
-            <Box
-              sx={{
-                width: 30,
-                height: 30,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "50%",
-                bgcolor: "var(--gold)",
-                boxShadow: "0 0 10px rgba(245, 166, 35, 0.5)",
-              }}
-            >
-              <ArrowRightAltIcon sx={{ color: "#fff" }} />
-            </Box>
-          </Box>
-        </Box>
-      </Drawer>
+      <Sidebar />
 
       {/* Main Content & Right Column Wrapper */}
       <Box sx={{ flexGrow: 1, p: 0, display: "flex", flexDirection: "column" }}>
