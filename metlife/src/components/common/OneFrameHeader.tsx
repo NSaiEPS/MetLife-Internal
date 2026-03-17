@@ -109,12 +109,12 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             </div>
           </Box>
         )}
-        {pathname.startsWith("/dashboard") && (
+        {/* {pathname.startsWith("/dashboard") && (
           <div className={styles.searchBox}>
             <span style={{ fontSize: "14px" }}>🔍</span> <input type="text" placeholder="Search projects, scripts...
 " />
           </div>
-        )}
+        )} */}
         {/* Right: User / Mobile Menu */}
         <div className={styles.navRight}>
 

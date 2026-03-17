@@ -4,6 +4,7 @@ export const NoDataMessage = ({ filter = true, loading = false }) => {
   return (
     <Box
       sx={{
+        width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

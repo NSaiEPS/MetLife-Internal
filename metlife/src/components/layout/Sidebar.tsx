@@ -80,21 +80,25 @@ const Sidebar: React.FC = () => {
           pb: 2,
           marginTop: "80px",
           px: 1.5,
-          "&::-webkit-scrollbar": {
-            width: "4px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "transparent",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "rgba(255, 255, 255, 0.1)",
-            borderRadius: "10px",
-          },
+
           overflowX: "hidden"
         },
       }}
     >
-      <Box sx={{ py: 1 }}>
+      <Box sx={{
+        py: 1, "&::-webkit-scrollbar": {
+          width: "4px",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "transparent",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "rgba(255, 255, 255, 0.1)",
+          borderRadius: "10px",
+        },
+        overflow: "auto",
+        height: "calc(100vh - 80px)",
+      }}>
         <List sx={{ px: 0 }}>
           {menuItems.map((item) => {
             const active = isActive(item.path);
