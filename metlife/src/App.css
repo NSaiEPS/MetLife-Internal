@@ -65,6 +65,7 @@
   --card-bg: var(--bg-card2);
   --card-border: var(--border-dark);
   --modal-bg: #323540;
+  --font-syne: 'Syne', sans-serif;
 }
 
 body.dark {

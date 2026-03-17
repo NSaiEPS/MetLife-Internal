@@ -605,10 +605,10 @@ const MyVideosDashboard: React.FC = () => {
     dispatch(getUsersList());
   };
 
-  const username = "K"; // Fallback or dynamic username
+  const username = "A"; // Fallback or dynamic username
 
   return (
-    <Box sx={{ display: "flex", maxHeight: "calc(100vh - 80px)", overflow: "auto" }}>
+    <Box sx={{ display: "flex", height: "100%", overflow: "auto" }}>
       {/* Sidebar Drawer */}
       <Sidebar />
 
@@ -679,7 +679,7 @@ const MyVideosDashboard: React.FC = () => {
           </Grid>
         </Box>
         {/* Middle Content area */}
-        <Box sx={{ display: "flex", flexGrow: 1, overflow: "hidden" }}>
+        <Box sx={{ display: "flex", flexGrow: 1, overflow: "hidden", maxHeight: "fit-content", mb: 5 }}>
 
           <Box sx={{ flexGrow: 1, p: 4, pt: 0 }}>
 
@@ -730,7 +730,7 @@ const MyVideosDashboard: React.FC = () => {
             </Box>
 
             {/* Projects Table */}
-            <TableContainer component={Paper} sx={{ overflow: "auto", height: "100%", maxHeight: "calc(100vh - 450px)", bgcolor: "var(--bg-card-dark)", borderRadius: "16px", border: "1px solid var(--border-dark)", boxShadow: "none" }}>
+            <TableContainer component={Paper} sx={{ overflow: "auto", maxHeight: "calc(100vh - 350px)", bgcolor: "var(--bg-card-dark)", borderRadius: "16px", border: "1px solid var(--border-dark)", boxShadow: "none" }}>
               <Table size="small">
                 <TableHead>
                   <TableRow sx={{ "& .MuiTableCell-root": { color: "#4b5563", borderBottom: "1px solid rgba(255,255,255,0.05)", py: 1.5, fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 } }}>
@@ -757,7 +757,7 @@ const MyVideosDashboard: React.FC = () => {
                   ) : (
                     filteredDashboardInfo?.map((video, idx) => (
                       <TableRow key={idx} sx={{ "&:hover": { bgcolor: "rgba(255,255,255,0.02)" }, "& .MuiTableCell-root": { borderBottom: "1px solid rgba(255,255,255,0.03)", py: 2, color: "#9ca3af", fontSize: "13px" } }}>
-                        {/* <TableCell>{idx + 1}</TableCell> */}
+                        <TableCell>{idx + 1}</TableCell>
 
                         <TableCell sx={{ color: "#fff !important", fontWeight: 500 }}>
                           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
@@ -793,7 +793,7 @@ const MyVideosDashboard: React.FC = () => {
               flexShrink: 0,
               borderLeft: "1px solid rgba(255,255,255,0.05)",
               display: { xs: "none", lg: "block" },
-              overflowY: "auto",
+              // overflowY: "auto",
               marginRight: "28px"
             }}
           >

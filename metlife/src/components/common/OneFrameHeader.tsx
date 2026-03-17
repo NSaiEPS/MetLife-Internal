@@ -124,7 +124,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
 
               <div className={styles.iconBtn}>
                 🔔
-                <div className={styles.badge}>3</div>
+                {/* <div className={styles.badge}>3</div> */}
               </div>
               <div className={styles.helpBtn}>
                 ❓
