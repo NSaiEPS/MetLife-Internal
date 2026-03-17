@@ -4,7 +4,8 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
-const ScriptQualityAnalyzer: React.FC = () => {
+const ScriptQualityAnalyzer: React.FC = ({data}) => {
+  console.log(data, "fad")
   return (
     <Box
       sx={{
@@ -32,7 +33,7 @@ const ScriptQualityAnalyzer: React.FC = () => {
           Estimated Duration
         </Typography>
         <Typography variant="body2" sx={{ color: "var(--gold)", fontWeight: 600 }}>
-          2m 30s
+          {data?.analysis?.estimated_duration}
         </Typography>
       </Stack>
 
@@ -42,17 +43,9 @@ const ScriptQualityAnalyzer: React.FC = () => {
           Complexity
         </Typography>
         <Stack direction="row" spacing={0.5}>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <Box
-              key={i}
-              sx={{
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                backgroundColor: i <= 3 ? "var(--gold)" : "var(--bg-deep)",
-              }}
-            />
-          ))}
+          {
+data?.analysis?.complexity
+          }
         </Stack>
       </Stack>
 
@@ -62,7 +55,7 @@ const ScriptQualityAnalyzer: React.FC = () => {
           Audience Level
         </Typography>
         <Typography variant="body2" sx={{ color: "var(--blue-accent)", fontWeight: 500 }}>
-          Intermediate
+          {data?.analysis?.audience_level}
         </Typography>
       </Stack>
 
@@ -85,7 +78,7 @@ const ScriptQualityAnalyzer: React.FC = () => {
           }}
         />
         <Typography variant="caption" sx={{ color: "var(--green)", fontWeight: 600 }}>
-          82%
+          {data?.analysis?.clarity_score}
         </Typography>
       </Stack>
 
@@ -103,7 +96,9 @@ const ScriptQualityAnalyzer: React.FC = () => {
           variant="body2"
           sx={{ color: "var(--gold)", fontWeight: 600, display: "flex", alignItems: "center", gap: 0.5 }}
         >
-          High 🔥
+          {/* High 🔥
+           */}
+           {data?.analysis?.engagement_score}
         </Typography>
       </Stack>
 
@@ -119,8 +114,14 @@ const ScriptQualityAnalyzer: React.FC = () => {
           </Typography>
         </Stack>
         <Box component="ul" sx={{ pl: 2, m: 0, opacity: 0.9, typography: "body2", '& li': { mb: 1, '&::marker': { color: 'var(--text-muted-dark)' } } }}>
-          <li>Scene 2 could use more visual examples</li>
-          <li>Scene 4 may be too long for optimal engagement</li>
+          {/* <li>Scene 2 could use more visual examples</li>
+          <li>Scene 4 may be too long for optimal engagement</li> */}
+
+          {
+            data?.analysis?.suggestions?.map((suggestion: string, index: number) => (
+              <li key={index}>{suggestion}</li>
+            ))
+          }
         </Box>
       </Box>
 
