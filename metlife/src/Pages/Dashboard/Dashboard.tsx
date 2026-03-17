@@ -20,6 +20,8 @@ import {
   List,
   TableRow,
   Chip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import {
   PlayCircle,
@@ -35,6 +37,7 @@ import {
   Settings as SettingsIcon,
 } from "@mui/icons-material";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import SearchIcon from '@mui/icons-material/Search';
 import { FaFileDownload, FaRegPlayCircle, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -112,32 +115,73 @@ const MyVideosDashboard: React.FC = () => {
     }
   });
 
-  const inprogress_video = dashBoardInfo?.filter((item) => {
-    if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
-      return item;
-    }
-  });
+  // const inprogress_video = dashBoardInfo?.filter((item) => {
+  //   if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
+  //     return item;
+  //   }
+  // });
 
-  const inprogress_visuals = dashBoardInfo?.filter((item) => {
-    // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
-    if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
-      return item;
-    }
-  });
+  // const inprogress_visuals = dashBoardInfo?.filter((item) => {
+  //   // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
+  //   if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
+  //     return item;
+  //   }
+  // });
+
+  // const inprogress_audio = dashBoardInfo?.filter((item) => {
+
+  //   if (item.audio && !item.videos || item.audio && item.videos && !item.has_final_video) {
+  //     return item;
+  //   }
+  // });
 
 
+  // const inprogress_script = dashBoardInfo?.filter((item) => {
+  //   if (
+  //     !item.failed &&
+  //     !item.has_final_video &&
+  //     !item.visuals &&
+  //     !item.videos &&
+  //     !item.audio
+  //   ) {
+  //     return item;
+  //   }
+  // });
 
-  const inprogress_script = dashBoardInfo?.filter((item) => {
-    if (
+  const inprogress_video = dashBoardInfo?.filter(
+    (item) =>
+      !item.failed &&
+      !item.has_final_video &&
+      item.audio &&
+      item.videos
+  );
+
+  const inprogress_visuals = dashBoardInfo?.filter(
+    (item) =>
+      !item.failed &&
+      !item.has_final_video &&
+      item.visuals &&
+      !item.audio &&
+      !item.videos
+  );
+
+  const inprogress_audio = dashBoardInfo?.filter(
+    (item) =>
+      !item.failed &&
+      !item.has_final_video &&
+      item.audio &&
+      !item.videos
+  );
+
+  const inprogress_script = dashBoardInfo?.filter(
+    (item) =>
       !item.failed &&
       !item.has_final_video &&
       !item.visuals &&
       !item.videos &&
       !item.audio
-    ) {
-      return item;
-    }
-  });
+  );
+
 
   const failed_script = dashBoardInfo?.filter((item) => {
     if (item.failed === true) {
@@ -148,7 +192,10 @@ const MyVideosDashboard: React.FC = () => {
   const total_progress =
     inprogress_video?.length +
     inprogress_visuals?.length +
-    inprogress_script?.length;
+    inprogress_script?.length +
+    inprogress_audio?.length
+
+
 
   const stats = [
     {
@@ -338,6 +385,46 @@ const MyVideosDashboard: React.FC = () => {
         />
       );
 
+
+
+    if (status.audio && !status.videos || status.audio && status.videos && !status.has_final_video)
+      return (
+        <Chip
+          icon={<StatusDot color="#f59e0b" />}
+          label="Audio Progress"
+          sx={{
+            ...baseStyle,
+            bgcolor: "rgba(245,158,11,0.15)",
+            color: "#f59e0b",
+          }}
+        />
+      );
+
+    if (status.visuals && !status.audio)
+      return (
+        <Chip
+          icon={<StatusDot color="#f59e0b" />}
+          label="Visuals in Progress"
+          sx={{
+            ...baseStyle,
+            bgcolor: "rgba(245,158,11,0.15)",
+            color: "#f59e0b",
+          }}
+        />
+      );
+    if (status.prompt_batch_id)
+      return (
+        <Chip
+          icon={<StatusDot color="#f59e0b" />}
+          label="Visuals Progress"
+          sx={{
+            ...baseStyle,
+            bgcolor: "rgba(245,158,11,0.15)",
+            color: "#f59e0b",
+          }}
+        />
+      );
+
     if (status.script_id)
       return (
         <Chip
@@ -347,32 +434,6 @@ const MyVideosDashboard: React.FC = () => {
             ...baseStyle,
             bgcolor: "rgba(59,130,246,0.15)",
             color: "#3b82f6",
-          }}
-        />
-      );
-
-    if (status.audio && !status.videos)
-      return (
-        <Chip
-          icon={<StatusDot color="#f59e0b" />}
-          label="In Progress"
-          sx={{
-            ...baseStyle,
-            bgcolor: "rgba(245,158,11,0.15)",
-            color: "#f59e0b",
-          }}
-        />
-      );
-
-    if (status.visuals)
-      return (
-        <Chip
-          icon={<StatusDot color="#f59e0b" />}
-          label="In Progress"
-          sx={{
-            ...baseStyle,
-            bgcolor: "rgba(245,158,11,0.15)",
-            color: "#f59e0b",
           }}
         />
       );
@@ -390,11 +451,22 @@ const MyVideosDashboard: React.FC = () => {
     );
   };
 
+  // const getStatusLabel = (status: DashboardItem): string => {
+  //   if (!status) return "Unknown";
+  //   if (status.failed) return "Failed";
+  //   if (status.has_final_video) return "Completed";
+  //   if (status.audio && !status.videos) return "Audio Progress";
+  //   if (status.visuals) return "Visuals in Progress";
+  //   if (status.script_id) return "Script Completed";
+  //   if (status.prompt_batch_id) return "Visuals Progress";
+  //   return "In Progress";
+  // };
+
   const getStatusLabel = (status: DashboardItem): string => {
     if (!status) return "Unknown";
     if (status.failed) return "Failed";
     if (status.has_final_video) return "Completed";
-    if (status.audio && !status.videos) return "Audio Progress";
+    if (status.audio && !status.videos || status.audio && status.videos && !status.has_final_video) return "Audio Progress";
     if (status.visuals) return "Visuals in Progress";
     if (status.script_id) return "Script Completed";
     if (status.prompt_batch_id) return "Visuals Progress";
@@ -409,9 +481,35 @@ const MyVideosDashboard: React.FC = () => {
     dispatch(getDashboardInfo());
   }, [dispatch]);
 
+  // const handleView = (video: DashboardItem) => {
+  //   // if (video.videos) {
+  //   if (video?.final_video?.url && !video?.stitched_video_exists) {
+  //     navigate(`/animation-page/${video.script_id}`);
+  //     return;
+  //   }
+  //   // For conversational
+  //   if (video?.stitched_video_exists) {
+  //     navigate(`/upload-conversational-clips/${video.script_id}`);
+  //     return;
+  //   }
+  //   if (video.audio) {
+  //     navigate(`/audio-animation-toolkit/${video.script_id}`);
+  //     return;
+  //   }
+  //   if (video.visuals) {
+  //     navigate(`/generate-visual-page/${video.script_id}`);
+  //     return;
+  //   }
+  //   if (video.prompt_batch_id) {
+  //     navigate(`/create-visual-content/${video.prompt_batch_id}`);
+  //     return;
+  //   }
+  //   navigate(`/scenes/${video.script_id}`);
+  // };
+
   const handleView = (video: DashboardItem) => {
     // if (video.videos) {
-    if (video?.final_video?.url && !video?.stitched_video_exists) {
+    if ((video?.final_video?.url && !video?.stitched_video_exists) || (video.audio && !video.videos || video.audio && video.videos && !video.has_final_video)) {
       navigate(`/animation-page/${video.script_id}`);
       return;
     }
@@ -421,6 +519,7 @@ const MyVideosDashboard: React.FC = () => {
       return;
     }
     if (video.audio) {
+      //  if (video.audio && !video.videos || video.audio && video.videos && !video.has_final_video) {
       navigate(`/audio-animation-toolkit/${video.script_id}`);
       return;
     }
@@ -438,10 +537,19 @@ const MyVideosDashboard: React.FC = () => {
   const isCompleted = (item: DashboardItem) =>
     item.has_final_video === true || Boolean(item.final_video);
 
+  // const isInProgress = (item: DashboardItem) => {
+  //   if (item.failed) return false;
+  //   if (item.has_final_video) return false;
+  //   if (item.audio && !item.videos) return true;
+  //   if (item.visuals && !item.videos && !item.audio) return true;
+  //   if (!item.visuals && !item.videos && !item.audio) return true;
+  //   return false;
+  // };
+
   const isInProgress = (item: DashboardItem) => {
     if (item.failed) return false;
     if (item.has_final_video) return false;
-    if (item.audio && !item.videos) return true;
+    if (item.audio && !item.videos || item.audio && item.videos && !item.has_final_video) return true;
     if (item.visuals && !item.videos && !item.audio) return true;
     if (!item.visuals && !item.videos && !item.audio) return true;
     return false;
@@ -680,7 +788,44 @@ const MyVideosDashboard: React.FC = () => {
 
             {/* Table Header Section */}
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-              <Typography variant="h6" fontWeight={700} sx={{ color: "#fff" }}>Recent Projects</Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <Typography variant="h6" fontWeight={700} sx={{ color: "#fff" }}>Recent Projects</Typography>
+                <TextField
+                  placeholder="Search projects by name, language or status..."
+                  size="small"
+                  value={searchQuery}
+                  onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+                  sx={{
+                    width: "350px",
+                    "& .MuiOutlinedInput-root": {
+                      bgcolor: "rgba(255, 255, 255, 0.03)",
+                      borderRadius: "10px",
+                      color: "#fff",
+                      fontSize: "13px",
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#f5a623",
+                      },
+                    },
+                    "& .MuiInputBase-input::placeholder": {
+                      color: "#8899bb",
+                      opacity: 1,
+                    }
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: "#8899bb", fontSize: "20px" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
               <Typography variant="caption" sx={{ color: "#f5a623", cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5, fontWeight: 600 }}>
                 View All <FaChevronRight size={10} />
               </Typography>
@@ -700,29 +845,43 @@ const MyVideosDashboard: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ overflow: "auto", height: "100%", maxHeight: "200px" }}>
-                  {filteredDashboardInfo.map((video, idx) => (
-                    <TableRow key={idx} sx={{ "&:hover": { bgcolor: "rgba(255,255,255,0.02)" }, "& .MuiTableCell-root": { borderBottom: "1px solid rgba(255,255,255,0.03)", py: 2, color: "#9ca3af", fontSize: "13px" } }}>
-                      <TableCell sx={{ color: "#fff !important", fontWeight: 500 }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                          <Box sx={{ width: 32, height: 32, borderRadius: "8px", bgcolor: "#1e293b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>🎥</Box>
-                          {video.title}
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <span style={{ fontSize: "16px" }}>🇺🇸</span> {video.language || "English"}
-                        </Box>
-                      </TableCell>
-                      <TableCell>{video.suggested_duration_minutes || "2"} min</TableCell>
-                      <TableCell>{getStatusChip(video)}</TableCell>
-                      <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
-                      <TableCell align="center">
-                        <IconButton size="small" onClick={() => handleView(video)} sx={{ color: "#8899bb", "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.1)" } }}>
-                          <PlayCircle fontSize="small" />
-                        </IconButton>
+                  {filteredDashboardInfo.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">
+                        <Typography
+                          variant="body1"
+                          sx={{ py: 4, color: "text.secondary", fontWeight: 500 }}
+                        >
+                          Data not available
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredDashboardInfo?.map((video, idx) => (
+                      <TableRow key={idx} sx={{ "&:hover": { bgcolor: "rgba(255,255,255,0.02)" }, "& .MuiTableCell-root": { borderBottom: "1px solid rgba(255,255,255,0.03)", py: 2, color: "#9ca3af", fontSize: "13px" } }}>
+                        {/* <TableCell>{idx + 1}</TableCell> */}
+
+                        <TableCell sx={{ color: "#fff !important", fontWeight: 500 }}>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                            <Box sx={{ width: 32, height: 32, borderRadius: "8px", bgcolor: "#1e293b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>🎥</Box>
+                            {video.title}
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <span style={{ fontSize: "16px" }}>🇺🇸</span> {video.language || "English"}
+                          </Box>
+                        </TableCell>
+                        <TableCell>{video.suggested_duration_minutes || "2"} min</TableCell>
+                        <TableCell>{getStatusChip(video)}</TableCell>
+                        <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
+                        <TableCell align="center">
+                          <IconButton size="small" onClick={() => handleView(video)} sx={{ color: "#8899bb", "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.1)" } }}>
+                            <PlayCircle fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    )))}
                 </TableBody>
               </Table>
             </TableContainer>
