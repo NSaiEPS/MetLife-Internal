@@ -75,12 +75,12 @@ const VideoCreationOptions: React.FC = () => {
             {/* Right Side Visual Placeholder */}
             <div className={styles.heroRight}>
               <div className={styles.heroVisual}>
-                <div className={`${styles.floatingCard} ${styles.floatingCardTopLeft}`}>📄 Script ready</div>
-                <div className={`${styles.floatingCard} ${styles.floatingCardTopRight}`}>🌍 Localization</div>
+                {/* <div className={`${styles.floatingCard} ${styles.floatingCardTopLeft}`}>📄 Script ready</div>
+                <div className={`${styles.floatingCard} ${styles.floatingCardTopRight}`}>🌍 Localization</div> */}
 
                 <div className={styles.heroVideoPlaceholder} onClick={() => setVideoModalOpen(true)}>
                   <div className={styles.playCircle}>▶</div>
-                  <p style={{ color: "var(--text-secondary-dark)", fontSize: "13px" }}>
+                  <p style={{ color: "var(--text-secondary-dark)", fontSize: "14px" }}>
                     AI-generated video preview
                   </p>
                 </div>
