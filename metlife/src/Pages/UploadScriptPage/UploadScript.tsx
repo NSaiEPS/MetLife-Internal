@@ -5,7 +5,7 @@ import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import UploadIcon from "../../assets/UploadCloudIcon.svg";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../components/common/mainFooter";
+
 import { BASE_URL } from "../../api/axios";
 import { toast } from "react-toastify";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
@@ -407,7 +407,7 @@ const UploadScript = () => {
           onSelect={handleDownloadType}
         />
       </div>
-      <Footer />
+
     </>
   );
 };

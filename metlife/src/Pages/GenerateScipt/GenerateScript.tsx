@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPromptsList } from "../../redux/features/promptSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import Footer from "../../components/common/mainFooter";
 import api, { studio } from "../../api/axios";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 import SavedPromptsModal from "../../components/common/SavedPromptsModal";
@@ -728,7 +727,6 @@ const GenerateScript: React.FC = () => {
           </div>
         </div>
       </main>
-      {/* <Footer /> */}
 
       <SavedPromptsModal
         open={open}

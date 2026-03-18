@@ -3,7 +3,6 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import styles from "./audioAnimation.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import Footer from "../../components/common/mainFooter";
 import SelectComp from "../../components/common/select";
 import ButtonComp from "../../components/common/Buton/Button";
 import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
@@ -1662,7 +1661,7 @@ const AudioAnimationPage: React.FC = () => {
             <NoDataMessage filter={false} loading={true} />
           </>
         )}
-        <Footer />
+
       </Box>
 
       <OstStylePopup

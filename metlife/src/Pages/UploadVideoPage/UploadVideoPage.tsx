@@ -3,7 +3,6 @@ import styles from "./UploadVideo.module.css";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import ButtonComp from "../../components/common/Buton/Button";
 import UploadIcon from "../../assets/UploadCloudIcon.svg";
-import Footer from "../../components/common/mainFooter";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
 // import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -636,7 +635,7 @@ const UploadVideoPage = () => {
           />
         </Box>
       )}
-      <Footer />
+
     </>
   );
 };

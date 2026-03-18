@@ -9,7 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import Footer from "../../components/common/mainFooter";
+
 
 const initialScenes = [
   {
@@ -227,7 +227,7 @@ const GenerateVisualsPage = () => {
           </div>
         </section>
       </main>
-      <Footer />
+
     </Box>
   );
 };

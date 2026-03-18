@@ -175,7 +175,7 @@ const VideoCreationOptions: React.FC = () => {
             {/* HOW IT WORKS */}
             <div style={{ textAlign: "center", padding: "28px 80px 0px" }}>
               <p style={{ fontSize: "16px", color: "var(--secondary)", marginBottom: "4px" }}>
-                How <b style={{ color: "var(--gold)", fontWeight: "800", fontFamily: "var(--font-syne)" }}>EdWave</b> Works
+                How <b style={{ color: "var(--gold)", fontWeight: "800", }}>EdWave</b> Works
               </p>
             </div>
             <div className={styles.howItWorks}>
@@ -246,11 +246,9 @@ const VideoCreationOptions: React.FC = () => {
               </Box>
             </DialogContent>
           </Dialog>
-
         </Box>
+        <Footer />
       </Box>
-
-      <Footer />
     </>
   );
 };

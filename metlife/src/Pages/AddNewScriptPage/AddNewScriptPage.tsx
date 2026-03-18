@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import Footer from "../../components/common/mainFooter";
 import DynamicTable from "../../components/common/Table/DynamicTable";
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import ScriptQualityAnalyzer from "../../components/common/ScriptQualityAnalyzer/ScriptQualityAnalyzer";
@@ -97,7 +96,6 @@ const ScriptPage: React.FC = () => {
           <NoDataMessage filter={false} loading={loading} />
         )}
       </div>
-      <Footer />
     </div>
   );
 };

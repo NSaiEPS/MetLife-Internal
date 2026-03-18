@@ -16,7 +16,7 @@ import {
   Switch,
 } from "@mui/material";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
-import Footer from "../../components/common/mainFooter";
+
 import styles from "./uploadConversationClips.module.css";
 import {
   getClipsData,
@@ -727,7 +727,7 @@ const UploadConversationalClipsPage: React.FC = () => {
         ) : (
           <NoDataMessage filter={false} loading={generateVisualLoader} />
         )}
-        <Footer />
+
       </div>
     </>
   );

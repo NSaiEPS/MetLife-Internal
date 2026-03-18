@@ -2,7 +2,7 @@ import { Box, Button, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import styles from "./generateVisualContent.module.css";
-import Footer from "../../components/common/mainFooter";
+
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
 import upload from "../../assets/upload_icon.svg";
@@ -553,7 +553,7 @@ const GenerateVisualContentPage: React.FC = () => {
           )}
         </div>
 
-        <Footer />
+
       </div>
     </>
   );

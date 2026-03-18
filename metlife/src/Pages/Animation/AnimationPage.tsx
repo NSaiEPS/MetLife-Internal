@@ -23,7 +23,7 @@ import ButtonComp from "../../components/common/Buton/Button";
 import { useNavigate, useParams } from "react-router";
 import FullVideoPlayer from "../../components/common/GeneratedVideo/FullVideoPlayer";
 import FullScreenGradientLoader from "../../components/common/GradientLoader";
-import Footer from "../../components/common/mainFooter";
+
 import { NoDataMessage } from "../../components/common/NoDataMessage";
 import OneFrameHeader from "../../components/common/OneFrameHeader";
 import Timer from "../../components/common/Timer/Timer";
@@ -878,7 +878,7 @@ const AnimationPage: React.FC = () => {
             <NoDataMessage filter={false} loading={true} />
           </>
         )}
-        <Footer />
+
       </Box>
     </>
   );

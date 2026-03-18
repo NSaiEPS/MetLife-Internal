@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../../components/common/mainFooter";
 import styles from "./visualContent.module.css";
 import copy from "../../assets/copy.svg";
 import reuse from "../../assets/reuse.svg";
@@ -437,7 +436,7 @@ const CreateVisualContentPage: React.FC = () => {
             <NoDataMessage filter={false} loading={saveVisualContentLoader} />
           )}
         </div>
-        <Footer />
+
       </div>
     </>
   );
@@ -447,7 +446,7 @@ export default CreateVisualContentPage;
 
 // import React, { useEffect, useState } from "react";
 // import OneFrameHeader from "../../components/common/OneFrameHeader";
-// import Footer from "../../components/common/mainFooter";
+
 // import styles from "./visualContent.module.css";
 // import copy from "../../assets/copy.svg";
 // import reuse from "../../assets/reuse.svg";
@@ -897,7 +896,7 @@ export default CreateVisualContentPage;
 //             <NoDataMessage filter={false} loading={saveVisualContentLoader} />
 //           )}
 //         </div>
-//         <Footer />
+
 //       </div>
 //     </>
 //   );
