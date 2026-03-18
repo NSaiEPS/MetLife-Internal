@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import Footer from "../../components/common/mainFooter";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
 import ButtonComp from "../../components/common/Buton/Button";
+import DemoVideo from "../../assets/Demo_video.mp4";
 
 const VideoCreationOptions: React.FC = () => {
   const navigate = useNavigate();
@@ -239,7 +240,7 @@ const VideoCreationOptions: React.FC = () => {
                   }}
                   controls
                   preload="metadata"
-                  src="https://videos.pexels.com/video-files/3163534/3163534-uhd_3840_2160_30fps.mp4"
+                  src={DemoVideo}
                 >
                   Your browser does not support the HTML5 video tag.
                 </video>
