@@ -135,8 +135,8 @@
 }
 
 .projectNameCell {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
     gap: 12px;
     color: #fff !important;
     font-weight: 500;

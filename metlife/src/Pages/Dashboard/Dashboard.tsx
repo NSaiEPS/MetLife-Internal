@@ -96,46 +96,17 @@ const MyVideosDashboard: React.FC = () => {
     searchQuery,
   } = useSelector((store: RootState) => store.DashBoard);
 
-  // count length for statistics
+  // Limit to 10 most recent projects for Dashboard table
+  const recentProjects = [...(dashBoardInfo || [])]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 10);
+
+  // count length for statistics based on ALL projects
   const completed_result = dashBoardInfo?.filter((item) => {
-    // if (item.videos) {
     if (item.has_final_video) {
       return item;
     }
   });
-
-  // const inprogress_video = dashBoardInfo?.filter((item) => {
-  //   if (!item.failed && !item.has_final_video && item.audio && !item.videos) {
-  //     return item;
-  //   }
-  // });
-
-  // const inprogress_visuals = dashBoardInfo?.filter((item) => {
-  //   // if (!item.failed && !item.has_final_video && item.visuals && !item.videos && !item.audio) {
-  //   if (!item.failed && !item.has_final_video && item.visuals && !item.videos) {
-  //     return item;
-  //   }
-  // });
-
-  // const inprogress_audio = dashBoardInfo?.filter((item) => {
-
-  //   if (item.audio && !item.videos || item.audio && item.videos && !item.has_final_video) {
-  //     return item;
-  //   }
-  // });
-
-
-  // const inprogress_script = dashBoardInfo?.filter((item) => {
-  //   if (
-  //     !item.failed &&
-  //     !item.has_final_video &&
-  //     !item.visuals &&
-  //     !item.videos &&
-  //     !item.audio
-  //   ) {
-  //     return item;
-  //   }
-  // });
 
   const inprogress_video = dashBoardInfo?.filter(
     (item) =>
@@ -179,12 +150,10 @@ const MyVideosDashboard: React.FC = () => {
   });
 
   const total_progress =
-    inprogress_video?.length +
-    inprogress_visuals?.length +
-    inprogress_script?.length +
-    inprogress_audio?.length
-
-
+    (inprogress_video?.length || 0) +
+    (inprogress_visuals?.length || 0) +
+    (inprogress_script?.length || 0) +
+    (inprogress_audio?.length || 0)
 
   const stats = [
     {
@@ -550,7 +519,7 @@ const MyVideosDashboard: React.FC = () => {
   };
 
   // main function logic which filters the table based on status
-  const filteredDashboardInfo = dashBoardInfo
+  const filteredDashboardInfo = recentProjects
     ?.filter((item) => {
       switch (selectedFilter) {
         case "COMPLETED":
@@ -578,32 +547,6 @@ const MyVideosDashboard: React.FC = () => {
         getStatusLabel(item)?.toLowerCase()?.includes(searchQuery.toLowerCase())
       );
     });
-
-  const handleDownloadMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    video: DashboardItem,
-  ) => {
-    event.stopPropagation();
-    setOpen(event.currentTarget);
-    console.log(video?.final_video, video?.title, "finalVidieop");
-    setMenuData((prev: any) => {
-      return {
-        ...prev,
-        downloadVideo: video,
-        downloadScript: video,
-      };
-    });
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
-
-  const handleUsers = (video: DashboardItem) => {
-    setOpenUsersDialog(true);
-    setScriptId(video?.script_id || "");
-    dispatch(getUsersList());
-  };
 
   const username = "A"; // Fallback or dynamic username
 
@@ -641,17 +584,15 @@ const MyVideosDashboard: React.FC = () => {
             {stats?.map((s, idx) => (
               <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3 }} key={idx}>
                 <Box
-                  onClick={() => dispatch(setSelectedFilter(s.filter))}
                   sx={{
                     p: 2.5,
                     width: "100%",
                     borderRadius: "16px",
                     bgcolor: s.bgColor,
-                    border: selectedFilter === s.filter ? "2px solid #f5a623" : "1px solid rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.05)",
                     display: "flex",
                     alignItems: "center",
                     gap: 2,
-                    cursor: "pointer",
                     transition: "0.2s",
                     "&:hover": { transform: "translateY(-2px)", bgcolor: "var(--bg-card-dark)" },
                   }}
@@ -724,8 +665,8 @@ const MyVideosDashboard: React.FC = () => {
                   }}
                 />
               </Box>
-              <Typography 
-                variant="caption" 
+              <Typography
+                variant="caption"
                 onClick={() => navigate("/projects")}
                 sx={{ color: "#f5a623", cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5, fontWeight: 600 }}
               >
@@ -883,7 +824,7 @@ const MyVideosDashboard: React.FC = () => {
       </Box>
 
       {/* Popups (Keep logic as is) */}
-      <UploadPopup open={open} openPopup={openPopup} handleCloseMenu={handleCloseMenu} menuData={menuData} />
+      <UploadPopup open={open} openPopup={openPopup} menuData={menuData} />
       <UsersListPopup open={openUsersDialog} onClose={() => setOpenUsersDialog(false)} scriptId={scriptId} />
     </Box >
   );

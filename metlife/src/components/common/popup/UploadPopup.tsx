@@ -17,7 +17,7 @@ export const UploadPopup = ({
 }: {
   openPopup: boolean;
   open: HTMLElement | null;
-  handleCloseMenu: () => void;
+  handleCloseMenu?: () => void;
   menuData?: any;
 }) => {
   console.log(menuData, "check_menu_data");
