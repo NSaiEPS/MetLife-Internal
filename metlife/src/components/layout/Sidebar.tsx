@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-    { text: "Projects", icon: <ProjectsIcon />, path: "#" },
+    { text: "Projects", icon: <ProjectsIcon />, path: "/projects" },
     { text: "Generate Script", icon: <GenerateScriptIcon />, path: "/generate-script" },
     { text: "AI Instructional Designer", icon: <AIInstructionalIcon />, path: "#" },
     { text: "Animation Toolkit", icon: <AnimationToolkitIcon />, path: "#" },

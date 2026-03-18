@@ -26,6 +26,7 @@ import SuperAdminPanel from "../Admin/SuperAdminPanel";
 import OneframeAdminPanel from "../Admin/oneframe_admin_panel_ui-2";
 import PageNotFound from "../Pages/PageNotFound/PageNotFound";
 import ErrorPage from "../Pages/PageNotFound/ErrorPage";
+import ProjectsPage from "../Pages/Projects/ProjectsPage";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -133,6 +134,10 @@ export const router = createBrowserRouter([
       {
         path: "/video-frame",
         element: <VideoCreationOptions />,
+      },
+      {
+        path: "/projects",
+        element: <ProjectsPage />,
       },
       {
         path: "/upload-video",

@@ -724,7 +724,11 @@ const MyVideosDashboard: React.FC = () => {
                   }}
                 />
               </Box>
-              <Typography variant="caption" sx={{ color: "#f5a623", cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5, fontWeight: 600 }}>
+              <Typography 
+                variant="caption" 
+                onClick={() => navigate("/projects")}
+                sx={{ color: "#f5a623", cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5, fontWeight: 600 }}
+              >
                 View All <FaChevronRight size={10} />
               </Typography>
             </Box>

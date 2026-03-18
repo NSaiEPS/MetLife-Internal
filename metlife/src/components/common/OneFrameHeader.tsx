@@ -25,7 +25,7 @@ interface OneFrameHeaderProps {
 
 const navLinks = [
   { title: "Dashboard", path: "/dashboard" },
-  { title: "Projects", path: "/dashboard" },
+  { title: "Projects", path: "/projects" },
   { title: "Help", path: "#" },
 ];
 
