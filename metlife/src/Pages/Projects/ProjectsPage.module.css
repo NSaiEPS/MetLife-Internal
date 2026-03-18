@@ -153,6 +153,11 @@
     font-size: 16px;
 }
 
+.pagination :global(.MuiTablePagination-selectLabel),
+.pagination :global(.MuiTablePagination-displayedRows) {
+    margin: 0;
+}
+
 .languageCell {
     display: flex;
     align-items: center;
