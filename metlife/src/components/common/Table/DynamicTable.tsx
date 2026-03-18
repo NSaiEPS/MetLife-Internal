@@ -995,6 +995,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             actions={actions}
           />
 
+
           {/* {characters.map((char, index) => (
         <Character
           key={index}
@@ -1482,10 +1483,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           </div>
         </div>
         {showScript && (
-          <div style={{ width: "28%", marginTop: matches ? "2rem" : "0rem" }}>
+          <div style={{ width: "28%", marginTop: matches ? "6rem" : "0rem" }}>
             <ScriptQualityAnalyzer
-            data={tableExtraData}
-             />
+              data={tableExtraData}
+            />
           </div>
         )}
       </div >

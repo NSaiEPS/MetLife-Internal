@@ -4,8 +4,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
-const ScriptQualityAnalyzer: React.FC = ({data}) => {
-  console.log(data, "fad")
+const ScriptQualityAnalyzer = ({ data }: any) => {
   return (
     <Box
       sx={{
@@ -44,7 +43,7 @@ const ScriptQualityAnalyzer: React.FC = ({data}) => {
         </Typography>
         <Stack direction="row" spacing={0.5}>
           {
-data?.analysis?.complexity
+            data?.analysis?.complexity
           }
         </Stack>
       </Stack>
@@ -66,18 +65,34 @@ data?.analysis?.complexity
         </Typography>
         <LinearProgress
           variant="determinate"
-          value={82}
+          value={Number(data?.analysis?.clarity_score || 0)}
           sx={{
             height: 8,
             borderRadius: 4,
             backgroundColor: "var(--bg-deep)",
             "& .MuiLinearProgress-bar": {
-              backgroundColor: "var(--green)",
+              backgroundColor:
+                Number(data?.analysis?.clarity_score || 0) <= 30
+                  ? "var(--red)"
+                  : Number(data?.analysis?.clarity_score || 0) <= 60
+                    ? "var(--gold)"
+                    : "var(--green)",
               borderRadius: 4,
             },
           }}
         />
-        <Typography variant="caption" sx={{ color: "var(--green)", fontWeight: 600 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color:
+              Number(data?.analysis?.clarity_score || 0) <= 30
+                ? "var(--red)"
+                : Number(data?.analysis?.clarity_score || 0) <= 60
+                  ? "var(--gold)"
+                  : "var(--green)",
+            fontWeight: 600,
+          }}
+        >
           {data?.analysis?.clarity_score}
         </Typography>
       </Stack>
@@ -94,11 +109,20 @@ data?.analysis?.complexity
         </Typography>
         <Typography
           variant="body2"
-          sx={{ color: "var(--gold)", fontWeight: 600, display: "flex", alignItems: "center", gap: 0.5 }}
+          sx={{
+            color:
+              String(data?.analysis?.engagement_score).toLowerCase().includes("weak")
+                ? "var(--red)"
+                : String(data?.analysis?.engagement_score).toLowerCase().includes("medium")
+                  ? "var(--gold)"
+                  : "var(--green)",
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5
+          }}
         >
-          {/* High 🔥
-           */}
-           {data?.analysis?.engagement_score}
+          {data?.analysis?.engagement_score}
         </Typography>
       </Stack>
 

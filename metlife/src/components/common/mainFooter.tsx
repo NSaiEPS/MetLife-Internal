@@ -17,7 +17,7 @@ const Footer = () => {
           {/* Brand Section */}
           <Grid size={{ xs: 12, md: 4 }} className={styles.brandSection}>
             <div className={styles.logoWrapper}>
-              <img src={footerLogo} alt="EdWave Logo" className={styles.logo} />
+              {/* <img src={footerLogo} alt="EdWave Logo" className={styles.logo} /> */}
               <Typography variant="h6" className={styles.brandName}>
                 EdWave
               </Typography>

@@ -70,7 +70,6 @@
   width: 560px;
   height: 420px;
   background: var(--bg-card-dark);
-  border: 1px solid var(--border-dark);
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -78,19 +77,64 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 32px 80px rgba(0, 0, 0, .5);
+  z-index: 0;
+
 }
 
+/* The rotating glow beam */
 .heroVisual::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(245, 166, 35, .06), transparent);
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent,
+      rgba(245, 166, 35, 0.4),
+      var(--gold),
+      rgba(245, 166, 35, 0.4),
+      transparent 100%);
+  animation: rotateBorder 5s linear infinite;
+  z-index: -2;
+
+}
+
+.heroVisual>video {
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 98% !important;
+  height: 98% !important;
+  border-radius: 18px;
+}
+
+/* The inner mask that creates the border thickness */
+.heroVisual::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: var(--bg-card-dark);
+  border-radius: 18px;
+  z-index: -1;
+
+}
+
+@keyframes rotateBorder {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .heroVideoPlaceholder {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   z-index: 10;
 }
@@ -106,6 +150,8 @@
   font-size: 26px;
   animation: pulse 2s infinite;
   cursor: pointer;
+  padding-left: 6px;
+  padding-bottom: 4px;
 }
 
 @keyframes pulse {

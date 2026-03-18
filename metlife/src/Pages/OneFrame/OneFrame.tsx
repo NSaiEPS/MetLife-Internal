@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Typography, Box, Dialog, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import styles from "./OneFrame.module.css";
@@ -7,6 +7,7 @@ import Footer from "../../components/common/mainFooter";
 import { UploadPopup } from "../../components/common/popup/UploadPopup";
 import ButtonComp from "../../components/common/Buton/Button";
 import DemoVideo from "../../assets/Demo_video.mp4";
+import VideoThumbnail from "../../assets/edwave_video_thumbnail.png";
 
 const VideoCreationOptions: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const VideoCreationOptions: React.FC = () => {
   const openPopup = Boolean(open);
 
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHeroVideoPlaying, setIsHeroVideoPlaying] = useState(false);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
@@ -21,6 +24,13 @@ const VideoCreationOptions: React.FC = () => {
 
   const handleCloseMenu = () => {
     setOpen(null);
+  };
+
+  const handleHeroPlay = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      setIsHeroVideoPlaying(true);
+    }
   };
 
   return (
@@ -78,17 +88,39 @@ const VideoCreationOptions: React.FC = () => {
               <div className={styles.heroVisual}>
                 {/* <div className={`${styles.floatingCard} ${styles.floatingCardTopLeft}`}>📄 Script ready</div>
                 <div className={`${styles.floatingCard} ${styles.floatingCardTopRight}`}>🌍 Localization</div> */}
+                <video
+                  ref={videoRef}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                  }}
+                  controls={isHeroVideoPlaying}
+                  preload="metadata"
+                  poster={VideoThumbnail}
+                  src={DemoVideo}
+                  onPlay={() => setIsHeroVideoPlaying(true)}
+                  onPause={() => setIsHeroVideoPlaying(false)}
+                >
+                  Your browser does not support the HTML5 video tag.
+                </video>
+                {!isHeroVideoPlaying && (
+                  <>
+                    <div className={styles.heroVideoPlaceholder} onClick={handleHeroPlay}>
+                      <div className={styles.playCircle}>▶</div>
+                      {/* <p style={{ color: "var(--text-light)", fontSize: "18px", fontWeight: "800" }}>
+                        AI-generated video preview
+                      </p> */}
+                    </div>
 
-                <div className={styles.heroVideoPlaceholder} onClick={() => setVideoModalOpen(true)}>
-                  <div className={styles.playCircle}>▶</div>
-                  <p style={{ color: "var(--text-secondary-dark)", fontSize: "14px" }}>
-                    AI-generated video preview
-                  </p>
-                </div>
-
-                <div className={`${styles.floatingCard} ${styles.floatingCardBottom}`}>
-                  ⬜ 00:00 ─────────── 03:45
-                </div>
+                    {/* <div className={`${styles.floatingCard} ${styles.floatingCardBottom}`}>
+                      ⬜ 00:00 ─────────── 03:45
+                    </div> */}
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -98,7 +130,7 @@ const VideoCreationOptions: React.FC = () => {
             <h2 className={styles.sectionTitle}>
               What can <b>EdWave</b> do today?
             </h2>
-
+            Create AI-Powered Educational Videos
             <div className={styles.homeActions}>
 
               {/* Generate Script Action */}
@@ -240,6 +272,7 @@ const VideoCreationOptions: React.FC = () => {
                   }}
                   controls
                   preload="metadata"
+                  poster={VideoThumbnail}
                   src={DemoVideo}
                 >
                   Your browser does not support the HTML5 video tag.

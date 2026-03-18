@@ -1,12 +1,15 @@
 .tablePaper {
-  border-radius: 10px;
+  border-radius: 12px !important;
   box-shadow: none;
-  border: 1px solid #e6e9ef;
   overflow: hidden;
+  background: red;
 }
 
 .tableRoot {
   width: 100%;
+  background: var(--bg-card2) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: 12px !important;
 }
 
 .headRow {
@@ -27,15 +30,18 @@
   display: flex;
   align-items: center;
 }
+
 .languageItem:hover {
   background-color: var(--bg-active-select-color);
   /* background-color: #f4f4f4; */
 }
+
 .activeLang {
   /* background-color: #239de01a; */
   background-color: var(--card-bg);
   font-weight: 500;
 }
+
 .tickIcon {
   width: 20px;
   height: 20px;
@@ -93,6 +99,7 @@
 .bodyRow:nth-child(odd) {
   background: #fff;
 }
+
 .bodyRow:nth-child(even) {
   background: #fbfdff;
 }
@@ -120,6 +127,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 720px) {
+
   .headCell,
   .bodyCell {
     padding: 10px 12px;
@@ -155,6 +163,7 @@
   color: #fff;
   /* line-height: 0; */
 }
+
 .noDataText {
   text-align: center;
 }
@@ -163,12 +172,15 @@
   .tablePaper {
     border: unset;
   }
+
   .headRow {
     background: var(--footer-bg);
   }
+
   .bodyRow {
     background: transparent;
   }
+
   .bodyCell {
     color: #ddd;
   }
@@ -176,6 +188,7 @@
   .bodyRow:nth-child(odd) {
     background: transparent;
   }
+
   .bodyRow:nth-child(even) {
     background: var(--footer-bg);
   }
@@ -203,6 +216,7 @@
   .tableContent {
     width: 100%;
   }
+
   .analyzerContent {
     width: 100%;
     margin-top: 1rem;
