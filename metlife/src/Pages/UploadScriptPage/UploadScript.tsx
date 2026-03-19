@@ -289,7 +289,7 @@ const UploadScript = () => {
               marginBottom: "24px",
             }}
           >
-            <BackButton route="/video-frame" />
+            <BackButton route="/projects" />
 
             <Typography variant="h4">Upload Script</Typography>
             {/* <Button

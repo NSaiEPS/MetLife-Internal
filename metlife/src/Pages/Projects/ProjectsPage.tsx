@@ -241,6 +241,34 @@ const ProjectsPage: React.FC = () => {
         return "🏳️";
     };
 
+
+    const handleView = (video: DashboardItem) => {
+        // if (video.videos) {
+        if ((video?.final_video?.url && !video?.stitched_video_exists) || (video.audio && !video.videos || video.audio && video.videos && !video.has_final_video)) {
+            navigate(`/animation-page/${video.script_id}`);
+            return;
+        }
+        // For conversational
+        if (video?.stitched_video_exists) {
+            navigate(`/upload-conversational-clips/${video.script_id}`);
+            return;
+        }
+        if (video.audio) {
+            //  if (video.audio && !video.videos || video.audio && video.videos && !video.has_final_video) {
+            navigate(`/audio-animation-toolkit/${video.script_id}`);
+            return;
+        }
+        if (video.visuals) {
+            navigate(`/generate-visual-page/${video.script_id}`);
+            return;
+        }
+        if (video.prompt_batch_id) {
+            navigate(`/create-visual-content/${video.prompt_batch_id}`);
+            return;
+        }
+        navigate(`/scenes/${video.script_id}`);
+    };
+
     const stats = [
         { title: "Total Projects", value: dashBoardInfo?.length || 0, icon: <FolderCopy sx={{ color: "#fff" }} />, filter: "ALL", iconBg: "#2d3a54" },
         { title: "In Progress", value: dashBoardInfo?.filter(isInProgress).length || 0, icon: <FaRegPlayCircle size={20} color="#f5a623" />, filter: "IN_PROGRESS", iconBg: "#332a1a" },
@@ -260,7 +288,10 @@ const ProjectsPage: React.FC = () => {
                             <Typography variant="body2">Manage and monitor all your video creation projects in one place.</Typography>
                         </div>
                         <Box sx={{ display: "flex", gap: 2 }}>
-                            <ButtonComp transform="none" onClick={() => navigate("/create-project")}>+ New Project</ButtonComp>
+                            <ButtonComp transform="none" onClick={() => navigate("/generate-script")}>+ New Project</ButtonComp>
+                            <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/upload-script")}>
+                                ✨ Upload Script
+                            </ButtonComp>
                         </Box>
                     </div>
 
@@ -331,7 +362,7 @@ const ProjectsPage: React.FC = () => {
                                             <TableCell>{getStatusChip(item)}</TableCell>
                                             <TableCell>{formatRelativeTime(item.created_at)}</TableCell>
                                             <TableCell align="center">
-                                                <IconButton size="small" sx={{ color: "var(--gold)" }} onClick={() => navigate(`/animation-page/${item.script_id}`)}>
+                                                <IconButton size="small" sx={{ color: "var(--gold)" }} onClick={() => handleView(item)}>
                                                     <PlayCircle fontSize="small" />
                                                 </IconButton>
                                             </TableCell>

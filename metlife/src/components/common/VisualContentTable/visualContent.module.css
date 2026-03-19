@@ -1,8 +1,9 @@
 .tablePaper {
   border-radius: 10px;
   box-shadow: none;
-  border: 1px solid #e6e9ef;
+  border: 1px solid var(--border-dark);
   overflow: hidden;
+  background: var(--bg-card2);
 }
 
 .tableRoot {

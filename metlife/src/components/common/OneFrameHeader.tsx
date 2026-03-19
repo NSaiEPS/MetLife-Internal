@@ -6,8 +6,12 @@ import {
   Button,
   Divider,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Menu,
   MenuItem,
+  Popover,
   Toolbar,
   Typography,
   useTheme,
@@ -41,6 +45,7 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [anchorElBell, setAnchorElBell] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const mode = theme.palette.mode;
   console.log(pathname.startsWith("/dashboard"), "pathname");
@@ -50,6 +55,9 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+  const handleOpenBellPopover = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElBell(event.currentTarget);
   };
 
   const handleCloseNavMenu = (path?: string) => {
@@ -61,6 +69,9 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+  const handleCloseBellPopover = () => {
+    setAnchorElBell(null);
   };
 
   const handleLogoClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -82,6 +93,22 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
     secureLocalStorage.clear();
     navigate("/login");
   };
+
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: "Your project 'Spring Sale' has been approved.", time: "2 hours ago", active: true },
+    { id: 2, text: "New comment on 'Script 01'.", time: "5 hours ago", active: true },
+    { id: 3, text: "Weekly report is ready for download.", time: "1 day ago", active: false },
+  ]);
+
+  const handleMarkAsRead = (id: number) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, active: false } : n));
+  };
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, active: false })));
+  };
+
+  const activeCount = notifications.filter(n => n.active).length;
 
   return (
     <AppBar position="static" className={styles.appBar} color="transparent" elevation={0} sx={{ borderBottom: "1px solid var(--border-dark, #1f2d44)", background: "var(--bg-card-dark, #111827)" }}>
@@ -122,10 +149,96 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: "12px", alignItems: "center" }}>
 
 
-              <div className={styles.iconBtn}>
+              <div className={styles.iconBtn} onClick={handleOpenBellPopover}>
                 🔔
-                {/* <div className={styles.badge}>3</div> */}
+                {activeCount > 0 && <div className={styles.badge}>{activeCount}</div>}
               </div>
+
+              <Popover
+                open={Boolean(anchorElBell)}
+                anchorEl={anchorElBell}
+                onClose={handleCloseBellPopover}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                sx={{
+                  "& .MuiPaper-root": {
+                    bgcolor: "var(--bg-card-dark, #111827)",
+                    color: "var(--text-light, #f0f4ff)",
+                    border: "1px solid var(--border-dark, #1f2d44)",
+                    width: "300px",
+                    mt: "10px",
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+                    borderRadius: "12px",
+                  }
+                }}
+              >
+                <Box sx={{ p: 2 }}>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: "var(--text-light, #f0f4ff)" }}>
+                      Notifications
+                    </Typography>
+                    {activeCount > 0 && (
+                      <Button
+                        size="small"
+                        onClick={handleMarkAllAsRead}
+                        sx={{
+                          fontSize: "11px",
+                          textTransform: "none",
+                          color: "var(--gold, #ffd700)",
+                          "&:hover": { background: "rgba(255, 215, 0, 0.1)" }
+                        }}
+                      >
+                        Mark all as read
+                      </Button>
+                    )}
+                  </Box>
+                  <Divider sx={{ borderColor: "var(--border-dark, #1f2d44)", mb: 1 }} />
+                  {notifications.length > 0 ? (
+                    <List sx={{ p: 0 }}>
+                      {notifications.map((notif) => (
+                        <ListItem
+                          key={notif.id}
+                          onClick={() => handleMarkAsRead(notif.id)}
+                          sx={{
+                            px: 1,
+                            py: 1,
+                            cursor: "pointer",
+                            borderRadius: "8px",
+                            mb: 0.5,
+                            borderBottom: "1px solid var(--border-dark, #1f2d44)",
+                            "&:last-child": { borderBottom: "none" },
+                            background: notif.active ? "rgba(255, 255, 255, 0.03)" : "transparent",
+                            "&:hover": { background: "rgba(255, 255, 255, 0.05)" }
+                          }}
+                        >
+                          <ListItemText
+                            primary={
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                {notif.text}
+                                {notif.active && <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: "#ff4d4f" }} />}
+                              </Box>
+                            }
+                            secondary={notif.time}
+                            primaryTypographyProps={{ fontSize: "13px", color: "var(--text-light, #f0f4ff)", fontWeight: notif.active ? 600 : 400 }}
+                            secondaryTypographyProps={{ fontSize: "11px", color: "var(--text-secondary-dark, #8899bb)", mt: 0.5 }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Typography variant="body2" sx={{ color: "var(--text-secondary-dark, #8899bb)", py: 3, textAlign: "center" }}>
+                      No new notifications
+                    </Typography>
+                  )}
+                </Box>
+              </Popover>
+
               <div className={styles.helpBtn}>
                 ❓
               </div>

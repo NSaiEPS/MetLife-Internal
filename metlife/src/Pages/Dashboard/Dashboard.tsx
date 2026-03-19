@@ -570,11 +570,11 @@ const MyVideosDashboard: React.FC = () => {
               </Typography>
             </Box>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <ButtonComp transform="none" onClick={() => navigate("/create-project")}>
+              <ButtonComp transform="none" onClick={() => navigate("/generate-script")}>
                 + Create New Project
               </ButtonComp>
-              <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/generate-script")}>
-                ✨ Generate Script
+              <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/upload-script")}>
+                ✨ Upload Script
               </ButtonComp>
             </Box>
           </Box>
@@ -679,6 +679,7 @@ const MyVideosDashboard: React.FC = () => {
               <Table size="small">
                 <TableHead>
                   <TableRow sx={{ "& .MuiTableCell-root": { color: "#4b5563", borderBottom: "1px solid rgba(255,255,255,0.05)", py: 1.5, fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700 } }}>
+                    <TableCell>#</TableCell>
                     <TableCell>Project Name</TableCell>
                     <TableCell>Language</TableCell>
                     <TableCell>Duration</TableCell>

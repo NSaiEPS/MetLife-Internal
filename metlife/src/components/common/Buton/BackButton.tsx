@@ -2,11 +2,15 @@ import { Button } from "@mui/material";
 import React from "react";
 import { navigateTo } from "../../../utils/navigate";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { useNavigate } from "react-router";
 
 const BackButton = ({ route }: { route: string }) => {
+  const navigate = useNavigate();
+
   return (
     <Button
-      onClick={() => navigateTo(route)}
+      // onClick={() => navigateTo(route)}
+      onClick={() => navigate(-1)}
       sx={{
         display: "flex",
         alignItems: "center",
