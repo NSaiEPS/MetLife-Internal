@@ -15,6 +15,8 @@ import {
   Grid,
   alpha,
   IconButton,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import {
   PlayCircle,
@@ -24,6 +26,9 @@ import {
   AutoFixHigh as GenerateScriptIcon,
   MovieCreation as AnimationToolkitIcon,
   Language as LocalizationIcon,
+  Close as CloseIcon,
+  AutoFixHigh as AutoFixHighIcon,
+  CloudUpload as CloudUploadIcon,
 } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
 import { FaFileDownload, FaRegPlayCircle, FaChevronRight } from "react-icons/fa";
@@ -81,12 +86,16 @@ const MyVideosDashboard: React.FC = () => {
   // const mode = theme.palette.mode;
   const [scriptId, setScriptId] = useState("");
   const [open, setOpen] = React.useState<null | HTMLElement>(null);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [menuData, setMenuData] = useState({
     downloadScript: "",
     downloadVideo: "",
   });
   const [openUsersDialog, setOpenUsersDialog] = useState(false);
   const openPopup = Boolean(open);
+
+  const handleOpenCreateModal = () => setOpenCreateModal(true);
+  const handleCloseCreateModal = () => setOpenCreateModal(false);
 
   const {
     dashBoardInfo,
@@ -99,7 +108,7 @@ const MyVideosDashboard: React.FC = () => {
   // Limit to 10 most recent projects for Dashboard table
   const recentProjects = [...(dashBoardInfo || [])]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 10);
+    .slice(0, 7);
 
   // count length for statistics based on ALL projects
   const completed_result = dashBoardInfo?.filter((item) => {
@@ -193,7 +202,7 @@ const MyVideosDashboard: React.FC = () => {
 
 
   const quickActions = [
-    { title: "Generate Script", desc: "Start with an idea", icon: <GenerateScriptIcon sx={{ color: "#f5a623" }} /> },
+    { title: "Generate Script", desc: "Start with an idea", icon: <AutoFixHighIcon sx={{ color: "#f5a623" }} /> },
     { title: "Animation Toolkit", desc: "Create visuals & scenes", icon: <AnimationToolkitIcon sx={{ color: "#a855f7" }} /> },
     { title: "Localization", desc: "Translate & dub", icon: <LocalizationIcon sx={{ color: "#3b82f6" }} /> },
     { title: "Project Library", desc: "Manage assets", icon: <FolderCopy sx={{ color: "#14b8a6" }} /> },
@@ -570,12 +579,12 @@ const MyVideosDashboard: React.FC = () => {
               </Typography>
             </Box>
             <Box sx={{ display: "flex", gap: 2 }}>
-              <ButtonComp transform="none" onClick={() => navigate("/generate-script")}>
+              <ButtonComp transform="none" onClick={handleOpenCreateModal}>
                 + Create New Project
               </ButtonComp>
-              <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/upload-script")}>
+              {/* <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/knowledge-to-video")}>
                 ✨ Upload Script
-              </ButtonComp>
+              </ButtonComp> */}
             </Box>
           </Box>
 
@@ -720,7 +729,7 @@ const MyVideosDashboard: React.FC = () => {
                         <TableCell>{getStatusChip(video)}</TableCell>
                         <TableCell>{formatRelativeTime(video.created_at)}</TableCell>
                         <TableCell align="center">
-                          <IconButton size="small" onClick={() => handleView(video)} sx={{ color: "#8899bb", "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.1)" } }}>
+                          <IconButton size="small" sx={{ color: "var(--gold)" }} onClick={() => handleView(video)}>
                             <PlayCircle fontSize="small" />
                           </IconButton>
                         </TableCell>
@@ -823,6 +832,106 @@ const MyVideosDashboard: React.FC = () => {
         </Box>
 
       </Box>
+
+      {/* Project Creation Modal */}
+      <Dialog
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: "#111827",
+            color: "#fff",
+            borderRadius: "24px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            p: 1,
+            backgroundImage: "none",
+          }
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, px: 2 }}>
+          <Typography variant="h6" fontWeight={700}>Create New Project</Typography>
+          <IconButton onClick={handleCloseCreateModal} sx={{ color: "#8899bb", "&:hover": { color: "#fff" } }}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <DialogContent sx={{ mt: -1 }}>
+          <Typography variant="body2" sx={{ color: "#8899bb", mb: 4 }}>
+            Choose how you'd like to start your video project.
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Box
+                onClick={() => { navigate("/generate-script"); handleCloseCreateModal(); }}
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  borderRadius: "20px",
+                  bgcolor: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  cursor: "pointer",
+                  transition: "0.3s",
+                  textAlign: "center",
+                  "&:hover": {
+                    bgcolor: "rgba(245,166,35,0.08)",
+                    borderColor: "#f5a623",
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
+                  }
+                }}
+              >
+                <Box sx={{ width: 56, height: 56, borderRadius: "14px", bgcolor: "rgba(245,166,35,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <AutoFixHighIcon sx={{ color: "#f5a623", fontSize: 28 }} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>Generate Script</Typography>
+                  <Typography variant="caption" sx={{ color: "#8899bb", display: "block", lineHeight: 1.3 }}>Start with an idea or topic using AI</Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Box
+                onClick={() => { navigate("/upload-script"); handleCloseCreateModal(); }}
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  borderRadius: "20px",
+                  bgcolor: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  cursor: "pointer",
+                  transition: "0.3s",
+                  textAlign: "center",
+                  "&:hover": {
+                    bgcolor: "rgba(59,130,246,0.08)",
+                    borderColor: "#3b82f6",
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
+                  }
+                }}
+              >
+                <Box sx={{ width: 56, height: 56, borderRadius: "14px", bgcolor: "rgba(59,130,246,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <CloudUploadIcon sx={{ color: "#3b82f6", fontSize: 28 }} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>Upload Script</Typography>
+                  <Typography variant="caption" sx={{ color: "#8899bb", display: "block", lineHeight: 1.3 }}>Upload a document to create video</Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
 
       {/* Popups (Keep logic as is) */}
       <UploadPopup open={open} openPopup={openPopup} menuData={menuData} />

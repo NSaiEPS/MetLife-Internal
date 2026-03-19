@@ -15,12 +15,17 @@ import {
     Grid,
     IconButton,
     TablePagination,
+    Dialog,
+    DialogContent,
 } from "@mui/material";
 import {
     PlayCircle,
     ErrorOutline,
     FolderCopy,
     Search as SearchIcon,
+    Close as CloseIcon,
+    AutoFixHigh as AutoFixHighIcon,
+    CloudUpload as CloudUploadIcon,
 } from "@mui/icons-material";
 import { FaRegPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router";
@@ -60,6 +65,7 @@ const ProjectsPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [openCreateModal, setOpenCreateModal] = useState(false);
 
     const {
         dashBoardInfo,
@@ -82,6 +88,9 @@ const ProjectsPage: React.FC = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    const handleOpenCreateModal = () => setOpenCreateModal(true);
+    const handleCloseCreateModal = () => setOpenCreateModal(false);
 
     const isCompleted = (item: DashboardItem) =>
         item.has_final_video === true || Boolean(item.final_video);
@@ -288,10 +297,10 @@ const ProjectsPage: React.FC = () => {
                             <Typography variant="body2">Manage and monitor all your video creation projects in one place.</Typography>
                         </div>
                         <Box sx={{ display: "flex", gap: 2 }}>
-                            <ButtonComp transform="none" onClick={() => navigate("/generate-script")}>+ New Project</ButtonComp>
-                            <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/upload-script")}>
+                            <ButtonComp transform="none" onClick={handleOpenCreateModal}>+ Create New Project</ButtonComp>
+                            {/* <ButtonComp transform="none" colorType="outlined" onClick={() => navigate("/upload-script")}>
                                 ✨ Upload Script
-                            </ButtonComp>
+                            </ButtonComp> */}
                         </Box>
                     </div>
 
@@ -384,6 +393,106 @@ const ProjectsPage: React.FC = () => {
                     </TableContainer>
                 </div>
             </div>
+
+            {/* Project Creation Modal */}
+            <Dialog
+                open={openCreateModal}
+                onClose={handleCloseCreateModal}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        bgcolor: "#111827",
+                        color: "#fff",
+                        borderRadius: "24px",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        p: 1,
+                        backgroundImage: "none",
+                    }
+                }}
+            >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, px: 2 }}>
+                    <Typography variant="h6" fontWeight={700}>Create New Project</Typography>
+                    <IconButton onClick={handleCloseCreateModal} sx={{ color: "#8899bb", "&:hover": { color: "#fff" } }}>
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+                <DialogContent sx={{ mt: -1 }}>
+                    <Typography variant="body2" sx={{ color: "#8899bb", mb: 4 }}>
+                        Choose how you'd like to start your video project.
+                    </Typography>
+                    <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box
+                                onClick={() => { navigate("/generate-script"); handleCloseCreateModal(); }}
+                                sx={{
+                                    p: 3,
+                                    height: '100%',
+                                    borderRadius: "20px",
+                                    bgcolor: "rgba(255,255,255,0.03)",
+                                    border: "1px solid rgba(255,255,255,0.05)",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: 2,
+                                    cursor: "pointer",
+                                    transition: "0.3s",
+                                    textAlign: "center",
+                                    "&:hover": {
+                                        bgcolor: "rgba(245,166,35,0.08)",
+                                        borderColor: "#f5a623",
+                                        transform: "translateY(-5px)",
+                                        boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
+                                    }
+                                }}
+                            >
+                                <Box sx={{ width: 56, height: 56, borderRadius: "14px", bgcolor: "rgba(245,166,35,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <AutoFixHighIcon sx={{ color: "#f5a623", fontSize: 28 }} />
+                                </Box>
+                                <Box>
+                                    <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>Generate Script</Typography>
+                                    <Typography variant="caption" sx={{ color: "#8899bb", display: "block", lineHeight: 1.3 }}>Start with an idea or topic using AI</Typography>
+                                </Box>
+                            </Box>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                            <Box
+                                onClick={() => { navigate("/upload-script"); handleCloseCreateModal(); }}
+                                sx={{
+                                    p: 3,
+                                    height: '100%',
+                                    borderRadius: "20px",
+                                    bgcolor: "rgba(255,255,255,0.03)",
+                                    border: "1px solid rgba(255,255,255,0.05)",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: 2,
+                                    cursor: "pointer",
+                                    transition: "0.3s",
+                                    textAlign: "center",
+                                    "&:hover": {
+                                        bgcolor: "rgba(59,130,246,0.08)",
+                                        borderColor: "#3b82f6",
+                                        transform: "translateY(-5px)",
+                                        boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
+                                    }
+                                }}
+                            >
+                                <Box sx={{ width: 56, height: 56, borderRadius: "14px", bgcolor: "rgba(59,130,246,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <CloudUploadIcon sx={{ color: "#3b82f6", fontSize: 28 }} />
+                                </Box>
+                                <Box>
+                                    <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>Upload Script</Typography>
+                                    <Typography variant="caption" sx={{ color: "#8899bb", display: "block", lineHeight: 1.3 }}>Upload a document to create video</Typography>
+                                </Box>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

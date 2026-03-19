@@ -27,6 +27,7 @@ import OneframeAdminPanel from "../Admin/oneframe_admin_panel_ui-2";
 import PageNotFound from "../Pages/PageNotFound/PageNotFound";
 import ErrorPage from "../Pages/PageNotFound/ErrorPage";
 import ProjectsPage from "../Pages/Projects/ProjectsPage";
+import KnowledgeToVideo from "../Pages/KnowledgeToVideo/KnowledgeToVideo";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -186,6 +187,10 @@ export const router = createBrowserRouter([
       {
         path: "scenes/:id",
         element: <ScriptPage />,
+      },
+      {
+        path: "/knowledge-to-video",
+        element: <KnowledgeToVideo />,
       },
     ],
   },

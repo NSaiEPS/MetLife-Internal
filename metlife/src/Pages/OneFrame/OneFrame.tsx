@@ -126,7 +126,7 @@ const VideoCreationOptions: React.FC = () => {
           </div>
 
           {/* Features Grid Segment */}
-          <div style={{ padding: "0 80px 40px" }}>
+          <div style={{ padding: "0 80px 80px" }}>
             <h2 className={styles.sectionTitle}>
               What can <b>EdWave</b> do today?
             </h2>
@@ -142,7 +142,7 @@ const VideoCreationOptions: React.FC = () => {
               </div>
 
               {/* Localize Content Action */}
-              <div className={styles.actionCard} onClick={() => alert("Localize Content coming soon!")}>
+              <div className={styles.actionCard} onClick={() => navigate("/knowledge-to-video")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(59,130,246,.1)" }}>🌍</div>
                 <h3 className={styles.actionTitle}>Localize Content</h3>
                 <p className={styles.actionSub}>Upload existing content to translate and localize</p>
@@ -206,8 +206,8 @@ const VideoCreationOptions: React.FC = () => {
               </div>
             </div>
             {/* HOW IT WORKS */}
-            <div style={{ textAlign: "center", padding: "28px 80px 0px" }}>
-              <p style={{ fontSize: "16px", color: "var(--secondary)", marginBottom: "4px" }}>
+            <div style={{ textAlign: "center", padding: "48px 80px 0px" }}>
+              <p style={{ fontSize: "16px", color: "var(--secondary)", marginBottom: "4px", fontWeight: "600", fontFamily: "var(--font-syne)" }}>
                 How <b style={{ color: "var(--gold)", fontWeight: "800", }}>EdWave</b> Works
               </p>
             </div>
