@@ -1,0 +1,211 @@
+.container {
+  padding: 40px;
+  min-height: 100vh;
+  max-width: 1220px;
+  margin: auto;
+  background-color: var(--bg-deep);
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-light);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-muted-dark);
+}
+
+.inputCard {
+  background-color: var(--bg-card2) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: var(--text-secondary-dark) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 600 !important;
+}
+
+.muiTextField :global(.MuiOutlinedInput-root),
+.muiSelect :global(.MuiOutlinedInput-root) {
+  background-color: rgba(255, 255, 255, 0.03);
+  /* border-radius: 8px; */
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.muiTextField :global(.MuiOutlinedInput-notchedOutline),
+.muiSelect :global(.MuiOutlinedInput-notchedOutline) {
+  border-color: var(--border-dark);
+}
+
+.muiTextField:hover :global(.MuiOutlinedInput-notchedOutline),
+.muiSelect:hover :global(.MuiOutlinedInput-notchedOutline) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.muiTextField :global(.MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline),
+.muiSelect :global(.MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+  border-color: var(--gold) !important;
+}
+
+.muiTextField :global(.MuiInputLabel-root.Mui-focused),
+.muiSelect :global(.MuiInputLabel-root.Mui-focused) {
+  color: var(--gold) !important;
+}
+
+.muiTextField :global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline),
+.muiSelect :global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+  border-color: var(--gold) !important;
+}
+
+.muiSelect :global(.MuiSelect-icon) {
+  color: var(--text-secondary-dark);
+}
+
+.resultsSection {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.structureCard {
+  background-color: var(--bg-card2) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+}
+
+.structureTitle {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  margin-bottom: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  color: var(--text-light) !important;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stepItem {
+  display: flex;
+  gap: 16px;
+}
+
+.stepNumber {
+  width: 28px;
+  height: 28px;
+  background-color: var(--blue-accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepContent h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--blue-accent);
+}
+
+.stepContent p {
+  font-size: 14px;
+  color: var(--text-secondary-dark);
+  line-height: 1.5;
+}
+
+.refinementBox {
+  margin-top: 24px;
+  background-color: rgba(245, 166, 35, 0.05);
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.refinementTitle {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+  margin-bottom: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px;
+}
+
+.refinementListItem {
+  color: var(--text-secondary-dark) !important;
+  line-height: 1.6 !important;
+  margin-bottom: 4px !important;
+}
+
+.objectivesCard {
+  background-color: var(--bg-card2) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.objectivesTitle {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--text-light) !important;
+}
+
+.objectiveItem {
+  display: flex;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .resultsSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .inputGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -158,7 +158,7 @@ const VideoCreationOptions: React.FC = () => {
               </div>
 
               {/* Lesson Designer Action */}
-              <div className={styles.actionCard} onClick={() => alert("Instructional Designer coming soon!")}>
+              <div className={styles.actionCard} onClick={() => navigate("/instructional-designer")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(20,184,166,.1)" }}>🧠</div>
                 <h3 className={styles.actionTitle}>AI Instructional Designer</h3>
                 <p className={styles.actionSub}>Auto-generate lesson structure and objectives</p>

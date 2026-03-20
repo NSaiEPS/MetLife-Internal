@@ -25,9 +25,9 @@ import UploadVideoPage from "../Pages/UploadVideoPage/UploadVideoPage";
 import SuperAdminPanel from "../Admin/SuperAdminPanel";
 import OneframeAdminPanel from "../Admin/oneframe_admin_panel_ui-2";
 import PageNotFound from "../Pages/PageNotFound/PageNotFound";
-import ErrorPage from "../Pages/PageNotFound/ErrorPage";
 import ProjectsPage from "../Pages/Projects/ProjectsPage";
 import KnowledgeToVideo from "../Pages/KnowledgeToVideo/KnowledgeToVideo";
+import InstructionalDesigner from "../Pages/InstructionalDesigner/InstructionalDesigner";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -57,7 +57,7 @@ const ProtectedRoute = ({
 
   if (allowedRoles.length > 0) {
     const userType = getLoggedInUserType();
-    if (!allowedRoles.includes(userType)) {
+    if (!allowedRoles.includes(String(userType))) {
       return <Navigate to="/login" replace />;
     }
   }
@@ -191,6 +191,10 @@ export const router = createBrowserRouter([
       {
         path: "/knowledge-to-video",
         element: <KnowledgeToVideo />,
+      },
+      {
+        path: "/instructional-designer",
+        element: <InstructionalDesigner />,
       },
     ],
   },

@@ -39,7 +39,7 @@ const Sidebar: React.FC = () => {
     { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
     { text: "Projects", icon: <ProjectsIcon />, path: "/projects" },
     { text: "Generate Script", icon: <GenerateScriptIcon />, path: "/generate-script" },
-    { text: "AI Instructional Designer", icon: <AIInstructionalIcon />, path: "#" },
+    { text: "AI Instructional Designer", icon: <AIInstructionalIcon />, path: "/instructional-designer" },
     { text: "Animation Toolkit", icon: <AnimationToolkitIcon />, path: "#" },
     { text: "Visual Consistency", icon: <VisualConsistencyIcon />, path: "#", isNew: true },
     { text: "Prompt Library", icon: <PromptLibraryIcon />, path: "#", isNew: true },
