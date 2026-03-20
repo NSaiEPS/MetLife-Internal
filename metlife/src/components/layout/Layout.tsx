@@ -1,13 +1,13 @@
-import React from "react";
 import { Outlet } from "react-router";
 import OneFrameHeader from "../common/OneFrameHeader";
-import styles from "../common/OneFrameHeader.module.css";
+import ScrollToTop from "../common/ScrollToTop";
 
 
 
 const Layout = () => {
   return (
     <>
+      <ScrollToTop />
       {/* Header */}
       <OneFrameHeader />
       <main>

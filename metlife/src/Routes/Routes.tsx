@@ -28,6 +28,7 @@ import PageNotFound from "../Pages/PageNotFound/PageNotFound";
 import ProjectsPage from "../Pages/Projects/ProjectsPage";
 import KnowledgeToVideo from "../Pages/KnowledgeToVideo/KnowledgeToVideo";
 import InstructionalDesigner from "../Pages/InstructionalDesigner/InstructionalDesigner";
+import StoryboardGenerator from "../Pages/StoryboardGenerator/StoryboardGenerator";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -195,6 +196,10 @@ export const router = createBrowserRouter([
       {
         path: "/instructional-designer",
         element: <InstructionalDesigner />,
+      },
+      {
+        path: "/storyboard-generator",
+        element: <StoryboardGenerator />,
       },
     ],
   },

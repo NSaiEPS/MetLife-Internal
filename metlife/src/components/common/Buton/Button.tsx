@@ -146,7 +146,7 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
         textTransform: transform,
         fontSize: small ? "12px" : "14px",
         fontWeight: 600,
-        padding: padding ? padding : small ? "8px 8px" : "12px 24px",
+        padding: padding ? padding : small ? "8px 14px" : "12px 24px",
 
         background: disabled ? "#E0E0E0" : colors.bg,
         color: disabled ? "var(--button-disabled-color)" : colors.text,

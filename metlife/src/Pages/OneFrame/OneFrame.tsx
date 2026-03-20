@@ -186,7 +186,7 @@ const VideoCreationOptions: React.FC = () => {
               </div>
 
               {/* Storyboard Action */}
-              <div className={styles.actionCard} onClick={() => alert("Storyboard coming soon!")}>
+              <div className={styles.actionCard} onClick={() => navigate("/storyboard-generator")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(20,184,166,.1)" }}>🎞</div>
                 <h3 className={styles.actionTitle}>
                   Storyboard Generator <span className={`${styles.tag} ${styles.tagNew}`}>New</span>
