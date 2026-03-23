@@ -1,0 +1,415 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  background: #0b0f19;
+  color: #fff;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background: rgba(17, 24, 39, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 10;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.mainLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 200px;
+  background: #0f172a;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: #8899bb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+}
+
+.navItemActive {
+  background: rgba(245, 166, 35, 0.1);
+  color: #f5a623;
+}
+
+.contentArea {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: #0b0f19;
+}
+
+.sectionContent {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionHeader {
+  margin-bottom: 2rem;
+}
+
+.sectionSubtitle {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+/* Logo Section */
+.logoUploadBox {
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.01);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.uploadIconWrap {
+  font-size: 2.5rem;
+  color: #8899bb;
+}
+
+.uploadDesc {
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.logoActions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Color Palette Section */
+.colorPaletteGrid {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.colorSwatch {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.colorBox {
+  height: 80px;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.colorLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Typography Section */
+.typographyBox {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.headingPreview {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.bodyPreview {
+  font-size: 0.9rem;
+  color: #8899bb;
+}
+
+.sliderContainer {
+  margin-bottom: 2rem;
+}
+
+.sliderLabel {
+  display: block;
+  font-size: 0.75rem;
+  color: #4b5563;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+.customSlider {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sliderThumb {
+  width: 12px;
+  height: 12px;
+  background: #f5a623;
+  border-radius: 50%;
+  position: absolute;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
+}
+
+/* Video Styles Section */
+.videoStylesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.videoStyleCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cardTop {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8899bb;
+}
+
+.cardBottom {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  color: #4b5563;
+}
+
+.videoStyleSelected {
+  border-color: #f5a623;
+  background: rgba(245, 166, 35, 0.05);
+}
+
+.videoStyleSelected .cardTop {
+  color: #f5a623;
+}
+
+.videoStyleSelected .cardBottom {
+  color: #f5a623;
+}
+
+/* Right Panel */
+.rightPanel {
+  width: 320px;
+  background: #0f172a;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: fit-content;
+}
+
+.previewLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #4b5563;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.previewWindow {
+  background: #000;
+  border-radius: 12px;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1.5rem;
+}
+
+.sceneButtons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.sceneItem {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sceneTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.sceneEdit {
+  font-size: 0.65rem;
+  color: #8899bb;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.rightActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.primaryBtn {
+  background: #f5a623;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.secondaryBtn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btnSm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnOutline {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8899bb;
+}
+
+.fontSyne {
+  font-family: 'Syne', sans-serif;
+}
+
+.fontDmSans {
+  font-family: 'DM Sans', sans-serif;
+}

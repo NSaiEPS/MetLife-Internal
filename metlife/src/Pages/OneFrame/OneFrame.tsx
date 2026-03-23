@@ -150,7 +150,7 @@ const VideoCreationOptions: React.FC = () => {
               </div>
 
               {/* Brand Kit Action */}
-              <div className={styles.actionCard} onClick={() => alert("Brand kit coming soon!")}>
+              <div className={styles.actionCard} onClick={() => navigate("/brand-kit")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(168,85,247,.1)" }}>🎨</div>
                 <h3 className={styles.actionTitle}>Brand Kit</h3>
                 <p className={styles.actionSub}>Set up your brand identity for all videos</p>

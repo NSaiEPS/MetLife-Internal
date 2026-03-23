@@ -29,6 +29,7 @@ import ProjectsPage from "../Pages/Projects/ProjectsPage";
 import KnowledgeToVideo from "../Pages/KnowledgeToVideo/KnowledgeToVideo";
 import InstructionalDesigner from "../Pages/InstructionalDesigner/InstructionalDesigner";
 import StoryboardGenerator from "../Pages/StoryboardGenerator/StoryboardGenerator";
+import BrandKit from "../Pages/BrandKit/BrandKit";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -200,6 +201,10 @@ export const router = createBrowserRouter([
       {
         path: "/storyboard-generator",
         element: <StoryboardGenerator />,
+      },
+      {
+        path: "/brand-kit",
+        element: <BrandKit />,
       },
     ],
   },

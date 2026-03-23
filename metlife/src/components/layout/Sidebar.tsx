@@ -49,7 +49,7 @@ const Sidebar: React.FC = () => {
     { text: "Storyboard", icon: <StoryboardIcon />, path: "/storyboard-generator", isNew: true },
     { text: "Concept Visualizer", icon: <ConceptVisualizerIcon />, path: "#", isNew: true },
     { text: "Graph Builder", icon: <GraphBuilderIcon />, path: "#", isNew: true },
-    { text: "Brand Kit", icon: <BrandKitIcon />, path: "#" },
+    { text: "Brand Kit", icon: <BrandKitIcon />, path: "/brand-kit" },
     { text: "Localization", icon: <LocalizationIcon />, path: "#" },
     { text: "Analytics", icon: <AnalyticsIcon />, path: "#" },
     { text: "Settings", icon: <SettingsIcon />, path: "#" },
