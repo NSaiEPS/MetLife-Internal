@@ -398,7 +398,7 @@ export const getLocalizationImageUrl =
         if (onSuccess) {
           onSuccess(res?.data);
         }
-      }
+      } 
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Video upload failed!");
     } finally {

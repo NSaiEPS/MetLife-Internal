@@ -73,7 +73,7 @@ export const UploadPopup = ({
   console.log(sceneData, "sceneData");
 
   const handleDownloadType = (type: string) => {
-    console.log("Scene_Data", sceneData);
+    // console.log("Scene_Data", sceneData);
     // if (!sceneData?.scenes?.length) {
     //   console.log("Scenes not ready");
     //   return;
@@ -143,7 +143,7 @@ export const UploadPopup = ({
                 key="upload-video"
                 onClick={() => {
                   handleCloseMenu();
-                  // navigate("/upload-video");
+                  navigate("/upload-video");
                 }}
               >
                 Upload Video

@@ -66,9 +66,10 @@ export default function RectangleDrawer({
 
     const result = [x, y, width, height];
 
-    console.log(result, "=> [x, y, width, height]");
+    // console.log(result, "=> [x, y, width, height]");
+    const id = projectId || localStorage.getItem("project_id");
 
-    dispatch(postImageCoordinates(projectId, result, successCallback));
+    dispatch(postImageCoordinates(id, result, successCallback));
 
     // setStartTimer3(true);
     // setShowRectangleCanvas(false);

@@ -245,6 +245,7 @@ const UploadVideoPage = () => {
   //     console.log("Upload complete");
   //   }),
   // );
+  // console.log(scriptData, "scriptData");
 
   const uploadVideoSuccessCallback = (data) => {
     if (data?.status) {
