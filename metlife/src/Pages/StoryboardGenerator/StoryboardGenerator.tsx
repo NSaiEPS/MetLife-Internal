@@ -14,6 +14,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import styles from './StoryboardGenerator.module.css';
 import ButtonComp from '../../components/common/Buton/Button';
 import WestIcon from '@mui/icons-material/West';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+
 const StoryboardGenerator = () => {
   const [scriptTitle] = useState('Role of Vocabularies in Enterprise Architecture');
 
@@ -67,7 +69,7 @@ const StoryboardGenerator = () => {
             <WestIcon sx={{ fontSize: 16 }} /> &nbsp; Back to Script
           </ButtonComp>
           <ButtonComp colorType="primary" transform="none" small >
-            Continue to Audio →
+            Continue to Audio &nbsp; <ArrowRightAltIcon sx={{ fontSize: 16 }} />
           </ButtonComp>
         </Box>
       </Box>
@@ -101,9 +103,9 @@ const StoryboardGenerator = () => {
             <Paper key={scene.id} className={styles.sceneCard} elevation={0}>
               <Box className={styles.sceneHeader}>
                 <Typography variant="caption">Scene {scene.id}</Typography>
-                <IconButton size="small" sx={{ color: 'var(--text-muted-dark)' }}>
+                {scene.id == 1 && <IconButton size="small" sx={{ color: 'var(--text-muted)', background: 'var(--bg-card2)', borderRadius: '10%' }}>
                   <AddIcon fontSize="inherit" />
-                </IconButton>
+                </IconButton>}
               </Box>
               <Box className={styles.imagePlaceholder}>
                 <Box className={styles.imageBox}>{scene.icon}</Box>
