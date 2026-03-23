@@ -212,8 +212,8 @@
 .sliderLabel {
   display: block;
   font-size: 0.75rem;
-  color: #4b5563;
-  text-transform: uppercase;
+  /* color: #4b5563; */
+  /* text-transform: uppercase; */
   font-weight: 700;
   margin-bottom: 1.5rem;
   letter-spacing: 0.05em;
@@ -305,8 +305,7 @@
 
 .previewLabel {
   font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #4b5563;
+  /* text-transform: uppercase; */
   letter-spacing: 0.05em;
   font-weight: 700;
   margin-bottom: 0.75rem;

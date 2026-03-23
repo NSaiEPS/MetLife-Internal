@@ -24,6 +24,7 @@ import {
   Edit as EditIcon,
   Flag as FlagIcon,
   MovieCreation as SceneIcon,
+  Colorize as ColorizeIcon,
 } from '@mui/icons-material';
 import { useNavigate, useBlocker } from 'react-router-dom';
 import styles from './BrandKit.module.css';
@@ -32,7 +33,11 @@ import ButtonComp from '../../components/common/Buton/Button';
 const BrandKit = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('brand-kit');
-  const [fontSize, setFontSize] = useState(50);
+  const [fontSize, setFontSize] = useState(16);
+  const [headingFont, setHeadingFont] = useState('Syne');
+  const [bodyFont, setBodyFont] = useState('DM Sans');
+  const [fontPickerOpen, setFontPickerOpen] = useState(false);
+  const [pickingType, setPickingType] = useState<'heading' | 'body'>('heading');
   const [selectedStyle, setSelectedStyle] = useState('Enterprise Atlas');
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [logo, setLogo] = useState<string | null>(null);
@@ -119,21 +124,21 @@ const BrandKit = () => {
   const saveChanges = () => {
     // Collect all brand kit data and prepare as FormData
     const formData = new FormData();
-    
+
     if (logoFile) {
       formData.append('logo', logoFile);
     }
-    
+
     // Convert color hex array to JSON string for FormData (standard practice)
     const colorArray = colors.map((c: any) => c.hex);
     formData.append('colorPalette', JSON.stringify(colorArray));
-    
+
     formData.append('typography', JSON.stringify({
       fontSize: fontSize,
       headingFont: 'Syne Bold',
       bodyFont: 'DM Sans Regular'
     }));
-    
+
     formData.append('videoStyle', selectedStyle);
 
     // Demonstration: Log the FormData entries (FormData is not easily printable, so we loop)
@@ -145,6 +150,31 @@ const BrandKit = () => {
     // Logic to save brand kit changes would go here
     setIsDirty(false);
     setSaveSuccess(true);
+  };
+  
+  const FONT_OPTIONS = [
+    { name: 'Syne', family: 'Syne, sans-serif' },
+    { name: 'DM Sans', family: '"DM Sans", sans-serif' },
+    { name: 'Poppins', family: 'Poppins, sans-serif' },
+    { name: 'Inter', family: 'Inter, sans-serif' },
+    { name: 'Playfair Display', family: '"Playfair Display", serif' },
+    { name: 'Lora', family: 'Lora, serif' },
+    { name: 'Montserrat', family: 'Montserrat, sans-serif' },
+  ];
+
+  const handleOpenFontPicker = (type: 'heading' | 'body') => {
+    setPickingType(type);
+    setFontPickerOpen(true);
+  };
+
+  const selectFont = (fontFamily: string) => {
+    if (pickingType === 'heading') {
+      setHeadingFont(fontFamily);
+    } else {
+      setBodyFont(fontFamily);
+    }
+    setFontPickerOpen(false);
+    setIsDirty(true);
   };
 
   const tabs = [
@@ -234,14 +264,29 @@ const BrandKit = () => {
                       bgcolor: c.color,
                       border: '1px solid rgba(255,255,255,0.1)',
                       cursor: 'pointer',
-                      transition: 'width 0.3s ease',
+                      transition: 'all 0.3s ease',
                       fontSize: '12px',
                       fontWeight: 600,
-                      color: (c.hex === '#FFFFFF' || c.hex === 'white') ? '#000' : '#fff',
-                      position: 'relative'
+                      color: (c.hex === '#FFFFFF' || c.hex === 'white' || c.hex.toLowerCase() === '#ffffff') ? '#000' : '#fff',
+                      position: 'relative',
+                      '& svg': {
+                        fontSize: '14px',
+                        opacity: selectedColorIndex === i ? 0.7 : 0,
+                        transition: 'opacity 0.2s ease'
+                      },
+                      '&:hover svg': {
+                        opacity: 1
+                      }
                     }}
                   >
-                    {selectedColorIndex === i && c.hex}
+                    {selectedColorIndex === i ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <ColorizeIcon sx={{ fontSize: '12px' }} />
+                        {c.hex}
+                      </Box>
+                    ) : (
+                      <ColorizeIcon />
+                    )}
                     <input
                       type="color"
                       value={c.hex}
@@ -274,12 +319,23 @@ const BrandKit = () => {
             <Typography className={styles.cardTitle}>Typography</Typography>
             <Typography variant="caption" sx={{ color: '#4b5563', mb: 1, display: 'block', textTransform: 'uppercase', fontWeight: 700 }}>Primary Font</Typography>
             <Box className={styles.typographyBox} sx={{ py: 2, px: 3 }}>
-              <Typography sx={{ fontSize: '1.2rem', fontWeight: 700 }}>Heading Style</Typography>
-              <Typography variant="caption" sx={{ color: '#8899bb' }}>Body text example for video subtitles and captions</Typography>
+              <Typography sx={{ fontSize: `${fontSize * 1.5}px`, fontWeight: 700, mb: 0.5, fontFamily: headingFont }}>Heading — {headingFont}</Typography>
+              <Typography sx={{ fontSize: `${fontSize}px`, color: '#8899bb', fontFamily: bodyFont }}>Body text — {bodyFont} for video subtitles and captions</Typography>
             </Box>
-            <button className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`} style={{ marginTop: '12px' }}>
-              Change Font
-            </button>
+            <Box sx={{ display: 'flex', gap: 1, mt: 1.5 }}>
+              <button 
+                className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
+                onClick={() => handleOpenFontPicker('heading')}
+              >
+                Change Heading
+              </button>
+              <button 
+                className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
+                onClick={() => handleOpenFontPicker('body')}
+              >
+                Change Body
+              </button>
+            </Box>
           </Box>
 
           {/* Video Styles Section */}
@@ -357,8 +413,26 @@ const BrandKit = () => {
                   <Box key={c.name} className={styles.colorSwatch} sx={{ position: 'relative' }}>
                     <Box
                       className={styles.colorBox}
-                      sx={{ bgcolor: c.color, cursor: 'pointer' }}
-                    />
+                      sx={{ 
+                        bgcolor: c.color, 
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: (c.hex === '#FFFFFF' || c.hex === 'white' || c.hex.toLowerCase() === '#ffffff') ? '#000' : '#fff',
+                        '& svg': {
+                          opacity: 0.5,
+                          transition: 'all 0.2s ease',
+                          fontSize: '1.2rem'
+                        },
+                        '&:hover svg': {
+                          opacity: 1,
+                          transform: 'scale(1.2) rotate(-10deg)'
+                        }
+                      }}
+                    >
+                      <PaletteIcon />
+                    </Box>
                     <Typography className={styles.colorLabel}>{c.name} ({c.hex})</Typography>
                     <input
                       type="color"
@@ -392,21 +466,21 @@ const BrandKit = () => {
               <Typography className={styles.cardTitle}>Typography</Typography>
               <Typography variant="caption" sx={{ color: '#4b5563', mb: 1, display: 'block', textTransform: 'uppercase', fontWeight: 700 }}>Primary Font</Typography>
               <Box className={styles.typographyBox}>
-                <Typography className={styles.headingPreview} style={{ fontSize: `${fontSize * 0.4 + 16}px` }}>Heading — Syne Bold</Typography>
-                <Typography className={styles.bodyPreview} style={{ fontSize: `${fontSize * 0.2 + 12}px` }}>Body text — DM Sans Regular for video subtitles and captions</Typography>
+                <Typography className={styles.headingPreview} style={{ fontSize: `${fontSize * 1.5}px`, fontFamily: headingFont }}>Heading — {headingFont}</Typography>
+                <Typography className={styles.bodyPreview} style={{ fontSize: `${fontSize}px`, fontFamily: bodyFont }}>Body text — {bodyFont} for video subtitles and captions</Typography>
               </Box>
 
               <Box className={styles.sliderContainer}>
-                <Typography className={styles.sliderLabel}>Subtitle Font Size</Typography>
+                <Typography className={styles.sliderLabel}>Subtitle Font Size: {fontSize}px</Typography>
                 <Slider
                   value={fontSize}
                   onChange={(_, newValue) => {
                     setFontSize(newValue as number);
                     setIsDirty(true);
                   }}
-                  step={10}
-                  min={0}
-                  max={100}
+                  step={1}
+                  min={12}
+                  max={32}
                   sx={{
                     color: '#f5a623',
                     height: 2,
@@ -434,9 +508,20 @@ const BrandKit = () => {
                 />
               </Box>
 
-              <button className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}>
-                Browse Fonts
-              </button>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <button 
+                  className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
+                  onClick={() => handleOpenFontPicker('heading')}
+                >
+                  Browse Heading Fonts
+                </button>
+                <button 
+                  className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
+                  onClick={() => handleOpenFontPicker('body')}
+                >
+                  Browse Body Fonts
+                </button>
+              </Box>
             </Box>
           </Box>
         );
@@ -570,9 +655,9 @@ const BrandKit = () => {
         </Box>
       </Box>
 
-      <Snackbar 
-        open={saveSuccess} 
-        autoHideDuration={3000} 
+      <Snackbar
+        open={saveSuccess}
+        autoHideDuration={3000}
         onClose={() => setSaveSuccess(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
@@ -601,17 +686,17 @@ const BrandKit = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ p: 2, gap: 1 }}>
-          <Button 
-            onClick={() => blocker.reset && blocker.reset()} 
+          <Button
+            onClick={() => blocker.reset && blocker.reset()}
             sx={{ color: '#fff', textTransform: 'none' }}
           >
             Stay
           </Button>
-          <Button 
-            onClick={() => blocker.proceed && blocker.proceed()} 
+          <Button
+            onClick={() => blocker.proceed && blocker.proceed()}
             variant="contained"
-            sx={{ 
-              bgcolor: '#ef4444', 
+            sx={{
+              bgcolor: '#ef4444',
               '&:hover': { bgcolor: '#dc2626' },
               textTransform: 'none',
               fontWeight: 600
@@ -619,6 +704,51 @@ const BrandKit = () => {
           >
             Leave
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={fontPickerOpen}
+        onClose={() => setFontPickerOpen(false)}
+        PaperProps={{
+          sx: {
+            bgcolor: '#1e293b',
+            color: '#fff',
+            borderRadius: '12px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            minWidth: '320px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 700 }}>Select {pickingType === 'heading' ? 'Heading' : 'Body'} Font</DialogTitle>
+        <DialogContent sx={{ p: '0 !important' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            {FONT_OPTIONS.map((f) => (
+              <Box
+                key={f.name}
+                onClick={() => selectFont(f.name)}
+                sx={{
+                  p: 2,
+                  cursor: 'pointer',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                  '&:last-of-type': { borderBottom: 'none' },
+                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.03)' },
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  bgcolor: (pickingType === 'heading' ? headingFont : bodyFont) === f.name ? 'rgba(245, 166, 35, 0.1)' : 'transparent',
+                }}
+              >
+                <Typography sx={{ fontFamily: f.family, fontSize: '1.1rem' }}>{f.name}</Typography>
+                {(pickingType === 'heading' ? headingFont : bodyFont) === f.name && (
+                  <Typography variant="caption" sx={{ color: '#f5a623', fontWeight: 700 }}>SELECTED</Typography>
+                )}
+              </Box>
+            ))}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setFontPickerOpen(false)} sx={{ color: '#8899bb' }}>Cancel</Button>
         </DialogActions>
       </Dialog>
 
