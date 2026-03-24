@@ -43,8 +43,8 @@ const Sidebar: React.FC = () => {
     { text: "Animation Toolkit", icon: <AnimationToolkitIcon />, path: "#" },
     { text: "Visual Consistency", icon: <VisualConsistencyIcon />, path: "#", isNew: true },
     { text: "Prompt Library", icon: <PromptLibraryIcon />, path: "#", isNew: true },
-    { text: "Templates", icon: <TemplatesIcon />, path: "#", isNew: true },
-    { text: "AI Presenter", icon: <AIPresenterIcon />, path: "#", isNew: true },
+    { text: "Template Marketplace", icon: <TemplatesIcon />, path: "/template-marketplace", isNew: true },
+    { text: "AI Presenter", icon: <AIPresenterIcon />, path: "/avatar-presenter", isNew: true },
     { text: "Doc-to-Video", icon: <DocToVideoIcon />, path: "/knowledge-to-video", isNew: true },
     { text: "Storyboard", icon: <StoryboardIcon />, path: "/storyboard-generator", isNew: true },
     { text: "Concept Visualizer", icon: <ConceptVisualizerIcon />, path: "#", isNew: true },
@@ -100,7 +100,21 @@ const Sidebar: React.FC = () => {
         height: "calc(100vh - 80px)",
       }}>
         <List sx={{ px: 0 }}>
-          {menuItems.map((item) => {
+          {menuItems
+            .filter((item) => {
+              if (location.pathname === "/template-marketplace") {
+                return [
+                  "Dashboard",
+                  "Generate Script",
+                  "Template Marketplace",
+                  "Brand Kit",
+                  "Visual Consistency",
+                  "Prompt Library",
+                ].includes(item.text);
+              }
+              return true;
+            })
+            .map((item) => {
             const active = isActive(item.path);
             return (
               <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>

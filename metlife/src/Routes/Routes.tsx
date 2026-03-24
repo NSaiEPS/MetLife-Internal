@@ -30,6 +30,8 @@ import KnowledgeToVideo from "../Pages/KnowledgeToVideo/KnowledgeToVideo";
 import InstructionalDesigner from "../Pages/InstructionalDesigner/InstructionalDesigner";
 import StoryboardGenerator from "../Pages/StoryboardGenerator/StoryboardGenerator";
 import BrandKit from "../Pages/BrandKit/BrandKit";
+import TemplateMarketplace from "../Pages/TemplateMarketplace/TemplateMarketplace";
+import AvatarPresenter from "../Pages/AvatarPresenter/AvatarPresenter";
 
 // ===============================
 interface ProtectedRouteProps {
@@ -205,6 +207,14 @@ export const router = createBrowserRouter([
       {
         path: "/brand-kit",
         element: <BrandKit />,
+      },
+      {
+        path: "/template-marketplace",
+        element: <TemplateMarketplace />,
+      },
+      {
+        path: "/avatar-presenter",
+        element: <AvatarPresenter />,
       },
     ],
   },

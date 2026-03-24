@@ -130,9 +130,9 @@ const VideoCreationOptions: React.FC = () => {
             <h2 className={styles.sectionTitle}>
               What can <b>EdWave</b> do today?
             </h2>
-            Create AI-Powered Educational Videos
-            <div className={styles.homeActions}>
+            <p>Create AI-Powered Educational Videos</p>
 
+            <div className={styles.homeActions}>
               {/* Generate Script Action */}
               <div className={styles.actionCard} onClick={() => navigate("/generate-script")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(245,166,35,.1)" }}>✨</div>
@@ -166,7 +166,7 @@ const VideoCreationOptions: React.FC = () => {
               </div>
 
               {/* Templates Action */}
-              <div className={styles.actionCard} onClick={() => alert("Templates coming soon!")}>
+              <div className={styles.actionCard} onClick={() => navigate("/template-marketplace")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(245,166,35,.1)" }}>🗂</div>
                 <h3 className={styles.actionTitle}>
                   Templates <span className={`${styles.tag} ${styles.tagNew}`}>New</span>
@@ -176,7 +176,7 @@ const VideoCreationOptions: React.FC = () => {
               </div>
 
               {/* AI Presenter Action */}
-              <div className={styles.actionCard} onClick={() => alert("AI Presenter coming soon!")}>
+              <div className={styles.actionCard} onClick={() => navigate("/avatar-presenter")}>
                 <div className={styles.actionIcon} style={{ background: "rgba(168,85,247,.1)" }}>🧑‍💼</div>
                 <h3 className={styles.actionTitle}>
                   AI Presenter <span className={`${styles.tag} ${styles.tagNew}`}>New</span>

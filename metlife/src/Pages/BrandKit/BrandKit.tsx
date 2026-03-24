@@ -67,7 +67,7 @@ const BrandKit = () => {
     { hex: '#162A46', name: 'Primary', color: '#162A46' },
     { hex: '#F5A623', name: 'Accent', color: '#F5A623' },
     { hex: '#FFFFFF', name: 'White', color: '#FFFFFF' },
-    { hex: '#2563EB', name: 'Secondary', color: '#2563EB' },
+    { hex: '#1e6fd9', name: 'Secondary', color: '#1e6fd9' },
     { hex: '#4B5563', name: 'Neutral', color: '#4B5563' },
   ]);
 
@@ -151,7 +151,7 @@ const BrandKit = () => {
     setIsDirty(false);
     setSaveSuccess(true);
   };
-  
+
   const FONT_OPTIONS = [
     { name: 'Syne', family: 'Syne, sans-serif' },
     { name: 'DM Sans', family: '"DM Sans", sans-serif' },
@@ -323,13 +323,13 @@ const BrandKit = () => {
               <Typography sx={{ fontSize: `${fontSize}px`, color: '#8899bb', fontFamily: bodyFont }}>Body text — {bodyFont} for video subtitles and captions</Typography>
             </Box>
             <Box sx={{ display: 'flex', gap: 1, mt: 1.5 }}>
-              <button 
+              <button
                 className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
                 onClick={() => handleOpenFontPicker('heading')}
               >
                 Change Heading
               </button>
-              <button 
+              <button
                 className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
                 onClick={() => handleOpenFontPicker('body')}
               >
@@ -413,8 +413,8 @@ const BrandKit = () => {
                   <Box key={c.name} className={styles.colorSwatch} sx={{ position: 'relative' }}>
                     <Box
                       className={styles.colorBox}
-                      sx={{ 
-                        bgcolor: c.color, 
+                      sx={{
+                        bgcolor: c.color,
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -509,13 +509,13 @@ const BrandKit = () => {
               </Box>
 
               <Box sx={{ display: 'flex', gap: 2 }}>
-                <button 
+                <button
                   className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
                   onClick={() => handleOpenFontPicker('heading')}
                 >
                   Browse Heading Fonts
                 </button>
-                <button 
+                <button
                   className={`${styles.secondaryBtn} ${styles.btnSm} ${styles.btnOutline}`}
                   onClick={() => handleOpenFontPicker('body')}
                 >
