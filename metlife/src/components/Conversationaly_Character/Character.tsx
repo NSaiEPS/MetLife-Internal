@@ -219,13 +219,11 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
   const handleSave = () => {
     if (pathname === "/generate-script" && (form.inputType === "image" || form.inputType === "prompt") ) {
       if (!validate()) return;
-      console.log("hit");
       updateCharacter(index, form);
       closePrompt();
     }
 
     if (pathname === "/generate-script" && form.inputType === "search") {
-      console.log(form, index, characterData, "form_check");
       updateCharacter(index, form);
       // updateCharacter(index, characterData);
 
@@ -255,8 +253,6 @@ export const CharacterPrompt: React.FC<CharacterPromptProps> = ({
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
-
-  console.log(characterData, "characterDataCheck");
 
   /* ================= RENDER ================= */
 

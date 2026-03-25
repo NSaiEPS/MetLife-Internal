@@ -347,7 +347,6 @@ const inprogress_script = dashBoardInfo?.filter(
   };
 
   const isFailed = (item: DashboardItem) => {
-    console.log(item, "check_item");
     return item.failed;
   };
 
@@ -388,7 +387,6 @@ const inprogress_script = dashBoardInfo?.filter(
   ) => {
     event.stopPropagation();
     setOpen(event.currentTarget);
-    // console.log(video?.final_video, video?.title, "finalVidieop");
     setMenuData((prev) => {
       return {
         ...prev,

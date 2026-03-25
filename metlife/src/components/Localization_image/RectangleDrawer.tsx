@@ -77,7 +77,7 @@ export default function RectangleDrawer({
   };
 
   const successCallback = (data) => {
-    console.log(data, "data_check");
+    // console.log(data, "data_check");
     if (data?.status) {
       const duration = Number(data?.estimated_time_seconds);
       const endTime = Date.now() + duration * 1000;

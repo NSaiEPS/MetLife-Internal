@@ -1166,8 +1166,6 @@ const AudioAnimationPage: React.FC = () => {
       script_id: id,
       custom_voice_map,
     };
-    // console.log("FINAL_PAYLOAD", payload);
-
     dispatch(postGenerateVoiceAndAudio(payload));
   };
 
@@ -1250,8 +1248,6 @@ const AudioAnimationPage: React.FC = () => {
 
     dispatch(postPreviewAzureVoices(payload));
   };
-
-  console.log(ost, "check");
 
   return (
     <>

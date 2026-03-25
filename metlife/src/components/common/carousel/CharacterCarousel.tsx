@@ -30,12 +30,10 @@ export const CharacterCarousel = ({
   tableExtraData,
   setOpenFlowDialog,
 }) => {
-  console.log(characterData, "characterData");
   const current =
     characterData[currentIndex] ||
     characterData[currentIndex]?.image_url ||
     characterData?.image_url;
-  console.log(current, "checkCurrent");
   // const [stage, setStage] = useState<"prompt" | "images">("prompt");
   const [stage, setStage] = useState<"prompt" | "images">(
     tableExtraData?.char_image_exist ? "images" : "prompt",
@@ -96,7 +94,6 @@ export const CharacterCarousel = ({
   };
 
   const handleRegenerateCharacterImage = (characterName: string) => {
-    console.log(characterName, "charcaterName");
     setSelectedCharacter(characterName);
     setRegenerateOpen(true);
     // dispatch(postRegenerateCharacterImages(id, characterName));

@@ -94,8 +94,6 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
     formData.append("file", videoFile);
     // formData.append("generate_audio", audio === "on" ? true: false);
     formData.append("generate_audio", audio);
-    console.log(audio, 'audio')
-
     dispatch(postImageUpload(formData, onClose, prompt_batch_id));
   };
 
@@ -106,8 +104,6 @@ const VideoUploadPopup: React.FC<VideoUploadPopupProps> = ({
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  console.log(audio, "check_audio")
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>

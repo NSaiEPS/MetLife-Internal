@@ -245,7 +245,7 @@ const UploadConversationalClipsPage: React.FC = () => {
       dispatch(getDownloadAsset(id, title));
     }
   };
-  // console.log(scenesData, "check")
+
   useEffect(() => {
     if (id || stitchedVideoUrl || scenesData?.stitched_video_exists) {
       dispatch(getClipsData(id));
@@ -307,14 +307,11 @@ const UploadConversationalClipsPage: React.FC = () => {
   };
 
   const handleStichVideo = () => {
-    console.log(bgMusic, ost, "backgroundMusic");
     if (id) {
       dispatch(postStitchAllVideos(id, setOpenConfirm, bgMusic, ost));
       handleMenuClose();
     }
   };
-
-  console.log(stitchedVideoStatus, "stitchedVideoStatus");
 
   return (
     <>

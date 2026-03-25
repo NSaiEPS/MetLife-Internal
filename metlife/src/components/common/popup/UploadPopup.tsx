@@ -25,7 +25,6 @@ export const UploadPopup = ({
   open: HTMLElement | null;
   handleCloseMenu: () => void;
 }) => {
-  console.log(menuData, "check_menu_data");
   const scriptId = menuData?.downloadScript?.script_id;
   const videoData = menuData?.downloadVideo;
   const navigate = useNavigate();
@@ -43,7 +42,6 @@ export const UploadPopup = ({
   const downloadVideoFromDashboard = () => {
     const title = videoData?.title;
     const finalVideo = videoData?.final_video?.url;
-    console.log(finalVideo, "check_final_video");
     if (!finalVideo) {
       toast.error("Final Video is not present for this script.");
       return;
@@ -69,8 +67,6 @@ export const UploadPopup = ({
       setLoading(false);
     }
   };
-
-  console.log(sceneData, "sceneData");
 
   const handleDownloadType = (type: string) => {
     // console.log("Scene_Data", sceneData);

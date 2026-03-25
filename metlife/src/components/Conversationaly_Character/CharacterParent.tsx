@@ -81,7 +81,6 @@ const CharacterParent: React.FC<CharacterType> = ({
   /* ================= EFFECT ================= */
 
   useEffect(() => {
-    console.log(characters, "characters");
     const hasValidCharacter = characters?.some((char) => {
       const hasBasicInfo = char?.name.trim() !== "" && char?.role.trim() !== "";
       //  ||

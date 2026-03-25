@@ -176,7 +176,6 @@ const CreateVisualContentPage: React.FC = () => {
   const { generateVisualContentData } = useSelector(
     (store: RootState) => store.GenerateVisualContent,
   );
-  console.log(generateVisualContentData, "check_updated_data");
   const script_id = saveVisualContentData?.script_id;
   const [rows, setRows] = useState<RowData[]>([]);
   const [popup, setPopup] = useState<PopupData>({ type: null, data: null });
@@ -195,7 +194,6 @@ const CreateVisualContentPage: React.FC = () => {
   }, [saveVisualContentData?.prompts]);
 
   const settingDataInRows = (reqData: any[]) => {
-    console.log(reqData, "check_req_data");
     const newdata: RowData[] = reqData.map((item, index) => ({
       Scene_No: index + 1,
       Visual_Type: item?.clip_visual_type === "clip" ? "clip" : "image",
@@ -262,7 +260,6 @@ const CreateVisualContentPage: React.FC = () => {
       prompt_id: data?.prompt_id,
       visual_type: value,
     };
-    console.log(value, "value");
 
     if (value === "clip") {
       dispatch(postVisualTypeUpdate(payload));
@@ -271,7 +268,6 @@ const CreateVisualContentPage: React.FC = () => {
 
   const handleGenerate = () => {
     const prompts = rows ?? [];
-    console.log(prompts, "check_prompts");
 
     const manipulatedPrompts = prompts.map((item) => {
       const baseObj = {
@@ -314,7 +310,7 @@ const CreateVisualContentPage: React.FC = () => {
       flow_type: saveVisualContentData?.flow_type,
     };
 
-    console.log(finalPayload, "check_final");
+    // console.log(finalPayload, "check_final");
     dispatch(postGenerateVisualContentImage(finalPayload));
   };
 
@@ -332,9 +328,6 @@ const CreateVisualContentPage: React.FC = () => {
     };
     dispatch(postTranslatedDataSave(data, id));
   };
-
-  console.log(saveVisualContentData?.prompts, "chekc");
-  console.log(rows, "rows");
 
   return (
     <>

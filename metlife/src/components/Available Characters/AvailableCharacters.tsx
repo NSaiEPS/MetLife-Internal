@@ -79,12 +79,9 @@ const AvailableCharacters = ({ characters, setCharacterData, setForm }) => {
         personality: characterData?.appearance?.personality,
       };
     });
-    console.log(characterData, "check");
     // setSelectedCharacterId(characterData.id);
     // setCharacterData(characterData);
   };
-
-  // console.log(characterData, "check_character_data")
 
   return (
     <Box>

@@ -27,10 +27,7 @@ const UsersListPopup = ({ open, onClose, scriptId }) => {
   });
   const dispatch = useDispatch();
 
-  console.log(usersList, "usersList");
-
   const shareToNewUser = (user) => {
-    console.log(user, "check_stored_value");
     if (!scriptId) return;
     // const payload = {
     //   script_id: scriptId,

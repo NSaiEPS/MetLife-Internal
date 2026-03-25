@@ -139,12 +139,8 @@ const UploadVideoPage = () => {
 
   //   return remaining > 0 ? remaining : 0;
   // };
-
-  // console.log(localStorage.getItem("estimated_remaining_time"), "check_loader")
   const remainingSeconds = getRemainingSeconds();
   const finalTime = Math.floor((remainingSeconds / 60) * 10) / 10;
-
-  console.log("finnalTime", finalTime);
 
   const { email, user_id, username } =
     secureLocalStorage.getItem("userDetails");
@@ -217,7 +213,7 @@ const UploadVideoPage = () => {
       }
       const data = await response.json();
       localStorage.setItem("project_id", data?.project_id);
-      console.log(data, "check_data");
+      // console.log(data, "check_data");
       setScriptData(data);
       toast.success(data?.message || "Video uploaded successfully");
       setUploadSuccess(true);
@@ -341,7 +337,6 @@ const UploadVideoPage = () => {
   //   }
   // }, []);
 
-  console.log(uploadVideoLoader, "check_loader");
   const handleSeconds = (e: any) => {
     const { name, value } = e.target;
     if (name == "seconds") {
@@ -349,7 +344,6 @@ const UploadVideoPage = () => {
     }
   };
 
-  console.log(intro, "check_value");
   return (
     <>
       {(loader || uploadVideoLoader) && (

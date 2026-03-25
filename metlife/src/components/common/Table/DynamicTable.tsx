@@ -157,13 +157,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { characterData, promptData, scriptLoader } = useSelector(
     (store) => store.Script,
   );
-  console.log(characterData, "characterdata");
   const { pathname } = useLocation();
   const { saveVisualContentLoader } = useSelector(
     (store: RootState) => store.CreateVisualContent,
   );
-
-  console.log(rows, "tableRowssss");
   // const { scriptLoader } = useSelector((store: RootState) => store.Script);
   const [selectedScene, setSelectedScene] = useState<SceneRow | null>(null);
   const latestPrompt = tableExtraData?.latest_prompt;
@@ -419,11 +416,9 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleDownloadType = (type: string) => {
-    console.log(tableExtraData, rows, "tableExtraData");
     const filteredScenes = [...rows]?.filter(
       (scene) => scene?.is_deleted !== true,
     );
-    // console.log(filteredScenes, "filteredScenes");
 
     const updatedData = {
       ...tableExtraData,
@@ -589,7 +584,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     // setOperations(false);
     setUiState((prev) => ({ ...prev, operations: false }));
     const { script_status, saved_version, scenes, ...rest } = tableExtraData;
-    console.log(tableExtraData, "table_extra_data");
 
     let updatedData = [...rows]
       .filter((parentItem) => !parentItem?.is_deleted)
@@ -670,7 +664,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
     try {
       const response = await api.post("mongo/delete_scene", payload);
-      console.log(response?.data?.target_version, "response");
       successDelete(scene);
       // setRows((prev) => prev.filter((item) => item.id !== scene.id));
       let newRows = [...rows].map((item) => {
@@ -720,8 +713,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const handleCreateVisualContent = (flowType) => {
-    console.log(tableExtraData?.scenes, "check_table_extra_data");
-
     const filteredScenes = tableExtraData?.scenes?.filter(
       (scene) => scene?.is_deleted !== true,
     );
@@ -819,7 +810,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     // ✅ CLOSE POPUP EVERY TIME
     setEditingIndex(null);
     const isLastCharacter = index === totalCharacters - 1;
-    console.log(index, "index");
 
     // ✅ If this was LAST character → CALL API
     // if (index === totalCharacters - 1) {
@@ -854,15 +844,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const handleEditSave = () => {
     dispatch(postUpdateScriptTitle(id, title, setIsEditing));
   };
-
-  console.log(
-    tableExtraData?.title,
-    visualContentTitle,
-    tableExtraData?.upload_info?.title,
-    "Title",
-  );
-
-  console.log(title, "checkTitle");
 
   return (
     <>

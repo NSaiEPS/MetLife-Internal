@@ -376,15 +376,6 @@ const AnimationPage: React.FC = () => {
     if (file) setOutroVideo(file);
   };
 
-  // console.log(generatedVideoData, "generatedVideoData");
-  console.log("finalTime", finalTime);
-  console.log("timerDone", timerDone);
-  console.log(
-    "generatedVideoData",
-    !generatedVideoData?.final_video,
-    generatedVideoData,
-  );
-
   return (
     <>
     {
