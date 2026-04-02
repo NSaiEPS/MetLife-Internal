@@ -91,7 +91,10 @@ const OneFrameHeader: React.FC<OneFrameHeaderProps> = ({
               <Button
                 disableRipple
                 disableTouchRipple
-                onClick={() => navigateTo("/dashboard")}
+                onClick={() => {
+                  navigateTo("/dashboard");
+                  localStorage.removeItem("video_process_step");
+                }}
                 sx={{
                   fontSize: "24px",
                   lineHeight: "30px",
