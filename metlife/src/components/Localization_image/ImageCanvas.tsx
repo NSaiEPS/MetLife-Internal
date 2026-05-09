@@ -42,8 +42,8 @@ export default function ImageCanvas({
   return (
     <canvas
       ref={canvasRef}
-      width={600}
-      height={400}
+      width={850}
+      height={500}
       // width="100%"
       // height="100%"
       className="border border-gray-400"

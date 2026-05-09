@@ -270,10 +270,35 @@ const UploadVideoPage = () => {
     // dispatch(getLocalizationImageUrl(scriptData?.project_id));
   };
 
+  // const timer1SuccessCallback = (data) => {
+  //   localStorage.setItem(
+  //     "original_frame_url",
+  //     // data?.scenes?.[0]?.original_frame_url,
+  //     data?.refScene?.original_frame_url,
+
+  //   );
+
+  //   if (data?.status === "awaiting_user_rule") {
+  //     setStep(STEPS.RECTANGLE);
+  //   } else {
+  //     const duration = Number(data.estimated_remaining_time);
+  //     const endTime = Date.now() + duration * 1000;
+
+  //     localStorage.setItem(
+  //       "estimated_remaining_time",
+  //       JSON.stringify({ endTime }),
+  //     );
+  //     setStep(STEPS.TIMER2);
+  //   }
+  // };
+
   const timer1SuccessCallback = (data) => {
+    const refIndex = data?.reference_scene_index ?? 1;
+    const refScene = data?.scenes?.find(s => s.scene_index === refIndex) ?? data?.scenes?.[0];
+    
     localStorage.setItem(
       "original_frame_url",
-      data?.scenes?.[0]?.original_frame_url,
+      refScene?.original_frame_url,
     );
 
     if (data?.status === "awaiting_user_rule") {
